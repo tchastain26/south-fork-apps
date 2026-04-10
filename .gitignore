@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# iCloud
+.icloud
+*.icloud
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Mockup source (not shipped)
+South-Fork-Apps Stitch.zip
+/stitch/

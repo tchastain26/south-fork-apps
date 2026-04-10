@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>South Fork Apps // Field-Tested Web Apps</title>
+<meta name="description" content="Field-tested web apps for the digital wilderness. Engineered for rugged performance and tactical aesthetic."/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;family=Work+Sans:wght@300;400;500;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-tertiary-container": "#fffdff",
+          "error": "#ffb4ab",
+          "on-primary": "#003910",
+          "tertiary": "#e1c1a4",
+          "on-secondary-container": "#9cbecc",
+          "primary-fixed": "#99f89d",
+          "surface-container-high": "#282b29",
+          "on-tertiary-fixed-variant": "#59422d",
+          "on-secondary": "#113540",
+          "on-background": "#e1e3df",
+          "on-primary-fixed-variant": "#00531a",
+          "secondary-fixed": "#c5e8f7",
+          "secondary-fixed-dim": "#aaccda",
+          "background": "#111412",
+          "inverse-primary": "#006e26",
+          "inverse-surface": "#e1e3df",
+          "surface-container-low": "#191c1a",
+          "surface-tint": "#7ddb84",
+          "on-primary-container": "#fbfff5",
+          "on-error": "#690005",
+          "on-surface": "#e1e3df",
+          "surface-container": "#1d201e",
+          "primary": "#7ddb84",
+          "surface": "#111412",
+          "surface-bright": "#373a38",
+          "primary-container": "#27863a",
+          "on-secondary-fixed-variant": "#2a4b57",
+          "on-secondary-fixed": "#001f28",
+          "on-error-container": "#ffdad6",
+          "on-tertiary": "#402c18",
+          "secondary": "#aaccda",
+          "tertiary-fixed-dim": "#e1c1a4",
+          "outline-variant": "#3f493e",
+          "on-primary-fixed": "#002106",
+          "secondary-container": "#2c4e5a",
+          "on-tertiary-fixed": "#291806",
+          "surface-dim": "#111412",
+          "tertiary-container": "#8b7058",
+          "error-container": "#93000a",
+          "surface-container-lowest": "#0c0f0d",
+          "primary-fixed-dim": "#7ddb84",
+          "tertiary-fixed": "#ffdcbf",
+          "surface-container-highest": "#323533",
+          "inverse-on-surface": "#2e312f",
+          "surface-variant": "#323533",
+          "on-surface-variant": "#becaba",
+          "outline": "#899486"
+        },
+        borderRadius: {
+          DEFAULT: "0.25rem",
+          lg: "0.5rem",
+          xl: "0.75rem",
+          full: "9999px"
+        },
+        fontFamily: {
+          headline: ["Epilogue"],
+          body: ["Plus Jakarta Sans"],
+          label: ["Work Sans"]
+        }
+      }
+    }
+  };
+</script>
+<style>
+  .topo-bg {
+    background-image: radial-gradient(circle at 20% 30%, rgba(125, 219, 132, 0.08) 0%, transparent 40%),
+                      radial-gradient(circle at 80% 70%, rgba(170, 204, 218, 0.06) 0%, transparent 40%),
+                      repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 40px, rgba(125, 219, 132, 0.03) 40px, rgba(125, 219, 132, 0.03) 41px);
+    background-size: cover;
+    background-attachment: fixed;
+  }
+  .glass-panel {
+    background: rgba(17, 20, 18, 0.6);
+    backdrop-filter: blur(20px);
+  }
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .primary-gradient {
+    background: linear-gradient(135deg, #7ddb84 0%, #27863a 100%);
+  }
+  .asymmetric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 3rem;
+  }
+  .river-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+    overflow: visible;
+  }
+  .river-path {
+    fill: none;
+    stroke: url(#riverGradient);
+    stroke-width: 80;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: blur(15px);
+    opacity: 0.35;
+    animation: flow 20s ease-in-out infinite alternate;
+  }
+  @keyframes flow {
+    from {
+      stroke-dashoffset: 0;
+      transform: translateY(0) scaleX(1);
+    }
+    to {
+      stroke-dashoffset: 100;
+      transform: translateY(20px) scaleX(1.05);
+    }
+  }
+  .hero-mountain {
+    background: linear-gradient(180deg, #0c1210 0%, #15302b 30%, #1d4236 60%, #0c1210 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-mountain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(135deg, transparent 60%, rgba(125, 219, 132, 0.15) 60.5%, transparent 61%),
+      linear-gradient(225deg, transparent 55%, rgba(170, 204, 218, 0.12) 55.5%, transparent 56%),
+      linear-gradient(135deg, transparent 70%, rgba(125, 219, 132, 0.08) 70.5%, transparent 71%);
+    background-size: 200px 200px, 250px 250px, 180px 180px;
+    mix-blend-mode: screen;
+  }
+  .hero-mountain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(4, 20, 12, 0.95) 0%, transparent 50%);
+  }
+</style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary overflow-x-hidden">
+
+<nav class="bg-emerald-950/60 backdrop-blur-xl fixed top-0 w-full z-50 shadow-2xl shadow-emerald-950/20">
+  <div class="flex justify-between items-center px-6 md:px-12 py-4 w-full max-w-screen-2xl mx-auto">
+    <div class="text-2xl font-bold tracking-tighter text-emerald-400 uppercase font-['Epilogue']">
+      South Fork Apps
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Repositories</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="#mission">Mission</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="https://tuckerchastain.com" target="_blank" rel="noopener">Field Notes</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="#contact">Coordinates</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="https://dogpooptracker.netlify.app/" target="_blank" rel="noopener" class="primary-gradient text-on-primary font-headline font-bold px-6 py-2 rounded-xl hover:scale-105 active:opacity-80 transition-all duration-300">
+        Launch App
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="relative">
+  <svg class="river-svg" preserveAspectRatio="none" viewBox="0 0 1440 3000">
+    <defs>
+      <linearGradient id="riverGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+        <stop offset="0%" stop-color="#7ddb84" stop-opacity="0.2"></stop>
+        <stop offset="25%" stop-color="#aaccda" stop-opacity="0.8"></stop>
+        <stop offset="50%" stop-color="#2c4e5a" stop-opacity="0.6"></stop>
+        <stop offset="75%" stop-color="#7ddb84" stop-opacity="0.7"></stop>
+        <stop offset="100%" stop-color="#aaccda" stop-opacity="0.4"></stop>
+      </linearGradient>
+    </defs>
+    <path class="river-path" d="M1440,0 C1200,300 1100,600 1300,900 C1500,1200 800,1400 400,1600 C0,1800 200,2200 600,2400 C1000,2600 1440,2800 1440,3000"></path>
+  </svg>
+
+  <section class="relative min-h-screen flex items-center pt-24 overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-30 topo-bg"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-1"></div>
+    <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="font-label text-primary tracking-[0.3em] uppercase text-sm mb-6 flex items-center gap-3">
+          <span class="w-12 h-[1px] bg-primary"></span>
+          BASE CAMP // 36.469N / 82.263W
+        </div>
+        <h1 class="font-headline font-extrabold text-6xl md:text-8xl lg:text-9xl tracking-tighter text-on-surface leading-[0.85] mb-8">
+          South Fork <br/>
+          <span class="text-primary italic">Apps</span>
+        </h1>
+        <p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-xl leading-relaxed">
+          Field-tested web apps for the digital wilderness. Small tools, solo-built, deployed from the hills of East Tennessee.
+        </p>
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a href="#repository" class="primary-gradient text-on-primary font-headline font-bold px-10 py-5 rounded-xl text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all relative z-20">
+            Browse Repository
+          </a>
+          <a href="#mission" class="bg-surface-container-high text-on-surface font-headline font-bold px-10 py-5 rounded-xl text-lg border border-outline-variant/20 hover:bg-surface-bright transition-all relative z-20">
+            The Manifesto
+          </a>
+        </div>
+      </div>
+      <div class="relative hidden lg:block">
+        <div class="absolute -top-12 -right-12 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+        <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 h-[600px] hero-mountain">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 to-transparent z-10"></div>
+          <div class="absolute bottom-8 left-8 z-20">
+            <div class="font-label text-primary-fixed-dim text-xs uppercase tracking-widest mb-1">Current Sector</div>
+            <div class="font-headline text-3xl font-bold">Bluff City // TN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="repository" class="py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+      <div class="max-w-2xl">
+        <h2 class="font-headline font-bold text-5xl md:text-6xl tracking-tight mb-6">The Repository</h2>
+        <p class="text-on-surface-variant text-lg leading-relaxed">
+          A curated selection of vibe-coded deployments. One deployed, five in the pipeline. Every module built solo.
+        </p>
+      </div>
+      <div class="flex gap-4 flex-wrap">
+        <span class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label text-sm uppercase tracking-wider font-semibold">Live // 1</span>
+        <span class="px-6 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-sm uppercase tracking-wider font-semibold">Pending // 5</span>
+      </div>
+    </div>
+
+    <div class="asymmetric-grid">
+
+      <!-- Card 1: Dog Poop Tracker (LIVE) -->
+      <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10 overflow-hidden">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">
+          LIVE // v1.0
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10">
+          <span class="material-symbols-outlined text-primary text-4xl">pets</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 relative z-10">Dog Poop Tracker</h3>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">
+          Mark sections of your yard clean or dirty with a simple grid interface. A field-ready PWA for the perpetually vigilant pet owner.
+        </p>
+        <a href="https://dogpooptracker.netlify.app/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">
+          Launch App
+        </a>
+      </div>
+
+      <!-- Card 2: Coming Soon -->
+      <div class="group relative bg-surface-container-low/40 backdrop-blur-sm rounded-xl p-8 flex flex-col h-full mt-12 md:mt-0 border border-outline-variant/10 opacity-60 hover:opacity-80 transition-all duration-500">
+        <div class="absolute -top-4 -right-4 z-20 px-4 py-2 bg-surface-container-high text-on-surface-variant font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg">
+          IN DEVELOPMENT
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant text-4xl">pending</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 text-on-surface-variant">Module 02</h3>
+        <p class="text-on-surface-variant/60 font-body mb-8 flex-grow">
+          Next deployment in the queue. Details classified until field testing completes.
+        </p>
+        <button disabled class="w-full py-4 rounded-lg border border-outline-variant/30 text-on-surface-variant/50 font-headline font-bold uppercase tracking-widest text-sm cursor-not-allowed">
+          Awaiting Deploy
+        </button>
+      </div>
+
+      <!-- Card 3: Coming Soon -->
+      <div class="group relative bg-surface-container-low/40 backdrop-blur-sm rounded-xl p-8 flex flex-col h-full border border-outline-variant/10 opacity-60 hover:opacity-80 transition-all duration-500">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-surface-container-high text-on-surface-variant font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg">
+          SCOUTING
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant text-4xl">explore</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 text-on-surface-variant">Module 03</h3>
+        <p class="text-on-surface-variant/60 font-body mb-8 flex-grow">
+          Terrain reconnaissance in progress. Slot reserved for a future build.
+        </p>
+        <button disabled class="w-full py-4 rounded-lg border border-outline-variant/30 text-on-surface-variant/50 font-headline font-bold uppercase tracking-widest text-sm cursor-not-allowed">
+          Awaiting Deploy
+        </button>
+      </div>
+
+      <!-- Card 4: Coming Soon -->
+      <div class="group relative bg-surface-container-low/40 backdrop-blur-sm rounded-xl p-8 flex flex-col h-full border border-outline-variant/10 opacity-60 hover:opacity-80 transition-all duration-500">
+        <div class="absolute -bottom-4 -right-4 z-20 px-4 py-2 bg-surface-container-high text-on-surface-variant font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg">
+          FIELD PREP
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant text-4xl">build</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 text-on-surface-variant">Module 04</h3>
+        <p class="text-on-surface-variant/60 font-body mb-8 flex-grow">
+          Gear check and provisioning. Next solo deployment currently being scoped.
+        </p>
+        <button disabled class="w-full py-4 rounded-lg border border-outline-variant/30 text-on-surface-variant/50 font-headline font-bold uppercase tracking-widest text-sm cursor-not-allowed">
+          Awaiting Deploy
+        </button>
+      </div>
+
+      <!-- Card 5: Coming Soon -->
+      <div class="group relative bg-surface-container-low/40 backdrop-blur-sm rounded-xl p-8 flex flex-col h-full mt-12 md:mt-0 border border-outline-variant/10 opacity-60 hover:opacity-80 transition-all duration-500">
+        <div class="absolute -top-6 -right-6 z-20 px-4 py-2 bg-surface-container-high text-on-surface-variant font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg">
+          UNCHARTED
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant text-4xl">map</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 text-on-surface-variant">Module 05</h3>
+        <p class="text-on-surface-variant/60 font-body mb-8 flex-grow">
+          Off the trail. Uncharted territory reserved for future field ops.
+        </p>
+        <button disabled class="w-full py-4 rounded-lg border border-outline-variant/30 text-on-surface-variant/50 font-headline font-bold uppercase tracking-widest text-sm cursor-not-allowed">
+          Awaiting Deploy
+        </button>
+      </div>
+
+      <!-- Card 6: Coming Soon -->
+      <div class="group relative bg-surface-container-low/40 backdrop-blur-sm rounded-xl p-8 flex flex-col h-full border border-outline-variant/10 opacity-60 hover:opacity-80 transition-all duration-500">
+        <div class="absolute -top-2 -left-6 z-20 px-4 py-2 bg-surface-container-high text-on-surface-variant font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg">
+          CLASSIFIED
+        </div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant text-4xl">radar</span>
+        </div>
+        <h3 class="font-headline text-3xl font-bold mb-4 text-on-surface-variant">Module 06</h3>
+        <p class="text-on-surface-variant/60 font-body mb-8 flex-grow">
+          Intel pending. A module too early in development to disclose.
+        </p>
+        <button disabled class="w-full py-4 rounded-lg border border-outline-variant/30 text-on-surface-variant/50 font-headline font-bold uppercase tracking-widest text-sm cursor-not-allowed">
+          Awaiting Deploy
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="mission" class="py-32 bg-surface-container-low relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-20">
+      <span class="font-label text-primary tracking-widest uppercase text-xs font-black mb-8 block">Mission Briefing</span>
+      <h2 class="font-headline text-5xl md:text-7xl font-extrabold mb-12 tracking-tight leading-tight">
+        Small tools, built <span class="text-primary italic">solo.</span>
+      </h2>
+      <p class="text-xl text-on-surface-variant font-body mb-12 leading-relaxed">
+        South Fork Apps is the home for my vibe-coded side projects. One-person studio, zero frameworks when I can help it, every app shipped fast and iterated in the field. No roadmaps, no committees, no mission creep. Just useful things, made with AI as a collaborator and deployed from East Tennessee.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-6">
+        <a href="https://dogpooptracker.netlify.app/" target="_blank" rel="noopener" class="primary-gradient text-on-primary font-headline font-bold px-12 py-5 rounded-xl text-lg hover:scale-105 transition-all">
+          Try the First App
+        </a>
+        <a href="https://tuckerchastain.com" target="_blank" rel="noopener" class="bg-surface text-on-surface border border-outline-variant/30 font-headline font-bold px-12 py-5 rounded-xl text-lg hover:bg-surface-bright transition-all">
+          Field Notes
+        </a>
+      </div>
+    </div>
+    <div class="absolute bottom-0 left-0 w-full h-1/2 opacity-10 pointer-events-none topo-bg z-0"></div>
+  </section>
+</main>
+
+<footer id="contact" class="bg-zinc-950 w-full border-t border-emerald-900/20 relative z-40">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 md:px-12 py-8 w-full max-w-screen-2xl mx-auto">
+    <div class="flex items-center gap-4">
+      <span class="text-emerald-500 font-black font-['Work_Sans'] text-xs uppercase tracking-widest">© 2026 South Fork Apps // 36.469N / 82.263W</span>
+    </div>
+    <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="#mission">The Manifesto</a>
+      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="#repository">Repository</a>
+      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="https://tuckerchastain.com" target="_blank" rel="noopener">Field Notes</a>
+      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="mailto:tchastain26@gmail.com">Coordinates</a>
+    </div>
+    <div>
+      <span class="material-symbols-outlined text-emerald-500/50 hover:text-emerald-500 cursor-pointer transition-colors">shield</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
