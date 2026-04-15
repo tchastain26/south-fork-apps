@@ -144,7 +144,7 @@
       South Fork Apps
     </div>
     <div class="hidden md:flex items-center gap-8">
-      <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Repositories</a>
+      <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Repository</a>
       <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="https://tuckerchastain.com" target="_blank" rel="noopener">Field Notes</a>
     </div>
     <div class="flex items-center gap-4">
@@ -158,7 +158,7 @@
 <main class="relative">
   <canvas id="riverCanvas"></canvas>
 
-  <section class="relative min-h-screen flex items-center pt-24 overflow-hidden">
+  <section class="relative min-h-screen flex items-center pt-24 overflow-hidden" style="padding-bottom: 120px;">
     <div class="absolute inset-0 z-0 opacity-30 topo-bg"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-1"></div>
     <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center">
@@ -180,6 +180,110 @@
           </a>
         </div>
       </div>
+    </div>
+    <!-- Tree silhouette strip -->
+    <div class="absolute bottom-0 left-0 w-full z-10 pointer-events-none" style="height: 130px;">
+      <svg viewBox="0 0 1440 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+        <!-- Ground fill -->
+        <rect x="0" y="100" width="1440" height="30" fill="#050e08"/>
+        <!-- Back row trees (shorter, lighter) -->
+        <g fill="#0a1a10" opacity="0.8">
+          <polygon points="0,100 12,68 24,100"/><polygon points="20,100 34,58 48,100"/><polygon points="44,100 57,70 70,100"/>
+          <polygon points="68,100 80,62 92,100"/><polygon points="90,100 104,52 118,100"/><polygon points="115,100 127,66 139,100"/>
+          <polygon points="138,100 151,55 164,100"/><polygon points="162,100 174,70 186,100"/><polygon points="184,100 198,58 212,100"/>
+          <polygon points="210,100 222,65 234,100"/><polygon points="232,100 246,50 260,100"/><polygon points="258,100 270,68 282,100"/>
+          <polygon points="280,100 293,56 306,100"/><polygon points="304,100 316,72 328,100"/><polygon points="326,100 340,54 354,100"/>
+          <polygon points="352,100 364,66 376,100"/><polygon points="374,100 388,50 402,100"/><polygon points="400,100 412,68 424,100"/>
+          <polygon points="422,100 435,55 448,100"/><polygon points="446,100 458,70 470,100"/><polygon points="468,100 482,52 496,100"/>
+          <polygon points="494,100 506,64 518,100"/><polygon points="516,100 530,48 544,100"/><polygon points="542,100 554,66 566,100"/>
+          <polygon points="564,100 577,54 590,100"/><polygon points="588,100 600,70 612,100"/><polygon points="610,100 624,52 638,100"/>
+          <polygon points="636,100 648,68 660,100"/><polygon points="658,100 672,54 686,100"/><polygon points="684,100 696,70 708,100"/>
+          <polygon points="706,100 720,50 734,100"/><polygon points="732,100 744,66 756,100"/><polygon points="754,100 768,52 782,100"/>
+          <polygon points="780,100 792,68 804,100"/><polygon points="802,100 816,54 830,100"/><polygon points="828,100 840,70 852,100"/>
+          <polygon points="850,100 864,50 878,100"/><polygon points="876,100 888,66 900,100"/><polygon points="898,100 912,52 926,100"/>
+          <polygon points="924,100 936,68 948,100"/><polygon points="946,100 960,54 974,100"/><polygon points="972,100 984,70 996,100"/>
+          <polygon points="994,100 1008,50 1022,100"/><polygon points="1020,100 1032,66 1044,100"/><polygon points="1042,100 1056,52 1070,100"/>
+          <polygon points="1068,100 1080,68 1092,100"/><polygon points="1090,100 1104,54 1118,100"/><polygon points="1116,100 1128,70 1140,100"/>
+          <polygon points="1138,100 1152,50 1166,100"/><polygon points="1164,100 1176,64 1188,100"/><polygon points="1186,100 1200,52 1214,100"/>
+          <polygon points="1212,100 1224,68 1236,100"/><polygon points="1234,100 1248,54 1262,100"/><polygon points="1260,100 1272,70 1284,100"/>
+          <polygon points="1282,100 1296,50 1310,100"/><polygon points="1308,100 1320,66 1332,100"/><polygon points="1330,100 1344,52 1358,100"/>
+          <polygon points="1356,100 1368,68 1380,100"/><polygon points="1378,100 1392,54 1406,100"/><polygon points="1404,100 1418,70 1432,100"/>
+          <polygon points="1416,100 1428,58 1440,100"/>
+        </g>
+        <!-- Front row trees (taller, darker) -->
+        <g fill="#050e08">
+          <polygon points="0,100 8,55 16,100"/><polygon points="10,100 22,38 34,100"/><rect x="19" y="96" width="4" height="8"/>
+          <polygon points="32,100 46,28 60,100"/><rect x="43" y="96" width="4" height="8"/>
+          <polygon points="56,100 66,48 76,100"/><rect x="63" y="96" width="3" height="7"/>
+          <polygon points="72,100 85,22 98,100"/><rect x="82" y="96" width="5" height="8"/>
+          <polygon points="95,100 106,42 117,100"/><rect x="103" y="96" width="3" height="7"/>
+          <polygon points="114,100 128,18 142,100"/><rect x="125" y="96" width="5" height="8"/>
+          <polygon points="140,100 150,45 160,100"/><rect x="147" y="96" width="3" height="7"/>
+          <polygon points="157,100 172,25 187,100"/><rect x="169" y="96" width="5" height="8"/>
+          <polygon points="185,100 196,42 207,100"/><rect x="193" y="96" width="3" height="7"/>
+          <polygon points="204,100 218,16 232,100"/><rect x="215" y="96" width="5" height="8"/>
+          <polygon points="230,100 241,40 252,100"/><rect x="238" y="96" width="3" height="7"/>
+          <polygon points="249,100 264,22 279,100"/><rect x="261" y="96" width="5" height="8"/>
+          <polygon points="277,100 288,44 299,100"/><rect x="285" y="96" width="3" height="7"/>
+          <polygon points="296,100 311,18 326,100"/><rect x="308" y="96" width="5" height="8"/>
+          <polygon points="323,100 334,40 345,100"/><rect x="331" y="96" width="3" height="7"/>
+          <polygon points="342,100 357,20 372,100"/><rect x="354" y="96" width="5" height="8"/>
+          <polygon points="370,100 381,44 392,100"/><rect x="378" y="96" width="3" height="7"/>
+          <polygon points="389,100 404,16 419,100"/><rect x="401" y="96" width="5" height="8"/>
+          <polygon points="417,100 428,42 439,100"/><rect x="425" y="96" width="3" height="7"/>
+          <polygon points="436,100 451,22 466,100"/><rect x="448" y="96" width="5" height="8"/>
+          <polygon points="463,100 474,40 485,100"/><rect x="471" y="96" width="3" height="7"/>
+          <polygon points="482,100 497,14 512,100"/><rect x="494" y="96" width="5" height="8"/>
+          <polygon points="510,100 521,42 532,100"/><rect x="518" y="96" width="3" height="7"/>
+          <polygon points="529,100 544,20 559,100"/><rect x="541" y="96" width="5" height="8"/>
+          <polygon points="557,100 568,44 579,100"/><rect x="565" y="96" width="3" height="7"/>
+          <polygon points="576,100 591,16 606,100"/><rect x="588" y="96" width="5" height="8"/>
+          <polygon points="603,100 614,40 625,100"/><rect x="611" y="96" width="3" height="7"/>
+          <polygon points="622,100 637,18 652,100"/><rect x="634" y="96" width="5" height="8"/>
+          <polygon points="650,100 661,44 672,100"/><rect x="658" y="96" width="3" height="7"/>
+          <polygon points="669,100 684,20 699,100"/><rect x="681" y="96" width="5" height="8"/>
+          <polygon points="697,100 708,42 719,100"/><rect x="705" y="96" width="3" height="7"/>
+          <polygon points="716,100 731,16 746,100"/><rect x="728" y="96" width="5" height="8"/>
+          <polygon points="744,100 755,40 766,100"/><rect x="752" y="96" width="3" height="7"/>
+          <polygon points="763,100 778,22 793,100"/><rect x="775" y="96" width="5" height="8"/>
+          <polygon points="790,100 801,44 812,100"/><rect x="798" y="96" width="3" height="7"/>
+          <polygon points="809,100 824,18 839,100"/><rect x="821" y="96" width="5" height="8"/>
+          <polygon points="837,100 848,40 859,100"/><rect x="845" y="96" width="3" height="7"/>
+          <polygon points="856,100 871,14 886,100"/><rect x="868" y="96" width="5" height="8"/>
+          <polygon points="884,100 895,42 906,100"/><rect x="892" y="96" width="3" height="7"/>
+          <polygon points="903,100 918,20 933,100"/><rect x="915" y="96" width="5" height="8"/>
+          <polygon points="931,100 942,44 953,100"/><rect x="939" y="96" width="3" height="7"/>
+          <polygon points="950,100 965,16 980,100"/><rect x="962" y="96" width="5" height="8"/>
+          <polygon points="978,100 989,40 1000,100"/><rect x="986" y="96" width="3" height="7"/>
+          <polygon points="997,100 1012,22 1027,100"/><rect x="1009" y="96" width="5" height="8"/>
+          <polygon points="1025,100 1036,44 1047,100"/><rect x="1033" y="96" width="3" height="7"/>
+          <polygon points="1044,100 1059,18 1074,100"/><rect x="1056" y="96" width="5" height="8"/>
+          <polygon points="1072,100 1083,40 1094,100"/><rect x="1080" y="96" width="3" height="7"/>
+          <polygon points="1091,100 1106,16 1121,100"/><rect x="1103" y="96" width="5" height="8"/>
+          <polygon points="1119,100 1130,42 1141,100"/><rect x="1127" y="96" width="3" height="7"/>
+          <polygon points="1138,100 1153,20 1168,100"/><rect x="1150" y="96" width="5" height="8"/>
+          <polygon points="1166,100 1177,44 1188,100"/><rect x="1174" y="96" width="3" height="7"/>
+          <polygon points="1185,100 1200,14 1215,100"/><rect x="1197" y="96" width="5" height="8"/>
+          <polygon points="1213,100 1224,40 1235,100"/><rect x="1221" y="96" width="3" height="7"/>
+          <polygon points="1232,100 1247,22 1262,100"/><rect x="1244" y="96" width="5" height="8"/>
+          <polygon points="1260,100 1271,44 1282,100"/><rect x="1268" y="96" width="3" height="7"/>
+          <polygon points="1279,100 1294,18 1309,100"/><rect x="1291" y="96" width="5" height="8"/>
+          <polygon points="1307,100 1318,40 1329,100"/><rect x="1315" y="96" width="3" height="7"/>
+          <polygon points="1326,100 1341,16 1356,100"/><rect x="1338" y="96" width="5" height="8"/>
+          <polygon points="1354,100 1365,42 1376,100"/><rect x="1362" y="96" width="3" height="7"/>
+          <polygon points="1373,100 1388,20 1403,100"/><rect x="1385" y="96" width="5" height="8"/>
+          <polygon points="1401,100 1412,44 1423,100"/><rect x="1409" y="96" width="3" height="7"/>
+          <polygon points="1420,100 1432,22 1444,100"/>
+        </g>
+        <!-- Fade to background at top of strip -->
+        <rect x="0" y="0" width="1440" height="40" fill="url(#treeFade)"/>
+        <defs>
+          <linearGradient id="treeFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#111412" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#111412" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   </section>
 
