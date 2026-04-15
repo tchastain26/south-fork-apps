@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Link Cleaner</title>
+<style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; background-color: #f9f9f9; color: #333; }
+    textarea { width: 100%; height: 150px; margin-bottom: 1rem; padding: 0.75rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-family: monospace; }
+    .controls { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; background: #fff; padding: 1rem; border-radius: 6px; border: 1px solid #ccc; }
+    .button-group { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    button { background: #007aff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #0056b3; }
+    button.secondary { background: #34c759; }
+    button.secondary:hover { background: #28a745; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<h2>Markdown Link Cleaner</h2>
+<p>Paste a list of URLs below:</p>
+<textarea id="inputUrls" placeholder="https://theproductivemagpie.substack.com?utm_source=twitter"></textarea>
+
+<div class="controls">
+    <label><input type="checkbox" id="removeTrackers" checked> Strip UTM tracking parameters</label>
+    <label><input type="checkbox" id="fetchTitles"> Fetch live page titles (takes longer)</label>
+    <label>List Format: 
+        <select id="listFormat">
+            <option value="none">None</option>
+            <option value="bullet">Bullet Points (-)</option>
+            <option value="number">Numbered (1.)</option>
+        </select>
+    </label>
+</div>
+
+<div class="button-group">
+    <button onclick="convertUrls()" id="convertBtn">Convert to Markdown</button>
+    <button onclick="copyOutput()" class="secondary" id="copyBtn">Copy Output</button>
+</div>
+
+<textarea id="outputUrls" placeholder="[theproductivemagpie.substack.com](https://theproductivemagpie.substack.com)"></textarea>
+
+<script>
+    async function convertUrls() {
+        const convertBtn = document.getElementById('convertBtn');
+        convertBtn.disabled = true;
+        convertBtn.textContent = 'Converting...';
+
+        const input = document.getElementById('inputUrls').value;
+        const removeTrackers = document.getElementById('removeTrackers').checked;
+        const fetchTitles = document.getElementById('fetchTitles').checked;
+        const listFormat = document.getElementById('listFormat').value;
+        
+        const urls = input.split('\n').filter(line => line.trim() !== '');
+        let results = [];
+
+        for (let i = 0; i < urls.length; i++) {
+            let rawUrl = urls[i].trim();
+            let finalUrl = rawUrl;
+            let linkText = '';
+
+            try {
+                let urlObj = new URL(rawUrl);
+                
+                if (removeTrackers) {
+                    let params = new URLSearchParams(urlObj.search);
+                    let keysToDelete = [];
+                    params.forEach((val, key) => {
+                        if (key.startsWith('utm_')) keysToDelete.push(key);
+                    });
+                    keysToDelete.forEach(k => params.delete(k));
+                    urlObj.search = params.toString();
+                    finalUrl = urlObj.toString();
+                }
+
+                if (fetchTitles) {
+                    try {
+                        let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(finalUrl)}`);
+                        let data = await res.json();
+                        let match = data.contents.match(/<title>(.*?)<\/title>/i);
+                        linkText = (match && match[1]) ? match[1].trim() : urlObj.hostname.replace('www.', '');
+                    } catch (err) {
+                        linkText = urlObj.hostname.replace('www.', '');
+                    }
+                } else {
+                    linkText = urlObj.hostname.replace('www.', '');
+                }
+
+                let markdown = `[${linkText}](${finalUrl})`;
+                
+                if (listFormat === 'bullet') markdown = `- ${markdown}`;
+                if (listFormat === 'number') markdown = `${i + 1}. ${markdown}`;
+                
+                results.push(markdown);
+            } catch (e) {
+                results.push(`[Invalid URL](${rawUrl})`);
+            }
+        }
+
+        document.getElementById('outputUrls').value = results.join('\n');
+        document.getElementById('copyBtn').textContent = 'Copy Output';
+        
+        convertBtn.disabled = false;
+        convertBtn.textContent = 'Convert to Markdown';
+    }
+
+    function copyOutput() {
+        const output = document.getElementById('outputUrls');
+        output.select();
+        navigator.clipboard.writeText(output.value).then(() => {
+            document.getElementById('copyBtn').textContent = 'Copied!';
+        });
+    }
+</script>
+</body>
+</html>

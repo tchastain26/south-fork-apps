@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Timer</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #333333;
+      --input-bg: #f4f4f4;
+      --start-color: #28a745; /* Green */
+      --stop-color: #dc3545;  /* Red */
+      --reset-color: #17a2b8; /* Blue */
+      --result-bg: #e6e6e6;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #app {
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: var(--input-bg);
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      width: calc(33% - 10px);
+    }
+
+    .start-btn {
+      background-color: var(--start-color);
+    }
+
+    .stop-btn {
+      background-color: var(--stop-color);
+    }
+
+    .reset-btn {
+      background-color: var(--reset-color);
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    .clock-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .clock-text {
+      font-size: 36px;
+      color: var(--text);
+    }
+
+    .history-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-item {
+      padding: 10px;
+      background-color: var(--result-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Task Timer</h1>
+
+    <div class="button-group">
+      <button type="button" onclick="startClock()" class="start-btn">Start</button>
+      <button type="button" onclick="stopClock()" class="stop-btn">Stop</button>
+      <button type="button" onclick="resetClock()" class="reset-btn">Reset</button>
+    </div>
+
+    <div class="clock-container">
+      <span id="clockText" class="clock-text">00:00:00</span>
+    </div>
+
+    <h2>Session History</h2>
+    <div id="historyContainer" class="history-container"></div>
+  </div>
+
+  <script>
+    let startTime;
+    let elapsedTime = 0;
+    let intervalId;
+    const sessionHistory = document.getElementById('historyContainer');
+
+    function startClock() {
+      if (intervalId) return; // Already running
+
+      startTime = Date.now();
+      intervalId = setInterval(updateTime, 1000);
+    }
+
+    function stopClock() {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    function resetClock() {
+      stopClock();
+      elapsedTime = 0;
+      document.getElementById('clockText').textContent = '00:00:00';
+    }
+
+    function updateTime() {
+      const currentTime = Date.now();
+      elapsedTime += (currentTime - (startTime + elapsedTime));
+
+      let hours = Math.floor(elapsedTime / 3600000);
+      let minutes = Math.floor((elapsedTime % 3600000) / 60000);
+      let seconds = Math.floor((elapsedTime % 60000) / 1000);
+
+      hours = pad(hours, 2);
+      minutes = pad(minutes, 2);
+      seconds = pad(seconds, 2);
+
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('clockText').textContent = timeString;
+
+      if (!intervalId && elapsedTime > 0) {
+        addSessionToHistory(timeString);
+        resetClock();
+      }
+    }
+
+    function pad(num, size) {
+      return String(num).padStart(size, '0');
+    }
+
+    function addSessionToHistory(time) {
+      const sessionItem = document.createElement('div');
+      sessionItem.classList.add('session-item');
+      sessionItem.textContent = `Session Duration: ${time}`;
+      sessionHistory.appendChild(sessionItem);
+    }
+  </script>
+</body>
+</html>

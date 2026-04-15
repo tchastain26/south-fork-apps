@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Case Converter</title>
+<style>
+  :root {
+    --bg-color: #f5f5f7;
+    --card-bg: #ffffff;
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --border-color: #d2d2d7;
+    --accent-color: #0071e3;
+    --accent-hover: #0077ed;
+    --drag-color: #e5e5ea;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .input-section textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    font-family: inherit;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-section textarea:focus {
+    border-color: var(--accent-color);
+  }
+  .output-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .case-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .case-card.dragging {
+    opacity: 0.5;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  .drag-handle {
+    cursor: grab;
+    color: var(--drag-color);
+    font-size: 1.25rem;
+    padding-right: 0.5rem;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+  .case-content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    overflow: hidden;
+  }
+  .case-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow: hidden;
+    flex: 1;
+  }
+  .case-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  .case-value {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 1.2rem;
+  }
+  .copy-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+  .copy-btn:hover {
+    background-color: var(--accent-hover);
+  }
+  .copy-btn:active {
+    transform: scale(0.96);
+  }
+  .copy-btn.success {
+    background-color: #34c759;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="input-section">
+    <textarea id="textInput" placeholder="Enter text to convert..."></textarea>
+  </div>
+  <div class="output-section" id="outputContainer"></div>
+</div>
+
+<script>
+  const textInput = document.getElementById('textInput');
+  const outputContainer = document.getElementById('outputContainer');
+
+  const getWords = (str) => str.match(/[a-zA-Z0-9]+/g) || [];
+
+  const cases = [
+    { name: 'Lowercase', transform: s => s.toLowerCase() },
+    { name: 'UPPERCASE', transform: s => s.toUpperCase() },
+    { name: 'Sentence case', transform: s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() },
+    { name: 'Title Case', transform: s => s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') },
+    { name: 'camelCase', transform: s => getWords(s).map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') },
+    { name: 'PascalCase', transform: s => getWords(s).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') },
+    { name: 'snake_case', transform: s => getWords(s).map(w => w.toLowerCase()).join('_') },
+    { name: 'kebab-case', transform: s => getWords(s).map(w => w.toLowerCase()).join('-') },
+    { name: 'CONSTANT_CASE', transform: s => getWords(s).map(w => w.toUpperCase()).join('_') },
+    { name: 'COBOL-CASE', transform: s => getWords(s).map(w => w.toUpperCase()).join('-') },
+    { name: 'dot.case', transform: s => getWords(s).map(w => w.toLowerCase()).join('.') },
+    { name: 'path/case', transform: s => getWords(s).map(w => w.toLowerCase()).join('/') },
+    { name: 'Space Case', transform: s => getWords(s).map(w => w.toLowerCase()).join(' ') },
+    { name: 'Title_Snake_Case', transform: s => getWords(s).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('_') },
+    { name: 'Title-Kebab-Case', transform: s => getWords(s).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('-') },
+    { name: 'AlTeRnAtInG cAsE', transform: s => s.split('').map((c, i) => i % 2 === 0 ? c.toUpperCase() : c.toLowerCase()).join('') },
+    { name: 'aLtErNaTiNg CaSe', transform: s => s.split('').map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join('') },
+    { name: 'Vowel UPPERCASE', transform: s => s.split('').map(c => /[aeiou]/i.test(c) ? c.toUpperCase() : c.toLowerCase()).join('') },
+    { name: 'Consonant UPPERCASE', transform: s => s.split('').map(c => /[^aeiou\s\W\d]/i.test(c) ? c.toUpperCase() : c.toLowerCase()).join('') },
+    { name: 'Reversed String', transform: s => s.split('').reverse().join('') }
+  ];
+
+  function initializeCards() {
+    const fragment = document.createDocumentFragment();
+
+    cases.forEach(({ name }) => {
+      const card = document.createElement('div');
+      card.className = 'case-card';
+      card.draggable = true;
+      card.dataset.name = name;
+
+      const dragHandle = document.createElement('div');
+      dragHandle.className = 'drag-handle';
+      dragHandle.innerHTML = '⋮⋮'; 
+
+      const content = document.createElement('div');
+      content.className = 'case-content';
+
+      const details = document.createElement('div');
+      details.className = 'case-details';
+
+      const label = document.createElement('span');
+      label.className = 'case-label';
+      label.textContent = name;
+
+      const value = document.createElement('span');
+      value.className = 'case-value';
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(value.textContent);
+          btn.textContent = 'Copied!';
+          btn.classList.add('success');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('success');
+          }, 1500);
+        } catch (err) {
+          btn.textContent = 'Error';
+        }
+      };
+
+      details.appendChild(label);
+      details.appendChild(value);
+      content.appendChild(details);
+      content.appendChild(btn);
+      card.appendChild(dragHandle);
+      card.appendChild(content);
+
+      card.addEventListener('dragstart', () => {
+        card.classList.add('dragging');
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+      });
+
+      fragment.appendChild(card);
+    });
+
+    outputContainer.appendChild(fragment);
+  }
+
+  outputContainer.addEventListener('dragover', e => {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(outputContainer, e.clientY);
+    const draggable = document.querySelector('.dragging');
+    if (afterElement == null) {
+      outputContainer.appendChild(draggable);
+    } else {
+      outputContainer.insertBefore(draggable, afterElement);
+    }
+  });
+
+  function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.case-card:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+
+  function updateOutputs() {
+    const text = textInput.value;
+    
+    document.querySelectorAll('.case-card').forEach(card => {
+      const caseName = card.dataset.name;
+      const caseObj = cases.find(c => c.name === caseName);
+      const valueEl = card.querySelector('.case-value');
+      
+      if (!text.trim()) {
+        valueEl.textContent = '';
+      } else {
+        valueEl.textContent = caseObj.transform(text);
+      }
+    });
+  }
+
+  textInput.addEventListener('input', updateOutputs);
+  initializeCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temperature Converter</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #333333;
+      --input-bg: #f4f4f4;
+      --button-color: #4CAF50;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #app {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      width: 200px;
+      border-radius: 5px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 16px;
+      background-color: var(--input-bg);
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Temperature Converter</h1>
+    <form id="tempForm">
+      <input type="number" id="celsiusInput" placeholder="Celsius">
+      <button type="button" onclick="convertToOtherUnits('celsius')">Convert Celsius</button>
+
+      <br><br>
+
+      <input type="number" id="fahrenheitInput" placeholder="Fahrenheit">
+      <button type="button" onclick="convertToOtherUnits('fahrenheit')">Convert Fahrenheit</button>
+
+      <br><br>
+
+      <input type="number" id="kelvinInput" placeholder="Kelvin">
+      <button type="button" onclick="convertToOtherUnits('kelvin')">Convert Kelvin</button>
+    </form>
+    
+    <div class="result" id="celsiusResult"></div>
+    <div class="result" id="fahrenheitResult"></div>
+    <div class="result" id="kelvinResult"></div>
+  </div>
+
+  <script>
+    function convertToOtherUnits(unit) {
+      let input = '';
+      if (unit === 'celsius') {
+        input = parseFloat(document.getElementById('celsiusInput').value);
+        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(input).toFixed(2)}`;
+        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(input).toFixed(2)}`;
+      } else if (unit === 'fahrenheit') {
+        input = parseFloat(document.getElementById('fahrenheitInput').value);
+        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsius(input).toFixed(2)}`;
+        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(toCelsius(input)).toFixed(2)}`;
+      } else if (unit === 'kelvin') {
+        input = parseFloat(document.getElementById('kelvinInput').value);
+        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsiusFromKelvin(input).toFixed(2)}`;
+        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(toCelsiusFromKelvin(input)).toFixed(2)}`;
+      }
+    }
+
+    function toFahrenheit(celsius) {
+      return (celsius * 9/5) + 32;
+    }
+
+    function toCelsius(fahrenheit) {
+      return (fahrenheit - 32) * 5/9;
+    }
+
+    function toKelvin(celsius) {
+      return celsius + 273.15;
+    }
+
+    function toCelsiusFromKelvin(kelvin) {
+      return kelvin - 273.15;
+    }
+  </script>
+</body>
+</html>
