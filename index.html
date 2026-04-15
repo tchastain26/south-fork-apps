@@ -145,14 +145,12 @@
     </div>
     <div class="hidden md:flex items-center gap-8">
       <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Repositories</a>
-      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="#mission">Mission</a>
       <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="https://tuckerchastain.com" target="_blank" rel="noopener">Field Notes</a>
-      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="#contact">Coordinates</a>
     </div>
     <div class="flex items-center gap-4">
-      <a href="https://dogpooptracker.netlify.app/" target="_blank" rel="noopener" class="primary-gradient text-on-primary font-headline font-bold px-6 py-2 rounded-xl hover:scale-105 active:opacity-80 transition-all duration-300">
+      <button onclick="launchRandom()" class="primary-gradient text-on-primary font-headline font-bold px-6 py-2 rounded-xl hover:scale-105 active:opacity-80 transition-all duration-300">
         Launch App
-      </a>
+      </button>
     </div>
   </div>
 </nav>
@@ -179,9 +177,6 @@
         <div class="mt-12 flex flex-wrap gap-6">
           <a href="#repository" class="primary-gradient text-on-primary font-headline font-bold px-10 py-5 rounded-xl text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all relative z-20">
             Browse Repository
-          </a>
-          <a href="#mission" class="bg-surface-container-high text-on-surface font-headline font-bold px-10 py-5 rounded-xl text-lg border border-outline-variant/20 hover:bg-surface-bright transition-all relative z-20">
-            The Manifesto
           </a>
         </div>
       </div>
@@ -337,10 +332,8 @@
       <span class="text-emerald-500 font-black font-['Work_Sans'] text-xs uppercase tracking-widest">© 2026 South Fork Apps // 36.469N / 82.263W</span>
     </div>
     <div class="flex flex-wrap justify-center gap-6 md:gap-8">
-      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="#mission">The Manifesto</a>
       <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="#repository">Repository</a>
       <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="https://tuckerchastain.com" target="_blank" rel="noopener">Field Notes</a>
-      <a class="text-zinc-500 hover:text-emerald-300 transition-colors font-['Work_Sans'] text-xs uppercase tracking-widest opacity-80 hover:opacity-100" href="mailto:tchastain26@gmail.com">Coordinates</a>
     </div>
     <div>
       <span class="material-symbols-outlined text-emerald-500/50 hover:text-emerald-500 cursor-pointer transition-colors">shield</span>
@@ -349,6 +342,17 @@
 </footer>
 
 <script>
+  // Launch a random live app
+  const liveApps = [
+    'https://dogpooptracker.netlify.app/',
+    'https://hex-color-picker-26.netlify.app/',
+    'https://temperature-converter-26.netlify.app/'
+  ];
+  function launchRandom() {
+    const url = liveApps[Math.floor(Math.random() * liveApps.length)];
+    window.open(url, '_blank', 'noopener');
+  }
+
   // Animated canvas river
   const canvas = document.getElementById('riverCanvas');
   const ctx = canvas.getContext('2d');
