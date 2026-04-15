@@ -103,35 +103,14 @@
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 3rem;
   }
-  .river-svg {
-    position: absolute;
+  #riverCanvas {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 15;
-    overflow: visible;
-  }
-  .river-path {
-    fill: none;
-    stroke: url(#riverGradient);
-    stroke-width: 80;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    filter: blur(15px);
-    opacity: 0.35;
-    animation: flow 20s ease-in-out infinite alternate;
-  }
-  @keyframes flow {
-    from {
-      stroke-dashoffset: 0;
-      transform: translateY(0) scaleX(1);
-    }
-    to {
-      stroke-dashoffset: 100;
-      transform: translateY(20px) scaleX(1.05);
-    }
+    z-index: 2;
   }
   .hero-mountain {
     background: linear-gradient(180deg, #0c1210 0%, #15302b 30%, #1d4236 60%, #0c1210 100%);
@@ -179,23 +158,12 @@
 </nav>
 
 <main class="relative">
-  <svg class="river-svg" preserveAspectRatio="none" viewBox="0 0 1440 3000">
-    <defs>
-      <linearGradient id="riverGradient" x1="0%" x2="0%" y1="0%" y2="100%">
-        <stop offset="0%" stop-color="#7ddb84" stop-opacity="0.2"></stop>
-        <stop offset="25%" stop-color="#aaccda" stop-opacity="0.8"></stop>
-        <stop offset="50%" stop-color="#2c4e5a" stop-opacity="0.6"></stop>
-        <stop offset="75%" stop-color="#7ddb84" stop-opacity="0.7"></stop>
-        <stop offset="100%" stop-color="#aaccda" stop-opacity="0.4"></stop>
-      </linearGradient>
-    </defs>
-    <path class="river-path" d="M1440,0 C1200,300 1100,600 1300,900 C1500,1200 800,1400 400,1600 C0,1800 200,2200 600,2400 C1000,2600 1440,2800 1440,3000"></path>
-  </svg>
+  <canvas id="riverCanvas"></canvas>
 
   <section class="relative min-h-screen flex items-center pt-24 overflow-hidden">
     <div class="absolute inset-0 z-0 opacity-30 topo-bg"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-1"></div>
-    <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center">
       <div>
         <div class="font-label text-primary tracking-[0.3em] uppercase text-sm mb-6 flex items-center gap-3">
           <span class="w-12 h-[1px] bg-primary"></span>
@@ -215,16 +183,6 @@
           <a href="#mission" class="bg-surface-container-high text-on-surface font-headline font-bold px-10 py-5 rounded-xl text-lg border border-outline-variant/20 hover:bg-surface-bright transition-all relative z-20">
             The Manifesto
           </a>
-        </div>
-      </div>
-      <div class="relative hidden lg:block">
-        <div class="absolute -top-12 -right-12 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
-        <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 h-[600px] hero-mountain">
-          <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 to-transparent z-10"></div>
-          <div class="absolute bottom-8 left-8 z-20">
-            <div class="font-label text-primary-fixed-dim text-xs uppercase tracking-widest mb-1">Current Sector</div>
-            <div class="font-headline text-3xl font-bold">Bluff City // TN</div>
-          </div>
         </div>
       </div>
     </div>
@@ -390,5 +348,123 @@
   </div>
 </footer>
 
+<script>
+  // Animated canvas river
+  const canvas = document.getElementById('riverCanvas');
+  const ctx = canvas.getContext('2d');
+  let offset = 0;
+  let animFrameId;
+
+  function resizeCanvas() {
+    // Match full document height for fixed overlay
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function drawRiver() {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    offset += 0.25;
+
+    const segments = 80;
+    const amplitude = w * 0.28;
+    const centerX = w * 0.52;
+
+    // Build winding path points
+    const points = [];
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const y = t * h;
+      const wave1 = Math.sin(t * Math.PI * 2.5 + offset * 0.018) * amplitude;
+      const wave2 = Math.sin(t * Math.PI * 1.2 + offset * 0.009 + 1.2) * amplitude * 0.35;
+      const x = centerX + wave1 + wave2;
+      points.push({ x, y });
+    }
+
+    // Helper: draw smooth curve through points
+    function drawSmoothPath() {
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length - 1; i++) {
+        const cx = (points[i].x + points[i + 1].x) / 2;
+        const cy = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, cx, cy);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    }
+
+    // --- Glow base layer ---
+    const glowGrad = ctx.createLinearGradient(0, 0, 0, h);
+    glowGrad.addColorStop(0,    'rgba(125, 219, 132, 0.04)');
+    glowGrad.addColorStop(0.2,  'rgba(170, 204, 218, 0.10)');
+    glowGrad.addColorStop(0.45, 'rgba(44,  78,  90,  0.08)');
+    glowGrad.addColorStop(0.7,  'rgba(125, 219, 132, 0.07)');
+    glowGrad.addColorStop(1,    'rgba(170, 204, 218, 0.05)');
+
+    ctx.save();
+    ctx.filter = 'blur(28px)';
+    ctx.strokeStyle = glowGrad;
+    ctx.lineWidth = 110;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    drawSmoothPath();
+    ctx.stroke();
+    ctx.restore();
+
+    // --- Main river body ---
+    const riverGrad = ctx.createLinearGradient(0, 0, 0, h);
+    riverGrad.addColorStop(0,    'rgba(125, 219, 132, 0.07)');
+    riverGrad.addColorStop(0.25, 'rgba(170, 204, 218, 0.18)');
+    riverGrad.addColorStop(0.5,  'rgba(44,  78,  90,  0.14)');
+    riverGrad.addColorStop(0.75, 'rgba(125, 219, 132, 0.12)');
+    riverGrad.addColorStop(1,    'rgba(170, 204, 218, 0.09)');
+
+    ctx.save();
+    ctx.filter = 'blur(10px)';
+    ctx.strokeStyle = riverGrad;
+    ctx.lineWidth = 55;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    drawSmoothPath();
+    ctx.stroke();
+    ctx.restore();
+
+    // --- Shimmer highlight (offset slightly, faster oscillation) ---
+    const shimmerPoints = points.map((p, i) => {
+      const t = i / segments;
+      const shimX = p.x + Math.sin(t * Math.PI * 8 + offset * 0.06) * 12;
+      return { x: shimX, y: p.y };
+    });
+
+    ctx.save();
+    ctx.filter = 'blur(3px)';
+    ctx.strokeStyle = 'rgba(197, 232, 247, 0.22)';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(shimmerPoints[0].x, shimmerPoints[0].y);
+    for (let i = 1; i < shimmerPoints.length - 1; i++) {
+      const cx = (shimmerPoints[i].x + shimmerPoints[i + 1].x) / 2;
+      const cy = (shimmerPoints[i].y + shimmerPoints[i + 1].y) / 2;
+      ctx.quadraticCurveTo(shimmerPoints[i].x, shimmerPoints[i].y, cx, cy);
+    }
+    ctx.lineTo(shimmerPoints[shimmerPoints.length - 1].x, shimmerPoints[shimmerPoints.length - 1].y);
+    ctx.stroke();
+    ctx.restore();
+
+    animFrameId = requestAnimationFrame(drawRiver);
+  }
+
+  resizeCanvas();
+  drawRiver();
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animFrameId);
+    resizeCanvas();
+    drawRiver();
+  });
+</script>
 </body>
 </html>
