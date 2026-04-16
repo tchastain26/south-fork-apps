@@ -3,89 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Temperature Converter</title>
+  <title>Temperature Converter | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #ffffff;
-      --text: #333333;
-      --input-bg: #f4f4f4;
-      --button-color: #4CAF50;
+      --bg: #111412;
+      --surface: #191c1a;
+      --text: #e1e3df;
+      --text-muted: #becaba;
+      --accent: #7ddb84;
+      --accent-dark: #003910;
+      --border: rgba(63, 73, 62, 0.3);
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
-      font-family: Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+    nav {
+      background: #0c0f0d;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+    }
+    nav a {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    nav a:hover { opacity: 0.75; }
+    .page {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
+      min-height: calc(100vh - 49px);
+      padding: 2rem 1rem;
     }
-
     #app {
+      width: 100%;
+      max-width: 420px;
       text-align: center;
     }
-
     h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
     }
-
+    .converter-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .unit-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      width: 24px;
+      text-align: left;
+      flex-shrink: 0;
+    }
     input[type="number"] {
-      padding: 10px;
-      width: 200px;
-      border-radius: 5px;
-      border: none;
-      margin-bottom: 10px;
-      font-size: 16px;
-      background-color: var(--input-bg);
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: var(--button-color);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
+      flex: 1;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0c0f0d;
       color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      transition: border-color 0.2s;
+      -moz-appearance: textfield;
     }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    input[type="number"]:focus { border-color: var(--accent); }
+    button {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    button:hover { background: var(--accent); color: var(--accent-dark); }
+    .results {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .result {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-align: left;
+      min-height: 2.5rem;
+    }
+    .result:empty { display: none; }
   </style>
 </head>
 <body>
-  <div id="app">
-    <h1>Temperature Converter</h1>
-    <form id="tempForm">
-      <input type="number" id="celsiusInput" placeholder="Celsius">
-      <button type="button" onclick="convertToOtherUnits('celsius')">Convert Celsius</button>
-
-      <br><br>
-
-      <input type="number" id="fahrenheitInput" placeholder="Fahrenheit">
-      <button type="button" onclick="convertToOtherUnits('fahrenheit')">Convert Fahrenheit</button>
-
-      <br><br>
-
-      <input type="number" id="kelvinInput" placeholder="Kelvin">
-      <button type="button" onclick="convertToOtherUnits('kelvin')">Convert Kelvin</button>
-    </form>
-    
-    <div class="result" id="celsiusResult"></div>
-    <div class="result" id="fahrenheitResult"></div>
-    <div class="result" id="kelvinResult"></div>
+  <nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
+  <div class="page">
+    <div id="app">
+      <h1>Temperature Converter</h1>
+      <div class="converter-group">
+        <span class="unit-label">°C</span>
+        <input type="number" id="celsiusInput" placeholder="Celsius">
+        <button type="button" onclick="convertToOtherUnits('celsius')">Convert</button>
+      </div>
+      <div class="converter-group">
+        <span class="unit-label">°F</span>
+        <input type="number" id="fahrenheitInput" placeholder="Fahrenheit">
+        <button type="button" onclick="convertToOtherUnits('fahrenheit')">Convert</button>
+      </div>
+      <div class="converter-group">
+        <span class="unit-label">K</span>
+        <input type="number" id="kelvinInput" placeholder="Kelvin">
+        <button type="button" onclick="convertToOtherUnits('kelvin')">Convert</button>
+      </div>
+      <div class="results">
+        <div class="result" id="celsiusResult"></div>
+        <div class="result" id="fahrenheitResult"></div>
+        <div class="result" id="kelvinResult"></div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -93,34 +158,26 @@
       let input = '';
       if (unit === 'celsius') {
         input = parseFloat(document.getElementById('celsiusInput').value);
-        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(input).toFixed(2)}`;
-        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(input).toFixed(2)}`;
+        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(input).toFixed(2)}°F`;
+        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(input).toFixed(2)} K`;
+        document.getElementById('celsiusResult').textContent = '';
       } else if (unit === 'fahrenheit') {
         input = parseFloat(document.getElementById('fahrenheitInput').value);
-        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsius(input).toFixed(2)}`;
-        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(toCelsius(input)).toFixed(2)}`;
+        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsius(input).toFixed(2)}°C`;
+        document.getElementById('kelvinResult').textContent = `Kelvin: ${toKelvin(toCelsius(input)).toFixed(2)} K`;
+        document.getElementById('fahrenheitResult').textContent = '';
       } else if (unit === 'kelvin') {
         input = parseFloat(document.getElementById('kelvinInput').value);
-        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsiusFromKelvin(input).toFixed(2)}`;
-        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(toCelsiusFromKelvin(input)).toFixed(2)}`;
+        document.getElementById('celsiusResult').textContent = `Celsius: ${toCelsiusFromKelvin(input).toFixed(2)}°C`;
+        document.getElementById('fahrenheitResult').textContent = `Fahrenheit: ${toFahrenheit(toCelsiusFromKelvin(input)).toFixed(2)}°F`;
+        document.getElementById('kelvinResult').textContent = '';
       }
     }
 
-    function toFahrenheit(celsius) {
-      return (celsius * 9/5) + 32;
-    }
-
-    function toCelsius(fahrenheit) {
-      return (fahrenheit - 32) * 5/9;
-    }
-
-    function toKelvin(celsius) {
-      return celsius + 273.15;
-    }
-
-    function toCelsiusFromKelvin(kelvin) {
-      return kelvin - 273.15;
-    }
+    function toFahrenheit(celsius) { return (celsius * 9/5) + 32; }
+    function toCelsius(fahrenheit) { return (fahrenheit - 32) * 5/9; }
+    function toKelvin(celsius) { return celsius + 273.15; }
+    function toCelsiusFromKelvin(kelvin) { return kelvin - 273.15; }
   </script>
 </body>
 </html>

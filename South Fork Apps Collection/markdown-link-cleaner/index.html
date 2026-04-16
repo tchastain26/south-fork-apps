@@ -3,115 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Markdown Link Cleaner</title>
+<title>Markdown Link Cleaner | South Fork Apps</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-    body { font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; background-color: #f9f9f9; color: #333; }
-    textarea { width: 100%; height: 150px; margin-bottom: 1rem; padding: 0.75rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-family: monospace; }
-    .controls { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; background: #fff; padding: 1rem; border-radius: 6px; border: 1px solid #ccc; }
-    .button-group { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    button { background: #007aff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 1rem; }
-    button:hover { background: #0056b3; }
-    button.secondary { background: #34c759; }
-    button.secondary:hover { background: #28a745; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
+  :root {
+    --bg: #111412;
+    --surface: #191c1a;
+    --text: #e1e3df;
+    --text-muted: #becaba;
+    --accent: #7ddb84;
+    --accent-dark: #003910;
+    --border: rgba(63, 73, 62, 0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  nav {
+    background: #0c0f0d;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+  }
+  nav a {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  nav a:hover { opacity: 0.75; }
+  .page {
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 1rem;
+    padding: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    background: var(--surface);
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .controls label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .controls label select {
+    background: #0c0f0d;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 3px 8px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+  .button-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  button {
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+  button:hover { background: var(--accent); color: var(--accent-dark); }
+  button:disabled { border-color: var(--border); color: var(--text-muted); cursor: not-allowed; }
+  button:disabled:hover { background: transparent; color: var(--text-muted); }
+  button.secondary { border-color: var(--text-muted); color: var(--text-muted); }
+  button.secondary:hover { background: var(--text-muted); color: var(--bg); }
 </style>
 </head>
 <body>
+<nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
+<div class="page">
+  <h2>Markdown Link Cleaner</h2>
+  <p class="subtitle">Paste URLs below — strip trackers, fetch titles, format as Markdown links.</p>
 
-<h2>Markdown Link Cleaner</h2>
-<p>Paste a list of URLs below:</p>
-<textarea id="inputUrls" placeholder="https://theproductivemagpie.substack.com?utm_source=twitter"></textarea>
+  <textarea id="inputUrls" placeholder="https://theproductivemagpie.substack.com?utm_source=twitter"></textarea>
 
-<div class="controls">
+  <div class="controls">
     <label><input type="checkbox" id="removeTrackers" checked> Strip UTM tracking parameters</label>
     <label><input type="checkbox" id="fetchTitles"> Fetch live page titles (takes longer)</label>
-    <label>List Format: 
-        <select id="listFormat">
-            <option value="none">None</option>
-            <option value="bullet">Bullet Points (-)</option>
-            <option value="number">Numbered (1.)</option>
-        </select>
+    <label>List Format:
+      <select id="listFormat">
+        <option value="none">None</option>
+        <option value="bullet">Bullet Points (-)</option>
+        <option value="number">Numbered (1.)</option>
+      </select>
     </label>
-</div>
+  </div>
 
-<div class="button-group">
+  <div class="button-group">
     <button onclick="convertUrls()" id="convertBtn">Convert to Markdown</button>
     <button onclick="copyOutput()" class="secondary" id="copyBtn">Copy Output</button>
+  </div>
+
+  <textarea id="outputUrls" placeholder="[theproductivemagpie.substack.com](https://theproductivemagpie.substack.com)"></textarea>
 </div>
 
-<textarea id="outputUrls" placeholder="[theproductivemagpie.substack.com](https://theproductivemagpie.substack.com)"></textarea>
-
 <script>
-    async function convertUrls() {
-        const convertBtn = document.getElementById('convertBtn');
-        convertBtn.disabled = true;
-        convertBtn.textContent = 'Converting...';
+  async function convertUrls() {
+    const convertBtn = document.getElementById('convertBtn');
+    convertBtn.disabled = true;
+    convertBtn.textContent = 'Converting...';
 
-        const input = document.getElementById('inputUrls').value;
-        const removeTrackers = document.getElementById('removeTrackers').checked;
-        const fetchTitles = document.getElementById('fetchTitles').checked;
-        const listFormat = document.getElementById('listFormat').value;
-        
-        const urls = input.split('\n').filter(line => line.trim() !== '');
-        let results = [];
+    const input = document.getElementById('inputUrls').value;
+    const removeTrackers = document.getElementById('removeTrackers').checked;
+    const fetchTitles = document.getElementById('fetchTitles').checked;
+    const listFormat = document.getElementById('listFormat').value;
 
-        for (let i = 0; i < urls.length; i++) {
-            let rawUrl = urls[i].trim();
-            let finalUrl = rawUrl;
-            let linkText = '';
+    const urls = input.split('\n').filter(line => line.trim() !== '');
+    let results = [];
 
-            try {
-                let urlObj = new URL(rawUrl);
-                
-                if (removeTrackers) {
-                    let params = new URLSearchParams(urlObj.search);
-                    let keysToDelete = [];
-                    params.forEach((val, key) => {
-                        if (key.startsWith('utm_')) keysToDelete.push(key);
-                    });
-                    keysToDelete.forEach(k => params.delete(k));
-                    urlObj.search = params.toString();
-                    finalUrl = urlObj.toString();
-                }
+    for (let i = 0; i < urls.length; i++) {
+      let rawUrl = urls[i].trim();
+      let finalUrl = rawUrl;
+      let linkText = '';
 
-                if (fetchTitles) {
-                    try {
-                        let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(finalUrl)}`);
-                        let data = await res.json();
-                        let match = data.contents.match(/<title>(.*?)<\/title>/i);
-                        linkText = (match && match[1]) ? match[1].trim() : urlObj.hostname.replace('www.', '');
-                    } catch (err) {
-                        linkText = urlObj.hostname.replace('www.', '');
-                    }
-                } else {
-                    linkText = urlObj.hostname.replace('www.', '');
-                }
+      try {
+        let urlObj = new URL(rawUrl);
 
-                let markdown = `[${linkText}](${finalUrl})`;
-                
-                if (listFormat === 'bullet') markdown = `- ${markdown}`;
-                if (listFormat === 'number') markdown = `${i + 1}. ${markdown}`;
-                
-                results.push(markdown);
-            } catch (e) {
-                results.push(`[Invalid URL](${rawUrl})`);
-            }
+        if (removeTrackers) {
+          let params = new URLSearchParams(urlObj.search);
+          let keysToDelete = [];
+          params.forEach((val, key) => { if (key.startsWith('utm_')) keysToDelete.push(key); });
+          keysToDelete.forEach(k => params.delete(k));
+          urlObj.search = params.toString();
+          finalUrl = urlObj.toString();
         }
 
-        document.getElementById('outputUrls').value = results.join('\n');
-        document.getElementById('copyBtn').textContent = 'Copy Output';
-        
-        convertBtn.disabled = false;
-        convertBtn.textContent = 'Convert to Markdown';
+        if (fetchTitles) {
+          try {
+            let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(finalUrl)}`);
+            let data = await res.json();
+            let match = data.contents.match(/<title>(.*?)<\/title>/i);
+            linkText = (match && match[1]) ? match[1].trim() : urlObj.hostname.replace('www.', '');
+          } catch (err) {
+            linkText = urlObj.hostname.replace('www.', '');
+          }
+        } else {
+          linkText = urlObj.hostname.replace('www.', '');
+        }
+
+        let markdown = `[${linkText}](${finalUrl})`;
+        if (listFormat === 'bullet') markdown = `- ${markdown}`;
+        if (listFormat === 'number') markdown = `${i + 1}. ${markdown}`;
+        results.push(markdown);
+      } catch (e) {
+        results.push(`[Invalid URL](${rawUrl})`);
+      }
     }
 
-    function copyOutput() {
-        const output = document.getElementById('outputUrls');
-        output.select();
-        navigator.clipboard.writeText(output.value).then(() => {
-            document.getElementById('copyBtn').textContent = 'Copied!';
-        });
-    }
+    document.getElementById('outputUrls').value = results.join('\n');
+    document.getElementById('copyBtn').textContent = 'Copy Output';
+
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to Markdown';
+  }
+
+  function copyOutput() {
+    const output = document.getElementById('outputUrls');
+    output.select();
+    navigator.clipboard.writeText(output.value).then(() => {
+      document.getElementById('copyBtn').textContent = 'Copied!';
+    });
+  }
 </script>
 </body>
 </html>

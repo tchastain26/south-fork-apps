@@ -3,27 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text Case Converter</title>
+<title>Text Case Converter | South Fork Apps</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-color: #f5f5f7;
-    --card-bg: #ffffff;
-    --text-primary: #1d1d1f;
-    --text-secondary: #86868b;
-    --border-color: #d2d2d7;
-    --accent-color: #0071e3;
-    --accent-hover: #0077ed;
-    --drag-color: #e5e5ea;
+    --bg: #111412;
+    --surface: #191c1a;
+    --text: #e1e3df;
+    --text-muted: #becaba;
+    --accent: #7ddb84;
+    --accent-dark: #003910;
+    --border: rgba(63, 73, 62, 0.3);
+    --drag-color: rgba(63, 73, 62, 0.6);
   }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  nav {
+    background: #0c0f0d;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+  }
+  nav a {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  nav a:hover { opacity: 0.75; }
+  .page {
     display: flex;
     justify-content: center;
     padding: 2rem 1rem;
@@ -33,55 +47,62 @@
     max-width: 800px;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
+  }
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
   }
   .input-section textarea {
     width: 100%;
-    min-height: 120px;
-    padding: 1rem;
+    min-height: 100px;
+    padding: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
     font-family: inherit;
     font-size: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
     resize: vertical;
     outline: none;
     transition: border-color 0.2s;
   }
-  .input-section textarea:focus {
-    border-color: var(--accent-color);
-  }
+  .input-section textarea:focus { border-color: var(--accent); }
+  .input-section textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
   .output-section {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
   .case-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    transition: box-shadow 0.2s;
+    gap: 0.75rem;
+    transition: border-color 0.2s, background 0.2s;
   }
-  .case-card.dragging {
-    opacity: 0.5;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  }
+  .case-card:hover { border-color: rgba(125, 219, 132, 0.2); }
+  .case-card.dragging { opacity: 0.4; border-color: var(--accent); }
   .drag-handle {
     cursor: grab;
     color: var(--drag-color);
-    font-size: 1.25rem;
-    padding-right: 0.5rem;
+    font-size: 1rem;
+    padding-right: 0.25rem;
     display: flex;
     align-items: center;
     user-select: none;
+    letter-spacing: -2px;
   }
-  .drag-handle:active {
-    cursor: grabbing;
-  }
+  .drag-handle:active { cursor: grabbing; }
   .case-content {
     display: flex;
     flex: 1;
@@ -93,54 +114,59 @@
   .case-details {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.2rem;
     overflow: hidden;
     flex: 1;
   }
   .case-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 700;
   }
   .case-value {
-    font-size: 1rem;
+    font-size: 0.95rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 1.2rem;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
   }
   .copy-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: all 0.2s;
     flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
-  .copy-btn:hover {
-    background-color: var(--accent-hover);
-  }
-  .copy-btn:active {
-    transform: scale(0.96);
-  }
-  .copy-btn.success {
-    background-color: #34c759;
-  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn:active { transform: scale(0.96); }
+  .copy-btn.success { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
-
-<div class="app-container">
-  <div class="input-section">
-    <textarea id="textInput" placeholder="Enter text to convert..."></textarea>
+<nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
+<div class="page">
+  <div class="app-container">
+    <div>
+      <h1>Text Case Converter</h1>
+      <p class="subtitle">Type or paste text, copy any case. Drag rows to reorder.</p>
+    </div>
+    <div class="input-section">
+      <textarea id="textInput" placeholder="Enter text to convert..."></textarea>
+    </div>
+    <div class="output-section" id="outputContainer"></div>
   </div>
-  <div class="output-section" id="outputContainer"></div>
 </div>
 
 <script>
@@ -183,7 +209,7 @@
 
       const dragHandle = document.createElement('div');
       dragHandle.className = 'drag-handle';
-      dragHandle.innerHTML = '⋮⋮'; 
+      dragHandle.innerHTML = '⋮⋮';
 
       const content = document.createElement('div');
       content.className = 'case-content';
@@ -222,13 +248,8 @@
       card.appendChild(dragHandle);
       card.appendChild(content);
 
-      card.addEventListener('dragstart', () => {
-        card.classList.add('dragging');
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('dragging');
-      });
+      card.addEventListener('dragstart', () => { card.classList.add('dragging'); });
+      card.addEventListener('dragend', () => { card.classList.remove('dragging'); });
 
       fragment.appendChild(card);
     });
@@ -249,7 +270,6 @@
 
   function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.case-card:not(.dragging)')];
-
     return draggableElements.reduce((closest, child) => {
       const box = child.getBoundingClientRect();
       const offset = y - box.top - box.height / 2;
@@ -263,12 +283,10 @@
 
   function updateOutputs() {
     const text = textInput.value;
-    
     document.querySelectorAll('.case-card').forEach(card => {
       const caseName = card.dataset.name;
       const caseObj = cases.find(c => c.name === caseName);
       const valueEl = card.querySelector('.case-value');
-      
       if (!text.trim()) {
         valueEl.textContent = '';
       } else {
