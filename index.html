@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -135,6 +135,18 @@
     background: linear-gradient(to top, rgba(4, 20, 12, 0.95) 0%, transparent 50%);
   }
 </style>
+
+<script>
+  (function() {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
 </head>
 <body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary overflow-x-hidden">
 
@@ -590,6 +602,24 @@
     cancelAnimationFrame(animFrameId);
     resizeCanvas();
     drawRiver();
+  });
+</script>
+
+  <button id="themeToggle" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant/30 text-primary flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300" title="Toggle Theme">
+    <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+  </button>
+
+<script>
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  function updateIcon() {
+    themeIcon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+  }
+  updateIcon();
+  themeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    updateIcon();
   });
 </script>
 </body>

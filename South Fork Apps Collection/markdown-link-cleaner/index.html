@@ -15,6 +15,15 @@
     --accent-dark: #003910;
     --border: rgba(63, 73, 62, 0.3);
   }
+    :root[data-theme="light"] {
+      --bg: #f4f7f5;
+      --surface: #ffffff;
+      --text: #1a1c1b;
+      --text-muted: #4a504c;
+      --accent: #27863a;
+      --accent-dark: #003910;
+      --border: rgba(63, 73, 62, 0.2);
+    }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--bg);
@@ -123,6 +132,15 @@
   button.secondary { border-color: var(--text-muted); color: var(--text-muted); }
   button.secondary:hover { background: var(--text-muted); color: var(--bg); }
 </style>
+
+  <script>
+    (function() {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
 <nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
@@ -217,6 +235,20 @@
     output.select();
     navigator.clipboard.writeText(output.value).then(() => {
       document.getElementById('copyBtn').textContent = 'Copied!';
+    });
+  }
+</script>
+
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all 0.2s;">🌓</button>
+
+<script>
+  const themeToggleBtn = document.getElementById('themeToggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     });
   }
 </script>

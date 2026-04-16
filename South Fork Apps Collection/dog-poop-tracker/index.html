@@ -10,6 +10,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root[data-theme="light"] {
+      --bg: #ffffff;
+      --surface: #f4f4f4;
+      --text: #111111;
+      --text-muted: #444444;
+      --accent: #1a6b1a;
+      --accent-dark: #003910;
+      --border: #cccccc;
+      --danger: #b00010;
+      --danger-bg: #fdecea;
+      --warn: #7a4500;
+      --warn-bg: #fff3e0;
+      --cyan: #005a80;
+      --cyan-bg: #dff0fa;
+      --marker-dirty: #8b3a00;
+      --marker-clean: #005a80;
+      --grass: #d4edbe;
+      --grass-grid: #b5d89a;
+      --grass-border: #2a7a2a;
+    }
 
     :root {
       --bg: #111412;
@@ -377,6 +397,15 @@
     /* SVG marker cursor */
     .svg-marker { cursor: pointer; }
   </style>
+
+  <script>
+    (function() {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
 <nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
@@ -828,6 +857,20 @@ function vibrate() { if (navigator.vibrate) navigator.vibrate(100); }
     document.getElementById('cal-success').style.display = 'block';
   }
 })();
+</script>
+
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all 0.2s;">🌓</button>
+
+<script>
+  const themeToggleBtn = document.getElementById('themeToggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  }
 </script>
 </body>
 </html>
