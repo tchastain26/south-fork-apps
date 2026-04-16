@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Poop Tracker" />
+  <title>Dog Poop Tracker | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #111412;
+      --surface: #191c1a;
+      --text: #e1e3df;
+      --text-muted: #becaba;
+      --accent: #7ddb84;
+      --accent-dark: #003910;
+      --border: rgba(63, 73, 62, 0.3);
+      --danger: #ffb4ab;
+      --danger-bg: #93000a;
+      --warn: #ffdcbf;
+      --warn-bg: #8b7058;
+      --cyan: #aaccda;
+      --cyan-bg: #2c4e5a;
+      --marker-dirty: #8b3a00;
+      --marker-clean: #005a80;
+      --grass: #1d201e;
+      --grass-grid: #323533;
+      --grass-border: #7ddb84;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
+      min-height: 100dvh;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    nav {
+      background: #0c0f0d;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    nav a:hover { opacity: 0.75; }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem env(safe-area-inset-bottom, 40px);
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    #header { width: 100%; margin-bottom: 1.5rem; }
+
+    #title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    #gps-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--accent);
+      background: rgba(125, 219, 132, 0.05);
+    }
+    #gps-pill.bad { border-color: var(--danger); background: rgba(255, 180, 171, 0.05); }
+    #gps-label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    #gps-value { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+    #gps-pill.bad #gps-value { color: var(--danger); }
+
+    /* ── Stats ── */
+    #stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      border-radius: 12px;
+      text-align: center;
+      padding: 1rem 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat-val { font-size: 1.75rem; font-weight: 800; line-height: 1; color: var(--text); margin-bottom: 0.25rem; }
+    .stat-lbl { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Mode toggle ── */
+    #mode-toggle {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 12px 0;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      color: var(--accent-dark);
+      border-color: var(--accent);
+    }
+
+    /* ── Panels ── */
+    .panel { width: 100%; display: none; flex-direction: column; gap: 1rem; }
+    .panel.visible { display: flex; }
+
+    /* ── Calibrate ── */
+    #cal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    #cal-step-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; }
+    #cal-hint { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; }
+    #cal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      width: 200px;
+      margin: 0 auto 1.5rem;
+    }
+    .cal-corner {
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .cal-corner.done { background: rgba(125, 219, 132, 0.1); color: var(--accent); border-color: var(--accent); }
+    .cal-corner.active { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
+
+    #cal-set-btn {
+      width: 100%;
+      padding: 1.25rem 0;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    #cal-set-btn.ready {
+      background: var(--accent);
+      color: var(--accent-dark);
+      border-color: var(--accent);
+      cursor: pointer;
+    }
+    #cal-back-btn {
+      display: none;
+      width: 100%;
+      padding: 0.75rem 0;
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    #cal-success {
+      background: rgba(125, 219, 132, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: none;
+    }
+
+    /* ── SVG Map ── */
+    #map-container {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface);
+      margin-bottom: 1rem;
+    }
+    #map-placeholder {
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    #map-placeholder .big-icon { font-size: 2.5rem; }
+    #map-placeholder p { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+    #map-placeholder button {
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: var(--accent-dark);
+      font-size: 0.8rem;
+      font-weight: 800;
+      font-family: inherit;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    #yard-svg { width: 100%; display: block; }
+
+    /* ── Mark Poop button ── */
+    #mark-btn {
+      width: 100%;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 3rem;
+      font-family: inherit;
+      font-weight: 900;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s;
+    }
+    #mark-btn.ready {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-dark);
+      cursor: pointer;
+    }
+    #mark-btn:active.ready { transform: scale(0.98); }
+    #mark-label {
+      font-size: 1.25rem;
+      font-weight: 900;
+      line-height: 1.1;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    /* ── Marker list ── */
+    #marker-section { width: 100%; display: none; }
+    #marker-section.visible { display: block; }
+    #marker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    #marker-header span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    #clear-btn {
+      padding: 6px 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: inherit;
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    #marker-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .marker-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--marker-dirty);
+      background: rgba(139, 58, 0, 0.1);
+      transition: all 0.2s;
+    }
+    .marker-row.cleaned { border-color: var(--accent); background: rgba(125, 219, 132, 0.05); }
+    .marker-toggle {
+      font-size: 1.75rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .marker-info { flex: 1; line-height: 1.4; }
+    .marker-coords { font-size: 0.65rem; color: var(--text-muted); font-family: monospace; }
+    .marker-status { font-size: 0.85rem; font-weight: 700; color: var(--marker-dirty); }
+    .marker-row.cleaned .marker-status { color: var(--accent); }
+    .marker-remove {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      opacity: 0.6;
+    }
+
+    /* ── Recalibrate ── */
+    #recal-btn {
+      margin-top: 2rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* SVG marker cursor */
+    .svg-marker { cursor: pointer; }
+  </style>
+</head>
+<body>
+<nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
+<div id="app">
+
+  <!-- Header -->
+  <div id="header">
+    <div id="title">Dog Poop Tracker</div>
+
+    <div id="gps-pill">
+      <span id="gps-label">GPS Accuracy</span>
+      <span id="gps-value">Acquiring…</span>
+    </div>
+
+    <div id="stats">
+      <div class="stat-card" id="stat-total">
+        <div class="stat-val" id="val-total">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card" id="stat-cleaned" style="border-color:var(--cyan);background:rgba(170, 204, 218, 0.05)">
+        <div class="stat-val" id="val-cleaned" style="color:var(--cyan);">0</div>
+        <div class="stat-lbl" style="color:var(--cyan);">Cleaned</div>
+      </div>
+      <div class="stat-card" id="stat-remaining" style="border-color:var(--accent);background:rgba(125, 219, 132, 0.05)">
+        <div class="stat-val" id="val-remaining" style="color:var(--accent);">0</div>
+        <div class="stat-lbl" id="lbl-remaining" style="color:var(--accent);">Remaining</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode toggle -->
+  <div id="mode-toggle">
+    <button class="mode-btn active" id="btn-track"     onclick="setMode('track')">🗺 Track</button>
+    <button class="mode-btn"        id="btn-calibrate" onclick="setMode('calibrate')">📐 Calibrate</button>
+  </div>
+
+  <!-- CALIBRATE PANEL -->
+  <div class="panel" id="panel-calibrate">
+    <div id="cal-card">
+      <div id="cal-step-title">Step 1 of 4 — Top-Left</div>
+      <div id="cal-hint">Walk to the BACK-LEFT corner of your yard</div>
+      <div id="cal-grid">
+        <div class="cal-corner active" id="cal-c0">Top Left</div>
+        <div class="cal-corner"        id="cal-c1">Top Right</div>
+        <div class="cal-corner"        id="cal-c2">Bottom Right</div>
+        <div class="cal-corner"        id="cal-c3">Bottom Left</div>
+      </div>
+      <button id="cal-set-btn" onclick="setCorner()">Waiting for GPS…</button>
+      <button id="cal-back-btn" onclick="calBack()">← Back</button>
+    </div>
+    <div id="cal-success">Yard calibrated! Switch to Track mode.</div>
+  </div>
+
+  <!-- TRACK PANEL -->
+  <div class="panel visible" id="panel-track">
+
+    <!-- Map -->
+    <div id="map-container">
+      <div id="map-placeholder">
+        <div class="big-icon">📐</div>
+        <p>Calibrate yard corners to enable map</p>
+        <button onclick="setMode('calibrate')">Start Calibration</button>
+      </div>
+      <svg id="yard-svg" style="display:none;" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- Mark button -->
+    <button id="mark-btn" onclick="dropMarker()"
+      ontouchstart="this.classList.contains('ready') && (this.style.transform='scale(0.95)')"
+      ontouchend="this.style.transform='scale(1)'">
+      <span>💩</span>
+      <span id="mark-label"><span>MARK</span><span>POOP</span></span>
+    </button>
+
+    <!-- Marker list -->
+    <div id="marker-section">
+      <div id="marker-header">
+        <span>Recent Markers</span>
+        <button id="clear-btn" onclick="clearAll()">Clear All</button>
+      </div>
+      <div id="marker-list"></div>
+    </div>
+
+    <button id="recal-btn" onclick="startRecalibrate()">📐 Recalibrate Yard</button>
+  </div>
+
+</div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────
+const STORAGE_KEY = 'poop_tracker_v2';
+const SVG_W = 340, SVG_H = 420;
+
+const CORNER_LABELS = ['Top-Left','Top-Right','Bottom-Right','Bottom-Left'];
+const CORNER_HINTS  = [
+  'Walk to the BACK-LEFT corner of your yard',
+  'Walk to the BACK-RIGHT corner of your yard',
+  'Walk to the FRONT-RIGHT corner of your yard',
+  'Walk to the FRONT-LEFT corner of your yard',
+];
+const CORNER_SVG_POS = [
+  {x:18,        y:18},
+  {x:SVG_W-18,  y:18},
+  {x:SVG_W-18,  y:SVG_H-18},
+  {x:18,        y:SVG_H-18},
+];
+
+// ── State ──────────────────────────────────────────────────────
+let state = { markers: [], corners: [] };
+let pos      = null;
+let accuracy = null;
+let calStep  = 0;
+let currentMode = 'track';
+
+// ── Persistence ────────────────────────────────────────────────
+function loadState() {
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+// ── GPS ────────────────────────────────────────────────────────
+function initGPS() {
+  if (!navigator.geolocation) { setGPSError('Geolocation not supported'); return; }
+  navigator.geolocation.watchPosition(
+    p => {
+      pos      = { lat: p.coords.latitude, lng: p.coords.longitude };
+      accuracy = p.coords.accuracy * 3.28084;
+      updateGPSUI();
+      updateMarkBtn();
+      updateCalSetBtn();
+      if (state.corners.length === 4) drawMap();
+    },
+    e => setGPSError(e.message),
+    { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
+  );
+}
+
+function setGPSError(msg) {
+  const pill = document.getElementById('gps-pill');
+  const val  = document.getElementById('gps-value');
+  pill.className = 'bad';
+  val.textContent = '⚠ ' + msg;
+}
+
+function updateGPSUI() {
+  const pill = document.getElementById('gps-pill');
+  const val  = document.getElementById('gps-value');
+  const bad  = accuracy > 15;
+  pill.className = bad ? 'bad' : '';
+  val.textContent = accuracy.toFixed(0) + ' ft ' + (bad ? '— POOR ⚠' : '✓');
+}
+
+// ── Mode ───────────────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-track').classList.toggle('active',      mode === 'track');
+  document.getElementById('btn-calibrate').classList.toggle('active',  mode === 'calibrate');
+  document.getElementById('panel-track').classList.toggle('visible',   mode === 'track');
+  document.getElementById('panel-calibrate').classList.toggle('visible', mode === 'calibrate');
+  if (mode === 'calibrate') { calStep = 0; updateCalUI(); }
+}
+
+// ── Calibration ────────────────────────────────────────────────
+function updateCalUI() {
+  document.getElementById('cal-step-title').textContent =
+    `Step ${calStep + 1} of 4 — ${CORNER_LABELS[calStep]}`;
+  document.getElementById('cal-hint').textContent = CORNER_HINTS[calStep];
+
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('cal-c' + i);
+    el.className = 'cal-corner' + (i < calStep ? ' done' : i === calStep ? ' active' : '');
+  }
+
+  document.getElementById('cal-back-btn').style.display = calStep > 0 ? 'block' : 'none';
+  updateCalSetBtn();
+
+  const successEl = document.getElementById('cal-success');
+  successEl.style.display = state.corners.length === 4 ? 'block' : 'none';
+}
+
+function updateCalSetBtn() {
+  const btn = document.getElementById('cal-set-btn');
+  if (pos) {
+    btn.textContent = '📍 Set ' + CORNER_LABELS[calStep];
+    btn.classList.add('ready');
+  } else {
+    btn.textContent = 'Waiting for GPS…';
+    btn.classList.remove('ready');
+  }
+}
+
+function setCorner() {
+  if (!pos) return;
+  vibrate();
+  state.corners[calStep] = { lat: pos.lat, lng: pos.lng };
+  saveState();
+  if (calStep < 3) { calStep++; updateCalUI(); }
+  else { calStep = 0; setMode('track'); drawMap(); }
+}
+
+function calBack() {
+  if (calStep > 0) { calStep--; updateCalUI(); }
+}
+
+function startRecalibrate() {
+  state.corners = [];
+  saveState();
+  setMode('calibrate');
+}
+
+// ── GPS → SVG ──────────────────────────────────────────────────
+function gpsToSvg(lat, lng) {
+  const c = state.corners;
+  if (c.length < 4) return null;
+  const lats = c.map(p => p.lat), lngs = c.map(p => p.lng);
+  const latMin = Math.min(...lats), latMax = Math.max(...lats);
+  const lngMin = Math.min(...lngs), lngMax = Math.max(...lngs);
+  const latR = latMax - latMin || 0.00001;
+  const lngR = lngMax - lngMin || 0.00001;
+  return {
+    x: ((lng - lngMin) / lngR) * SVG_W,
+    y: (1 - (lat - latMin) / latR) * SVG_H,
+  };
+}
+
+// ── SVG Map ────────────────────────────────────────────────────
+function drawMap() {
+  if (state.corners.length < 4) return;
+
+  document.getElementById('map-placeholder').style.display = 'none';
+  const svg = document.getElementById('yard-svg');
+  svg.style.display = 'block';
+
+  const ns = 'http://www.w3.org/2000/svg';
+  svg.innerHTML = '';
+
+  const mk = (tag, attrs) => {
+    const el = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  };
+
+  // Grass background
+  svg.appendChild(mk('rect', { width: SVG_W, height: SVG_H, fill: '#1d201e' }));
+
+  // Grid
+  for (let i = 0; i <= 8; i++) {
+    svg.appendChild(mk('line', { x1: (SVG_W/8)*i, y1:0, x2:(SVG_W/8)*i, y2:SVG_H, stroke:'#323533', 'stroke-width':1 }));
+  }
+  for (let i = 0; i <= 10; i++) {
+    svg.appendChild(mk('line', { x1:0, y1:(SVG_H/10)*i, x2:SVG_W, y2:(SVG_H/10)*i, stroke:'#323533', 'stroke-width':1 }));
+  }
+
+  // Boundary
+  svg.appendChild(mk('rect', { x:2, y:2, width:SVG_W-4, height:SVG_H-4,
+    fill:'none', stroke:'#7ddb84', 'stroke-width':2, rx:4, 'stroke-dasharray':'8 4', opacity: 0.4 }));
+
+  // Corner dots + labels
+  CORNER_SVG_POS.forEach((cp, i) => {
+    svg.appendChild(mk('circle', { cx:cp.x, cy:cp.y, r:5, fill:'#7ddb84' }));
+    const t = mk('text', {
+      x: cp.x + (i % 2 === 0 ? 10 : -10),
+      y: cp.y + (i < 2 ? 14 : -6),
+      fill: '#7ddb84', 'font-size':9, 'font-weight':'bold',
+      'text-anchor': i % 2 === 0 ? 'start' : 'end',
+      'font-family': 'Plus Jakarta Sans',
+      opacity: 0.6
+    });
+    t.textContent = CORNER_LABELS[i];
+    svg.appendChild(t);
+  });
+
+  // Markers
+  state.markers.forEach(mk2 => {
+    const pt = gpsToSvg(mk2.lat, mk2.lng);
+    if (!pt) return;
+    const g = document.createElementNS(ns, 'g');
+    g.setAttribute('class', 'svg-marker');
+    g.addEventListener('click', () => toggleMarker(mk2.id));
+
+    const circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('cx', pt.x); circle.setAttribute('cy', pt.y); circle.setAttribute('r', 18);
+    circle.setAttribute('fill',   mk2.cleaned ? 'rgba(125, 219, 132, 0.15)' : 'rgba(139, 58, 0, 0.2)');
+    circle.setAttribute('stroke', mk2.cleaned ? '#7ddb84' : '#8b3a00');
+    circle.setAttribute('stroke-width', 2);
+    g.appendChild(circle);
+
+    const txt = document.createElementNS(ns, 'text');
+    txt.setAttribute('x', pt.x); txt.setAttribute('y', pt.y + 8);
+    txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('font-size', 20);
+    txt.textContent = mk2.cleaned ? '🗑️' : '💩';
+    g.appendChild(txt);
+
+    svg.appendChild(g);
+  });
+
+  // My position
+  if (pos) {
+    const mp = gpsToSvg(pos.lat, pos.lng);
+    if (mp) {
+      const g = document.createElementNS(ns, 'g');
+
+      const pulse = document.createElementNS(ns, 'circle');
+      pulse.setAttribute('cx', mp.x); pulse.setAttribute('cy', mp.y); pulse.setAttribute('r', 12);
+      pulse.setAttribute('fill', 'none'); pulse.setAttribute('stroke', '#aaccda');
+      pulse.setAttribute('stroke-width', 2); pulse.setAttribute('opacity', 0.4);
+      const a1 = document.createElementNS(ns, 'animate');
+      a1.setAttribute('attributeName','r'); a1.setAttribute('values','12;22;12');
+      a1.setAttribute('dur','2s'); a1.setAttribute('repeatCount','indefinite');
+      const a2 = document.createElementNS(ns, 'animate');
+      a2.setAttribute('attributeName','opacity'); a2.setAttribute('values','0.4;0.05;0.4');
+      a2.setAttribute('dur','2s'); a2.setAttribute('repeatCount','indefinite');
+      pulse.appendChild(a1); pulse.appendChild(a2);
+      g.appendChild(pulse);
+
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('cx', mp.x); dot.setAttribute('cy', mp.y); dot.setAttribute('r', 5);
+      dot.setAttribute('fill', '#aaccda'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', 1.5);
+      g.appendChild(dot);
+
+      svg.appendChild(g);
+    }
+  }
+}
+
+// ── Markers ────────────────────────────────────────────────────
+function updateMarkBtn() {
+  const btn = document.getElementById('mark-btn');
+  if (pos) btn.classList.add('ready');
+  else btn.classList.remove('ready');
+}
+
+function dropMarker() {
+  if (!pos) return;
+  vibrate();
+  state.markers.push({ id: Date.now(), lat: pos.lat, lng: pos.lng, cleaned: false });
+  saveState();
+  renderMarkerList();
+  updateStats();
+  if (state.corners.length === 4) drawMap();
+}
+
+function toggleMarker(id) {
+  vibrate();
+  const mk = state.markers.find(m => m.id === id);
+  if (mk) mk.cleaned = !mk.cleaned;
+  saveState();
+  renderMarkerList();
+  updateStats();
+  if (state.corners.length === 4) drawMap();
+}
+
+function removeMarker(id) {
+  vibrate();
+  state.markers = state.markers.filter(m => m.id !== id);
+  saveState();
+  renderMarkerList();
+  updateStats();
+  if (state.corners.length === 4) drawMap();
+}
+
+function clearAll() {
+  if (!confirm('Clear ALL markers?')) return;
+  state.markers = [];
+  saveState();
+  renderMarkerList();
+  updateStats();
+  if (state.corners.length === 4) drawMap();
+}
+
+function renderMarkerList() {
+  const section = document.getElementById('marker-section');
+  const list    = document.getElementById('marker-list');
+
+  if (state.markers.length === 0) { section.classList.remove('visible'); list.innerHTML = ''; return; }
+  section.classList.add('visible');
+
+  list.innerHTML = '';
+  [...state.markers].reverse().forEach(mk => {
+    const row = document.createElement('div');
+    row.className = 'marker-row' + (mk.cleaned ? ' cleaned' : '');
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'marker-toggle';
+    toggleBtn.textContent = mk.cleaned ? '🗑️' : '💩';
+    toggleBtn.onclick = () => toggleMarker(mk.id);
+
+    const info = document.createElement('div');
+    info.className = 'marker-info';
+    info.innerHTML = `
+      <div class="marker-coords">${mk.lat.toFixed(6)}, ${mk.lng.toFixed(6)}</div>
+      <div class="marker-status">${mk.cleaned ? '✓ Cleaned' : '⚠ Needs cleanup'}</div>
+    `;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'marker-remove';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = () => removeMarker(mk.id);
+
+    row.appendChild(toggleBtn);
+    row.appendChild(info);
+    row.appendChild(removeBtn);
+    list.appendChild(row);
+  });
+}
+
+function updateStats() {
+  const total     = state.markers.length;
+  const cleaned   = state.markers.filter(m => m.cleaned).length;
+  const remaining = total - cleaned;
+
+  document.getElementById('val-total').textContent     = total;
+  document.getElementById('val-cleaned').textContent   = cleaned;
+  document.getElementById('val-remaining').textContent = remaining;
+
+  const remCard = document.getElementById('stat-remaining');
+  const remVal  = document.getElementById('val-remaining');
+  const remLbl  = document.getElementById('lbl-remaining');
+  if (remaining > 0) {
+    remCard.style.borderColor   = 'var(--marker-dirty)';
+    remVal.style.color          = 'var(--marker-dirty)';
+    remLbl.style.color          = 'var(--marker-dirty)';
+  } else {
+    remCard.style.borderColor   = 'var(--accent)';
+    remVal.style.color          = 'var(--accent)';
+    remLbl.style.color          = 'var(--accent)';
+  }
+}
+
+// ── Haptics ────────────────────────────────────────────────────
+function vibrate() { if (navigator.vibrate) navigator.vibrate(100); }
+
+// ── Init ───────────────────────────────────────────────────────
+(function init() {
+  const saved = loadState();
+  if (saved) state = { markers: saved.markers || [], corners: saved.corners || [] };
+
+  initGPS();
+  renderMarkerList();
+  updateStats();
+  updateCalUI();
+
+  if (state.corners.length === 4) {
+    document.getElementById('map-placeholder').style.display = 'none';
+    document.getElementById('yard-svg').style.display = 'block';
+    drawMap();
+    document.getElementById('cal-success').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>

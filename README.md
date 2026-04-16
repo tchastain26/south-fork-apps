@@ -13,8 +13,14 @@ Auto-deployed to Cloudflare Pages from `main`.
 ## Repository
 
 - Live site: https://southforkapps.com
-- Blog: https://blog.southforkapps.com (Micro.blog)
+- Field Notes: https://tuckerchastain.com
 
-## Apps Listed
+## Apps Listed (7)
 
-- [Dog Poop Tracker](https://dogpooptracker.netlify.app/) — grid-based yard tracker PWA
+- **Dog Poop Tracker** — Grid-based yard tracker PWA.
+- **Hex Code Color Generator** — Fast color picking and format conversion.
+- **Temperature Converter** — Instant F/C/K conversion.
+- **Gemini TTS Studio** — Expressive AI speech with Gemini 1.5 Flash.
+- **Markdown Link Cleaner** — Strips tracking parameters and formats URLs.
+- **Task Timer** — Minimalist deep work stopwatch.
+- **Text Case Converter** — Multi-format text transformation tool.
