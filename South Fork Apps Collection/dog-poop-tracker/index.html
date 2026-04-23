@@ -120,18 +120,18 @@
     #stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
     .stat-card {
       border-radius: 12px;
       text-align: center;
-      padding: 1rem 0.5rem;
+      padding: 0.7rem 0.35rem;
       border: 1px solid var(--border);
       background: var(--surface);
     }
-    .stat-val { font-size: 1.75rem; font-weight: 800; line-height: 1; color: var(--text); margin-bottom: 0.25rem; }
-    .stat-lbl { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-val { font-size: 1.2rem; font-weight: 800; line-height: 1; color: var(--text); margin-bottom: 0.15rem; }
+    .stat-lbl { font-size: 0.58rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* ── Mode toggle ── */
     #mode-toggle {
@@ -173,6 +173,14 @@
       padding: 1.5rem;
     }
     #cal-step-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; }
+    #cal-orientation-note {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+    }
     #cal-hint { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; }
     #cal-grid {
       display: grid;
@@ -282,12 +290,12 @@
     /* ── Mark Poop button ── */
     #mark-btn {
       width: 100%;
-      height: 100px;
+      min-height: 76px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
-      font-size: 3rem;
+      gap: 0.8rem;
+      font-size: 2.35rem;
       font-family: inherit;
       font-weight: 900;
       border-radius: 16px;
@@ -295,7 +303,7 @@
       background: var(--surface);
       color: var(--text-muted);
       cursor: not-allowed;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.85rem;
       transition: all 0.2s;
     }
     #mark-btn.ready {
@@ -306,7 +314,7 @@
     }
     #mark-btn:active.ready { transform: scale(0.98); }
     #mark-label {
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 900;
       line-height: 1.1;
       display: flex;
@@ -396,6 +404,23 @@
 
     /* SVG marker cursor */
     .svg-marker { cursor: pointer; }
+
+    @media (max-width: 420px) {
+      #app { padding-inline: 0.75rem; }
+      #title { font-size: 1.35rem; margin-bottom: 1.1rem; }
+      #gps-pill { padding: 10px 12px; }
+      #gps-label { font-size: 0.62rem; }
+      #gps-value { font-size: 0.82rem; }
+      .stat-card { border-radius: 10px; padding: 0.6rem 0.25rem; }
+      .stat-val { font-size: 1.05rem; }
+      .stat-lbl { font-size: 0.52rem; }
+      #mode-toggle { gap: 0.5rem; margin-bottom: 1rem; }
+      .mode-btn { padding: 10px 0; font-size: 0.72rem; }
+      #mark-btn { min-height: 68px; font-size: 2rem; border-radius: 14px; }
+      #mark-label { font-size: 0.88rem; }
+      #map-container { margin-bottom: 0.75rem; }
+      #cal-orientation-note { font-size: 0.64rem; }
+    }
   </style>
 
   <script>
@@ -445,13 +470,14 @@
   <!-- CALIBRATE PANEL -->
   <div class="panel" id="panel-calibrate">
     <div id="cal-card">
-      <div id="cal-step-title">Step 1 of 4 — Top-Left</div>
+      <div id="cal-step-title">Step 1 of 4 — Back Left</div>
+      <div id="cal-orientation-note">Compass directions are based on your yard’s orientation.</div>
       <div id="cal-hint">Walk to the BACK-LEFT corner of your yard</div>
       <div id="cal-grid">
-        <div class="cal-corner active" id="cal-c0">Top Left</div>
-        <div class="cal-corner"        id="cal-c1">Top Right</div>
-        <div class="cal-corner"        id="cal-c2">Bottom Right</div>
-        <div class="cal-corner"        id="cal-c3">Bottom Left</div>
+        <div class="cal-corner active" id="cal-c0">Back Left</div>
+        <div class="cal-corner"        id="cal-c1">Back Right</div>
+        <div class="cal-corner"        id="cal-c2">Front Right</div>
+        <div class="cal-corner"        id="cal-c3">Front Left</div>
       </div>
       <button id="cal-set-btn" onclick="setCorner()">Waiting for GPS…</button>
       <button id="cal-back-btn" onclick="calBack()">← Back</button>
@@ -462,6 +488,14 @@
   <!-- TRACK PANEL -->
   <div class="panel visible" id="panel-track">
 
+    <!-- Mark button -->
+    <button id="mark-btn" onclick="dropMarker()"
+      ontouchstart="this.classList.contains('ready') && (this.style.transform='scale(0.95)')"
+      ontouchend="this.style.transform='scale(1)'">
+      <span>💩</span>
+      <span id="mark-label"><span>MARK</span><span>POOP</span></span>
+    </button>
+
     <!-- Map -->
     <div id="map-container">
       <div id="map-placeholder">
@@ -471,14 +505,6 @@
       </div>
       <svg id="yard-svg" style="display:none;" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
-
-    <!-- Mark button -->
-    <button id="mark-btn" onclick="dropMarker()"
-      ontouchstart="this.classList.contains('ready') && (this.style.transform='scale(0.95)')"
-      ontouchend="this.style.transform='scale(1)'">
-      <span>💩</span>
-      <span id="mark-label"><span>MARK</span><span>POOP</span></span>
-    </button>
 
     <!-- Marker list -->
     <div id="marker-section">
@@ -499,13 +525,14 @@
 const STORAGE_KEY = 'poop_tracker_v2';
 const SVG_W = 340, SVG_H = 420;
 
-const CORNER_LABELS = ['Top-Left','Top-Right','Bottom-Right','Bottom-Left'];
+const PROPERTY_CORNER_LABELS = ['Back Left','Back Right','Front Right','Front Left'];
 const CORNER_HINTS  = [
   'Walk to the BACK-LEFT corner of your yard',
   'Walk to the BACK-RIGHT corner of your yard',
   'Walk to the FRONT-RIGHT corner of your yard',
   'Walk to the FRONT-LEFT corner of your yard',
 ];
+const COMPASS_POINTS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 const CORNER_SVG_POS = [
   {x:18,        y:18},
   {x:SVG_W-18,  y:18},
@@ -519,6 +546,78 @@ let pos      = null;
 let accuracy = null;
 let calStep  = 0;
 let currentMode = 'track';
+
+function normalizeBearing(deg) {
+  return (deg % 360 + 360) % 360;
+}
+
+function bearingBetween(a, b) {
+  const lat1 = a.lat * Math.PI / 180;
+  const lat2 = b.lat * Math.PI / 180;
+  const dLng = (b.lng - a.lng) * Math.PI / 180;
+  const y = Math.sin(dLng) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  return normalizeBearing(Math.atan2(y, x) * 180 / Math.PI);
+}
+
+function bearingToVector(bearing) {
+  const rad = bearing * Math.PI / 180;
+  return { x: Math.sin(rad), y: Math.cos(rad) };
+}
+
+function vectorToBearing(x, y) {
+  if (Math.abs(x) < 0.000001 && Math.abs(y) < 0.000001) return null;
+  return normalizeBearing(Math.atan2(x, y) * 180 / Math.PI);
+}
+
+function snapBearingToCompass(bearing) {
+  if (bearing == null || Number.isNaN(bearing)) return null;
+  return COMPASS_POINTS[Math.round(bearing / 45) % 8];
+}
+
+function getCornerCompassLabels() {
+  if (state.corners.length !== 4) return [];
+
+  const [backLeft, backRight] = state.corners;
+  const backEdgeLength = Math.hypot(backRight.lat - backLeft.lat, backRight.lng - backLeft.lng);
+  if (backEdgeLength < 0.000001) return [];
+
+  const rightBearing = bearingBetween(backLeft, backRight);
+  const backBearing = normalizeBearing(rightBearing - 90);
+  const frontBearing = normalizeBearing(rightBearing + 90);
+  const leftBearing = normalizeBearing(rightBearing + 180);
+
+  return [
+    snapBearingToCompass(vectorToBearing(
+      bearingToVector(backBearing).x + bearingToVector(leftBearing).x,
+      bearingToVector(backBearing).y + bearingToVector(leftBearing).y
+    )),
+    snapBearingToCompass(vectorToBearing(
+      bearingToVector(backBearing).x + bearingToVector(rightBearing).x,
+      bearingToVector(backBearing).y + bearingToVector(rightBearing).y
+    )),
+    snapBearingToCompass(vectorToBearing(
+      bearingToVector(frontBearing).x + bearingToVector(rightBearing).x,
+      bearingToVector(frontBearing).y + bearingToVector(rightBearing).y
+    )),
+    snapBearingToCompass(vectorToBearing(
+      bearingToVector(frontBearing).x + bearingToVector(leftBearing).x,
+      bearingToVector(frontBearing).y + bearingToVector(leftBearing).y
+    )),
+  ];
+}
+
+function formatCornerLabel(index) {
+  const propertyLabel = PROPERTY_CORNER_LABELS[index];
+  const compass = getCornerCompassLabels()[index];
+  return compass ? `${propertyLabel} (${compass})` : propertyLabel;
+}
+
+function getNorthArrowRotation() {
+  const compassLabels = getCornerCompassLabels();
+  if (compassLabels.length !== 4) return null;
+  return 0;
+}
 
 // ── Persistence ────────────────────────────────────────────────
 function loadState() {
@@ -573,12 +672,13 @@ function setMode(mode) {
 // ── Calibration ────────────────────────────────────────────────
 function updateCalUI() {
   document.getElementById('cal-step-title').textContent =
-    `Step ${calStep + 1} of 4 — ${CORNER_LABELS[calStep]}`;
+    `Step ${calStep + 1} of 4 — ${formatCornerLabel(calStep)}`;
   document.getElementById('cal-hint').textContent = CORNER_HINTS[calStep];
 
   for (let i = 0; i < 4; i++) {
     const el = document.getElementById('cal-c' + i);
     el.className = 'cal-corner' + (i < calStep ? ' done' : i === calStep ? ' active' : '');
+    el.textContent = formatCornerLabel(i);
   }
 
   document.getElementById('cal-back-btn').style.display = calStep > 0 ? 'block' : 'none';
@@ -591,7 +691,7 @@ function updateCalUI() {
 function updateCalSetBtn() {
   const btn = document.getElementById('cal-set-btn');
   if (pos) {
-    btn.textContent = '📍 Set ' + CORNER_LABELS[calStep];
+    btn.textContent = '📍 Set ' + formatCornerLabel(calStep);
     btn.classList.add('ready');
   } else {
     btn.textContent = 'Waiting for GPS…';
@@ -665,6 +765,30 @@ function drawMap() {
   svg.appendChild(mk('rect', { x:2, y:2, width:SVG_W-4, height:SVG_H-4,
     fill:'none', stroke:'#7ddb84', 'stroke-width':2, rx:4, 'stroke-dasharray':'8 4', opacity: 0.4 }));
 
+  const northArrowRotation = getNorthArrowRotation();
+  if (northArrowRotation != null) {
+    const northGroup = mk('g', { transform:`translate(${SVG_W - 44} 26) rotate(${northArrowRotation})` });
+    northGroup.appendChild(mk('path', {
+      d:'M 0 -16 L 7 2 L 0 -3 L -7 2 Z',
+      fill:'#aaccda',
+      stroke:'#ffffff',
+      'stroke-width':1,
+      opacity:0.92
+    }));
+    northGroup.appendChild(mk('text', {
+      x:0,
+      y:18,
+      fill:'#aaccda',
+      'font-size':10,
+      'font-weight':'800',
+      'text-anchor':'middle',
+      'font-family':'Plus Jakarta Sans',
+      opacity:0.85
+    }));
+    northGroup.lastChild.textContent = 'N';
+    svg.appendChild(northGroup);
+  }
+
   // Corner dots + labels
   CORNER_SVG_POS.forEach((cp, i) => {
     svg.appendChild(mk('circle', { cx:cp.x, cy:cp.y, r:5, fill:'#7ddb84' }));
@@ -676,7 +800,7 @@ function drawMap() {
       'font-family': 'Plus Jakarta Sans',
       opacity: 0.6
     });
-    t.textContent = CORNER_LABELS[i];
+    t.textContent = formatCornerLabel(i);
     svg.appendChild(t);
   });
 
