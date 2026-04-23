@@ -461,12 +461,6 @@
     </div>
   </div>
 
-  <!-- Mode toggle -->
-  <div id="mode-toggle">
-    <button class="mode-btn active" id="btn-track"     onclick="setMode('track')">🗺 Track</button>
-    <button class="mode-btn"        id="btn-calibrate" onclick="setMode('calibrate')">📐 Calibrate</button>
-  </div>
-
   <!-- CALIBRATE PANEL -->
   <div class="panel" id="panel-calibrate">
     <div id="cal-card">
@@ -504,6 +498,12 @@
         <button onclick="setMode('calibrate')">Start Calibration</button>
       </div>
       <svg id="yard-svg" style="display:none;" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- Mode toggle -->
+    <div id="mode-toggle">
+      <button class="mode-btn active" id="btn-track"     onclick="setMode('track')">🗺 Track</button>
+      <button class="mode-btn"        id="btn-calibrate" onclick="setMode('calibrate')">📐 Calibrate</button>
     </div>
 
     <!-- Marker list -->
