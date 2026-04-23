@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Picker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(980px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    textarea {
+      width: 100%;
+      min-height: 320px;
+      margin-top: 1.25rem;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+      color: var(--text);
+      font: inherit;
+      line-height: 1.6;
+      padding: 1rem;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14);
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    button {
+      min-height: 2.8rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #102113;
+    }
+    button:hover { filter: brightness(1.08); }
+    .result {
+      min-height: 10rem;
+      display: grid;
+      place-items: center;
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.45);
+      border-radius: 8px;
+      background: var(--surface-2);
+      text-align: center;
+    }
+    .result strong {
+      color: var(--accent);
+      font-size: clamp(2rem, 8vw, 3.4rem);
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .meta {
+      margin-top: 0.9rem;
+      min-height: 1.4rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .meta.error { color: var(--danger); }
+    h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    ol {
+      display: grid;
+      gap: 0.5rem;
+      margin: 0;
+      padding-left: 1.25rem;
+      color: var(--text);
+    }
+    li {
+      padding: 0.55rem 0.7rem;
+      background: #111412;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+    .empty {
+      color: var(--muted);
+      padding: 0.75rem;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+    }
+    footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    @media (max-width: 780px) {
+      .layout { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Random Picker</span>
+  </nav>
+  <main>
+    <section class="layout">
+      <div class="panel">
+        <h1>Make the pick.</h1>
+        <p>Enter options one per line or separated by commas, then let the picker land on a choice after a quick shuffle.</p>
+        <textarea id="options">Pizza
+Burgers
+Tacos
+Sushi</textarea>
+        <div class="controls">
+          <button id="pick" type="button" class="primary">Pick One</button>
+          <button id="clear" type="button">Clear History</button>
+        </div>
+        <div id="meta" class="meta">4 options ready.</div>
+      </div>
+
+      <aside class="panel">
+        <h2>Result</h2>
+        <div class="result" aria-live="polite">
+          <strong id="result">Ready</strong>
+        </div>
+        <h2 style="margin-top: 1.25rem;">Last 10 Picks</h2>
+        <div id="history" class="empty">No picks yet.</div>
+      </aside>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+
+  <script>
+    const optionsInput = document.getElementById('options');
+    const result = document.getElementById('result');
+    const meta = document.getElementById('meta');
+    const historyEl = document.getElementById('history');
+    let history = [];
+    let rolling = false;
+
+    function parseOptions() {
+      return optionsInput.value
+        .split(/[\n,]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function updateMeta() {
+      const count = parseOptions().length;
+      meta.classList.remove('error');
+      meta.textContent = `${count} option${count === 1 ? '' : 's'} ready.`;
+    }
+
+    function renderHistory() {
+      if (!history.length) {
+        historyEl.className = 'empty';
+        historyEl.textContent = 'No picks yet.';
+        return;
+      }
+      historyEl.className = '';
+      historyEl.innerHTML = `<ol>${history.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ol>`;
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function pickOne() {
+      if (rolling) return;
+      const options = parseOptions();
+      if (options.length < 2) {
+        meta.textContent = 'Add at least two options before picking.';
+        meta.classList.add('error');
+        return;
+      }
+
+      rolling = true;
+      meta.classList.remove('error');
+      meta.textContent = 'Picking...';
+      const winner = options[Math.floor(Math.random() * options.length)];
+      let ticks = 0;
+      const timer = setInterval(() => {
+        result.textContent = options[Math.floor(Math.random() * options.length)];
+        ticks += 1;
+        if (ticks >= 18) {
+          clearInterval(timer);
+          result.textContent = winner;
+          history = [winner, ...history].slice(0, 10);
+          renderHistory();
+          rolling = false;
+          meta.textContent = `${options.length} options ready.`;
+        }
+      }, 70);
+    }
+
+    optionsInput.addEventListener('input', updateMeta);
+    document.getElementById('pick').addEventListener('click', pickOne);
+    document.getElementById('clear').addEventListener('click', () => {
+      history = [];
+      renderHistory();
+    });
+
+    updateMeta();
+    renderHistory();
+  </script>
+</body>
+</html>

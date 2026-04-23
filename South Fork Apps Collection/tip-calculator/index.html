@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tip Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(960px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    label {
+      display: grid;
+      gap: 0.45rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+      padding: 0.85rem 0.9rem;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14);
+    }
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+    button {
+      min-height: 2.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover, button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #102113;
+    }
+    .summary {
+      display: grid;
+      gap: 0.85rem;
+    }
+    .metric {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .metric:last-child { border-bottom: 0; }
+    .metric span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .metric strong {
+      color: var(--text);
+      font-size: 1.35rem;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .metric.primary strong {
+      color: var(--accent);
+      font-size: 1.8rem;
+    }
+    .error {
+      min-height: 1.4rem;
+      margin-top: 1rem;
+      color: var(--danger);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .hero, .form-grid { grid-template-columns: 1fr; }
+      .quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Tip Calculator</span>
+  </nav>
+  <main>
+    <section class="hero">
+      <div class="panel">
+        <h1>Split the bill cleanly.</h1>
+        <p>Enter the bill, pick a tip, choose the number of people, and get the total plus per-person amount instantly.</p>
+
+        <div class="form-grid">
+          <label>
+            Bill amount
+            <input id="bill" type="number" min="0" step="0.01" inputmode="decimal" value="48.50">
+          </label>
+          <label>
+            Tip percent
+            <input id="tip" type="number" min="0" max="100" step="1" inputmode="decimal" value="20">
+          </label>
+          <label>
+            People
+            <input id="people" type="number" min="1" step="1" inputmode="numeric" value="2">
+          </label>
+        </div>
+
+        <div class="quick" aria-label="Quick tip buttons">
+          <button type="button" data-tip="15">15%</button>
+          <button type="button" data-tip="18">18%</button>
+          <button type="button" data-tip="20" class="active">20%</button>
+          <button type="button" data-tip="25">25%</button>
+        </div>
+        <div id="error" class="error" role="status"></div>
+      </div>
+
+      <aside class="panel summary" aria-label="Tip results">
+        <div class="metric">
+          <span>Tip amount</span>
+          <strong id="tipAmount">$0.00</strong>
+        </div>
+        <div class="metric">
+          <span>Total bill</span>
+          <strong id="totalBill">$0.00</strong>
+        </div>
+        <div class="metric primary">
+          <span>Per person</span>
+          <strong id="perPerson">$0.00</strong>
+        </div>
+      </aside>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+
+  <script>
+    const billInput = document.getElementById('bill');
+    const tipInput = document.getElementById('tip');
+    const peopleInput = document.getElementById('people');
+    const error = document.getElementById('error');
+    const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+    function calculate() {
+      const bill = Number(billInput.value);
+      const tipPercent = Number(tipInput.value);
+      const people = Math.floor(Number(peopleInput.value));
+      const invalid = bill < 0 || tipPercent < 0 || !Number.isFinite(bill) || !Number.isFinite(tipPercent) || people < 1;
+
+      error.textContent = invalid ? 'Use a positive bill, a positive tip, and at least one person.' : '';
+      const safeBill = invalid ? 0 : bill;
+      const safeTip = invalid ? 0 : tipPercent;
+      const safePeople = invalid ? 1 : people;
+      const tipAmount = safeBill * (safeTip / 100);
+      const total = safeBill + tipAmount;
+
+      document.getElementById('tipAmount').textContent = money.format(tipAmount);
+      document.getElementById('totalBill').textContent = money.format(total);
+      document.getElementById('perPerson').textContent = money.format(total / safePeople);
+      updateActiveButton(safeTip);
+    }
+
+    function updateActiveButton(tipPercent) {
+      document.querySelectorAll('[data-tip]').forEach((button) => {
+        button.classList.toggle('active', Number(button.dataset.tip) === tipPercent);
+      });
+    }
+
+    document.querySelectorAll('input').forEach((input) => input.addEventListener('input', calculate));
+    document.querySelectorAll('[data-tip]').forEach((button) => {
+      button.addEventListener('click', () => {
+        tipInput.value = button.dataset.tip;
+        calculate();
+      });
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
