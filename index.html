@@ -203,112 +203,98 @@
       </div>
     </div>
 
-    <div class="space-y-24">
-      <section aria-labelledby="daily-utilities">
-        <div class="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-outline-variant/20 pb-6">
-          <div>
-            <span class="font-label text-primary tracking-widest uppercase text-xs font-black">Category // Daily Utilities</span>
-            <h3 id="daily-utilities" class="font-headline text-4xl md:text-5xl font-bold mt-3">Everyday Field Tools</h3>
-          </div>
-          <p class="text-on-surface-variant max-w-xl leading-relaxed">Quick helpers for real-life math, decisions, conversions, and household tracking.</p>
-        </div>
-        <div class="asymmetric-grid">
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.0</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">payments</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Tip Calculator</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Split restaurant bills with custom tip percentages, quick-select tip buttons, totals, and per-person math.</p>
-            <a href="./South Fork Apps Collection/tip-calculator/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.0</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">casino</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Random Picker</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Enter choices, animate the pick, and keep a short history of the last ten decisions.</p>
-            <a href="./South Fork Apps Collection/random-picker/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">device_thermostat</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Temperature Converter</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Convert between Fahrenheit, Celsius, and Kelvin instantly. Clean, fast, no extra steps.</p>
-            <a href="./South Fork Apps Collection/temperature-converter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">pets</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Dog Poop Tracker</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.</p>
-            <a href="./South Fork Apps Collection/dog-poop-tracker/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-        </div>
-      </section>
+    <div class="mb-12 grid gap-4 rounded-xl border border-outline-variant/20 bg-surface-container-low/80 p-4 backdrop-blur-sm md:grid-cols-[1fr_260px_auto] md:items-end">
+      <label class="block">
+        <span class="mb-2 block font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Search</span>
+        <input id="appSearch" type="search" placeholder="Search apps" class="h-12 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-primary" />
+      </label>
+      <label class="block">
+        <span class="mb-2 block font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Category</span>
+        <select id="categoryFilter" class="h-12 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface focus:border-primary focus:ring-primary">
+          <option value="all">All Categories</option>
+          <option value="Daily Utilities">Daily Utilities</option>
+          <option value="Text & Content">Text & Content</option>
+          <option value="Work & Design">Work & Design</option>
+        </select>
+      </label>
+      <div id="resultCount" class="rounded-lg border border-primary/20 bg-primary/10 px-5 py-3 text-center font-label text-xs font-black uppercase tracking-widest text-primary md:min-w-28">10 apps</div>
+    </div>
 
-      <section aria-labelledby="text-content">
-        <div class="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-outline-variant/20 pb-6">
-          <div>
-            <span class="font-label text-primary tracking-widest uppercase text-xs font-black">Category // Text & Content</span>
-            <h3 id="text-content" class="font-headline text-4xl md:text-5xl font-bold mt-3">Writing Bench</h3>
-          </div>
-          <p class="text-on-surface-variant max-w-xl leading-relaxed">Tools for drafting, cleaning, transforming, measuring, and producing content.</p>
-        </div>
-        <div class="asymmetric-grid">
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.0</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">pin</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Word Counter</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Live counts for words, characters, sentences, paragraphs, reading time, and speaking time.</p>
-            <a href="./South Fork Apps Collection/word-counter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">text_fields</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Text Case Converter</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Instantly convert text between common and obscure cases like camelCase, snake_case, and more.</p>
-            <a href="./South Fork Apps Collection/text-case-converter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">link</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Markdown Link Cleaner</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Convert raw URLs into clean Markdown links. Strips tracking parameters and optionally fetches page titles.</p>
-            <a href="./South Fork Apps Collection/markdown-link-cleaner/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">graphic_eq</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Gemini TTS Studio</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Generate expressive AI speech with directorial tags, multi-speaker dialogue, and custom voice profiles.</p>
-            <a href="./South Fork Apps Collection/gemini-3-1-flash-tts-studio/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-        </div>
-      </section>
+    <div id="appGrid" class="asymmetric-grid">
+      <div data-app-card data-title="Tip Calculator" data-description="Split restaurant bills with custom tip percentages, quick-select tip buttons, totals, and per-person math." data-category="Daily Utilities" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Daily Utilities</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">payments</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Tip Calculator</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Split restaurant bills with custom tip percentages, quick-select tip buttons, totals, and per-person math.</p>
+        <a href="./South Fork Apps Collection/tip-calculator/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Random Picker" data-description="Enter choices, animate the pick, and keep a short history of the last ten decisions." data-category="Daily Utilities" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Daily Utilities</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">casino</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Random Picker</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Enter choices, animate the pick, and keep a short history of the last ten decisions.</p>
+        <a href="./South Fork Apps Collection/random-picker/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Temperature Converter" data-description="Convert between Fahrenheit, Celsius, and Kelvin instantly. Clean, fast, no extra steps." data-category="Daily Utilities" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Daily Utilities</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">device_thermostat</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Temperature Converter</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Convert between Fahrenheit, Celsius, and Kelvin instantly. Clean, fast, no extra steps.</p>
+        <a href="./South Fork Apps Collection/temperature-converter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Dog Poop Tracker" data-description="Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical." data-category="Daily Utilities" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Daily Utilities</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">pets</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Dog Poop Tracker</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.</p>
+        <a href="./South Fork Apps Collection/dog-poop-tracker/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Word Counter" data-description="Live counts for words, characters, sentences, paragraphs, reading time, and speaking time." data-category="Text & Content" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Text & Content</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">pin</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Word Counter</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Live counts for words, characters, sentences, paragraphs, reading time, and speaking time.</p>
+        <a href="./South Fork Apps Collection/word-counter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Text Case Converter" data-description="Instantly convert text between common and obscure cases like camelCase, snake_case, and more." data-category="Text & Content" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Text & Content</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">text_fields</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Text Case Converter</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Instantly convert text between common and obscure cases like camelCase, snake_case, and more.</p>
+        <a href="./South Fork Apps Collection/text-case-converter/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Markdown Link Cleaner" data-description="Convert raw URLs into clean Markdown links. Strips tracking parameters and optionally fetches page titles." data-category="Text & Content" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Text & Content</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">link</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Markdown Link Cleaner</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Convert raw URLs into clean Markdown links. Strips tracking parameters and optionally fetches page titles.</p>
+        <a href="./South Fork Apps Collection/markdown-link-cleaner/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Gemini TTS Studio" data-description="Generate expressive AI speech with directorial tags, multi-speaker dialogue, and custom voice profiles." data-category="Text & Content" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Text & Content</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">graphic_eq</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Gemini TTS Studio</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Generate expressive AI speech with directorial tags, multi-speaker dialogue, and custom voice profiles.</p>
+        <a href="./South Fork Apps Collection/gemini-3-1-flash-tts-studio/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Task Timer" data-description="A minimalist stopwatch for tracking deep work sessions and building a local task duration history." data-category="Work & Design" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Work & Design</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">schedule</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Task Timer</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">A minimalist stopwatch for tracking deep work sessions and building a local task duration history.</p>
+        <a href="./South Fork Apps Collection/task-timer/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+      <div data-app-card data-title="Hex Code Color Generator" data-description="Generate hex color codes on demand. Pick, explore, and copy colors fast." data-category="Work & Design" class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
+        <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary/10 text-primary border border-primary/30 font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">Work & Design</div>
+        <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">palette</span></div>
+        <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Hex Code Color Generator</h4>
+        <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Generate hex color codes on demand. Pick, explore, and copy colors fast.</p>
+        <a href="./South Fork Apps Collection/hex-code-color-generator/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
+      </div>
+    </div>
 
-      <section aria-labelledby="work-design">
-        <div class="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-outline-variant/20 pb-6">
-          <div>
-            <span class="font-label text-primary tracking-widest uppercase text-xs font-black">Category // Work & Design</span>
-            <h3 id="work-design" class="font-headline text-4xl md:text-5xl font-bold mt-3">Studio Kit</h3>
-          </div>
-          <p class="text-on-surface-variant max-w-xl leading-relaxed">Focused utilities for sessions, colors, and small creative work.</p>
-        </div>
-        <div class="asymmetric-grid">
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -left-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">schedule</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Task Timer</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">A minimalist stopwatch for tracking deep work sessions and building a local task duration history.</p>
-            <a href="./South Fork Apps Collection/task-timer/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-          <div class="group relative bg-surface-container-low/80 backdrop-blur-sm rounded-xl p-8 hover:bg-surface-container transition-all duration-500 flex flex-col h-full border border-outline-variant/10">
-            <div class="absolute -top-6 -right-4 z-20 px-4 py-2 bg-primary text-on-primary font-label text-xs font-black tracking-tighter uppercase rounded-lg shadow-lg group-hover:scale-110 transition-transform">LIVE // v1.1</div>
-            <div class="mb-8 w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center relative z-10"><span class="material-symbols-outlined text-primary text-4xl">palette</span></div>
-            <h4 class="font-headline text-3xl font-bold mb-4 relative z-10">Hex Code Color Generator</h4>
-            <p class="text-on-surface-variant font-body mb-8 flex-grow relative z-10">Generate hex color codes on demand. Pick, explore, and copy colors fast.</p>
-            <a href="./South Fork Apps Collection/hex-code-color-generator/" target="_blank" rel="noopener" class="block text-center w-full py-4 rounded-lg border border-primary text-primary font-headline font-bold hover:bg-primary hover:text-on-primary transition-all uppercase tracking-widest text-sm relative z-30">Launch App</a>
-          </div>
-        </div>
-      </section>
+    <div id="noResults" class="hidden mt-12 rounded-xl border border-outline-variant/20 bg-surface-container-low/80 p-10 text-center text-on-surface-variant">
+      No apps match that search.
     </div>
   </section>
 
@@ -468,6 +454,39 @@
     const url = liveApps[Math.floor(Math.random() * liveApps.length)];
     window.open(url, '_blank', 'noopener');
   }
+
+  const appSearch = document.getElementById('appSearch');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const resultCount = document.getElementById('resultCount');
+  const noResults = document.getElementById('noResults');
+  const appCards = Array.from(document.querySelectorAll('[data-app-card]'));
+
+  function appCountLabel(count) {
+    return `${count} ${count === 1 ? 'app' : 'apps'}`;
+  }
+
+  function filterApps() {
+    const query = appSearch.value.trim().toLowerCase();
+    const category = categoryFilter.value;
+    let visibleCount = 0;
+
+    appCards.forEach((card) => {
+      const searchText = `${card.dataset.title} ${card.dataset.description} ${card.dataset.category}`.toLowerCase();
+      const matchesSearch = !query || searchText.includes(query);
+      const matchesCategory = category === 'all' || card.dataset.category === category;
+      const isVisible = matchesSearch && matchesCategory;
+
+      card.classList.toggle('hidden', !isVisible);
+      if (isVisible) visibleCount += 1;
+    });
+
+    resultCount.textContent = appCountLabel(visibleCount);
+    noResults.classList.toggle('hidden', visibleCount !== 0);
+  }
+
+  appSearch.addEventListener('input', filterApps);
+  categoryFilter.addEventListener('change', filterApps);
+  filterApps();
 
   // Animated canvas river
   const canvas = document.getElementById('riverCanvas');
