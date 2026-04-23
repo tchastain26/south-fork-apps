@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Symbol Pad | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #111412;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+      display: grid;
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.45rem;
+      font-size: clamp(2.2rem, 7vw, 4.2rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+      color: var(--text);
+      font: inherit;
+      padding: 0.9rem 1rem;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.12);
+    }
+    .status {
+      min-height: 1.35rem;
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+    }
+    .section-title h2 {
+      margin: 0;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    button {
+      min-height: 2.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0 0.9rem;
+    }
+    .pill-btn {
+      min-height: 2.3rem;
+      font-size: 0.85rem;
+    }
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #102113;
+    }
+    .symbol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+    .symbol-card {
+      position: relative;
+      display: grid;
+      gap: 0.55rem;
+      align-content: start;
+      min-height: 8.2rem;
+      padding: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+    }
+    .symbol-card strong {
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .symbol-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.35;
+    }
+    .symbol-card code {
+      color: var(--text);
+      font-size: 0.78rem;
+      background: #171c18;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.2rem 0.35rem;
+      width: fit-content;
+    }
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 2.4rem;
+      gap: 0.45rem;
+      margin-top: auto;
+    }
+    .pin {
+      padding: 0;
+      font-size: 1rem;
+    }
+    .pin.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .empty {
+      padding: 1rem;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      background: #111412;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    @media (max-width: 760px) {
+      .controls { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Symbol Pad</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Copy symbols fast.</h1>
+      <p>Built for repeat use. Search, click to copy, and pin your frequent symbols so they stay at the top.</p>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search symbol or meaning">
+        <select id="category">
+          <option value="all">All categories</option>
+        </select>
+      </div>
+      <div id="status" class="status">Ready.</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>Pinned Symbols</h2>
+        <button id="clearPins" class="pill-btn" type="button">Clear Pins</button>
+      </div>
+      <div id="pinned" class="symbol-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>Symbol Library</h2>
+      </div>
+      <div id="symbols" class="symbol-grid"></div>
+      <footer>v1.0</footer>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = 'southForkSymbolPadPins';
+    const symbols = [
+      { symbol: '°', name: 'Degree', category: 'Math', aliases: 'degrees temperature angle' },
+      { symbol: '±', name: 'Plus Minus', category: 'Math', aliases: 'plus minus tolerance' },
+      { symbol: '×', name: 'Multiply', category: 'Math', aliases: 'times multiply' },
+      { symbol: '÷', name: 'Divide', category: 'Math', aliases: 'division' },
+      { symbol: '≈', name: 'Approximately Equal', category: 'Math', aliases: 'approx equal' },
+      { symbol: '≠', name: 'Not Equal', category: 'Math', aliases: 'not equal' },
+      { symbol: '≤', name: 'Less Than or Equal', category: 'Math', aliases: 'less equal' },
+      { symbol: '≥', name: 'Greater Than or Equal', category: 'Math', aliases: 'greater equal' },
+      { symbol: '∞', name: 'Infinity', category: 'Math', aliases: 'infinite' },
+      { symbol: '√', name: 'Square Root', category: 'Math', aliases: 'root radical' },
+      { symbol: 'π', name: 'Pi', category: 'Greek', aliases: 'pi constant' },
+      { symbol: '∆', name: 'Delta', category: 'Greek', aliases: 'delta change triangle' },
+      { symbol: 'µ', name: 'Mu', category: 'Greek', aliases: 'micro mu' },
+      { symbol: 'Ω', name: 'Omega', category: 'Greek', aliases: 'ohm omega' },
+      { symbol: 'Σ', name: 'Sigma', category: 'Greek', aliases: 'sum sigma' },
+      { symbol: 'λ', name: 'Lambda', category: 'Greek', aliases: 'lambda' },
+      { symbol: '→', name: 'Right Arrow', category: 'Arrows', aliases: 'arrow right' },
+      { symbol: '←', name: 'Left Arrow', category: 'Arrows', aliases: 'arrow left' },
+      { symbol: '↑', name: 'Up Arrow', category: 'Arrows', aliases: 'arrow up' },
+      { symbol: '↓', name: 'Down Arrow', category: 'Arrows', aliases: 'arrow down' },
+      { symbol: '↔', name: 'Double Arrow', category: 'Arrows', aliases: 'arrow both' },
+      { symbol: '•', name: 'Bullet', category: 'Writing', aliases: 'bullet list dot' },
+      { symbol: '…', name: 'Ellipsis', category: 'Writing', aliases: 'ellipsis three dots' },
+      { symbol: '©', name: 'Copyright', category: 'Legal', aliases: 'copyright' },
+      { symbol: '®', name: 'Registered', category: 'Legal', aliases: 'registered trademark' },
+      { symbol: '™', name: 'Trademark', category: 'Legal', aliases: 'tm trademark' },
+      { symbol: '§', name: 'Section', category: 'Writing', aliases: 'section legal' },
+      { symbol: '¶', name: 'Paragraph', category: 'Writing', aliases: 'paragraph pilcrow' },
+      { symbol: '†', name: 'Dagger', category: 'Writing', aliases: 'dagger footnote' },
+      { symbol: '‡', name: 'Double Dagger', category: 'Writing', aliases: 'double dagger footnote' },
+      { symbol: '✓', name: 'Checkmark', category: 'UI', aliases: 'check mark done' },
+      { symbol: '✕', name: 'Cross', category: 'UI', aliases: 'x close remove' },
+      { symbol: '★', name: 'Star', category: 'UI', aliases: 'favorite star' },
+      { symbol: '☆', name: 'Star Outline', category: 'UI', aliases: 'favorite outline star' },
+      { symbol: '♥', name: 'Heart', category: 'UI', aliases: 'heart love' },
+      { symbol: '⚠', name: 'Warning', category: 'UI', aliases: 'warning caution' },
+      { symbol: '€', name: 'Euro', category: 'Currency', aliases: 'euro money' },
+      { symbol: '£', name: 'Pound', category: 'Currency', aliases: 'pound money sterling' },
+      { symbol: '¥', name: 'Yen', category: 'Currency', aliases: 'yen money' },
+      { symbol: '¢', name: 'Cent', category: 'Currency', aliases: 'cent cents money' },
+      { symbol: '§', name: 'Section Sign', category: 'Legal', aliases: 'section sign law' }
+    ];
+
+    const uniqueSymbols = Array.from(new Map(symbols.map((item) => [`${item.symbol}-${item.name}`, item])).values());
+    const searchEl = document.getElementById('search');
+    const categoryEl = document.getElementById('category');
+    const statusEl = document.getElementById('status');
+    const symbolsEl = document.getElementById('symbols');
+    const pinnedEl = document.getElementById('pinned');
+
+    function readPins() {
+      return JSON.parse(localStorage.getItem(storageKey) || '[]');
+    }
+
+    function savePins(pins) {
+      localStorage.setItem(storageKey, JSON.stringify(pins));
+    }
+
+    function categories() {
+      return [...new Set(uniqueSymbols.map((item) => item.category))].sort();
+    }
+
+    function copySymbol(symbol, name) {
+      navigator.clipboard.writeText(symbol).then(() => {
+        statusEl.textContent = `Copied ${name} (${symbol})`;
+      }).catch(() => {
+        statusEl.textContent = `Could not copy ${name}.`;
+      });
+    }
+
+    function togglePin(item) {
+      const pins = readPins();
+      const exists = pins.includes(item.symbol);
+      const next = exists ? pins.filter((pin) => pin !== item.symbol) : [...pins, item.symbol];
+      savePins(next);
+      render();
+    }
+
+    function makeCard(item, pinned) {
+      const card = document.createElement('article');
+      card.className = 'symbol-card';
+
+      const symbol = document.createElement('strong');
+      symbol.textContent = item.symbol;
+      const name = document.createElement('span');
+      name.textContent = `${item.name} • ${item.category}`;
+      const code = document.createElement('code');
+      code.textContent = item.symbol;
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      const copy = document.createElement('button');
+      copy.type = 'button';
+      copy.textContent = 'Copy';
+      copy.className = 'primary';
+      copy.addEventListener('click', () => copySymbol(item.symbol, item.name));
+
+      const pin = document.createElement('button');
+      pin.type = 'button';
+      pin.className = `pin${pinned ? ' active' : ''}`;
+      pin.textContent = '★';
+      pin.title = pinned ? 'Unpin symbol' : 'Pin symbol';
+      pin.addEventListener('click', () => togglePin(item));
+
+      actions.append(copy, pin);
+      card.append(symbol, name, code, actions);
+      return card;
+    }
+
+    function renderPinned() {
+      const pins = readPins();
+      pinnedEl.textContent = '';
+      const items = pins.map((pin) => uniqueSymbols.find((item) => item.symbol === pin)).filter(Boolean);
+      if (!items.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No pinned symbols yet. Pin the ones you use constantly and they will stay here.';
+        pinnedEl.appendChild(empty);
+        return;
+      }
+      items.forEach((item) => pinnedEl.appendChild(makeCard(item, true)));
+    }
+
+    function renderLibrary() {
+      const query = searchEl.value.trim().toLowerCase();
+      const category = categoryEl.value;
+      const pins = readPins();
+      symbolsEl.textContent = '';
+      const results = uniqueSymbols.filter((item) => {
+        const haystack = `${item.symbol} ${item.name} ${item.category} ${item.aliases}`.toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const matchesCategory = category === 'all' || item.category === category;
+        return matchesQuery && matchesCategory;
+      });
+      if (!results.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No symbols match that filter.';
+        symbolsEl.appendChild(empty);
+        statusEl.textContent = 'No matches.';
+        return;
+      }
+      results.forEach((item) => symbolsEl.appendChild(makeCard(item, pins.includes(item.symbol))));
+      statusEl.textContent = `${results.length} symbol${results.length === 1 ? '' : 's'} visible.`;
+    }
+
+    function render() {
+      renderPinned();
+      renderLibrary();
+    }
+
+    categories().forEach((category) => categoryEl.add(new Option(category, category)));
+    searchEl.addEventListener('input', renderLibrary);
+    categoryEl.addEventListener('change', renderLibrary);
+    document.getElementById('clearPins').addEventListener('click', () => {
+      savePins([]);
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>
