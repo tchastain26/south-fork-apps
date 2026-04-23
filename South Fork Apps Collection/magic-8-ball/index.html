@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic 8-Ball | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1e2721 0%, #111412 55%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(980px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+      align-items: center;
+    }
+    .panel {
+      background: rgba(26, 31, 27, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2.4rem, 8vw, 5rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .ball-stage {
+      display: grid;
+      place-items: center;
+      min-height: 32rem;
+      margin-top: 1.25rem;
+      border: 1px solid rgba(125, 219, 132, 0.2);
+      border-radius: 8px;
+      background: radial-gradient(circle at 50% 35%, #2a362d 0%, #111412 58%, #090b09 100%);
+      overflow: hidden;
+      position: relative;
+    }
+    .ball {
+      width: min(74vw, 22rem);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 38% 28%, rgba(255,255,255,0.23) 0%, rgba(255,255,255,0) 18%),
+        radial-gradient(circle at 55% 40%, #1e2420 0%, #0a0b0a 60%, #000 100%);
+      box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.55);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transition: transform 0.55s ease;
+    }
+    .ball.shake {
+      animation: shake 0.65s ease;
+    }
+    .window {
+      width: 42%;
+      aspect-ratio: 1;
+      clip-path: polygon(50% 0%, 100% 84%, 0% 84%);
+      background: radial-gradient(circle at 50% 25%, rgba(125, 219, 132, 0.35), rgba(8, 17, 12, 0.96));
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.25);
+      text-align: center;
+    }
+    .answer {
+      font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #f3fff1;
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+    .controls {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    label {
+      display: grid;
+      gap: 0.45rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+      color: var(--text);
+      font: inherit;
+      padding: 0.9rem 1rem;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.12);
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    button {
+      min-height: 2.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #102113;
+    }
+    .status {
+      min-height: 1.4rem;
+      margin-top: 0.65rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    footer {
+      margin-top: 0.75rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg) translateX(0); }
+      18% { transform: rotate(-8deg) translateX(-0.45rem); }
+      36% { transform: rotate(8deg) translateX(0.45rem); }
+      54% { transform: rotate(-6deg) translateX(-0.35rem); }
+      72% { transform: rotate(6deg) translateX(0.35rem); }
+    }
+    @media (max-width: 780px) {
+      main { grid-template-columns: 1fr; }
+      .buttons { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Magic 8-Ball</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Ask the orb.</h1>
+      <p>Type a question, shake the ball, and let the fake certainty roll in.</p>
+      <div class="ball-stage">
+        <div id="ball" class="ball" aria-live="polite">
+          <div class="window">
+            <div id="answer" class="answer">Ask me</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="controls">
+        <label>
+          Your question
+          <input id="question" type="text" maxlength="120" placeholder="Will this ship today?">
+        </label>
+        <div class="buttons">
+          <button id="ask" class="primary" type="button">Ask the 8-Ball</button>
+          <button id="shuffle" type="button">Shuffle Answer</button>
+        </div>
+        <div id="status" class="status">Waiting for a question.</div>
+      </div>
+      <footer>v1.0</footer>
+    </aside>
+  </main>
+
+  <script>
+    const answers = [
+      'It is certain',
+      'Most likely',
+      'Signs point to yes',
+      'Reply hazy',
+      'Ask again later',
+      'Cannot predict now',
+      'Do not count on it',
+      'My reply is no',
+      'Outlook not so good',
+      'Without a doubt',
+      'Yes, but simplify',
+      'Only after coffee'
+    ];
+
+    const answerEl = document.getElementById('answer');
+    const questionEl = document.getElementById('question');
+    const ballEl = document.getElementById('ball');
+    const statusEl = document.getElementById('status');
+
+    function nextAnswer() {
+      return answers[Math.floor(Math.random() * answers.length)];
+    }
+
+    function reveal(force) {
+      const question = questionEl.value.trim();
+      if (!question && !force) {
+        statusEl.textContent = 'Type a question first.';
+        return;
+      }
+      ballEl.classList.remove('shake');
+      void ballEl.offsetWidth;
+      ballEl.classList.add('shake');
+      answerEl.textContent = '...';
+      statusEl.textContent = question ? `Consulting the orb about: "${question}"` : 'Shuffling the current answer.';
+      window.setTimeout(() => {
+        answerEl.textContent = nextAnswer();
+        statusEl.textContent = 'The orb has spoken.';
+      }, 540);
+    }
+
+    document.getElementById('ask').addEventListener('click', () => reveal(false));
+    document.getElementById('shuffle').addEventListener('click', () => reveal(true));
+    questionEl.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') reveal(false);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rain Simulator | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #171c19 0%, #111412 52%, #0c0f0d 100%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: minmax(0, 1fr) 320px;
+    }
+    .panel {
+      background: rgba(26, 31, 27, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2.2rem, 7vw, 4.4rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .sky {
+      position: relative;
+      min-height: 34rem;
+      margin-top: 1rem;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid rgba(125, 219, 132, 0.18);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(180deg, #202a23 0%, #131815 35%, #0b0e0c 100%);
+    }
+    .cloud {
+      position: absolute;
+      top: 10%;
+      width: 10rem;
+      height: 3.6rem;
+      border-radius: 999px;
+      background: rgba(232, 232, 232, 0.08);
+      filter: blur(1px);
+    }
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: inherit;
+    }
+    .cloud::before { width: 4rem; height: 4rem; left: 1rem; top: -1rem; }
+    .cloud::after { width: 4.7rem; height: 4.7rem; right: 1.3rem; top: -1.3rem; }
+    .rain {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .drop {
+      position: absolute;
+      top: -2.5rem;
+      width: 2px;
+      height: 4rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(125, 219, 132, 0.45));
+      opacity: 0.85;
+      animation: fall linear infinite;
+    }
+    .horizon {
+      position: absolute;
+      inset: auto 0 0;
+      height: 34%;
+      background:
+        linear-gradient(180deg, rgba(17,20,18,0) 0%, rgba(17,20,18,0.25) 35%, #0d100f 100%);
+    }
+    .controls {
+      display: grid;
+      gap: 1rem;
+    }
+    label {
+      display: grid;
+      gap: 0.45rem;
+      color: var(--muted);
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    .stat {
+      padding: 0.9rem;
+      border-radius: 8px;
+      background: #111412;
+      border: 1px solid var(--border);
+    }
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .stat strong {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--accent);
+      font-size: 1.35rem;
+    }
+    footer {
+      margin-top: 0.75rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    @keyframes fall {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(var(--wind), 40rem, 0); }
+    }
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Rain Simulator</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Let it rain.</h1>
+      <p>Ambient weather toy with adjustable density, wind, and lightning.</p>
+      <div class="sky">
+        <div class="cloud" style="left: 8%;"></div>
+        <div class="cloud" style="left: 44%; top: 15%; width: 12rem;"></div>
+        <div class="cloud" style="left: 72%; top: 8%; width: 9rem;"></div>
+        <div id="rain" class="rain"></div>
+        <div class="horizon"></div>
+      </div>
+    </section>
+    <aside class="panel">
+      <div class="controls">
+        <label>Rain density
+          <input id="density" type="range" min="30" max="220" value="120">
+        </label>
+        <label>Wind
+          <input id="wind" type="range" min="-120" max="120" value="24">
+        </label>
+        <label>Lightning
+          <input id="flash" type="range" min="0" max="100" value="18">
+        </label>
+        <div class="stat">
+          <span>Scene state</span>
+          <strong id="sceneState">Steady shower</strong>
+        </div>
+      </div>
+      <footer>v1.0</footer>
+    </aside>
+  </main>
+
+  <script>
+    const rainEl = document.getElementById('rain');
+    const skyEl = document.querySelector('.sky');
+    const densityEl = document.getElementById('density');
+    const windEl = document.getElementById('wind');
+    const flashEl = document.getElementById('flash');
+
+    function describeScene() {
+      const density = Number(densityEl.value);
+      const wind = Math.abs(Number(windEl.value));
+      const flash = Number(flashEl.value);
+      let label = 'Steady shower';
+      if (density > 170) label = 'Heavy rain';
+      if (wind > 75) label = 'Windy storm';
+      if (flash > 70) label = 'Electric storm';
+      document.getElementById('sceneState').textContent = label;
+    }
+
+    function buildRain() {
+      rainEl.textContent = '';
+      const count = Number(densityEl.value);
+      const wind = Number(windEl.value);
+      for (let i = 0; i < count; i += 1) {
+        const drop = document.createElement('div');
+        drop.className = 'drop';
+        drop.style.left = `${Math.random() * 100}%`;
+        drop.style.opacity = `${0.25 + Math.random() * 0.7}`;
+        drop.style.animationDuration = `${0.6 + Math.random() * 0.7}s`;
+        drop.style.animationDelay = `${Math.random() * -1.4}s`;
+        drop.style.height = `${2.8 + Math.random() * 3.8}rem`;
+        drop.style.setProperty('--wind', `${wind}px`);
+        rainEl.appendChild(drop);
+      }
+      describeScene();
+    }
+
+    function maybeFlash() {
+      const chance = Number(flashEl.value);
+      if (Math.random() * 100 > chance) return;
+      skyEl.animate(
+        [
+          { boxShadow: 'inset 0 0 0 0 rgba(255,255,255,0)' },
+          { boxShadow: 'inset 0 0 8rem rgba(255,255,255,0.22)' },
+          { boxShadow: 'inset 0 0 0 rgba(255,255,255,0)' }
+        ],
+        { duration: 280, easing: 'ease-out' }
+      );
+    }
+
+    [densityEl, windEl].forEach((input) => input.addEventListener('input', buildRain));
+    flashEl.addEventListener('input', describeScene);
+    buildRain();
+    window.setInterval(maybeFlash, 1800);
+  </script>
+</body>
+</html>

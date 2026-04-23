@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Test | South Fork Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #111412;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main {
+      width: min(980px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: minmax(0, 1fr) 300px;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2.2rem, 7vw, 4.4rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    button {
+      min-height: 2.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.active,
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #102113;
+    }
+    .prompt {
+      margin-top: 1rem;
+      padding: 1.1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(125, 219, 132, 0.22);
+      background: #111412;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+    .prompt span.correct { color: var(--accent); }
+    .prompt span.current { background: rgba(125, 219, 132, 0.2); color: #f3fff1; }
+    .prompt span.incorrect { color: var(--danger); text-decoration: underline; }
+    textarea {
+      width: 100%;
+      min-height: 12rem;
+      margin-top: 1rem;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #111412;
+      color: var(--text);
+      font: inherit;
+      line-height: 1.6;
+      padding: 1rem;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.12);
+    }
+    .stats {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .stat {
+      padding: 0.95rem;
+      border-radius: 8px;
+      background: #111412;
+      border: 1px solid var(--border);
+    }
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .stat strong {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--accent);
+      font-size: 1.45rem;
+    }
+    .actions {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 0.75rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    @media (max-width: 840px) {
+      main { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Typing Test</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Type fast.</h1>
+      <p>Pick a timer, start typing the prompt, and track speed and accuracy live.</p>
+      <div class="segmented" id="modes">
+        <button type="button" class="active" data-seconds="30">30s</button>
+        <button type="button" data-seconds="60">60s</button>
+        <button type="button" data-seconds="120">120s</button>
+      </div>
+      <div id="prompt" class="prompt" aria-live="polite"></div>
+      <textarea id="input" placeholder="Start typing here..."></textarea>
+    </section>
+
+    <aside class="panel">
+      <div class="stats">
+        <div class="stat"><span>Time left</span><strong id="time">30</strong></div>
+        <div class="stat"><span>WPM</span><strong id="wpm">0</strong></div>
+        <div class="stat"><span>Accuracy</span><strong id="accuracy">100%</strong></div>
+        <div class="stat"><span>Best</span><strong id="best">0 WPM</strong></div>
+      </div>
+      <div class="actions">
+        <button id="reset" class="primary" type="button">Reset Test</button>
+      </div>
+      <footer>v1.0</footer>
+    </aside>
+  </main>
+
+  <script>
+    const promptSource = [
+      'Small tools earn trust when they solve one clear problem fast.',
+      'A clean interface buys you attention before any feature list can.',
+      'Shipping beats polishing when the app already teaches you what matters.',
+      'Local first browser tools feel instant because nothing waits on the network.',
+      'Good typing tests reward rhythm more than frantic accuracy chasing.',
+      'Build the thing people reopen, not the thing people merely admire.'
+    ];
+    const promptEl = document.getElementById('prompt');
+    const inputEl = document.getElementById('input');
+    let timerId = null;
+    let duration = 30;
+    let remaining = duration;
+    let promptText = '';
+    let startedAt = null;
+
+    function nextPrompt() {
+      return Array.from({ length: 3 }, () => promptSource[Math.floor(Math.random() * promptSource.length)]).join(' ');
+    }
+
+    function renderPrompt() {
+      const typed = inputEl.value;
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < promptText.length; i += 1) {
+        const span = document.createElement('span');
+        span.textContent = promptText[i];
+        if (i < typed.length) span.className = typed[i] === promptText[i] ? 'correct' : 'incorrect';
+        if (i === typed.length) span.className = 'current';
+        fragment.appendChild(span);
+      }
+      promptEl.textContent = '';
+      promptEl.appendChild(fragment);
+    }
+
+    function updateStats() {
+      const typed = inputEl.value;
+      const elapsedMinutes = Math.max((duration - remaining) / 60, 1 / 60);
+      const correctChars = typed.split('').filter((char, index) => char === promptText[index]).length;
+      const words = correctChars / 5;
+      const accuracy = typed.length ? Math.round((correctChars / typed.length) * 100) : 100;
+      const wpm = Math.round(words / elapsedMinutes);
+      document.getElementById('time').textContent = remaining;
+      document.getElementById('wpm').textContent = Number.isFinite(wpm) ? wpm : 0;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      const bestKey = `southForkTypingBest-${duration}`;
+      const best = Math.max(Number(localStorage.getItem(bestKey) || 0), Number.isFinite(wpm) ? wpm : 0);
+      localStorage.setItem(bestKey, best);
+      document.getElementById('best').textContent = `${best} WPM`;
+    }
+
+    function endTest() {
+      clearInterval(timerId);
+      timerId = null;
+      inputEl.disabled = true;
+      updateStats();
+    }
+
+    function startTimer() {
+      if (timerId) return;
+      startedAt = Date.now();
+      timerId = window.setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+        remaining = Math.max(duration - elapsed, 0);
+        updateStats();
+        if (remaining <= 0) endTest();
+      }, 200);
+    }
+
+    function reset() {
+      clearInterval(timerId);
+      timerId = null;
+      remaining = duration;
+      promptText = nextPrompt();
+      inputEl.value = '';
+      inputEl.disabled = false;
+      renderPrompt();
+      updateStats();
+      inputEl.focus();
+    }
+
+    inputEl.addEventListener('input', () => {
+      if (!timerId) startTimer();
+      renderPrompt();
+      updateStats();
+      if (inputEl.value.length >= promptText.length) endTest();
+    });
+
+    document.getElementById('reset').addEventListener('click', reset);
+    document.querySelectorAll('[data-seconds]').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('[data-seconds]').forEach((item) => item.classList.toggle('active', item === button));
+        duration = Number(button.dataset.seconds);
+        reset();
+      });
+    });
+
+    reset();
+  </script>
+</body>
+</html>
