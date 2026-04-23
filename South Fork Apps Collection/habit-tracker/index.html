@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main { width: min(940px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1; }
+    p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .add { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; margin-top: 1.25rem; }
+    input { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--text); font: inherit; padding: 0.9rem; }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14); }
+    button { min-height: 2.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; padding: 0 0.9rem; }
+    button.primary { border-color: var(--accent); background: var(--accent); color: #102113; }
+    button:hover { filter: brightness(1.08); }
+    .list { display: grid; gap: 0.75rem; margin-top: 1rem; }
+    .habit { display: grid; grid-template-columns: auto 1fr auto; gap: 0.85rem; align-items: center; padding: 0.9rem; border: 1px solid var(--border); border-radius: 8px; background: #111412; }
+    .habit input { width: 1.35rem; height: 1.35rem; accent-color: var(--accent); }
+    .habit strong { display: block; overflow-wrap: anywhere; }
+    .habit span { display: block; margin-top: 0.2rem; color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+    .message { min-height: 1.4rem; margin-top: 0.75rem; color: var(--muted); font-weight: 700; }
+    .message.error { color: var(--danger); }
+    footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    @media (max-width: 640px) {
+      .add, .habit { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Habit Tracker</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Check today.</h1>
+      <p>Track up to ten daily habits. Your browser saves the history locally.</p>
+      <div class="add">
+        <input id="habitName" maxlength="48" placeholder="New habit">
+        <button id="add" class="primary" type="button">Add Habit</button>
+      </div>
+      <div id="message" class="message"></div>
+      <div id="list" class="list" aria-live="polite"></div>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+  <script>
+    const key = 'southForkHabitTracker';
+    const today = () => new Date().toISOString().slice(0, 10);
+    let habits = JSON.parse(localStorage.getItem(key) || '[]');
+
+    function save() {
+      localStorage.setItem(key, JSON.stringify(habits));
+    }
+
+    function streakFor(habit) {
+      let current = 0;
+      let longest = 0;
+      let run = 0;
+      const done = new Set(habit.done || []);
+      const cursor = new Date();
+      cursor.setHours(0, 0, 0, 0);
+      for (let i = 0; i < 730; i += 1) {
+        const stamp = cursor.toISOString().slice(0, 10);
+        if (done.has(stamp)) {
+          run += 1;
+          if (i === current) current += 1;
+          longest = Math.max(longest, run);
+        } else {
+          run = 0;
+        }
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return { current, longest };
+    }
+
+    function render() {
+      const list = document.getElementById('list');
+      const message = document.getElementById('message');
+      list.textContent = '';
+      message.classList.remove('error');
+      message.textContent = `${habits.length}/10 habits saved for ${today()}.`;
+      if (!habits.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No habits yet.';
+        list.appendChild(empty);
+        return;
+      }
+      habits.forEach((habit, index) => {
+        const row = document.createElement('div');
+        row.className = 'habit';
+        const check = document.createElement('input');
+        check.type = 'checkbox';
+        check.checked = habit.done.includes(today());
+        check.addEventListener('change', () => {
+          habit.done = check.checked ? Array.from(new Set([...habit.done, today()])) : habit.done.filter((date) => date !== today());
+          save();
+          render();
+        });
+        const details = document.createElement('div');
+        const name = document.createElement('strong');
+        name.textContent = habit.name;
+        const streak = streakFor(habit);
+        const stats = document.createElement('span');
+        stats.textContent = `Current streak: ${streak.current} days. Longest streak: ${streak.longest} days.`;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          habits.splice(index, 1);
+          save();
+          render();
+        });
+        details.append(name, stats);
+        row.append(check, details, remove);
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const input = document.getElementById('habitName');
+      const name = input.value.trim();
+      const message = document.getElementById('message');
+      if (!name) return;
+      if (habits.length >= 10) {
+        message.textContent = 'Limit reached: 10 habits.';
+        message.classList.add('error');
+        return;
+      }
+      habits.push({ id: crypto.randomUUID(), name, done: [] });
+      input.value = '';
+      save();
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>

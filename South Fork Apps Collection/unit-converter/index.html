@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Converter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main { width: min(940px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1; }
+    p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    button { min-height: 2.7rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; padding: 0 0.9rem; }
+    button.active, button.primary { border-color: var(--accent); background: var(--accent); color: #102113; }
+    .converter { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem; align-items: end; margin-top: 1rem; }
+    label { display: grid; gap: 0.45rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+    input, select { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--text); font: inherit; padding: 0.9rem; }
+    input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14); }
+    .field { display: grid; gap: 0.75rem; }
+    .swap { min-width: 3rem; }
+    .formula { margin-top: 1rem; padding: 0.9rem; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--muted); font-weight: 700; }
+    footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    @media (max-width: 760px) {
+      .converter { grid-template-columns: 1fr; }
+      .swap { width: 100%; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Unit Converter</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Convert cleanly.</h1>
+      <p>Switch categories, choose units, and convert live while you type.</p>
+      <div id="tabs" class="tabs"></div>
+      <div class="converter">
+        <div class="field">
+          <label>From value <input id="fromValue" type="number" step="any" value="1"></label>
+          <label>From unit <select id="fromUnit"></select></label>
+        </div>
+        <button id="swap" class="swap" type="button">Swap</button>
+        <div class="field">
+          <label>To value <input id="toValue" type="text" readonly></label>
+          <label>To unit <select id="toUnit"></select></label>
+        </div>
+      </div>
+      <div id="formula" class="formula"></div>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+  <script>
+    const categories = {
+      Length: {
+        units: { Inches: 0.0254, Feet: 0.3048, Yards: 0.9144, Miles: 1609.344, Millimeters: 0.001, Centimeters: 0.01, Meters: 1, Kilometers: 1000 },
+        base: 'meter'
+      },
+      Weight: {
+        units: { Ounces: 0.0283495, Pounds: 0.45359237, Tons: 907.18474, Grams: 0.001, Kilograms: 1 },
+        base: 'kilogram'
+      },
+      Temperature: {
+        units: { Fahrenheit: 'f', Celsius: 'c', Kelvin: 'k' },
+        base: 'celsius'
+      },
+      Volume: {
+        units: { Teaspoons: 0.00492892, Tablespoons: 0.0147868, Cups: 0.236588, Pints: 0.473176, Quarts: 0.946353, Gallons: 3.78541, Milliliters: 0.001, Liters: 1 },
+        base: 'liter'
+      },
+      Speed: {
+        units: { 'Miles per hour': 0.44704, 'Feet per second': 0.3048, 'Meters per second': 1, 'Kilometers per hour': 0.277778, Knots: 0.514444 },
+        base: 'meter per second'
+      }
+    };
+    let category = 'Length';
+    const tabs = document.getElementById('tabs');
+    const fromValue = document.getElementById('fromValue');
+    const fromUnit = document.getElementById('fromUnit');
+    const toUnit = document.getElementById('toUnit');
+    const toValue = document.getElementById('toValue');
+
+    function toCelsius(value, unit) {
+      if (unit === 'Fahrenheit') return (value - 32) * 5 / 9;
+      if (unit === 'Kelvin') return value - 273.15;
+      return value;
+    }
+
+    function fromCelsius(value, unit) {
+      if (unit === 'Fahrenheit') return value * 9 / 5 + 32;
+      if (unit === 'Kelvin') return value + 273.15;
+      return value;
+    }
+
+    function convert() {
+      const value = Number(fromValue.value);
+      if (!Number.isFinite(value)) {
+        toValue.value = '';
+        return;
+      }
+      let result;
+      if (category === 'Temperature') {
+        result = fromCelsius(toCelsius(value, fromUnit.value), toUnit.value);
+      } else {
+        const units = categories[category].units;
+        result = value * units[fromUnit.value] / units[toUnit.value];
+      }
+      toValue.value = Number.parseFloat(result.toFixed(8)).toString();
+      document.getElementById('formula').textContent = `${value} ${fromUnit.value} = ${toValue.value} ${toUnit.value}`;
+    }
+
+    function fillUnits() {
+      const names = Object.keys(categories[category].units);
+      fromUnit.textContent = '';
+      toUnit.textContent = '';
+      names.forEach((name, index) => {
+        fromUnit.add(new Option(name, name, index === 0, index === 0));
+        toUnit.add(new Option(name, name, index === 1, index === 1));
+      });
+      convert();
+    }
+
+    function renderTabs() {
+      tabs.textContent = '';
+      Object.keys(categories).forEach((name) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = name;
+        button.className = name === category ? 'active' : '';
+        button.addEventListener('click', () => {
+          category = name;
+          renderTabs();
+          fillUnits();
+        });
+        tabs.appendChild(button);
+      });
+    }
+
+    document.getElementById('swap').addEventListener('click', () => {
+      const temp = fromUnit.value;
+      fromUnit.value = toUnit.value;
+      toUnit.value = temp;
+      convert();
+    });
+    [fromValue, fromUnit, toUnit].forEach((el) => el.addEventListener('input', convert));
+    renderTabs();
+    fillUnits();
+  </script>
+</body>
+</html>

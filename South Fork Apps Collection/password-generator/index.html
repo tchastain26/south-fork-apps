@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main { width: min(980px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0; }
+    .layout { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 1rem; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1; }
+    p { margin: 0; color: var(--muted); line-height: 1.6; }
+    label { display: grid; gap: 0.45rem; margin-top: 1rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .checks { display: grid; gap: 0.6rem; margin-top: 1rem; }
+    .check { display: flex; align-items: center; gap: 0.65rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--text); font-weight: 700; }
+    input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+    button { min-height: 2.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }
+    button.primary { width: 100%; margin-top: 1rem; border-color: var(--accent); background: var(--accent); color: #102113; }
+    button:hover { filter: brightness(1.08); }
+    .strength { margin-top: 1rem; padding: 0.8rem; border: 1px solid rgba(125, 219, 132, 0.35); border-radius: 8px; background: #111412; color: var(--accent); font-weight: 800; }
+    .list { display: grid; gap: 0.75rem; margin-top: 1rem; }
+    .password { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: center; padding: 0.85rem; border: 1px solid var(--border); border-radius: 8px; background: #111412; }
+    code { color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+    .message { min-height: 1.4rem; margin-top: 0.75rem; color: var(--muted); font-size: 0.9rem; font-weight: 700; }
+    .message.error { color: var(--danger); }
+    footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    @media (max-width: 780px) {
+      .layout { grid-template-columns: 1fr; }
+      .password { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Password Generator</span>
+  </nav>
+  <main>
+    <section class="layout">
+      <div class="panel">
+        <h1>Generate five.</h1>
+        <p>Make random passwords locally in your browser. Nothing is sent anywhere.</p>
+        <label>Length: <span id="lengthLabel">20</span>
+          <input id="length" type="range" min="8" max="64" value="20">
+        </label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="upper" checked>Uppercase</label>
+          <label class="check"><input type="checkbox" id="lower" checked>Lowercase</label>
+          <label class="check"><input type="checkbox" id="numbers" checked>Numbers</label>
+          <label class="check"><input type="checkbox" id="symbols" checked>Symbols</label>
+        </div>
+        <button id="generate" class="primary" type="button">Generate Passwords</button>
+        <div id="strength" class="strength">Strength: Very Strong</div>
+        <div id="message" class="message"></div>
+      </div>
+      <div class="panel">
+        <p>Five options, each with a copy button.</p>
+        <div id="list" class="list" aria-live="polite"></div>
+      </div>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+  <script>
+    const sets = {
+      upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lower: 'abcdefghijklmnopqrstuvwxyz',
+      numbers: '0123456789',
+      symbols: '!@#$%^&*()-_=+[]{};:,.?'
+    };
+    const lengthInput = document.getElementById('length');
+    const list = document.getElementById('list');
+    const message = document.getElementById('message');
+
+    function selectedSets() {
+      return Object.keys(sets).filter((key) => document.getElementById(key).checked);
+    }
+
+    function randomIndex(max) {
+      const values = new Uint32Array(1);
+      crypto.getRandomValues(values);
+      return values[0] % max;
+    }
+
+    function makePassword(length, keys) {
+      const chars = keys.map((key) => sets[key]).join('');
+      const password = keys.map((key) => sets[key][randomIndex(sets[key].length)]);
+      while (password.length < length) password.push(chars[randomIndex(chars.length)]);
+      return password.sort(() => randomIndex(3) - 1).join('');
+    }
+
+    function strengthLabel(length, keys) {
+      const score = length + keys.length * 8;
+      if (score >= 48) return 'Very Strong';
+      if (score >= 36) return 'Strong';
+      if (score >= 24) return 'Fair';
+      return 'Weak';
+    }
+
+    function render() {
+      const length = Number(lengthInput.value);
+      const keys = selectedSets();
+      document.getElementById('lengthLabel').textContent = length;
+      document.getElementById('strength').textContent = `Strength: ${strengthLabel(length, keys)}`;
+      list.textContent = '';
+      message.classList.remove('error');
+      if (!keys.length) {
+        message.textContent = 'Choose at least one character type.';
+        message.classList.add('error');
+        return;
+      }
+      message.textContent = 'Ready.';
+      Array.from({ length: 5 }).forEach(() => {
+        const row = document.createElement('div');
+        row.className = 'password';
+        const code = document.createElement('code');
+        code.textContent = makePassword(length, keys);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'Copy';
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.textContent);
+            message.textContent = 'Copied.';
+          } catch {
+            message.textContent = 'Copy failed. Select the password manually.';
+            message.classList.add('error');
+          }
+        });
+        row.append(code, button);
+        list.appendChild(row);
+      });
+    }
+
+    lengthInput.addEventListener('input', render);
+    document.querySelectorAll('input[type="checkbox"]').forEach((box) => box.addEventListener('change', render));
+    document.getElementById('generate').addEventListener('click', render);
+    render();
+  </script>
+</body>
+</html>

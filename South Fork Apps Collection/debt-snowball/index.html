@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt Snowball</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1; }
+    h2 { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .form { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 0.75rem; margin-top: 1rem; align-items: end; }
+    label { display: grid; gap: 0.4rem; color: var(--muted); font-size: 0.78rem; font-weight: 800; }
+    input { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--text); font: inherit; padding: 0.8rem; }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14); }
+    button { min-height: 2.7rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; padding: 0 0.9rem; }
+    button.primary { border-color: var(--accent); background: var(--accent); color: #102113; }
+    .full { grid-column: 1 / -1; }
+    .debts, .results { display: grid; gap: 0.75rem; margin-top: 1rem; }
+    .debt, .result { padding: 0.9rem; border: 1px solid var(--border); border-radius: 8px; background: #111412; }
+    .debt { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: center; }
+    .debt strong, .result strong { display: block; overflow-wrap: anywhere; }
+    .debt span, .result span { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+    .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .metric { padding: 0.9rem; border: 1px solid rgba(125, 219, 132, 0.35); border-radius: 8px; background: #111412; }
+    .metric span { display: block; color: var(--muted); font-size: 0.78rem; font-weight: 800; }
+    .metric strong { display: block; margin-top: 0.25rem; color: var(--accent); font-size: 1.45rem; }
+    .bar { height: 0.55rem; margin-top: 0.65rem; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+    .bar i { display: block; height: 100%; background: var(--accent); }
+    .message { min-height: 1.4rem; margin-top: 0.75rem; color: var(--muted); font-weight: 700; }
+    .message.error { color: var(--danger); }
+    footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    @media (max-width: 900px) { .layout, .form, .summary { grid-template-columns: 1fr; } .nav { padding-inline: 1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Debt Snowball</span>
+  </nav>
+  <main>
+    <section class="layout">
+      <div class="panel">
+        <h1>Roll the snowball.</h1>
+        <p>Add debts, extra monthly payment, and see a smallest-balance-first payoff estimate.</p>
+        <div class="form">
+          <label>Debt name <input id="name" value="Credit Card"></label>
+          <label>Balance <input id="balance" type="number" min="0" step="0.01" value="2400"></label>
+          <label>Minimum <input id="minimum" type="number" min="0" step="0.01" value="75"></label>
+          <label>APR % <input id="apr" type="number" min="0" step="0.01" value="19.99"></label>
+          <button id="add" class="primary full" type="button">Add Debt</button>
+        </div>
+        <label>Extra monthly snowball payment
+          <input id="extra" type="number" min="0" step="0.01" value="100">
+        </label>
+        <div id="message" class="message"></div>
+        <div id="debts" class="debts"></div>
+      </div>
+      <aside class="panel">
+        <h2>Payoff Plan</h2>
+        <div class="summary">
+          <div class="metric"><span>Debt-free in</span><strong id="months">0 mo</strong></div>
+          <div class="metric"><span>Total interest</span><strong id="interest">$0</strong></div>
+          <div class="metric"><span>Monthly payment</span><strong id="payment">$0</strong></div>
+        </div>
+        <div id="results" class="results"></div>
+      </aside>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+  <script>
+    const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    let debts = [
+      { name: 'Credit Card', balance: 2400, minimum: 75, apr: 19.99 },
+      { name: 'Car Loan', balance: 7800, minimum: 260, apr: 6.2 }
+    ];
+
+    function readNumber(id) {
+      return Math.max(0, Number(document.getElementById(id).value) || 0);
+    }
+
+    function simulate() {
+      const extra = readNumber('extra');
+      const original = debts.filter((debt) => debt.balance > 0).map((debt) => ({ ...debt, remaining: debt.balance, payoffMonth: null, interest: 0 }));
+      const plan = [...original].sort((a, b) => a.balance - b.balance);
+      let months = 0;
+      let totalInterest = 0;
+      const basePayment = plan.reduce((sum, debt) => sum + debt.minimum, 0) + extra;
+      const paidOff = [];
+      while (plan.some((debt) => debt.remaining > 0.01) && months < 600) {
+        months += 1;
+        let available = basePayment;
+        plan.forEach((debt) => {
+          if (debt.remaining <= 0) return;
+          const monthlyRate = debt.apr / 100 / 12;
+          const interest = debt.remaining * monthlyRate;
+          debt.remaining += interest;
+          debt.interest += interest;
+          totalInterest += interest;
+        });
+        plan.forEach((debt) => {
+          if (debt.remaining <= 0) return;
+          const pay = Math.min(debt.minimum, debt.remaining, available);
+          debt.remaining -= pay;
+          available -= pay;
+          if (debt.remaining <= 0.01 && !debt.payoffMonth) {
+            debt.payoffMonth = months;
+            paidOff.push(debt);
+          }
+        });
+        for (const debt of plan) {
+          if (available <= 0) break;
+          if (debt.remaining <= 0) continue;
+          const pay = Math.min(debt.remaining, available);
+          debt.remaining -= pay;
+          available -= pay;
+          if (debt.remaining <= 0.01 && !debt.payoffMonth) {
+            debt.payoffMonth = months;
+            paidOff.push(debt);
+          }
+        }
+      }
+      return { plan, paidOff, months, totalInterest, basePayment, stuck: months >= 600 };
+    }
+
+    function renderDebts() {
+      const box = document.getElementById('debts');
+      box.textContent = '';
+      debts.forEach((debt, index) => {
+        const row = document.createElement('div');
+        row.className = 'debt';
+        const details = document.createElement('div');
+        const name = document.createElement('strong');
+        name.textContent = debt.name;
+        const stats = document.createElement('span');
+        stats.textContent = `${money.format(debt.balance)} balance. ${money.format(debt.minimum)} min. ${debt.apr}% APR.`;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          debts.splice(index, 1);
+          render();
+        });
+        details.append(name, stats);
+        row.append(details, remove);
+        box.appendChild(row);
+      });
+    }
+
+    function renderResults() {
+      const result = simulate();
+      document.getElementById('months').textContent = result.stuck ? '600+ mo' : `${result.months} mo`;
+      document.getElementById('interest').textContent = money.format(result.totalInterest);
+      document.getElementById('payment').textContent = money.format(result.basePayment);
+      const results = document.getElementById('results');
+      results.textContent = '';
+      if (!debts.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'Add at least one debt.';
+        results.appendChild(empty);
+        return;
+      }
+      result.plan.forEach((debt, index) => {
+        const card = document.createElement('div');
+        card.className = 'result';
+        const name = document.createElement('strong');
+        name.textContent = `${index + 1}. ${debt.name}`;
+        const stats = document.createElement('span');
+        stats.textContent = debt.payoffMonth ? `Paid off in month ${debt.payoffMonth}. Interest: ${money.format(debt.interest)}.` : 'Not paid off within 600 months.';
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        const fill = document.createElement('i');
+        const pct = debt.payoffMonth ? Math.max(8, 100 - (debt.payoffMonth / Math.max(result.months, 1)) * 92) : 8;
+        fill.style.width = `${pct}%`;
+        bar.appendChild(fill);
+        card.append(name, stats, bar);
+        results.appendChild(card);
+      });
+    }
+
+    function render() {
+      renderDebts();
+      renderResults();
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim() || 'Debt';
+      const balance = readNumber('balance');
+      const minimum = readNumber('minimum');
+      const apr = readNumber('apr');
+      const message = document.getElementById('message');
+      message.classList.remove('error');
+      if (!balance || !minimum) {
+        message.textContent = 'Balance and minimum payment are required.';
+        message.classList.add('error');
+        return;
+      }
+      debts.push({ name, balance, minimum, apr });
+      message.textContent = 'Debt added.';
+      render();
+    });
+    document.getElementById('extra').addEventListener('input', renderResults);
+    render();
+  </script>
+</body>
+</html>

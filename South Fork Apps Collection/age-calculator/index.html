@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #ff9f9f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    main { width: min(980px, calc(100% - 2rem)); margin: 0 auto; padding: 2rem 0; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1; }
+    p { margin: 0; color: var(--muted); line-height: 1.6; }
+    label { display: grid; gap: 0.45rem; margin-top: 1.25rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+    input { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: #111412; color: var(--text); font: inherit; padding: 0.9rem; color-scheme: dark; }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14); }
+    .age-line { margin-top: 1.25rem; padding: 1rem; border: 1px solid rgba(125, 219, 132, 0.35); border-radius: 8px; background: #111412; }
+    .age-line span { color: var(--muted); font-weight: 700; }
+    .age-line strong { display: block; margin-top: 0.35rem; color: var(--accent); font-size: clamp(1.6rem, 6vw, 3rem); line-height: 1.1; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+    .card { min-height: 8rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); }
+    .card span { display: block; color: var(--muted); font-size: 0.8rem; font-weight: 800; }
+    .card strong { display: block; margin-top: 0.45rem; font-size: 1.7rem; overflow-wrap: anywhere; }
+    .error { min-height: 1.4rem; margin-top: 0.75rem; color: var(--danger); font-weight: 700; }
+    footer { margin-top: 1.5rem; color: var(--muted); font-size: 0.8rem; text-align: center; }
+    @media (max-width: 840px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .nav { padding-inline: 1rem; } }
+    @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Age Calculator</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Count the miles.</h1>
+      <p>Enter a birthdate for exact age plus rough life stats. Estimates use common averages, not medical data.</p>
+      <label>Birthdate
+        <input id="birthdate" type="date" value="1990-01-01">
+      </label>
+      <div id="error" class="error"></div>
+      <div class="age-line">
+        <span>Exact age</span>
+        <strong id="exactAge">0 years, 0 months, 0 days</strong>
+      </div>
+      <div class="grid">
+        <div class="card"><span>Total days alive</span><strong id="days">0</strong></div>
+        <div class="card"><span>Approx heartbeats</span><strong id="beats">0</strong></div>
+        <div class="card"><span>Approx breaths</span><strong id="breaths">0</strong></div>
+        <div class="card"><span>Full moons</span><strong id="moons">0</strong></div>
+      </div>
+    </section>
+    <footer>v1.0</footer>
+  </main>
+  <script>
+    const input = document.getElementById('birthdate');
+    const number = new Intl.NumberFormat('en-US');
+    const MS_DAY = 86400000;
+
+    function exactAge(birth, today) {
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      let days = today.getDate() - birth.getDate();
+      if (days < 0) {
+        months -= 1;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+      return { years, months, days };
+    }
+
+    function render() {
+      const error = document.getElementById('error');
+      const birth = new Date(`${input.value}T00:00:00`);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (!input.value || birth > today) {
+        error.textContent = 'Enter a real birthdate that is not in the future.';
+        return;
+      }
+      error.textContent = '';
+      const age = exactAge(birth, today);
+      const days = Math.max(0, Math.floor((today - birth) / MS_DAY));
+      document.getElementById('exactAge').textContent = `${age.years} years, ${age.months} months, ${age.days} days`;
+      document.getElementById('days').textContent = number.format(days);
+      document.getElementById('beats').textContent = number.format(Math.round(days * 24 * 60 * 72));
+      document.getElementById('breaths').textContent = number.format(Math.round(days * 24 * 60 * 16));
+      document.getElementById('moons').textContent = number.format(Math.floor(days / 29.53059));
+    }
+
+    input.addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>
