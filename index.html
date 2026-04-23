@@ -100,8 +100,56 @@
   }
   .asymmetric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  [data-app-card] {
+    min-height: 255px;
+    padding: 1.15rem !important;
+    border-radius: 0.5rem !important;
+  }
+  [data-app-card] > div:first-child {
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    left: auto !important;
+    padding: 0.35rem 0.55rem !important;
+    max-width: calc(100% - 1.5rem);
+    border-radius: 0.35rem !important;
+    font-size: 0.62rem !important;
+    line-height: 1;
+    letter-spacing: 0.06em !important;
+    box-shadow: none !important;
+    transform: none !important;
+    white-space: nowrap;
+  }
+  [data-app-card] > div:first-child:hover {
+    transform: none !important;
+  }
+  [data-app-card] > div:nth-child(2) {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 0.5rem !important;
+  }
+  [data-app-card] .material-symbols-outlined {
+    font-size: 1.85rem !important;
+  }
+  [data-app-card] h4 {
+    padding-right: 4.8rem;
+    margin-bottom: 0.6rem !important;
+    font-size: 1.35rem !important;
+    line-height: 1.05 !important;
+  }
+  [data-app-card] p {
+    margin-bottom: 1rem !important;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  [data-app-card] a {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    border-radius: 0.45rem !important;
+    font-size: 0.72rem !important;
   }
   #riverCanvas {
     position: fixed;
@@ -170,31 +218,31 @@
 <main class="relative">
   <canvas id="riverCanvas"></canvas>
 
-  <section class="relative min-h-[75vh] flex items-center pt-24 overflow-hidden">
+  <section class="relative min-h-[52vh] flex items-center pt-24 overflow-hidden">
     <div class="absolute inset-0 z-0 opacity-30 topo-bg"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background z-1"></div>
     <div class="relative z-10 w-full max-w-screen-2xl mx-auto px-6 md:px-12 flex items-center justify-center">
       <div class="text-center">
-        <div class="font-label text-primary tracking-[0.3em] uppercase text-sm mb-6 flex items-center gap-3">
+        <div class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-4 flex items-center gap-3 justify-center">
           <span class="w-12 h-[1px] bg-primary"></span>
           BASE CAMP // 36.469N / 82.263W
         </div>
-        <h1 class="font-headline font-extrabold text-6xl md:text-8xl lg:text-9xl tracking-tighter text-on-surface leading-[0.85] mb-8">
+        <h1 class="font-headline font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tighter text-on-surface leading-[0.85] mb-5">
           South Fork <br/>
           <span class="text-primary italic">Apps</span>
         </h1>
-        <p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-xl leading-relaxed">
+        <p class="font-body text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed">
           Field-tested web apps for the digital wilderness. Small tools, solo-built, deployed from the hills of East Tennessee.
         </p>
       </div>
     </div>
   </section>
 
-  <section id="repository" class="py-32 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
-    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+  <section id="repository" class="py-20 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
       <div class="max-w-2xl">
-        <h2 class="font-headline font-bold text-5xl md:text-6xl tracking-tight mb-6">The Repository</h2>
-        <p class="text-on-surface-variant text-lg leading-relaxed">
+        <h2 class="font-headline font-bold text-4xl md:text-5xl tracking-tight mb-4">The Repository</h2>
+        <p class="text-on-surface-variant text-base leading-relaxed">
           A categorized field kit of small, useful web apps. Ten modules live. Every module built solo.
         </p>
       </div>
@@ -203,21 +251,21 @@
       </div>
     </div>
 
-    <div class="mb-12 grid gap-4 rounded-xl border border-outline-variant/20 bg-surface-container-low/80 p-4 backdrop-blur-sm md:grid-cols-[1fr_260px_auto] md:items-end">
+    <div class="mb-8 grid gap-3 rounded-lg border border-outline-variant/20 bg-surface-container-low/80 p-3 backdrop-blur-sm md:grid-cols-[1fr_230px_auto] md:items-end">
       <label class="block">
         <span class="mb-2 block font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Search</span>
-        <input id="appSearch" type="search" placeholder="Search apps" class="h-12 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-primary" />
+        <input id="appSearch" type="search" placeholder="Search apps" class="h-10 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-primary" />
       </label>
       <label class="block">
         <span class="mb-2 block font-label text-xs font-black uppercase tracking-widest text-on-surface-variant">Category</span>
-        <select id="categoryFilter" class="h-12 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface focus:border-primary focus:ring-primary">
+        <select id="categoryFilter" class="h-10 w-full rounded-lg border border-outline-variant/30 bg-surface text-on-surface focus:border-primary focus:ring-primary">
           <option value="all">All Categories</option>
           <option value="Daily Utilities">Daily Utilities</option>
           <option value="Text & Content">Text & Content</option>
           <option value="Work & Design">Work & Design</option>
         </select>
       </label>
-      <div id="resultCount" class="rounded-lg border border-primary/20 bg-primary/10 px-5 py-3 text-center font-label text-xs font-black uppercase tracking-widest text-primary md:min-w-28">10 apps</div>
+      <div id="resultCount" class="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2.5 text-center font-label text-xs font-black uppercase tracking-widest text-primary md:min-w-24">10 apps</div>
     </div>
 
     <div id="appGrid" class="asymmetric-grid">
