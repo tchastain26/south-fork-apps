@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 560px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; gap: 4px; }
+    .tab { flex: 1; padding: 8px; text-align: center; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--text-mid); border: none; background: transparent; font-family: var(--font); }
+    .tab.active { background: var(--primary-dim); color: var(--text); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .input-row { display: flex; gap: 8px; }
+    input[type=number] { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 16px; font-weight: 700; padding: 10px 13px; outline: none; }
+    input[type=number]:focus { border-color: var(--primary); }
+    .unit { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; padding: 0 4px; }
+    .bmi-hero { text-align: center; padding: 24px; border-radius: var(--radius); border: 2px solid var(--border); }
+    .bmi-number { font-size: 64px; font-weight: 800; line-height: 1; }
+    .bmi-category { font-size: 18px; font-weight: 700; margin-top: 8px; }
+    .bmi-range { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
+    .scale { display: flex; border-radius: 8px; overflow: hidden; height: 8px; margin-top: 16px; }
+    .scale-seg { flex: 1; }
+    .marker-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .info-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .info-value { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .disclaimer { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>BMI Calculator</h1>
+</header>
+<main>
+  <div class="tabs">
+    <button class="tab active" id="tabImp" onclick="setSystem('imperial')">Imperial (lbs / ft)</button>
+    <button class="tab" id="tabMet" onclick="setSystem('metric')">Metric (kg / cm)</button>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Height</label>
+      <div class="input-row" id="heightRow">
+        <input type="number" id="feet" value="5" min="1" max="9" oninput="calc()">
+        <span class="unit">ft</span>
+        <input type="number" id="inches" value="10" min="0" max="11" oninput="calc()">
+        <span class="unit">in</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Weight</label>
+      <div class="input-row">
+        <input type="number" id="weight" value="166" min="1" oninput="calc()">
+        <span class="unit" id="weightUnit">lbs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bmi-hero" id="bmiHero">
+    <div class="bmi-number" id="bmiNum">—</div>
+    <div class="bmi-category" id="bmiCat"></div>
+    <div class="bmi-range" id="bmiRange"></div>
+    <div class="scale">
+      <div class="scale-seg" style="background:#4361ee;flex:1.5"></div>
+      <div class="scale-seg" style="background:#7ddb84;flex:1"></div>
+      <div class="scale-seg" style="background:#f7c876;flex:1"></div>
+      <div class="scale-seg" style="background:#f28b82;flex:2"></div>
+    </div>
+    <div class="marker-row"><span>Under 18.5</span><span>18.5</span><span>25</span><span>30</span><span>40+</span></div>
+  </div>
+
+  <div class="info-grid" id="infoGrid"></div>
+
+  <p class="disclaimer">BMI is a screening tool, not a diagnostic measure. It does not account for muscle mass, bone density, or fat distribution. Consult a healthcare provider for a full health assessment.</p>
+</main>
+<script>
+let system = 'imperial';
+
+function setSystem(s) {
+  system = s;
+  document.getElementById('tabImp').classList.toggle('active', s === 'imperial');
+  document.getElementById('tabMet').classList.toggle('active', s === 'metric');
+  document.getElementById('weightUnit').textContent = s === 'imperial' ? 'lbs' : 'kg';
+  const hr = document.getElementById('heightRow');
+  if (s === 'imperial') {
+    hr.innerHTML = `<input type="number" id="feet" value="5" min="1" max="9" oninput="calc()"><span class="unit">ft</span><input type="number" id="inches" value="10" min="0" max="11" oninput="calc()"><span class="unit">in</span>`;
+  } else {
+    hr.innerHTML = `<input type="number" id="cm" value="178" min="50" max="280" oninput="calc()"><span class="unit">cm</span>`;
+  }
+  calc();
+}
+
+function calc() {
+  let heightM, weightKg;
+  if (system === 'imperial') {
+    const ft = parseFloat(document.getElementById('feet')?.value) || 0;
+    const inch = parseFloat(document.getElementById('inches')?.value) || 0;
+    heightM = (ft * 12 + inch) * 0.0254;
+    weightKg = (parseFloat(document.getElementById('weight').value) || 0) * 0.453592;
+  } else {
+    heightM = (parseFloat(document.getElementById('cm')?.value) || 0) / 100;
+    weightKg = parseFloat(document.getElementById('weight').value) || 0;
+  }
+
+  if (!heightM || !weightKg) { document.getElementById('bmiNum').textContent = '—'; return; }
+
+  const bmi = weightKg / (heightM * heightM);
+  const cat = bmi < 18.5 ? ['Underweight','#4361ee'] : bmi < 25 ? ['Healthy Weight','#7ddb84'] : bmi < 30 ? ['Overweight','#f7c876'] : ['Obese','#f28b82'];
+
+  document.getElementById('bmiNum').textContent = bmi.toFixed(1);
+  document.getElementById('bmiNum').style.color = cat[1];
+  document.getElementById('bmiCat').textContent = cat[0];
+  document.getElementById('bmiCat').style.color = cat[1];
+  document.getElementById('bmiHero').style.borderColor = cat[1];
+
+  const loKg = 18.5 * heightM * heightM, hiKg = 24.9 * heightM * heightM;
+  const loLbs = loKg / 0.453592, hiLbs = hiKg / 0.453592;
+  document.getElementById('bmiRange').textContent = system === 'imperial'
+    ? `Healthy range: ${loLbs.toFixed(0)}–${hiLbs.toFixed(0)} lbs`
+    : `Healthy range: ${loKg.toFixed(1)}–${hiKg.toFixed(1)} kg`;
+
+  document.getElementById('infoGrid').innerHTML = `
+    <div class="info-item"><div class="info-label">BMI</div><div class="info-value">${bmi.toFixed(2)}</div></div>
+    <div class="info-item"><div class="info-label">Category</div><div class="info-value" style="color:${cat[1]}">${cat[0]}</div></div>
+    <div class="info-item"><div class="info-label">Healthy Low</div><div class="info-value">${system==='imperial'?loLbs.toFixed(0)+' lbs':loKg.toFixed(1)+' kg'}</div></div>
+    <div class="info-item"><div class="info-label">Healthy High</div><div class="info-value">${system==='imperial'?hiLbs.toFixed(0)+' lbs':hiKg.toFixed(1)+' kg'}</div></div>
+  `;
+}
+calc();
+</script>
+</body>
+</html>

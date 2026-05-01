@@ -88,6 +88,7 @@ APP_META = {
     "percentage-calculator":  ("Percentage Calculator",      "Calculate percentages, percentage change, and add or subtract percentages instantly. Free online percentage calculator."),
     "color-converter":        ("Color Format Converter",     "Convert colors between HEX, RGB, HSL, and HSB formats with a live preview. Free online color converter."),
     "binary-hex-converter":   ("Binary, Hex & Decimal Converter", "Convert between binary, hexadecimal, decimal, and octal instantly. Free online number base converter."),
+    "bmi-calculator":         ("BMI Calculator",              "Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range."),
 }
 
 def update_app(app_name, title, description):
