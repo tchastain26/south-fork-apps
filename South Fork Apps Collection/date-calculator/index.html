@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate the difference between two dates or add/subtract days from any date. Free online date calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1a1f1b; --surface-2: #202722;
+      --border: #2a2f2b; --accent: #7ddb84; --text: #e8e8e8; --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-back { color: var(--accent); text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title { color: var(--text); font-size: 0.875rem; font-weight: 600; }
+    main { width: min(660px, calc(100% - 2rem)); margin: 3rem auto; display: flex; flex-direction: column; gap: 1.75rem; }
+    h1 { font-size: 1.75rem; font-weight: 800; }
+    h1 span { color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .card-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 140px; }
+    label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    input[type="date"], select {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 0.65rem 0.85rem; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem; outline: none; width: 100%; transition: border-color 0.15s;
+      color-scheme: dark;
+    }
+    input[type="date"]:focus, select:focus { border-color: var(--accent); }
+    .result-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; }
+    .result-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 0.9rem 1rem; }
+    .result-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.25rem; }
+    .result-value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+    .result-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+    .empty { color: var(--border); font-size: 1.4rem; }
+    .add-field { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+    .add-field input[type="number"] {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 0.65rem 0.85rem; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 700; outline: none; width: 100px; transition: border-color 0.15s;
+    }
+    .add-field input[type="number"]:focus { border-color: var(--accent); }
+    .add-result { background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 0.9rem 1rem; }
+    .add-result-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.25rem; }
+    .add-result-value { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .divider { height: 1px; background: var(--border); }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../../index.html" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Date Calculator</span>
+</nav>
+<main>
+  <div>
+    <h1>Date <span>Calculator</span></h1>
+    <p class="subtitle">Calculate the difference between two dates, or add/subtract time from a date.</p>
+  </div>
+
+  <!-- Section 1: Difference between dates -->
+  <div class="card">
+    <div class="card-title">Difference Between Two Dates</div>
+    <div class="row">
+      <div class="field">
+        <label for="date1">Start Date</label>
+        <input type="date" id="date1">
+      </div>
+      <div class="field">
+        <label for="date2">End Date</label>
+        <input type="date" id="date2">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="skip-weekends">Count</label>
+        <select id="skip-weekends">
+          <option value="all">All days</option>
+          <option value="weekdays">Weekdays only</option>
+        </select>
+      </div>
+    </div>
+    <div class="result-row" id="diff-results">
+      <div class="result-card"><div class="result-label">Days</div><div class="result-value empty">—</div></div>
+      <div class="result-card"><div class="result-label">Weeks</div><div class="result-value empty">—</div></div>
+      <div class="result-card"><div class="result-label">Months</div><div class="result-value empty">—</div></div>
+      <div class="result-card"><div class="result-label">Years</div><div class="result-value empty">—</div></div>
+    </div>
+  </div>
+
+  <!-- Section 2: Add/subtract from date -->
+  <div class="card">
+    <div class="card-title">Add or Subtract Time</div>
+    <div class="row">
+      <div class="field">
+        <label for="base-date">Start Date</label>
+        <input type="date" id="base-date">
+      </div>
+    </div>
+    <div class="add-field">
+      <div class="field" style="flex:0 0 100px">
+        <label for="add-amount">Amount</label>
+        <input type="number" id="add-amount" value="30" min="-36500" max="36500">
+      </div>
+      <div class="field">
+        <label for="add-unit">Unit</label>
+        <select id="add-unit">
+          <option value="days">Days</option>
+          <option value="weeks">Weeks</option>
+          <option value="months">Months</option>
+          <option value="years">Years</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-result">
+      <div class="add-result-label">Result</div>
+      <div class="add-result-value" id="add-result">—</div>
+    </div>
+  </div>
+</main>
+<script>
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function fmtDate(d) {
+    return `${DAYS[d.getDay()]}, ${MONTHS_FULL[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  }
+
+  function countWeekdays(d1, d2) {
+    let count = 0;
+    let cur = new Date(d1);
+    while (cur <= d2) {
+      const day = cur.getDay();
+      if (day !== 0 && day !== 6) count++;
+      cur.setDate(cur.getDate() + 1);
+    }
+    return count;
+  }
+
+  function updateDiff() {
+    const v1 = document.getElementById('date1').value;
+    const v2 = document.getElementById('date2').value;
+    const skipWeekends = document.getElementById('skip-weekends').value === 'weekdays';
+
+    if (!v1 || !v2) {
+      document.getElementById('diff-results').innerHTML = `
+        <div class="result-card"><div class="result-label">Days</div><div class="result-value empty">—</div></div>
+        <div class="result-card"><div class="result-label">Weeks</div><div class="result-value empty">—</div></div>
+        <div class="result-card"><div class="result-label">Months</div><div class="result-value empty">—</div></div>
+        <div class="result-card"><div class="result-label">Years</div><div class="result-value empty">—</div></div>`;
+      return;
+    }
+
+    const d1 = new Date(v1 + 'T00:00:00');
+    const d2 = new Date(v2 + 'T00:00:00');
+    const earlier = d1 <= d2 ? d1 : d2;
+    const later = d1 <= d2 ? d2 : d1;
+    const negative = d1 > d2;
+    const sign = negative ? '−' : '';
+
+    let days;
+    if (skipWeekends) {
+      days = countWeekdays(earlier, later);
+    } else {
+      days = Math.round((later - earlier) / 86400000);
+    }
+
+    const weeks = (days / 7).toFixed(2);
+    const ms = later - earlier;
+    const months = ((later.getFullYear() - earlier.getFullYear()) * 12 + (later.getMonth() - earlier.getMonth())).toFixed(0);
+    const years = (ms / (365.25 * 86400000)).toFixed(2);
+
+    const dayLabel = skipWeekends ? 'Weekdays' : 'Days';
+
+    document.getElementById('diff-results').innerHTML = `
+      <div class="result-card">
+        <div class="result-label">${dayLabel}</div>
+        <div class="result-value" style="color:var(--accent)">${sign}${parseInt(days).toLocaleString()}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Weeks</div>
+        <div class="result-value" style="color:var(--accent)">${sign}${parseFloat(weeks).toLocaleString()}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Months</div>
+        <div class="result-value" style="color:var(--accent)">${sign}${parseInt(months).toLocaleString()}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Years</div>
+        <div class="result-value" style="color:var(--accent)">${sign}${parseFloat(years).toLocaleString()}</div>
+        <div class="result-sub">${sign}${days} ${dayLabel.toLowerCase()}</div>
+      </div>`;
+  }
+
+  function updateAdd() {
+    const base = document.getElementById('base-date').value;
+    const amount = parseInt(document.getElementById('add-amount').value) || 0;
+    const unit = document.getElementById('add-unit').value;
+    const el = document.getElementById('add-result');
+
+    if (!base) { el.textContent = '—'; return; }
+
+    const d = new Date(base + 'T00:00:00');
+    if (unit === 'days') d.setDate(d.getDate() + amount);
+    else if (unit === 'weeks') d.setDate(d.getDate() + amount * 7);
+    else if (unit === 'months') d.setMonth(d.getMonth() + amount);
+    else if (unit === 'years') d.setFullYear(d.getFullYear() + amount);
+
+    el.textContent = fmtDate(d);
+  }
+
+  ['date1','date2','skip-weekends'].forEach(id => document.getElementById(id).addEventListener('change', updateDiff));
+  ['base-date','add-amount','add-unit'].forEach(id => document.getElementById(id).addEventListener('input', updateAdd));
+  document.getElementById('add-amount').addEventListener('change', updateAdd);
+
+  // set today as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date1').value = today;
+  document.getElementById('base-date').value = today;
+</script>
+</body>
+</html>

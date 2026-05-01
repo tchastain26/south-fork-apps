@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transfer Time Estimator | South Fork Apps</title>
+  <meta name="description" content="Estimate how long a file transfer will take at any connection speed. Free online transfer time calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav-back{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav-back:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(660px,calc(100% - 2rem));margin:3rem auto;display:flex;flex-direction:column;gap:1.5rem;}
+    h1{font-size:1.75rem;font-weight:800;}
+    h1 span{color:var(--accent);}
+    .subtitle{color:var(--muted);font-size:.9rem;margin-top:.25rem;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;}
+    .row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;}
+    .field{display:flex;flex-direction:column;gap:.4rem;flex:1;min-width:120px;}
+    label{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+    input[type="number"],select{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:.65rem .85rem;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:600;outline:none;width:100%;transition:border-color .15s;}
+    input[type="number"]:focus,select:focus{border-color:var(--accent);}
+    .results{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;}
+    .result-card{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:.9rem 1rem;}
+    .rl{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.25rem;}
+    .rv{font-size:1.3rem;font-weight:700;color:var(--accent);}
+    .rv.empty{color:var(--border);}
+    .rs{font-size:.72rem;color:var(--muted);margin-top:.15rem;}
+    .speeds{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem;}
+    .speed-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:.6rem .9rem;}
+    .speed-name{font-size:.8rem;font-weight:600;color:var(--muted);}
+    .speed-time{font-size:.85rem;font-weight:700;color:var(--accent);}
+    .speed-time.empty{color:var(--border);}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../../index.html" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Transfer Time Estimator</span>
+</nav>
+<main>
+  <div>
+    <h1>Transfer Time <span>Estimator</span></h1>
+    <p class="subtitle">How long will it take to transfer your file? Enter size and speed to find out.</p>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label for="size-val">File Size</label>
+        <input type="number" id="size-val" min="0" step="any" value="1" placeholder="1">
+      </div>
+      <div class="field" style="flex:0 0 110px">
+        <label for="size-unit">Unit</label>
+        <select id="size-unit">
+          <option value="KB">KB</option>
+          <option value="MB" selected>MB</option>
+          <option value="GB">GB</option>
+          <option value="TB">TB</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="speed-val">Transfer Speed</label>
+        <input type="number" id="speed-val" min="0" step="any" value="100" placeholder="100">
+      </div>
+      <div class="field" style="flex:0 0 110px">
+        <label for="speed-unit">Unit</label>
+        <select id="speed-unit">
+          <option value="Kbps">Kbps</option>
+          <option value="Mbps" selected>Mbps</option>
+          <option value="Gbps">Gbps</option>
+          <option value="KBps">KB/s</option>
+          <option value="MBps">MB/s</option>
+          <option value="GBps">GB/s</option>
+        </select>
+      </div>
+    </div>
+    <div class="results" id="main-results">
+      <div class="result-card"><div class="rl">Time</div><div class="rv empty" id="out-time">—</div></div>
+      <div class="result-card"><div class="rl">File (Bits)</div><div class="rv empty" id="out-bits">—</div></div>
+      <div class="result-card"><div class="rl">Speed (Bps)</div><div class="rv empty" id="out-bps">—</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <label style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Same file at common speeds</label>
+    <div class="speeds" id="speed-table"></div>
+  </div>
+</main>
+<script>
+  const COMMON_SPEEDS = [
+    {name:'USB 2.0',bps:480e6},{name:'USB 3.0',bps:5e9},{name:'USB 3.1',bps:10e9},
+    {name:'Thunderbolt 3',bps:40e9},{name:'Gigabit Ethernet',bps:1e9},
+    {name:'Wi-Fi 5 (avg)',bps:433e6},{name:'Wi-Fi 6 (avg)',bps:1.2e9},
+    {name:'5G (avg)',bps:100e6},{name:'4G LTE (avg)',bps:20e6},
+    {name:'USB-C (2.0)',bps:480e6},{name:'SATA SSD',bps:6e9},{name:'NVMe SSD',bps:32e9},
+  ];
+
+  function toBytes(val,unit){
+    const v=parseFloat(val);if(isNaN(v)||v<=0)return null;
+    const map={KB:1e3,MB:1e6,GB:1e9,TB:1e12};
+    return v*(map[unit]||1e6);
+  }
+
+  function toBps(val,unit){
+    const v=parseFloat(val);if(isNaN(v)||v<=0)return null;
+    // bit-based
+    if(unit==='Kbps')return v*1e3/8;
+    if(unit==='Mbps')return v*1e6/8;
+    if(unit==='Gbps')return v*1e9/8;
+    // byte-based
+    if(unit==='KBps')return v*1e3;
+    if(unit==='MBps')return v*1e6;
+    if(unit==='GBps')return v*1e9;
+    return null;
+  }
+
+  function fmtTime(seconds){
+    if(seconds<0.001)return '<1 ms';
+    if(seconds<1){const ms=Math.round(seconds*1000);return `${ms} ms`;}
+    if(seconds<60){return `${seconds.toFixed(1)} s`;}
+    if(seconds<3600){const m=Math.floor(seconds/60),s=Math.round(seconds%60);return s>0?`${m}m ${s}s`:`${m}m`;}
+    if(seconds<86400){const h=Math.floor(seconds/3600),m=Math.round((seconds%3600)/60);return m>0?`${h}h ${m}m`:`${h}h`;}
+    const d=Math.floor(seconds/86400),h=Math.round((seconds%86400)/3600);return h>0?`${d}d ${h}h`:`${d}d`;
+  }
+
+  function fmtNum(n){
+    if(n>=1e12)return (n/1e12).toFixed(2)+' T';
+    if(n>=1e9)return (n/1e9).toFixed(2)+' G';
+    if(n>=1e6)return (n/1e6).toFixed(2)+' M';
+    if(n>=1e3)return (n/1e3).toFixed(2)+' K';
+    return n.toFixed(2);
+  }
+
+  function update(){
+    const bytes=toBytes(document.getElementById('size-val').value, document.getElementById('size-unit').value);
+    const bps=toBps(document.getElementById('speed-val').value, document.getElementById('speed-unit').value);
+    const empty='<span style="color:var(--border)">—</span>';
+
+    if(!bytes||!bps){
+      document.getElementById('out-time').innerHTML=empty;
+      document.getElementById('out-bits').innerHTML=empty;
+      document.getElementById('out-bps').innerHTML=empty;
+      document.getElementById('speed-table').innerHTML='';
+      return;
+    }
+
+    const seconds=bytes/bps;
+    const bits=bytes*8;
+    document.getElementById('out-time').innerHTML=`<span style="color:var(--accent)">${fmtTime(seconds)}</span>`;
+    document.getElementById('out-bits').innerHTML=`<span style="color:var(--accent)">${fmtNum(bits)}bits</span>`;
+    document.getElementById('out-bps').innerHTML=`<span style="color:var(--accent)">${fmtNum(bps)}B/s</span>`;
+
+    document.getElementById('speed-table').innerHTML=COMMON_SPEEDS.map(s=>{
+      const t=fmtTime(bytes/s.bps);
+      return `<div class="speed-row"><span class="speed-name">${s.name}</span><span class="speed-time">${t}</span></div>`;
+    }).join('');
+  }
+
+  ['size-val','size-unit','speed-val','speed-unit'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+  update();
+</script>
+</body>
+</html>

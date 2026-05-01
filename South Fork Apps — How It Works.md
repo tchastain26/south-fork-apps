@@ -1,6 +1,6 @@
 # South Fork Apps — How It Works
 
-Last updated: 2026.04.15
+Last updated: 2026.05.01
 
 ## The Short Version
 
@@ -68,7 +68,7 @@ Single `index.html` with inline CSS and JS. No build tools, no frameworks. See t
 Open `index.html` at the root of `77_South Fork Apps`. Find the apps section (look for the Dog Poop Tracker card). Duplicate a card and update:
 - App name
 - Description
-- Link — point it to the Cloudflare Pages subpath or an external URL if hosted elsewhere (e.g. Netlify)
+- Link — point it to the Cloudflare Pages subpath (southforkapps.com/South Fork Apps Collection/your-app-name/)
 
 ### Step 3 — Commit and push
 
@@ -87,11 +87,20 @@ Cloudflare deploys within a minute or two. Check southforkapps.com to confirm.
 
 ## Current Apps
 
-| App | Location | Hosted At |
-|---|---|---|
-| Dog Poop Tracker | South Fork Apps Collection/dog-poop-tracker/ | dogpooptracker.netlify.app |
-| Hex Code Color Generator | South Fork Apps Collection/hex-code-color-generator/ | hex-color-picker-26.netlify.app |
-| Temperature Converter | South Fork Apps Collection/temperature-converter/ | temperature-converter-26.netlify.app |
+All apps are hosted on Cloudflare Pages as subpaths of southforkapps.com. There are 50+ apps in South Fork Apps Collection/. Notable ones:
+
+| App | Subpath |
+|---|---|
+| Dog Poop Tracker | /South Fork Apps Collection/dog-poop-tracker/ |
+| Hex Code Color Generator | /South Fork Apps Collection/hex-code-color-generator/ |
+| Temperature Converter | /South Fork Apps Collection/temperature-converter/ |
+| Tip Calculator | /South Fork Apps Collection/tip-calculator/ |
+| Word Counter | /South Fork Apps Collection/word-counter/ |
+| Pomodoro Timer | /South Fork Apps Collection/pomodoro-timer/ |
+| Password Generator | /South Fork Apps Collection/password-generator/ |
+| Millisecond Converter | /South Fork Apps Collection/millisecond-converter/ |
+
+See the full list in the South Fork Apps Collection/ folder.
 
 ---
 

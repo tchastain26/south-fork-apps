@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Time Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate how long it takes to read any text. Paste your content and get an estimated reading time instantly.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-back { color: var(--accent); text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title { color: var(--text); font-size: 0.875rem; font-weight: 600; }
+    main { width: min(700px, calc(100% - 2rem)); margin: 3rem auto; display: flex; flex-direction: column; gap: 1.5rem; }
+    h1 { font-size: 1.75rem; font-weight: 800; }
+    h1 span { color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    textarea {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.85rem 1rem; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem; line-height: 1.6; outline: none; resize: vertical; min-height: 180px;
+      transition: border-color 0.15s;
+    }
+    textarea::placeholder { color: #3a3f3b; }
+    textarea:focus { border-color: var(--accent); }
+    .wpm-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .wpm-row label { margin: 0; white-space: nowrap; }
+    input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--accent); cursor: pointer; }
+    .wpm-val { color: var(--accent); font-weight: 700; font-size: 0.9rem; min-width: 5ch; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+    .stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.3rem; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .stat-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+    .empty { color: var(--border); }
+    @media (max-width: 480px) { .stats { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../../index.html" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Reading Time Calculator</span>
+</nav>
+<main>
+  <div>
+    <h1>Reading Time <span>Calculator</span></h1>
+    <p class="subtitle">Paste any text to get word count and estimated reading time.</p>
+  </div>
+  <div class="input-group">
+    <label for="text-input">Your Text</label>
+    <textarea id="text-input" placeholder="Paste your article, essay, or any text here..."></textarea>
+  </div>
+  <div class="input-group">
+    <div class="wpm-row">
+      <label for="wpm-range">Reading speed:</label>
+      <input type="range" id="wpm-range" min="100" max="400" value="238" step="1">
+      <span class="wpm-val"><span id="wpm-display">238</span> wpm</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Words</div>
+      <div class="stat-value" id="out-words"><span class="empty">—</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Reading Time</div>
+      <div class="stat-value" id="out-time"><span class="empty">—</span></div>
+      <div class="stat-sub" id="out-time-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Characters</div>
+      <div class="stat-value" id="out-chars"><span class="empty">—</span></div>
+      <div class="stat-sub" id="out-chars-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sentences</div>
+      <div class="stat-value" id="out-sentences"><span class="empty">—</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paragraphs</div>
+      <div class="stat-value" id="out-paragraphs"><span class="empty">—</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Word Length</div>
+      <div class="stat-value" id="out-avg-word"><span class="empty">—</span></div>
+      <div class="stat-sub">characters</div>
+    </div>
+  </div>
+</main>
+<script>
+  const textInput = document.getElementById('text-input');
+  const wpmRange = document.getElementById('wpm-range');
+  const wpmDisplay = document.getElementById('wpm-display');
+  const EMPTY = '<span class="empty">—</span>';
+
+  function fmt(n) { return n.toLocaleString('en-US'); }
+
+  function update() {
+    const text = textInput.value;
+    const wpm = parseInt(wpmRange.value);
+    wpmDisplay.textContent = wpm;
+
+    if (!text.trim()) {
+      ['out-words','out-time','out-chars','out-sentences','out-paragraphs','out-avg-word'].forEach(id => {
+        document.getElementById(id).innerHTML = EMPTY;
+      });
+      document.getElementById('out-time-sub').textContent = '';
+      document.getElementById('out-chars-sub').textContent = '';
+      return;
+    }
+
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const wordCount = words.length;
+    const charCount = text.length;
+    const charNoSpaces = text.replace(/\s/g, '').length;
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length || 1;
+    const avgWordLen = wordCount > 0 ? (words.reduce((s, w) => s + w.replace(/[^a-zA-Z]/g,'').length, 0) / wordCount) : 0;
+
+    const minutes = wordCount / wpm;
+    let timeStr, timeSub;
+    if (minutes < 1) {
+      timeStr = '< 1 min';
+      timeSub = `${Math.round(minutes * 60)}s at ${wpm} wpm`;
+    } else if (minutes < 60) {
+      const mins = Math.round(minutes);
+      timeStr = `${mins} min`;
+      timeSub = `${Math.round(minutes * 60)}s at ${wpm} wpm`;
+    } else {
+      const hrs = Math.floor(minutes / 60);
+      const mins = Math.round(minutes % 60);
+      timeStr = mins > 0 ? `${hrs}h ${mins}m` : `${hrs}h`;
+      timeSub = `at ${wpm} wpm`;
+    }
+
+    document.getElementById('out-words').innerHTML = `<span style="color:var(--accent)">${fmt(wordCount)}</span>`;
+    document.getElementById('out-time').innerHTML = `<span style="color:var(--accent)">${timeStr}</span>`;
+    document.getElementById('out-time-sub').textContent = timeSub;
+    document.getElementById('out-chars').innerHTML = `<span style="color:var(--accent)">${fmt(charCount)}</span>`;
+    document.getElementById('out-chars-sub').textContent = `${fmt(charNoSpaces)} no spaces`;
+    document.getElementById('out-sentences').innerHTML = `<span style="color:var(--accent)">${fmt(sentences)}</span>`;
+    document.getElementById('out-paragraphs').innerHTML = `<span style="color:var(--accent)">${fmt(paragraphs)}</span>`;
+    document.getElementById('out-avg-word').innerHTML = `<span style="color:var(--accent)">${avgWordLen.toFixed(1)}</span>`;
+  }
+
+  textInput.addEventListener('input', update);
+  wpmRange.addEventListener('input', update);
+</script>
+</body>
+</html>

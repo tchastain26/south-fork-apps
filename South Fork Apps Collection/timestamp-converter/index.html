@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timestamp Converter | South Fork Apps</title>
+  <meta name="description" content="Convert Unix timestamps to readable dates and vice versa. Free online Unix timestamp converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1a1f1b; --surface-2: #202722;
+      --border: #2a2f2b; --accent: #7ddb84; --text: #e8e8e8; --muted: #aab5ac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .nav-back { color: var(--accent); text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title { color: var(--text); font-size: 0.875rem; font-weight: 600; }
+    main { width: min(660px, calc(100% - 2rem)); margin: 3rem auto; display: flex; flex-direction: column; gap: 1.75rem; }
+    h1 { font-size: 1.75rem; font-weight: 800; }
+    h1 span { color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .card-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+    .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    input[type="text"], input[type="datetime-local"], select {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 0.65rem 0.85rem; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem; outline: none; width: 100%; transition: border-color 0.15s; color-scheme: dark;
+    }
+    input[type="text"] { font-size: 1.25rem; font-weight: 700; }
+    input:focus, select:focus { border-color: var(--accent); }
+    .output-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+    .output-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.7rem 1rem; gap: 1rem;
+    }
+    .output-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .output-value { font-size: 0.95rem; font-weight: 600; color: var(--accent); text-align: right; word-break: break-all; }
+    .output-value.empty { color: var(--border); }
+    .copy-btn {
+      flex-shrink: 0; background: transparent; border: 1px solid var(--border); border-radius: 5px;
+      color: var(--muted); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.72rem;
+      font-weight: 600; padding: 0.3rem 0.6rem; cursor: pointer; transition: all 0.15s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+    .now-btn {
+      align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px;
+      color: var(--accent); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem;
+      font-weight: 600; padding: 0.45rem 0.9rem; cursor: pointer; transition: background 0.15s;
+    }
+    .now-btn:hover { background: var(--border); }
+    .hint { font-size: 0.78rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../../index.html" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Timestamp Converter</span>
+</nav>
+<main>
+  <div>
+    <h1>Timestamp <span>Converter</span></h1>
+    <p class="subtitle">Convert Unix timestamps to readable dates and back. Handles seconds and milliseconds automatically.</p>
+  </div>
+
+  <!-- Unix → Human -->
+  <div class="card">
+    <div class="card-title">Unix Timestamp → Date</div>
+    <div class="input-group">
+      <label for="ts-input">Unix Timestamp</label>
+      <input type="text" id="ts-input" placeholder="e.g. 1714348800" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="hint">Accepts seconds (10 digits) or milliseconds (13 digits). Commas and underscores ignored.</p>
+    <div class="output-grid" id="ts-output">
+      <div class="output-row"><span class="output-label">UTC</span><span class="output-value empty" id="out-utc">—</span><button class="copy-btn" disabled data-target="out-utc">Copy</button></div>
+      <div class="output-row"><span class="output-label">Local</span><span class="output-value empty" id="out-local">—</span><button class="copy-btn" disabled data-target="out-local">Copy</button></div>
+      <div class="output-row"><span class="output-label">ISO 8601</span><span class="output-value empty" id="out-iso">—</span><button class="copy-btn" disabled data-target="out-iso">Copy</button></div>
+      <div class="output-row"><span class="output-label">Relative</span><span class="output-value empty" id="out-relative">—</span></div>
+      <div class="output-row"><span class="output-label">Unix (ms)</span><span class="output-value empty" id="out-ms">—</span><button class="copy-btn" disabled data-target="out-ms">Copy</button></div>
+    </div>
+  </div>
+
+  <!-- Human → Unix -->
+  <div class="card">
+    <div class="card-title">Date → Unix Timestamp</div>
+    <div class="input-group">
+      <label for="dt-input">Date & Time</label>
+      <input type="datetime-local" id="dt-input">
+    </div>
+    <button class="now-btn" id="now-btn">Set to Now</button>
+    <div class="output-grid">
+      <div class="output-row"><span class="output-label">Unix (seconds)</span><span class="output-value empty" id="out-unix-s">—</span><button class="copy-btn" disabled data-target="out-unix-s">Copy</button></div>
+      <div class="output-row"><span class="output-label">Unix (milliseconds)</span><span class="output-value empty" id="out-unix-ms">—</span><button class="copy-btn" disabled data-target="out-unix-ms">Copy</button></div>
+    </div>
+  </div>
+</main>
+<script>
+  function relativeTime(ms) {
+    const diff = Date.now() - ms;
+    const abs = Math.abs(diff);
+    const future = diff < 0;
+    const s = Math.floor(abs / 1000);
+    const m = Math.floor(s / 60);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    const y = Math.floor(d / 365);
+    let str;
+    if (s < 60) str = `${s} second${s !== 1 ? 's' : ''}`;
+    else if (m < 60) str = `${m} minute${m !== 1 ? 's' : ''}`;
+    else if (h < 24) str = `${h} hour${h !== 1 ? 's' : ''}`;
+    else if (d < 365) str = `${d} day${d !== 1 ? 's' : ''}`;
+    else str = `${y} year${y !== 1 ? 's' : ''}`;
+    return future ? `in ${str}` : `${str} ago`;
+  }
+
+  function copyValue(targetId, btn) {
+    const val = document.getElementById(targetId).textContent;
+    if (!val || val === '—') return;
+    navigator.clipboard.writeText(val).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    });
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => copyValue(btn.dataset.target, btn));
+  });
+
+  function setVal(id, val) {
+    const el = document.getElementById(id);
+    const btn = document.querySelector(`[data-target="${id}"]`);
+    if (val) {
+      el.textContent = val; el.classList.remove('empty');
+      if (btn) btn.disabled = false;
+    } else {
+      el.textContent = '—'; el.classList.add('empty');
+      if (btn) btn.disabled = true;
+    }
+  }
+
+  document.getElementById('ts-input').addEventListener('input', function() {
+    const raw = this.value.replace(/[,_\s]/g, '');
+    if (!raw) { ['out-utc','out-local','out-iso','out-relative','out-ms'].forEach(id => setVal(id, '')); return; }
+    let num = parseFloat(raw);
+    if (isNaN(num)) { ['out-utc','out-local','out-iso','out-relative','out-ms'].forEach(id => setVal(id, '')); return; }
+    // auto-detect seconds vs ms
+    if (raw.length <= 10) num = num * 1000;
+    const d = new Date(num);
+    if (isNaN(d.getTime())) { ['out-utc','out-local','out-iso','out-relative','out-ms'].forEach(id => setVal(id, '')); return; }
+    setVal('out-utc', d.toUTCString());
+    setVal('out-local', d.toLocaleString());
+    setVal('out-iso', d.toISOString());
+    setVal('out-relative', relativeTime(num));
+    setVal('out-ms', num.toLocaleString('en-US'));
+  });
+
+  function updateFromDatetime() {
+    const val = document.getElementById('dt-input').value;
+    if (!val) { setVal('out-unix-s',''); setVal('out-unix-ms',''); return; }
+    const d = new Date(val);
+    if (isNaN(d.getTime())) { setVal('out-unix-s',''); setVal('out-unix-ms',''); return; }
+    const ms = d.getTime();
+    setVal('out-unix-s', Math.floor(ms / 1000).toString());
+    setVal('out-unix-ms', ms.toString());
+  }
+
+  document.getElementById('dt-input').addEventListener('input', updateFromDatetime);
+  document.getElementById('now-btn').addEventListener('click', () => {
+    const now = new Date();
+    const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    document.getElementById('dt-input').value = local;
+    updateFromDatetime();
+  });
+</script>
+</body>
+</html>

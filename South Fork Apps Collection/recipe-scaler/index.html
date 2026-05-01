@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Scaler | South Fork Apps</title>
+  <meta name="description" content="Scale any recipe up or down by changing the number of servings. Free online recipe scaling tool.">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        input[type="number"] {
+            width: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recipe Scaler</h1>
+    <textarea id="recipeInput" placeholder="Paste your recipe here..."></textarea><br>
+    <label for="originalServings">Original Servings:</label>
+    <input type="number" id="originalServings" value="4"><br>
+    <label for="newServings">New Servings:</label>
+    <input type="number" id="newServings" value="8"><br>
+    <button onclick="scaleRecipe()">Scale Recipe</button><br>
+    <h2>Scaled Recipe</h2>
+    <pre id="scaledRecipe"></pre>
+
+    <script>
+        function parseRecipe(recipeText) {
+            const pattern = /(\d+)\s*([a-zA-Z]+)\s+(.*)/;
+            const ingredients = [];
+            
+            recipeText.split('\n').forEach(line => {
+                const match = line.match(pattern);
+                if (match) {
+                    const [, quantity, unit, ingredient] = match;
+                    ingredients.push({ ingredient: ingredient.trim(), quantity: parseInt(quantity), unit: unit.trim() });
+                }
+            });
+            
+            return ingredients;
+        }
+
+        function scaleRecipe(ingredients, originalServings, newServings) {
+            const scalingFactor = newServings / originalServings;
+            return ingredients.map(({ ingredient, quantity, unit }) => ({
+                ingredient,
+                quantity: Math.round(quantity * scalingFactor),
+                unit
+            }));
+        }
+
+        function formatRecipe(scaledIngredients) {
+            return scaledIngredients.map(({ ingredient, quantity, unit }) => `${quantity} ${unit} ${ingredient}`).join('\n');
+        }
+
+        function scaleRecipe() {
+            const recipeText = document.getElementById('recipeInput').value;
+            const originalServings = parseInt(document.getElementById('originalServings').value);
+            const newServings = parseInt(document.getElementById('newServings').value);
+
+            const ingredients = parseRecipe(recipeText);
+            const scaledIngredients = scaleRecipe(ingredients, originalServings, newServings);
+            const formattedRecipe = formatRecipe(scaledIngredients);
+
+            document.getElementById('scaledRecipe').textContent = formattedRecipe;
+        }
+    </script>
+</body>
+</html>
