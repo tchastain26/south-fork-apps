@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hash Generator | South Fork Apps</title>
+  <meta name="description" content="Generate SHA-256, SHA-512, SHA-1, and SHA-384 hashes from any text instantly in your browser. Free online hash generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 720px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); display: block; margin-bottom: 6px; }
+    textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; padding: 14px; outline: none; resize: vertical; min-height: 120px; }
+    textarea:focus { border-color: var(--primary); }
+    .options { display: flex; flex-wrap: wrap; gap: 8px; }
+    .opt { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+    .opt input { accent-color: var(--primary); }
+    .opt:hover { border-color: var(--primary); }
+    .hash-list { display: flex; flex-direction: column; gap: 10px; }
+    .hash-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .hash-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .hash-value { font-family: 'Courier New', monospace; font-size: 13px; color: var(--primary); word-break: break-all; line-height: 1.5; }
+    .copy-btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-mid); border-radius: 5px; padding: 3px 10px; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
+    .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .encoding-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+    .encoding-row select { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 13px; padding: 5px 10px; outline: none; }
+    .empty { color: var(--text-dim); font-size: 14px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Hash Generator</h1>
+</header>
+<main>
+  <div>
+    <label>Input Text</label>
+    <textarea id="inputEl" placeholder="Type or paste text to hash..." oninput="hashAll()"></textarea>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+    <div class="options" id="algoOpts">
+      <label class="opt"><input type="checkbox" value="SHA-256" checked onchange="hashAll()"> SHA-256</label>
+      <label class="opt"><input type="checkbox" value="SHA-512" onchange="hashAll()"> SHA-512</label>
+      <label class="opt"><input type="checkbox" value="SHA-1" onchange="hashAll()"> SHA-1</label>
+      <label class="opt"><input type="checkbox" value="SHA-384" onchange="hashAll()"> SHA-384</label>
+    </div>
+    <div class="encoding-row">
+      <span>Output:</span>
+      <select id="encodingEl" onchange="hashAll()">
+        <option value="hex">Hex</option>
+        <option value="base64">Base64</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="hash-list" id="hashList">
+    <p class="empty">Type something above to generate hashes.</p>
+  </div>
+</main>
+<script>
+async function hashText(text, algo) {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest(algo, enc.encode(text));
+  return buf;
+}
+
+function bufToHex(buf) {
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function bufToBase64(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
+
+async function hashAll() {
+  const text = document.getElementById('inputEl').value;
+  const encoding = document.getElementById('encodingEl').value;
+  const algos = [...document.querySelectorAll('#algoOpts input:checked')].map(el => el.value);
+  const listEl = document.getElementById('hashList');
+
+  if (!text) { listEl.innerHTML = '<p class="empty">Type something above to generate hashes.</p>'; return; }
+  if (algos.length === 0) { listEl.innerHTML = '<p class="empty">Select at least one algorithm above.</p>'; return; }
+
+  listEl.innerHTML = algos.map(a => `<div class="hash-item" id="hash-${a}"><div class="hash-label"><span>${a}</span><button class="copy-btn" onclick="copyHash('${a}')">Copy</button></div><div class="hash-value" id="val-${a}">Computing…</div></div>`).join('');
+
+  for (const algo of algos) {
+    try {
+      const buf = await hashText(text, algo);
+      const val = encoding === 'hex' ? bufToHex(buf) : bufToBase64(buf);
+      document.getElementById('val-' + algo).textContent = val;
+    } catch(e) {
+      document.getElementById('val-' + algo).textContent = 'Error: ' + e.message;
+    }
+  }
+}
+
+function copyHash(algo) {
+  const val = document.getElementById('val-' + algo)?.textContent;
+  if (val) navigator.clipboard.writeText(val);
+}
+</script>
+</body>
+</html>

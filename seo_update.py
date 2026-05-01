@@ -80,6 +80,7 @@ APP_META = {
     "regex-tester":           ("Regex Tester",               "Test and debug regular expressions in real time with live match highlighting and group captures. Free online regex tester."),
     "color-contrast-checker": ("Color Contrast Checker",     "Check color contrast ratios for WCAG AA and AAA accessibility compliance. Free online color contrast tool."),
     "text-diff":              ("Text Diff",                  "Compare two blocks of text and see differences highlighted line by line. Free online text diff tool."),
+    "hash-generator":         ("Hash Generator",             "Generate SHA-256, SHA-512, SHA-1, and SHA-384 hashes from any text instantly in your browser. Free online hash generator."),
 }
 
 def update_app(app_name, title, description):
