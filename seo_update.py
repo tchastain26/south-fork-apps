@@ -84,6 +84,10 @@ APP_META = {
     "markdown-to-html":       ("Markdown to HTML Converter", "Convert Markdown to clean HTML instantly with a live preview. Free online Markdown to HTML converter."),
     "aspect-ratio-calculator":("Aspect Ratio Calculator",    "Calculate aspect ratios and scale dimensions for video, photo, and design work. Free online aspect ratio calculator."),
     "word-frequency":         ("Word Frequency Counter",     "Find the most common words in any text ranked by usage. Free online word frequency analyzer with stop word filtering."),
+    "json-formatter":         ("JSON Formatter & Validator", "Format, beautify, and validate JSON instantly with syntax highlighting. Free online JSON formatter and minifier."),
+    "percentage-calculator":  ("Percentage Calculator",      "Calculate percentages, percentage change, and add or subtract percentages instantly. Free online percentage calculator."),
+    "color-converter":        ("Color Format Converter",     "Convert colors between HEX, RGB, HSL, and HSB formats with a live preview. Free online color converter."),
+    "binary-hex-converter":   ("Binary, Hex & Decimal Converter", "Convert between binary, hexadecimal, decimal, and octal instantly. Free online number base converter."),
 }
 
 def update_app(app_name, title, description):

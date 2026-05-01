@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Format Converter | South Fork Apps</title>
+  <meta name="description" content="Convert colors between HEX, RGB, HSL, and HSB formats with a live preview. Free online color converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 640px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .swatch-row { display: flex; align-items: center; gap: 16px; }
+    .swatch { width: 80px; height: 80px; border-radius: var(--radius); border: 2px solid var(--border); cursor: pointer; padding: 0; flex-shrink: 0; }
+    .swatch-info { flex: 1; }
+    .swatch-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .swatch-sub { font-size: 13px; color: var(--text-dim); }
+    .formats { display: flex; flex-direction: column; gap: 10px; }
+    .format-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+    .format-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); width: 36px; flex-shrink: 0; }
+    .format-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 14px; padding: 8px 12px; outline: none; }
+    .format-input:focus { border-color: var(--primary); }
+    .copy-btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 5px; padding: 5px 10px; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
+    .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+    .preset { width: 32px; height: 32px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; padding: 0; transition: transform .1s; }
+    .preset:hover { transform: scale(1.15); border-color: var(--primary); }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Color Format Converter</h1>
+</header>
+<main>
+  <div class="swatch-row">
+    <input type="color" class="swatch" id="picker" value="#7ddb84" oninput="fromPicker()">
+    <div class="swatch-info">
+      <div class="swatch-name" id="swatchName">#7DDB84</div>
+      <div class="swatch-sub" id="swatchSub">Pick a color or type any format below</div>
+    </div>
+  </div>
+
+  <div class="formats">
+    <div class="format-row">
+      <span class="format-label">HEX</span>
+      <input class="format-input" id="hexIn" value="#7ddb84" oninput="fromHex()" spellcheck="false">
+      <button class="copy-btn" onclick="copy('hexIn')">Copy</button>
+    </div>
+    <div class="format-row">
+      <span class="format-label">RGB</span>
+      <input class="format-input" id="rgbIn" oninput="fromRgb()" spellcheck="false">
+      <button class="copy-btn" onclick="copy('rgbIn')">Copy</button>
+    </div>
+    <div class="format-row">
+      <span class="format-label">HSL</span>
+      <input class="format-input" id="hslIn" oninput="fromHsl()" spellcheck="false">
+      <button class="copy-btn" onclick="copy('hslIn')">Copy</button>
+    </div>
+    <div class="format-row">
+      <span class="format-label">HSB</span>
+      <input class="format-input" id="hsbIn" readonly style="opacity:.7;cursor:default;">
+      <button class="copy-btn" onclick="copy('hsbIn')">Copy</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Quick Presets</div>
+    <div class="presets" id="presetsEl"></div>
+  </div>
+</main>
+<script>
+const PRESETS = ['#ff0000','#ff6b35','#ffcc00','#7ddb84','#00b4d8','#4361ee','#7b2d8b','#ffffff','#888888','#111111','#f28b82','#f7c876','#aaccda','#27863a','#003049'];
+
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  if (hex.length !== 6) return null;
+  const n = parseInt(hex,16);
+  if (isNaN(n)) return null;
+  return [(n>>16)&255,(n>>8)&255,n&255];
+}
+function rgbToHex(r,g,b) { return '#'+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join(''); }
+function rgbToHsl(r,g,b) {
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),l=(max+min)/2;
+  let h=0,s=0;
+  if (max!==min) {
+    const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    h=max===r?(g-b)/d+(g<b?6:0):max===g?(b-r)/d+2:(r-g)/d+4;
+    h/=6;
+  }
+  return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+function hslToRgb(h,s,l) {
+  s/=100;l/=100;
+  const k=n=>(n+h/30)%12, a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+  return [Math.round(f(0)*255),Math.round(f(8)*255),Math.round(f(4)*255)];
+}
+function rgbToHsb(r,g,b) {
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+  let h=0;
+  if(d){h=max===r?(g-b)/d%6:max===g?(b-r)/d+2:(r-g)/d+4;h=Math.round(h*60);if(h<0)h+=360;}
+  return [h,Math.round(max?d/max*100:0),Math.round(max*100)];
+}
+
+function updateAll(r,g,b) {
+  const hex = rgbToHex(r,g,b);
+  const [h,s,l] = rgbToHsl(r,g,b);
+  const [hb,sb,v] = rgbToHsb(r,g,b);
+  document.getElementById('hexIn').value = hex;
+  document.getElementById('rgbIn').value = `rgb(${r}, ${g}, ${b})`;
+  document.getElementById('hslIn').value = `hsl(${h}, ${s}%, ${l}%)`;
+  document.getElementById('hsbIn').value = `hsb(${hb}, ${sb}%, ${v}%)`;
+  document.getElementById('picker').value = hex;
+  document.getElementById('swatchName').textContent = hex.toUpperCase();
+  document.getElementById('swatchSub').textContent = `rgb(${r}, ${g}, ${b})  ·  hsl(${h}, ${s}%, ${l}%)`;
+  document.querySelector('.swatch').style.background = hex;
+}
+
+function fromPicker() { const rgb=hexToRgb(document.getElementById('picker').value); if(rgb) updateAll(...rgb); }
+function fromHex() { const rgb=hexToRgb(document.getElementById('hexIn').value.trim()); if(rgb) updateAll(...rgb); }
+function fromRgb() {
+  const m=document.getElementById('rgbIn').value.match(/(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+  if(m) updateAll(parseInt(m[1]),parseInt(m[2]),parseInt(m[3]));
+}
+function fromHsl() {
+  const m=document.getElementById('hslIn').value.match(/(\d+)[,\s]+(\d+)%?[,\s]+(\d+)%?/);
+  if(m){const rgb=hslToRgb(parseInt(m[1]),parseInt(m[2]),parseInt(m[3]));if(rgb)updateAll(...rgb);}
+}
+function copy(id) { navigator.clipboard.writeText(document.getElementById(id).value); }
+
+const presetsEl=document.getElementById('presetsEl');
+PRESETS.forEach(hex=>{
+  const btn=document.createElement('button');
+  btn.className='preset';
+  btn.style.background=hex;
+  btn.title=hex;
+  btn.onclick=()=>{const rgb=hexToRgb(hex);if(rgb)updateAll(...rgb);};
+  presetsEl.appendChild(btn);
+});
+
+fromPicker();
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary, Hex & Decimal Converter | South Fork Apps</title>
+  <meta name="description" content="Convert between binary, hexadecimal, decimal, and octal instantly. Free online number base converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --radius: 12px;
+      --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 620px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .base-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .base-row.active { border-color: var(--primary); }
+    .base-header { display: flex; align-items: center; justify-content: space-between; }
+    .base-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .base-sub { font-size: 11px; color: var(--text-dim); }
+    .base-input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; width: 100%; }
+    .base-input::placeholder { color: var(--text-dim); font-weight: 400; }
+    .actions { display: flex; gap: 6px; }
+    .copy-btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 5px; padding: 3px 9px; cursor: pointer; font-family: var(--font); }
+    .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .err { font-size: 12px; color: var(--danger); margin-top: 4px; }
+    .info-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 4px; }
+    @media (min-width:500px) { .info-grid { grid-template-columns: repeat(4,1fr); } }
+    .info-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+    .info-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .info-value { font-size: 14px; font-weight: 700; color: var(--primary); font-family: monospace; word-break: break-all; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Binary / Hex / Decimal Converter</h1>
+</header>
+<main>
+  <div class="base-row" id="row-dec">
+    <div class="base-header">
+      <div><div class="base-label">Decimal <span class="base-sub">(base 10)</span></div></div>
+      <div class="actions"><button class="copy-btn" onclick="copyBase('dec')">Copy</button></div>
+    </div>
+    <input class="base-input" id="dec" placeholder="Type a decimal number…" oninput="fromBase('dec',10)" spellcheck="false">
+  </div>
+
+  <div class="base-row" id="row-bin">
+    <div class="base-header">
+      <div><div class="base-label">Binary <span class="base-sub">(base 2)</span></div></div>
+      <div class="actions"><button class="copy-btn" onclick="copyBase('bin')">Copy</button></div>
+    </div>
+    <input class="base-input" id="bin" placeholder="e.g. 1010 1111" oninput="fromBase('bin',2)" spellcheck="false">
+  </div>
+
+  <div class="base-row" id="row-hex">
+    <div class="base-header">
+      <div><div class="base-label">Hexadecimal <span class="base-sub">(base 16)</span></div></div>
+      <div class="actions"><button class="copy-btn" onclick="copyBase('hex')">Copy</button></div>
+    </div>
+    <input class="base-input" id="hex" placeholder="e.g. FF A0 1B" oninput="fromBase('hex',16)" spellcheck="false">
+  </div>
+
+  <div class="base-row" id="row-oct">
+    <div class="base-header">
+      <div><div class="base-label">Octal <span class="base-sub">(base 8)</span></div></div>
+      <div class="actions"><button class="copy-btn" onclick="copyBase('oct')">Copy</button></div>
+    </div>
+    <input class="base-input" id="oct" placeholder="e.g. 377" oninput="fromBase('oct',8)" spellcheck="false">
+  </div>
+
+  <div id="infoGrid" style="display:none" class="info-grid"></div>
+</main>
+<script>
+const FIELDS = { dec:10, bin:2, hex:16, oct:8 };
+
+function clean(val, radix) {
+  const v = val.replace(/\s/g,'').toUpperCase();
+  if (!v) return '';
+  return v;
+}
+
+function fromBase(source, radix) {
+  const raw = clean(document.getElementById(source).value, radix);
+  document.querySelectorAll('.base-row').forEach(r=>r.classList.remove('active'));
+  document.getElementById('row-'+source).classList.add('active');
+
+  if (!raw) { ['dec','bin','hex','oct'].filter(k=>k!==source).forEach(k=>document.getElementById(k).value=''); document.getElementById('infoGrid').style.display='none'; return; }
+
+  const n = parseInt(raw, radix);
+  if (isNaN(n) || n < 0) {
+    ['dec','bin','hex','oct'].filter(k=>k!==source).forEach(k=>document.getElementById(k).value='Invalid');
+    document.getElementById('infoGrid').style.display='none';
+    return;
+  }
+
+  if (source !== 'dec') document.getElementById('dec').value = n.toString(10);
+  if (source !== 'bin') document.getElementById('bin').value = n.toString(2);
+  if (source !== 'hex') document.getElementById('hex').value = n.toString(16).toUpperCase();
+  if (source !== 'oct') document.getElementById('oct').value = n.toString(8);
+
+  const bits = n.toString(2).length;
+  const bytes = Math.ceil(bits / 8);
+  const grid = document.getElementById('infoGrid');
+  grid.style.display = 'grid';
+  grid.innerHTML = `
+    <div class="info-item"><div class="info-label">Bit Length</div><div class="info-value">${bits}</div></div>
+    <div class="info-item"><div class="info-label">Bytes</div><div class="info-value">${bytes}</div></div>
+    <div class="info-item"><div class="info-label">Signed (32-bit)</div><div class="info-value">${n|0}</div></div>
+    <div class="info-item"><div class="info-label">Char (ASCII)</div><div class="info-value">${n >= 32 && n <= 126 ? String.fromCharCode(n) : '—'}</div></div>
+  `;
+}
+
+function copyBase(id) { navigator.clipboard.writeText(document.getElementById(id).value); }
+</script>
+</body>
+</html>
