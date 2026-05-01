@@ -82,6 +82,7 @@ APP_META = {
     "text-diff":              ("Text Diff",                  "Compare two blocks of text and see differences highlighted line by line. Free online text diff tool."),
     "hash-generator":         ("Hash Generator",             "Generate SHA-256, SHA-512, SHA-1, and SHA-384 hashes from any text instantly in your browser. Free online hash generator."),
     "markdown-to-html":       ("Markdown to HTML Converter", "Convert Markdown to clean HTML instantly with a live preview. Free online Markdown to HTML converter."),
+    "aspect-ratio-calculator":("Aspect Ratio Calculator",    "Calculate aspect ratios and scale dimensions for video, photo, and design work. Free online aspect ratio calculator."),
 }
 
 def update_app(app_name, title, description):

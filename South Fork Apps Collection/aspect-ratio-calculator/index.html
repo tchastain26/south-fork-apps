@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aspect Ratio Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate aspect ratios and scale dimensions for video, photo, and design work. Free online aspect ratio calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 680px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 24px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); display: block; margin-bottom: 4px; }
+    input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 18px; font-weight: 700; padding: 10px 14px; outline: none; width: 110px; text-align: center; }
+    input[type=number]:focus { border-color: var(--primary); }
+    .sep { font-size: 24px; color: var(--text-dim); font-weight: 300; }
+    .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 500px) { .result-grid { grid-template-columns: repeat(3, 1fr); } }
+    .result-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .result-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .result-value { font-size: 18px; font-weight: 800; color: var(--primary); }
+    .preview-box { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; }
+    .preview-rect { background: var(--primary-dim); border: 2px solid var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--primary); transition: all .3s; }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-mid); font-family: var(--font); transition: all .15s; }
+    .preset-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .lock-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); }
+    input[type=checkbox] { accent-color: var(--primary); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Aspect Ratio Calculator</h1>
+</header>
+<main>
+  <div class="card">
+    <div class="card-title">Common Presets</div>
+    <div class="presets">
+      <button class="preset-btn" onclick="setRatio(16,9)">16:9 Widescreen</button>
+      <button class="preset-btn" onclick="setRatio(4,3)">4:3 Standard</button>
+      <button class="preset-btn" onclick="setRatio(1,1)">1:1 Square</button>
+      <button class="preset-btn" onclick="setRatio(9,16)">9:16 Portrait</button>
+      <button class="preset-btn" onclick="setRatio(21,9)">21:9 Ultrawide</button>
+      <button class="preset-btn" onclick="setRatio(3,2)">3:2 Photo</button>
+      <button class="preset-btn" onclick="setRatio(4,5)">4:5 Instagram</button>
+      <button class="preset-btn" onclick="setRatio(2,1)">2:1 Banner</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Scale by Width or Height</div>
+    <div class="row">
+      <div><label>Width</label><input type="number" id="w1" value="1920" min="1" oninput="scaleFromWidth()"></div>
+      <span class="sep">×</span>
+      <div><label>Height</label><input type="number" id="h1" value="1080" min="1" oninput="scaleFromHeight()"></div>
+    </div>
+    <div class="result-grid" id="ratioResults"></div>
+    <div class="preview-box"><div class="preview-rect" id="previewRect"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Find Missing Dimension</div>
+    <div class="row">
+      <div><label>Known W</label><input type="number" id="kw" value="1920" min="1" oninput="findMissing()"></div>
+      <span class="sep">×</span>
+      <div><label>Known H</label><input type="number" id="kh" value="1080" min="1" oninput="findMissing()"></div>
+    </div>
+    <div class="row" style="margin-top:4px;">
+      <div><label>Target W</label><input type="number" id="tw" placeholder="?" oninput="findMissingH()"></div>
+      <span class="sep">→</span>
+      <div><label>Target H</label><input type="number" id="th" placeholder="?" oninput="findMissingW()"></div>
+    </div>
+  </div>
+</main>
+<script>
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+function setRatio(w, h) {
+  document.getElementById('w1').value = w * 120;
+  document.getElementById('h1').value = h * 120;
+  scaleFromWidth();
+}
+
+function scaleFromWidth() { updateResults(); }
+function scaleFromHeight() { updateResults(); }
+
+function updateResults() {
+  const w = parseFloat(document.getElementById('w1').value) || 0;
+  const h = parseFloat(document.getElementById('h1').value) || 0;
+  if (!w || !h) return;
+
+  const d = gcd(Math.round(w), Math.round(h));
+  const rw = Math.round(w) / d, rh = Math.round(h) / d;
+  const dec = (w / h).toFixed(4);
+  const mp = ((w * h) / 1_000_000).toFixed(2);
+
+  document.getElementById('ratioResults').innerHTML = `
+    <div class="result-item"><div class="result-label">Ratio</div><div class="result-value">${rw}:${rh}</div></div>
+    <div class="result-item"><div class="result-label">Decimal</div><div class="result-value">${dec}</div></div>
+    <div class="result-item"><div class="result-label">Megapixels</div><div class="result-value">${mp}MP</div></div>
+    <div class="result-item"><div class="result-label">Half</div><div class="result-value">${Math.round(w/2)}×${Math.round(h/2)}</div></div>
+    <div class="result-item"><div class="result-label">Double</div><div class="result-value">${Math.round(w*2)}×${Math.round(h*2)}</div></div>
+    <div class="result-item"><div class="result-label">Area</div><div class="result-value">${(w*h).toLocaleString()}</div></div>
+  `;
+
+  const maxW = 300, maxH = 140;
+  const scale = Math.min(maxW / w, maxH / h);
+  const pw = Math.round(w * scale), ph = Math.round(h * scale);
+  const rect = document.getElementById('previewRect');
+  rect.style.width = pw + 'px';
+  rect.style.height = ph + 'px';
+  rect.textContent = `${Math.round(w)} × ${Math.round(h)}`;
+}
+
+function findMissingH() {
+  const kw = parseFloat(document.getElementById('kw').value);
+  const kh = parseFloat(document.getElementById('kh').value);
+  const tw = parseFloat(document.getElementById('tw').value);
+  if (kw && kh && tw) document.getElementById('th').value = Math.round(tw * kh / kw);
+}
+function findMissingW() {
+  const kw = parseFloat(document.getElementById('kw').value);
+  const kh = parseFloat(document.getElementById('kh').value);
+  const th = parseFloat(document.getElementById('th').value);
+  if (kw && kh && th) document.getElementById('tw').value = Math.round(th * kw / kh);
+}
+
+updateResults();
+</script>
+</body>
+</html>
