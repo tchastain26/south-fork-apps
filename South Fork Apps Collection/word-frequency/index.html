@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Frequency Counter | South Fork Apps</title>
+  <meta name="description" content="Find the most common words in any text ranked by usage. Free online word frequency analyzer with stop word filtering.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .layout { flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.7; padding: 16px; border: none; outline: none; resize: none; min-height: 400px; }
+    .controls { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--text-mid); }
+    .controls label { display: flex; align-items: center; gap: 5px; }
+    input[type=checkbox] { accent-color: var(--primary); }
+    input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 13px; padding: 4px 8px; outline: none; width: 56px; }
+    .results { flex: 1; overflow-y: auto; }
+    .result-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 8px 16px; border-bottom: 1px solid var(--border)/30; align-items: center; font-size: 14px; }
+    .result-row:hover { background: var(--surface); }
+    .rank { font-size: 11px; font-weight: 700; color: var(--text-dim); width: 24px; text-align: right; }
+    .word-col { font-weight: 600; color: var(--text); }
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar { height: 6px; background: var(--primary-dim); border-radius: 3px; min-width: 2px; transition: width .3s; }
+    .count { font-size: 13px; font-weight: 700; color: var(--primary); min-width: 32px; text-align: right; }
+    .pct { font-size: 11px; color: var(--text-dim); min-width: 36px; text-align: right; }
+    .empty { color: var(--text-dim); font-size: 14px; padding: 20px 16px; }
+    .stats-row { padding: 8px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-dim); display: flex; gap: 16px; flex-wrap: wrap; }
+    .stats-row span { color: var(--primary); font-weight: 700; }
+    .btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-mid); border-radius: 5px; padding: 3px 10px; cursor: pointer; font-family: var(--font); }
+    .btn:hover { border-color: var(--primary); color: var(--primary); }
+    .col-header { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; padding: 6px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Word Frequency Counter</h1>
+</header>
+<div class="layout">
+  <div class="pane">
+    <div class="pane-header">Input Text</div>
+    <textarea id="inputEl" placeholder="Paste any text here to analyze word frequency..." oninput="analyze()"></textarea>
+  </div>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Top Words</span>
+      <button class="btn" onclick="copyCSV()">Export CSV</button>
+    </div>
+    <div class="controls">
+      <label><input type="checkbox" id="stopwords" checked onchange="analyze()"> Remove stop words</label>
+      <label><input type="checkbox" id="casefold" checked onchange="analyze()"> Case-insensitive</label>
+      <label>Show top <input type="number" id="topN" value="50" min="5" max="500" onchange="analyze()"></label>
+    </div>
+    <div class="stats-row" id="statsRow" style="display:none"></div>
+    <div class="col-header"><span>#</span><span>Word</span><span>Count</span><span>%</span></div>
+    <div class="results" id="resultsEl"><p class="empty">Paste text on the left to see word frequency.</p></div>
+  </div>
+</div>
+<script>
+const STOP = new Set('a an the and or but in on at to for of with is was are were be been being have has had do does did will would could should may might shall not no nor so yet both either neither each few more most other some such than that this these those as by from up about into through during before after above below between out off over under again further then once here there when where why how all any both each more most'.split(' '));
+
+function analyze() {
+  const raw = document.getElementById('inputEl').value;
+  const stopwords = document.getElementById('stopwords').checked;
+  const casefold = document.getElementById('casefold').checked;
+  const topN = parseInt(document.getElementById('topN').value) || 50;
+
+  if (!raw.trim()) {
+    document.getElementById('resultsEl').innerHTML = '<p class="empty">Paste text on the left to see word frequency.</p>';
+    document.getElementById('statsRow').style.display = 'none';
+    return;
+  }
+
+  const words = raw.match(/\b[a-zA-Z']+\b/g) || [];
+  const processed = words.map(w => casefold ? w.toLowerCase() : w).filter(w => {
+    if (w.length < 2) return false;
+    if (stopwords && STOP.has(w.toLowerCase())) return false;
+    return true;
+  });
+
+  const freq = new Map();
+  processed.forEach(w => freq.set(w, (freq.get(w) || 0) + 1));
+  const sorted = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, topN);
+  const totalWords = words.length;
+  const uniqueFiltered = freq.size;
+  const maxCount = sorted[0]?.[1] || 1;
+
+  const statsRow = document.getElementById('statsRow');
+  statsRow.style.display = 'flex';
+  statsRow.innerHTML = `Total words: <span>${totalWords.toLocaleString()}</span> · Unique (filtered): <span>${uniqueFiltered.toLocaleString()}</span> · Showing top <span>${Math.min(topN, sorted.length)}</span>`;
+
+  if (sorted.length === 0) {
+    document.getElementById('resultsEl').innerHTML = '<p class="empty">No words found after filtering.</p>';
+    return;
+  }
+
+  document.getElementById('resultsEl').innerHTML = sorted.map(([word, count], i) => {
+    const pct = ((count / totalWords) * 100).toFixed(1);
+    const barW = Math.round((count / maxCount) * 120);
+    return `<div class="result-row">
+      <span class="rank">${i + 1}</span>
+      <div class="word-col">${word}<div class="bar-wrap" style="margin-top:3px;"><div class="bar" style="width:${barW}px"></div></div></div>
+      <span class="count">${count}</span>
+      <span class="pct">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+function copyCSV() {
+  const rows = [...document.querySelectorAll('.result-row')];
+  if (!rows.length) return;
+  const lines = ['Rank,Word,Count,Percent'];
+  rows.forEach((row, i) => {
+    const word = row.querySelector('.word-col').childNodes[0].textContent.trim();
+    const count = row.querySelector('.count').textContent.trim();
+    const pct = row.querySelector('.pct').textContent.trim();
+    lines.push(`${i+1},"${word}",${count},${pct}`);
+  });
+  navigator.clipboard.writeText(lines.join('\n'));
+}
+</script>
+</body>
+</html>

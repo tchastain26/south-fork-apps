@@ -83,6 +83,7 @@ APP_META = {
     "hash-generator":         ("Hash Generator",             "Generate SHA-256, SHA-512, SHA-1, and SHA-384 hashes from any text instantly in your browser. Free online hash generator."),
     "markdown-to-html":       ("Markdown to HTML Converter", "Convert Markdown to clean HTML instantly with a live preview. Free online Markdown to HTML converter."),
     "aspect-ratio-calculator":("Aspect Ratio Calculator",    "Calculate aspect ratios and scale dimensions for video, photo, and design work. Free online aspect ratio calculator."),
+    "word-frequency":         ("Word Frequency Counter",     "Find the most common words in any text ranked by usage. Free online word frequency analyzer with stop word filtering."),
 }
 
 def update_app(app_name, title, description):
