@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown to HTML Converter | South Fork Apps</title>
+  <meta name="description" content="Convert Markdown to clean HTML instantly with a live preview. Free online Markdown to HTML converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .tabs-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; gap: 4px; }
+    .tab { padding: 10px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: var(--font); transition: all .15s; }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .layout { flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; padding: 16px; border: none; outline: none; resize: none; min-height: 400px; }
+    .output { flex: 1; padding: 16px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 400px; }
+    .preview { flex: 1; padding: 20px; overflow-y: auto; min-height: 400px; line-height: 1.7; font-size: 15px; }
+    .preview h1,.preview h2,.preview h3,.preview h4 { color: var(--primary); margin: 1.2em 0 .5em; font-family: var(--font); }
+    .preview h1 { font-size: 1.8em; } .preview h2 { font-size: 1.4em; } .preview h3 { font-size: 1.2em; }
+    .preview p { margin-bottom: .9em; color: var(--text-mid); }
+    .preview code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: .88em; color: var(--primary); }
+    .preview pre { background: var(--surface2); padding: 14px; border-radius: 8px; overflow-x: auto; margin-bottom: 1em; }
+    .preview pre code { background: none; padding: 0; }
+    .preview blockquote { border-left: 3px solid var(--primary); padding-left: 14px; color: var(--text-dim); margin-bottom: 1em; }
+    .preview ul,.preview ol { padding-left: 1.5em; margin-bottom: .9em; color: var(--text-mid); }
+    .preview li { margin-bottom: .3em; }
+    .preview a { color: var(--primary); }
+    .preview hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+    .preview table { width: 100%; border-collapse: collapse; margin-bottom: 1em; font-size: 14px; }
+    .preview th,.preview td { border: 1px solid var(--border); padding: 8px 12px; }
+    .preview th { background: var(--surface); color: var(--primary); }
+    .btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-mid); border-radius: 5px; padding: 3px 10px; cursor: pointer; font-family: var(--font); }
+    .btn:hover { border-color: var(--primary); color: var(--primary); }
+    .empty { color: var(--text-dim); font-size: 13px; padding: 8px 0; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Markdown to HTML</h1>
+</header>
+<div class="layout">
+  <div class="pane">
+    <div class="pane-header">Markdown Input</div>
+    <textarea id="mdInput" placeholder="# Hello World&#10;&#10;Paste your **Markdown** here..." oninput="convert()" spellcheck="false"></textarea>
+  </div>
+  <div class="pane">
+    <div class="tabs-bar">
+      <button class="tab active" id="tabHtml" onclick="showTab('html')">HTML</button>
+      <button class="tab" id="tabPreview" onclick="showTab('preview')">Preview</button>
+    </div>
+    <div class="pane-header" id="outputHeader">
+      <span>HTML Output</span>
+      <button class="btn" onclick="copyOutput()">Copy HTML</button>
+    </div>
+    <div class="output" id="htmlOutput"><span class="empty">Paste Markdown on the left.</span></div>
+    <div class="preview hidden" id="previewOutput"></div>
+  </div>
+</div>
+<script>
+function mdToHtml(md) {
+  let html = md;
+  // Code blocks
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => `<pre><code>${esc(code.trim())}</code></pre>`);
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Headers
+  html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
+  html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
+  html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+  html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+  // HR
+  html = html.replace(/^---+$/gm, '<hr>');
+  // Blockquote
+  html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+  // Bold + italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+  // Strikethrough
+  html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  // Links & images
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  // Unordered lists
+  html = html.replace(/(^[\*\-]\s+.+\n?)+/gm, match => {
+    const items = match.trim().split('\n').map(l => `  <li>${l.replace(/^[\*\-]\s+/, '')}</li>`).join('\n');
+    return `<ul>\n${items}\n</ul>`;
+  });
+  // Ordered lists
+  html = html.replace(/(^\d+\.\s+.+\n?)+/gm, match => {
+    const items = match.trim().split('\n').map(l => `  <li>${l.replace(/^\d+\.\s+/, '')}</li>`).join('\n');
+    return `<ol>\n${items}\n</ol>`;
+  });
+  // Paragraphs (double newline separated blocks not already tagged)
+  html = html.split(/\n{2,}/).map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (/^<[a-z]/.test(block)) return block;
+    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+  }).join('\n\n');
+  return html;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let currentTab = 'html';
+let lastHtml = '';
+
+function convert() {
+  const md = document.getElementById('mdInput').value;
+  if (!md.trim()) {
+    document.getElementById('htmlOutput').innerHTML = '<span class="empty">Paste Markdown on the left.</span>';
+    document.getElementById('previewOutput').innerHTML = '';
+    return;
+  }
+  lastHtml = mdToHtml(md);
+  document.getElementById('htmlOutput').textContent = lastHtml;
+  document.getElementById('previewOutput').innerHTML = lastHtml;
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabHtml').classList.toggle('active', tab === 'html');
+  document.getElementById('tabPreview').classList.toggle('active', tab === 'preview');
+  document.getElementById('htmlOutput').classList.toggle('hidden', tab !== 'html');
+  document.getElementById('previewOutput').classList.toggle('hidden', tab !== 'preview');
+  document.getElementById('outputHeader').querySelector('button').textContent = tab === 'html' ? 'Copy HTML' : 'Copy HTML';
+}
+
+function copyOutput() { navigator.clipboard.writeText(lastHtml); }
+
+document.getElementById('mdInput').value = `# Welcome to Markdown to HTML\n\nPaste your **Markdown** here and see the *converted HTML* on the right.\n\n## Features\n\n- Headings, bold, italic\n- \`inline code\` and code blocks\n- Links, lists, blockquotes\n- Tables and horizontal rules\n\n> This is a blockquote.\n\n\`\`\`js\nconsole.log("Hello, world!");\n\`\`\``;
+convert();
+</script>
+</body>
+</html>

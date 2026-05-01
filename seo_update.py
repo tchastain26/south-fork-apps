@@ -81,6 +81,7 @@ APP_META = {
     "color-contrast-checker": ("Color Contrast Checker",     "Check color contrast ratios for WCAG AA and AAA accessibility compliance. Free online color contrast tool."),
     "text-diff":              ("Text Diff",                  "Compare two blocks of text and see differences highlighted line by line. Free online text diff tool."),
     "hash-generator":         ("Hash Generator",             "Generate SHA-256, SHA-512, SHA-1, and SHA-384 hashes from any text instantly in your browser. Free online hash generator."),
+    "markdown-to-html":       ("Markdown to HTML Converter", "Convert Markdown to clean HTML instantly with a live preview. Free online Markdown to HTML converter."),
 }
 
 def update_app(app_name, title, description):
