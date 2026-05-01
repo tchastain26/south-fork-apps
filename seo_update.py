@@ -72,6 +72,14 @@ APP_META = {
     "virtual-pop":            ("Virtual Bubble Wrap",        "Pop virtual bubble wrap in your browser. Satisfying, stress-relieving, and endlessly poppable."),
     "whitespace-visualizer":  ("Whitespace Visualizer",      "Make invisible whitespace characters visible in any text. Free online whitespace and tab visualization tool."),
     "word-counter":           ("Word Counter",               "Count words, characters, sentences, and paragraphs in any text. Free online word counter tool."),
+    "sql-pretty-printer":     ("SQL Pretty Printer",         "Format and indent messy SQL queries instantly. Free online SQL formatter with syntax highlighting."),
+    "reading-level-analyzer": ("Reading Level Analyzer",     "Analyze the reading level of any text. Get Flesch-Kincaid grade level and readability scores instantly. Free online tool."),
+    "token-usage-calculator": ("Token Usage Calculator",     "Estimate LLM token counts and API costs for GPT-4o, Claude, and Gemini. Free online token calculator."),
+    "encrypt-decrypt":        ("Encrypt / Decrypt Message",  "Encrypt and decrypt messages with a passphrase using AES-256 in your browser. No data leaves your device. Free tool."),
+    "lorem-ipsum-generator":  ("Lorem Ipsum Generator",      "Generate Lorem Ipsum placeholder text by paragraphs, sentences, or words instantly. Free online Lorem Ipsum generator."),
+    "regex-tester":           ("Regex Tester",               "Test and debug regular expressions in real time with live match highlighting and group captures. Free online regex tester."),
+    "color-contrast-checker": ("Color Contrast Checker",     "Check color contrast ratios for WCAG AA and AAA accessibility compliance. Free online color contrast tool."),
+    "text-diff":              ("Text Diff",                  "Compare two blocks of text and see differences highlighted line by line. Free online text diff tool."),
 }
 
 def update_app(app_name, title, description):

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Contrast Checker | South Fork Apps</title>
+  <meta name="description" content="Check color contrast ratios for WCAG AA and AAA accessibility compliance. Free online color contrast tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --ok: #7ddb84; --warn: #f7c876;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 700px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .color-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .color-field { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .color-field label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .color-row { display: flex; align-items: center; gap: 10px; }
+    .color-swatch { width: 40px; height: 40px; border-radius: 8px; border: 2px solid var(--border); cursor: pointer; padding: 0; background: none; }
+    .hex-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 15px; padding: 8px 12px; outline: none; }
+    .hex-input:focus { border-color: var(--primary); }
+    .preview { border-radius: var(--radius); padding: 28px 20px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border); }
+    .preview-text-lg { font-size: 28px; font-weight: 700; }
+    .preview-text-sm { font-size: 15px; }
+    .preview-text-ui { font-size: 13px; font-weight: 700; display: inline-block; padding: 6px 14px; border-radius: 6px; }
+    .ratio-hero { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .ratio-value { font-size: 52px; font-weight: 800; color: var(--primary); line-height: 1; }
+    .ratio-label { font-size: 13px; color: var(--text-mid); margin-top: 6px; }
+    .wcag-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 500px) { .wcag-grid { grid-template-columns: repeat(4, 1fr); } }
+    .wcag-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .wcag-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 6px; }
+    .wcag-result { font-size: 16px; font-weight: 800; }
+    .pass { color: var(--ok); }
+    .fail { color: var(--danger); }
+    .wcag-req { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Color Contrast Checker</h1>
+</header>
+<main>
+  <div class="color-inputs">
+    <div class="color-field">
+      <label>Foreground (Text)</label>
+      <div class="color-row">
+        <input type="color" class="color-swatch" id="fgPicker" value="#e1e3df" oninput="syncFromPicker('fg')">
+        <input type="text" class="hex-input" id="fgHex" value="#e1e3df" oninput="syncFromHex('fg')" maxlength="9" spellcheck="false">
+      </div>
+    </div>
+    <div class="color-field">
+      <label>Background</label>
+      <div class="color-row">
+        <input type="color" class="color-swatch" id="bgPicker" value="#111412" oninput="syncFromPicker('bg')">
+        <input type="text" class="hex-input" id="bgHex" value="#111412" oninput="syncFromHex('bg')" maxlength="9" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <div class="preview" id="previewEl">
+    <div class="preview-text-lg" id="prevLg">Large Text (18pt / 14pt Bold)</div>
+    <div class="preview-text-sm" id="prevSm">Normal body text at standard size. The quick brown fox jumps over the lazy dog.</div>
+    <div><span class="preview-text-ui" id="prevUi">UI Component</span></div>
+  </div>
+
+  <div class="ratio-hero">
+    <div class="ratio-value" id="ratioEl">—</div>
+    <div class="ratio-label">Contrast Ratio</div>
+  </div>
+
+  <div class="wcag-grid">
+    <div class="wcag-item">
+      <div class="wcag-name">AA Normal</div>
+      <div class="wcag-result" id="aaNormal">—</div>
+      <div class="wcag-req">Requires 4.5:1</div>
+    </div>
+    <div class="wcag-item">
+      <div class="wcag-name">AA Large</div>
+      <div class="wcag-result" id="aaLarge">—</div>
+      <div class="wcag-req">Requires 3:1</div>
+    </div>
+    <div class="wcag-item">
+      <div class="wcag-name">AAA Normal</div>
+      <div class="wcag-result" id="aaaNormal">—</div>
+      <div class="wcag-req">Requires 7:1</div>
+    </div>
+    <div class="wcag-item">
+      <div class="wcag-name">AAA Large</div>
+      <div class="wcag-result" id="aaaLarge">—</div>
+      <div class="wcag-req">Requires 4.5:1</div>
+    </div>
+  </div>
+</main>
+<script>
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  if (hex.length !== 6) return null;
+  const n = parseInt(hex, 16);
+  if (isNaN(n)) return null;
+  return [(n>>16)&255, (n>>8)&255, n&255];
+}
+
+function linearize(c) {
+  c /= 255;
+  return c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+}
+
+function luminance([r,g,b]) {
+  return 0.2126*linearize(r) + 0.7152*linearize(g) + 0.0722*linearize(b);
+}
+
+function contrast(hex1, hex2) {
+  const c1 = hexToRgb(hex1), c2 = hexToRgb(hex2);
+  if (!c1 || !c2) return null;
+  const l1 = luminance(c1), l2 = luminance(c2);
+  const lighter = Math.max(l1,l2), darker = Math.min(l1,l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function passEl(id, pass) {
+  const el = document.getElementById(id);
+  el.textContent = pass ? 'Pass' : 'Fail';
+  el.className = 'wcag-result ' + (pass ? 'pass' : 'fail');
+}
+
+function update() {
+  const fg = document.getElementById('fgHex').value.trim();
+  const bg = document.getElementById('bgHex').value.trim();
+  const ratio = contrast(fg, bg);
+
+  const preview = document.getElementById('previewEl');
+  const fgRgb = hexToRgb(fg), bgRgb = hexToRgb(bg);
+  if (fgRgb && bgRgb) {
+    preview.style.background = bg.startsWith('#') ? bg : '#'+bg;
+    ['prevLg','prevSm','prevUi'].forEach(id => {
+      document.getElementById(id).style.color = fg.startsWith('#') ? fg : '#'+fg;
+    });
+    const uiEl = document.getElementById('prevUi');
+    uiEl.style.background = `rgba(${fgRgb.join(',')},0.15)`;
+    uiEl.style.border = `1px solid rgba(${fgRgb.join(',')},0.4)`;
+  }
+
+  if (ratio === null) {
+    document.getElementById('ratioEl').textContent = '—';
+    ['aaNormal','aaLarge','aaaNormal','aaaLarge'].forEach(id => {
+      const el = document.getElementById(id); el.textContent='—'; el.className='wcag-result';
+    });
+    return;
+  }
+
+  document.getElementById('ratioEl').textContent = ratio.toFixed(2) + ':1';
+  passEl('aaNormal',  ratio >= 4.5);
+  passEl('aaLarge',   ratio >= 3);
+  passEl('aaaNormal', ratio >= 7);
+  passEl('aaaLarge',  ratio >= 4.5);
+}
+
+function syncFromPicker(which) {
+  const val = document.getElementById(which+'Picker').value;
+  document.getElementById(which+'Hex').value = val;
+  update();
+}
+
+function syncFromHex(which) {
+  const val = document.getElementById(which+'Hex').value.trim();
+  if (/^#?[0-9a-fA-F]{6}$/.test(val)) {
+    document.getElementById(which+'Picker').value = val.startsWith('#') ? val : '#'+val;
+  }
+  update();
+}
+
+update();
+</script>
+</body>
+</html>

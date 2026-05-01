@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Diff | South Fork Apps</title>
+  <meta name="description" content="Compare two blocks of text and see differences highlighted line by line. Free online text diff tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --ok: #7ddb84;
+      --add-bg: rgba(125,219,132,.12); --add-border: rgba(125,219,132,.4);
+      --del-bg: rgba(242,139,130,.12); --del-border: rgba(242,139,130,.4);
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .inputs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+    @media (max-width: 650px) { .inputs { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; padding: 14px; border: none; outline: none; resize: none; min-height: 220px; }
+    .toolbar { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .btn { padding: 6px 14px; background: var(--primary-dim); color: var(--text); border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+    .btn:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); background: transparent; }
+    .stats { font-size: 12px; color: var(--text-dim); display: flex; gap: 12px; flex-wrap: wrap; }
+    .stat-add { color: var(--ok); font-weight: 700; }
+    .stat-del { color: var(--danger); font-weight: 700; }
+    .diff-output { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; flex: 1; overflow-y: auto; }
+    .diff-line { padding: 2px 16px; display: flex; gap: 8px; align-items: flex-start; white-space: pre-wrap; word-break: break-word; }
+    .diff-line.add { background: var(--add-bg); border-left: 3px solid var(--add-border); }
+    .diff-line.del { background: var(--del-bg); border-left: 3px solid var(--del-border); }
+    .diff-line.same { border-left: 3px solid transparent; }
+    .diff-sign { font-weight: 700; width: 14px; flex-shrink: 0; }
+    .diff-line.add .diff-sign { color: var(--ok); }
+    .diff-line.del .diff-sign { color: var(--danger); }
+    .diff-line.same .diff-sign { color: var(--text-dim); }
+    .diff-text { flex: 1; }
+    .empty { color: var(--text-dim); font-size: 13px; padding: 20px 16px; font-family: var(--font); }
+    .toggle-label { font-size: 12px; color: var(--text-mid); display: flex; align-items: center; gap: 5px; }
+    input[type=checkbox] { accent-color: var(--primary); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Text Diff</h1>
+</header>
+<div class="inputs">
+  <div class="pane">
+    <div class="pane-header">
+      <span>Original</span>
+      <button class="btn ghost" style="padding:3px 10px;font-size:11px;" onclick="document.getElementById('leftEl').value='';diff()">Clear</button>
+    </div>
+    <textarea id="leftEl" placeholder="Paste original text here..." oninput="diff()"></textarea>
+  </div>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Changed</span>
+      <button class="btn ghost" style="padding:3px 10px;font-size:11px;" onclick="document.getElementById('rightEl').value='';diff()">Clear</button>
+    </div>
+    <textarea id="rightEl" placeholder="Paste changed text here..." oninput="diff()"></textarea>
+  </div>
+</div>
+<div class="toolbar">
+  <button class="btn" onclick="diff()">Compare</button>
+  <label class="toggle-label"><input type="checkbox" id="ignoreCase" onchange="diff()"> Ignore case</label>
+  <label class="toggle-label"><input type="checkbox" id="ignoreWhitespace" onchange="diff()"> Ignore leading whitespace</label>
+  <div class="stats" id="statsEl"></div>
+</div>
+<div class="diff-output" id="diffEl">
+  <p class="empty">Paste text in both panels above to see the diff.</p>
+</div>
+<script>
+// LCS-based line diff
+function lcs(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+  const result = [];
+  let i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i-1] === b[j-1]) { result.unshift({type:'same',val:a[i-1]}); i--; j--; }
+    else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { result.unshift({type:'add',val:b[j-1]}); j--; }
+    else { result.unshift({type:'del',val:a[i-1]}); i--; }
+  }
+  return result;
+}
+
+function normalize(line, ic, iw) {
+  let s = line;
+  if (ic) s = s.toLowerCase();
+  if (iw) s = s.trimStart();
+  return s;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function diff() {
+  const left  = document.getElementById('leftEl').value;
+  const right = document.getElementById('rightEl').value;
+  const ic = document.getElementById('ignoreCase').checked;
+  const iw = document.getElementById('ignoreWhitespace').checked;
+
+  if (!left.trim() && !right.trim()) {
+    document.getElementById('diffEl').innerHTML = '<p class="empty">Paste text in both panels above to see the diff.</p>';
+    document.getElementById('statsEl').innerHTML = '';
+    return;
+  }
+
+  const leftLines  = left.split('\n');
+  const rightLines = right.split('\n');
+  const leftNorm   = leftLines.map(l => normalize(l, ic, iw));
+  const rightNorm  = rightLines.map(l => normalize(l, ic, iw));
+
+  // Use normalized for comparison but display original
+  const result = lcsDisplay(leftLines, rightLines, leftNorm, rightNorm);
+
+  let adds = 0, dels = 0;
+  let html = result.map(({type, val}) => {
+    if (type === 'add') { adds++; return `<div class="diff-line add"><span class="diff-sign">+</span><span class="diff-text">${esc(val)}</span></div>`; }
+    if (type === 'del') { dels++; return `<div class="diff-line del"><span class="diff-sign">−</span><span class="diff-text">${esc(val)}</span></div>`; }
+    return `<div class="diff-line same"><span class="diff-sign"> </span><span class="diff-text">${esc(val)}</span></div>`;
+  }).join('');
+
+  document.getElementById('diffEl').innerHTML = html || '<p class="empty">No differences found.</p>';
+  document.getElementById('statsEl').innerHTML = adds === 0 && dels === 0
+    ? '<span>Identical</span>'
+    : `<span class="stat-add">+${adds} added</span><span class="stat-del">−${dels} removed</span>`;
+}
+
+function lcsDisplay(aOrig, bOrig, aNorm, bNorm) {
+  const m = aNorm.length, n = bNorm.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = aNorm[i-1] === bNorm[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+  const result = [];
+  let i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && aNorm[i-1] === bNorm[j-1]) { result.unshift({type:'same',val:aOrig[i-1]}); i--; j--; }
+    else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { result.unshift({type:'add',val:bOrig[j-1]}); j--; }
+    else { result.unshift({type:'del',val:aOrig[i-1]}); i--; }
+  }
+  return result;
+}
+</script>
+</body>
+</html>

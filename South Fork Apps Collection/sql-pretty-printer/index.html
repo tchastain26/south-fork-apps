@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Pretty Printer | South Fork Apps</title>
+  <meta name="description" content="Format and indent messy SQL queries instantly. Free online SQL formatter with syntax highlighting.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); }
+    textarea, .output { flex: 1; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; padding: 16px; border: none; outline: none; resize: none; min-height: 400px; white-space: pre; overflow: auto; }
+    .output { color: var(--text); }
+    .btn { background: var(--primary-dim); color: var(--text); border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+    .btn:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); background: transparent; }
+    .toolbar { padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .keyword { color: #7ddb84; }
+    .string  { color: #f7c876; }
+    .number  { color: #aaccda; }
+    .comment { color: #899486; font-style: italic; }
+    .notice { color: var(--text-dim); font-size: 12px; padding: 16px; font-family: var(--font); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>SQL Pretty Printer</h1>
+</header>
+<main>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Input SQL</span>
+      <button class="btn ghost" onclick="inputEl.value='';format()">Clear</button>
+    </div>
+    <textarea id="inputEl" placeholder="Paste your SQL here..." spellcheck="false" oninput="format()"></textarea>
+    <div class="toolbar">
+      <button class="btn" onclick="format()">Format</button>
+      <label style="font-size:12px;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="uppercaseKw" onchange="format()" checked> Uppercase keywords
+      </label>
+      <label style="font-size:12px;color:var(--text-mid);display:flex;align-items:center;gap:6px;">
+        Indent:
+        <select id="indentSel" onchange="format()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:12px;">
+          <option value="2">2 spaces</option>
+          <option value="4" selected>4 spaces</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Formatted Output</span>
+      <button class="btn" onclick="copyOutput()">Copy</button>
+    </div>
+    <div class="output" id="outputEl"><span class="notice">Formatted SQL will appear here.</span></div>
+    <div class="toolbar" id="statsBar" style="color:var(--text-dim);font-size:12px;"></div>
+  </div>
+</main>
+<script>
+const inputEl = document.getElementById('inputEl');
+const outputEl = document.getElementById('outputEl');
+const statsBar = document.getElementById('statsBar');
+
+const KEYWORDS = ['SELECT','FROM','WHERE','AND','OR','NOT','IN','IS','NULL','LIKE','BETWEEN','EXISTS',
+  'JOIN','LEFT','RIGHT','INNER','OUTER','FULL','CROSS','ON','AS','WITH','UNION','ALL','INTERSECT','EXCEPT',
+  'INSERT','INTO','VALUES','UPDATE','SET','DELETE','CREATE','TABLE','VIEW','INDEX','DROP','ALTER','ADD',
+  'COLUMN','PRIMARY','KEY','FOREIGN','REFERENCES','CONSTRAINT','UNIQUE','DEFAULT','NOT NULL',
+  'ORDER BY','GROUP BY','HAVING','LIMIT','OFFSET','DISTINCT','CASE','WHEN','THEN','ELSE','END',
+  'COUNT','SUM','AVG','MIN','MAX','COALESCE','NULLIF','CAST','CONVERT','TRIM','UPPER','LOWER',
+  'SUBSTRING','CONCAT','LENGTH','REPLACE','NOW','DATE','TIMESTAMP','BEGIN','COMMIT','ROLLBACK',
+  'EXPLAIN','ANALYZE','RETURNING','IF','EXISTS','DATABASE','SCHEMA'];
+
+function format() {
+  const raw = inputEl.value.trim();
+  if (!raw) { outputEl.innerHTML = '<span class="notice">Formatted SQL will appear here.</span>'; statsBar.textContent = ''; return; }
+  const indent = ' '.repeat(parseInt(document.getElementById('indentSel').value));
+  const upper = document.getElementById('uppercaseKw').checked;
+
+  try {
+    const formatted = formatSQL(raw, indent, upper);
+    outputEl.innerHTML = highlight(formatted);
+    const lines = formatted.split('\n').length;
+    const chars = formatted.length;
+    statsBar.textContent = `${lines} lines · ${chars} characters`;
+  } catch(e) {
+    outputEl.innerHTML = '<span class="notice">Could not parse SQL — check input.</span>';
+  }
+}
+
+function formatSQL(sql, indent, upper) {
+  // Normalize whitespace
+  let s = sql.replace(/\s+/g, ' ').trim();
+
+  const BREAK_BEFORE = ['SELECT','FROM','WHERE','AND','OR','LEFT JOIN','RIGHT JOIN','INNER JOIN',
+    'FULL JOIN','CROSS JOIN','JOIN','ORDER BY','GROUP BY','HAVING','LIMIT','OFFSET','UNION ALL',
+    'UNION','INTERSECT','EXCEPT','ON','SET','VALUES','RETURNING'];
+
+  BREAK_BEFORE.forEach(kw => {
+    const re = new RegExp(`\\b(${kw})\\b`, 'gi');
+    s = s.replace(re, (m, p1) => `\n${upper ? p1.toUpperCase() : p1.toLowerCase()}`);
+  });
+
+  // Uppercase remaining keywords
+  if (upper) {
+    KEYWORDS.forEach(kw => {
+      if (!BREAK_BEFORE.includes(kw)) {
+        const re = new RegExp(`\\b(${kw})\\b`, 'gi');
+        s = s.replace(re, (m, p1) => p1.toUpperCase());
+      }
+    });
+  }
+
+  // Indent continuation lines
+  const lines = s.split('\n').map((line, i) => {
+    line = line.trim();
+    if (i === 0) return line;
+    const breakers = ['FROM','WHERE','AND','OR','JOIN','ORDER BY','GROUP BY','HAVING','LIMIT','OFFSET','SET','ON','RETURNING'];
+    const startsWithBreaker = breakers.some(b => line.toUpperCase().startsWith(b));
+    return startsWithBreaker ? line : indent + line;
+  });
+
+  return lines.join('\n').trim();
+}
+
+function highlight(sql) {
+  // Escape HTML first
+  let s = sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Comments
+  s = s.replace(/(--[^\n]*)/g, '<span class="comment">$1</span>');
+
+  // Strings
+  s = s.replace(/'([^']*)'/g, "<span class=\"string\">'$1'</span>");
+
+  // Numbers
+  s = s.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>');
+
+  // Keywords
+  KEYWORDS.forEach(kw => {
+    const re = new RegExp(`\\b(${kw})\\b`, 'g');
+    s = s.replace(re, '<span class="keyword">$1</span>');
+  });
+
+  return s;
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(inputEl.value ? formatSQL(inputEl.value.trim(), ' '.repeat(parseInt(document.getElementById('indentSel').value)), document.getElementById('uppercaseKw').checked) : '');
+}
+</script>
+</body>
+</html>

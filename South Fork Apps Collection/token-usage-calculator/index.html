@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Usage Calculator | South Fork Apps</title>
+  <meta name="description" content="Estimate LLM token counts and API costs for GPT-4o, Claude, and Gemini. Free online token calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .layout { flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.7; padding: 16px; border: none; outline: none; resize: none; min-height: 300px; }
+    .token-hero { padding: 20px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; gap: 16px; }
+    .token-stat { flex: 1; }
+    .token-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .token-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+    .token-sub { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+    .models { overflow-y: auto; }
+    .model-group { border-bottom: 1px solid var(--border); }
+    .model-group-title { padding: 10px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); background: var(--surface2); }
+    .model-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border)/50; align-items: center; font-size: 13px; }
+    .model-row:last-child { border-bottom: none; }
+    .model-name { font-weight: 600; }
+    .model-ctx { font-size: 11px; color: var(--text-dim); }
+    .cost-col { text-align: right; min-width: 72px; }
+    .cost-label { font-size: 10px; color: var(--text-dim); }
+    .cost-val { font-weight: 700; color: var(--text); }
+    .cost-val.highlight { color: var(--primary); }
+    .col-header { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; padding: 8px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); background: var(--surface); border-bottom: 1px solid var(--border); }
+    .empty { color: var(--text-dim); font-size: 14px; padding: 24px 16px; }
+    .multiplier { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+    .multiplier input { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 4px 8px; width: 60px; font-size: 13px; font-family: var(--font); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Token Usage Calculator</h1>
+</header>
+<div class="layout">
+  <div class="pane">
+    <div class="pane-header">Paste Text</div>
+    <textarea id="inputEl" placeholder="Paste your prompt, context, or document here..." oninput="calculate()"></textarea>
+  </div>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Cost Estimate</span>
+    </div>
+    <div class="token-hero" id="heroEl">
+      <div class="token-stat">
+        <div class="token-label">Est. Tokens</div>
+        <div class="token-value" id="tokenCount">—</div>
+        <div class="token-sub" id="tokenSub">Paste text to calculate</div>
+      </div>
+      <div class="token-stat">
+        <div class="token-label">Characters</div>
+        <div class="token-value" id="charCount">—</div>
+        <div class="token-sub" id="wordCount">—</div>
+      </div>
+    </div>
+    <div class="multiplier">
+      <span>Output multiplier:</span>
+      <input type="number" id="outputMult" value="1" min="0.1" max="100" step="0.1" oninput="calculate()">
+      <span style="font-size:12px;color:var(--text-dim)">× input tokens (estimated output length)</span>
+    </div>
+    <div class="col-header">
+      <span>Model</span>
+      <span class="cost-col">Input</span>
+      <span class="cost-col">Output</span>
+      <span class="cost-col">Total</span>
+    </div>
+    <div class="models" id="modelsEl">
+      <p class="empty">Paste text to see cost estimates.</p>
+    </div>
+  </div>
+</div>
+<script>
+// Prices per 1M tokens as of early 2026 — verify at provider sites
+const MODELS = [
+  { group: 'Anthropic', name: 'Claude Opus 4.7',    ctx: '200K', in: 15.00, out: 75.00 },
+  { group: 'Anthropic', name: 'Claude Sonnet 4.6',  ctx: '200K', in:  3.00, out: 15.00 },
+  { group: 'Anthropic', name: 'Claude Haiku 4.5',   ctx: '200K', in:  0.80, out:  4.00 },
+  { group: 'OpenAI',    name: 'GPT-4o',             ctx: '128K', in:  2.50, out: 10.00 },
+  { group: 'OpenAI',    name: 'GPT-4o mini',        ctx: '128K', in:  0.15, out:  0.60 },
+  { group: 'OpenAI',    name: 'o3',                 ctx: '200K', in: 10.00, out: 40.00 },
+  { group: 'Google',    name: 'Gemini 2.5 Pro',     ctx: '1M',   in:  1.25, out: 10.00 },
+  { group: 'Google',    name: 'Gemini 2.5 Flash',   ctx: '1M',   in:  0.15, out:  0.60 },
+  { group: 'Google',    name: 'Gemini 1.5 Flash',   ctx: '1M',   in:  0.075,out: 0.30  },
+];
+
+function estimateTokens(text) {
+  // ~4 chars per token for English
+  return Math.ceil(text.length / 4);
+}
+
+function fmt(n) {
+  if (n < 0.001) return '<$0.001';
+  if (n < 1) return '$' + n.toFixed(4);
+  return '$' + n.toFixed(3);
+}
+
+function calculate() {
+  const text = document.getElementById('inputEl').value;
+  const mult = parseFloat(document.getElementById('outputMult').value) || 1;
+
+  if (!text.trim()) {
+    document.getElementById('tokenCount').textContent = '—';
+    document.getElementById('charCount').textContent = '—';
+    document.getElementById('tokenSub').textContent = 'Paste text to calculate';
+    document.getElementById('wordCount').textContent = '—';
+    document.getElementById('modelsEl').innerHTML = '<p class="empty">Paste text to see cost estimates.</p>';
+    return;
+  }
+
+  const tokens = estimateTokens(text);
+  const chars = text.length;
+  const words = (text.match(/\b\w+\b/g) || []).length;
+  const outTokens = Math.ceil(tokens * mult);
+
+  document.getElementById('tokenCount').textContent = tokens.toLocaleString();
+  document.getElementById('charCount').textContent = chars.toLocaleString();
+  document.getElementById('tokenSub').textContent = `~${(tokens/1000).toFixed(1)}K tokens`;
+  document.getElementById('wordCount').textContent = `${words.toLocaleString()} words`;
+
+  const groups = [...new Set(MODELS.map(m => m.group))];
+  let html = '';
+  groups.forEach(g => {
+    html += `<div class="model-group"><div class="model-group-title">${g}</div>`;
+    MODELS.filter(m => m.group === g).forEach(m => {
+      const inCost  = (tokens / 1_000_000) * m.in;
+      const outCost = (outTokens / 1_000_000) * m.out;
+      const total   = inCost + outCost;
+      html += `<div class="model-row">
+        <div><div class="model-name">${m.name}</div><div class="model-ctx">${m.ctx} ctx · $${m.in}/$${m.out} per 1M</div></div>
+        <div class="cost-col"><div class="cost-label">Input</div><div class="cost-val">${fmt(inCost)}</div></div>
+        <div class="cost-col"><div class="cost-label">Output</div><div class="cost-val">${fmt(outCost)}</div></div>
+        <div class="cost-col"><div class="cost-label">Total</div><div class="cost-val highlight">${fmt(total)}</div></div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('modelsEl').innerHTML = html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorem Ipsum Generator | South Fork Apps</title>
+  <meta name="description" content="Generate Lorem Ipsum placeholder text by paragraphs, sentences, or words instantly. Free online Lorem Ipsum generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 780px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    select, input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px; padding: 8px 12px; outline: none; min-width: 100px; }
+    select:focus, input:focus { border-color: var(--primary); }
+    .btn { padding: 9px 20px; background: var(--primary-dim); color: var(--text); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); white-space: nowrap; }
+    .btn:hover { background: var(--primary); color: #111; }
+    .btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.secondary:hover { border-color: var(--primary); color: var(--primary); background: transparent; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; }
+    .output-header h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .output { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; font-size: 15px; line-height: 1.8; color: var(--text-mid); min-height: 200px; white-space: pre-wrap; }
+    .output p { margin-bottom: 1em; }
+    .output p:last-child { margin-bottom: 0; }
+    .stats { font-size: 12px; color: var(--text-dim); }
+    .toggle-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); }
+    input[type=checkbox] { accent-color: var(--primary); width: 15px; height: 15px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Lorem Ipsum Generator</h1>
+</header>
+<main>
+  <div class="controls">
+    <div class="field">
+      <label>Type</label>
+      <select id="typeEl">
+        <option value="paragraphs">Paragraphs</option>
+        <option value="sentences">Sentences</option>
+        <option value="words">Words</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Count</label>
+      <input type="number" id="countEl" value="3" min="1" max="100">
+    </div>
+    <div class="field" style="justify-content:flex-end;">
+      <label>&nbsp;</label>
+      <label class="toggle-row"><input type="checkbox" id="startLoremEl" checked> Start with "Lorem ipsum..."</label>
+    </div>
+    <div class="field" style="justify-content:flex-end;margin-left:auto;">
+      <label>&nbsp;</label>
+      <button class="btn" onclick="generate()">Generate</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="output-header" style="margin-bottom:10px;">
+      <h2>Output <span class="stats" id="statsEl"></span></h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn secondary" onclick="generate()">Regenerate</button>
+        <button class="btn" onclick="copyOutput()">Copy</button>
+      </div>
+    </div>
+    <div class="output" id="outputEl"></div>
+  </div>
+</main>
+<script>
+const WORDS = `lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum proin viverra mauris in aliquam sem fringilla ut morbi tincidunt augue interdum velit euismod volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci`.split(' ');
+
+function rnd(n) { return Math.floor(Math.random() * n); }
+
+function word(i) {
+  return WORDS[(i + rnd(3)) % WORDS.length];
+}
+
+function sentence() {
+  const len = 8 + rnd(12);
+  const ws = Array.from({length: len}, (_, i) => word(rnd(WORDS.length)));
+  ws[0] = ws[0].charAt(0).toUpperCase() + ws[0].slice(1);
+  const punct = rnd(10) > 7 ? (rnd(2) ? '!' : '?') : '.';
+  // occasionally add a comma
+  if (len > 10) ws.splice(4 + rnd(4), 0, ws.splice(4 + rnd(4), 1)[0] + ',');
+  return ws.join(' ').replace(/,\s*,/g, ',') + punct;
+}
+
+function paragraph() {
+  const count = 4 + rnd(5);
+  return Array.from({length: count}, sentence).join(' ');
+}
+
+const CLASSIC_START = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+function generate() {
+  const type = document.getElementById('typeEl').value;
+  const count = Math.min(Math.max(parseInt(document.getElementById('countEl').value) || 1, 1), 100);
+  const startLorem = document.getElementById('startLoremEl').checked;
+
+  let result = '';
+  if (type === 'paragraphs') {
+    const paras = Array.from({length: count}, (_, i) => {
+      const p = paragraph();
+      return (i === 0 && startLorem) ? CLASSIC_START + ' ' + p : p;
+    });
+    result = paras.join('\n\n');
+    document.getElementById('statsEl').textContent = `· ${count} paragraph${count>1?'s':''} · ${result.split(/\s+/).length} words`;
+  } else if (type === 'sentences') {
+    const sents = Array.from({length: count}, (_, i) => (i === 0 && startLorem) ? CLASSIC_START : sentence());
+    result = sents.join(' ');
+    document.getElementById('statsEl').textContent = `· ${count} sentence${count>1?'s':''} · ${result.split(/\s+/).length} words`;
+  } else {
+    const ws = Array.from({length: count}, (_, i) => (i === 0 && startLorem) ? 'Lorem' : word(rnd(WORDS.length)));
+    result = ws.join(' ');
+    document.getElementById('statsEl').textContent = `· ${count} word${count>1?'s':''}`;
+  }
+
+  document.getElementById('outputEl').textContent = result;
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputEl').textContent);
+}
+
+generate();
+</script>
+</body>
+</html>
