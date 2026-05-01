@@ -89,6 +89,7 @@ APP_META = {
     "color-converter":        ("Color Format Converter",     "Convert colors between HEX, RGB, HSL, and HSB formats with a live preview. Free online color converter."),
     "binary-hex-converter":   ("Binary, Hex & Decimal Converter", "Convert between binary, hexadecimal, decimal, and octal instantly. Free online number base converter."),
     "bmi-calculator":         ("BMI Calculator",              "Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range."),
+    "loan-calculator":        ("Loan Payment Calculator",     "Calculate monthly loan payments, total interest, and a full amortization schedule. Free online loan calculator."),
 }
 
 def update_app(app_name, title, description):
