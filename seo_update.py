@@ -113,6 +113,7 @@ APP_META = {
     "flip-clock":             ("Flip Clock",                   "A beautiful animated flip clock with smooth card-flip transitions and date display. Free online flip clock with fullscreen mode."),
     "random-quote":           ("Random Quote Generator",       "Get inspired with random quotes filtered by category. Wisdom, tech, creativity, motivation, and life. Free online quote generator."),
     "number-to-words":        ("Number to Words Converter",    "Convert numbers to words in standard, currency, and ordinal formats. Great for checks and documents. Free online converter."),
+    "text-to-speech":         ("Text to Speech",               "Convert text to speech using your browser's built-in voices. Adjust rate, pitch, and volume. Free online text-to-speech tool."),
 }
 
 def update_app(app_name, title, description):

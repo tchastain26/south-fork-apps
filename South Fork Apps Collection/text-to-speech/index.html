@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Speech | South Fork Apps</title>
+  <meta name="description" content="Convert text to speech using your browser's built-in voices. Adjust rate, pitch, and volume. Free online text-to-speech tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .layout { flex: 1; display: grid; grid-template-columns: 1fr 300px; gap: 0; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .main-pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane-header { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.7; padding: 20px; border: none; outline: none; resize: none; min-height: 300px; }
+    .controls-pane { display: flex; flex-direction: column; gap: 0; overflow-y: auto; }
+    .section { padding: 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center; }
+    .val { color: var(--primary); font-weight: 700; }
+    input[type=range] { width: 100%; accent-color: var(--primary); }
+    select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 10px; outline: none; width: 100%; }
+    select:focus { border-color: var(--primary); }
+    .play-area { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .play-btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; font-family: var(--font); background: var(--primary-dim); color: var(--text); transition: background .15s; }
+    .play-btn:hover { background: var(--primary); color: #111; }
+    .play-btn.playing { background: rgba(242,139,130,.2); color: #f28b82; border: 1px solid #f28b82; }
+    .play-btn.playing:hover { background: #f28b82; color: #111; }
+    .action-row { display: flex; gap: 8px; }
+    .btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font); background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn:hover { border-color: var(--primary); color: var(--primary); }
+    .progress-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--primary); border-radius: 2px; width: 0; transition: width .5s; }
+    .word-count { font-size: 11px; color: var(--text-dim); }
+    .no-support { background: rgba(242,139,130,.1); border: 1px solid rgba(242,139,130,.3); border-radius: 8px; padding: 12px; font-size: 13px; color: #f28b82; }
+    .char-info { font-size: 11px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Text to Speech</h1>
+</header>
+
+<div id="noSupport" style="display:none;padding:20px">
+  <div class="no-support">Your browser doesn't support the Web Speech API. Try Chrome, Edge, or Safari.</div>
+</div>
+
+<div class="layout" id="mainLayout">
+  <div class="main-pane">
+    <div class="pane-header">
+      <span>Text</span>
+      <span class="char-info" id="charInfo">0 words</span>
+    </div>
+    <textarea id="textIn" placeholder="Type or paste text here to hear it spoken…" oninput="updateInfo()">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump!</textarea>
+  </div>
+
+  <div class="controls-pane">
+    <div class="section">
+      <div class="section-title">Voice</div>
+      <div class="field">
+        <label>Voice</label>
+        <select id="voiceSel"></select>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Settings</div>
+      <div class="field">
+        <label>Rate <span class="val" id="rateVal">1.0×</span></label>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('rateVal').textContent=parseFloat(this.value).toFixed(1)+'×'">
+      </div>
+      <div class="field">
+        <label>Pitch <span class="val" id="pitchVal">1.0</span></label>
+        <input type="range" id="pitch" min="0" max="2" step="0.1" value="1" oninput="document.getElementById('pitchVal').textContent=parseFloat(this.value).toFixed(1)">
+      </div>
+      <div class="field">
+        <label>Volume <span class="val" id="volVal">100%</span></label>
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" oninput="document.getElementById('volVal').textContent=Math.round(this.value*100)+'%'">
+      </div>
+    </div>
+
+    <div class="play-area">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶ Speak</button>
+      <div class="action-row">
+        <button class="btn" onclick="stopSpeech()">■ Stop</button>
+        <button class="btn" onclick="pauseResume()" id="pauseBtn">⏸ Pause</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Presets</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="btn" onclick="setPreset(1,1,1)" style="text-align:left">Normal</button>
+        <button class="btn" onclick="setPreset(0.8,1,1)" style="text-align:left">Slow &amp; Clear</button>
+        <button class="btn" onclick="setPreset(1.5,1,1)" style="text-align:left">Fast</button>
+        <button class="btn" onclick="setPreset(0.9,0.7,1)" style="text-align:left">Deep Voice</button>
+        <button class="btn" onclick="setPreset(1.1,1.5,1)" style="text-align:left">High Pitch</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+if (!window.speechSynthesis) {
+  document.getElementById('noSupport').style.display = 'block';
+  document.getElementById('mainLayout').style.display = 'none';
+}
+
+let voices = [];
+let speaking = false;
+let paused = false;
+let utt = null;
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  const sel = document.getElementById('voiceSel');
+  sel.innerHTML = voices.map((v,i) =>
+    `<option value="${i}">${v.name} (${v.lang})</option>`
+  ).join('');
+  // Prefer English
+  const enIdx = voices.findIndex(v => v.lang.startsWith('en-US'));
+  if (enIdx >= 0) sel.value = enIdx;
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+loadVoices();
+
+function updateInfo() {
+  const text = document.getElementById('textIn').value;
+  const words = text.trim().split(/\s+/).filter(w=>w).length;
+  const mins = Math.ceil(words / 150);
+  document.getElementById('charInfo').textContent = `${words} words · ~${mins} min`;
+}
+
+function togglePlay() {
+  if (speaking) { stopSpeech(); return; }
+  const text = document.getElementById('textIn').value.trim();
+  if (!text) return;
+
+  const voiceIdx = parseInt(document.getElementById('voiceSel').value);
+  utt = new SpeechSynthesisUtterance(text);
+  utt.voice = voices[voiceIdx];
+  utt.rate = parseFloat(document.getElementById('rate').value);
+  utt.pitch = parseFloat(document.getElementById('pitch').value);
+  utt.volume = parseFloat(document.getElementById('volume').value);
+
+  utt.onstart = () => {
+    speaking = true; paused = false;
+    document.getElementById('playBtn').textContent = '■ Stop';
+    document.getElementById('playBtn').classList.add('playing');
+    animateProgress();
+  };
+  utt.onend = utt.onerror = () => {
+    speaking = false; paused = false;
+    document.getElementById('playBtn').textContent = '▶ Speak';
+    document.getElementById('playBtn').classList.remove('playing');
+    document.getElementById('progressFill').style.width = '0';
+  };
+
+  speechSynthesis.speak(utt);
+}
+
+function stopSpeech() {
+  speechSynthesis.cancel();
+  speaking = false; paused = false;
+  document.getElementById('playBtn').textContent = '▶ Speak';
+  document.getElementById('playBtn').classList.remove('playing');
+  document.getElementById('progressFill').style.width = '0';
+}
+
+function pauseResume() {
+  if (!speaking) return;
+  if (paused) { speechSynthesis.resume(); paused = false; document.getElementById('pauseBtn').textContent = '⏸ Pause'; }
+  else { speechSynthesis.pause(); paused = true; document.getElementById('pauseBtn').textContent = '▶ Resume'; }
+}
+
+let progStart = 0;
+function animateProgress() {
+  if (!speaking || paused) return;
+  const text = document.getElementById('textIn').value.trim();
+  const dur = (text.split(/\s+/).length / parseFloat(document.getElementById('rate').value)) * 400;
+  if (!progStart) progStart = Date.now();
+  const pct = Math.min(100, ((Date.now() - progStart) / dur) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (speaking) requestAnimationFrame(animateProgress);
+  else progStart = 0;
+}
+
+function setPreset(rate, pitch, vol) {
+  document.getElementById('rate').value = rate;
+  document.getElementById('pitch').value = pitch;
+  document.getElementById('volume').value = vol;
+  document.getElementById('rateVal').textContent = rate.toFixed(1) + '×';
+  document.getElementById('pitchVal').textContent = pitch.toFixed(1);
+  document.getElementById('volVal').textContent = Math.round(vol*100) + '%';
+}
+
+updateInfo();
+</script>
+</body>
+</html>
