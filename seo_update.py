@@ -105,6 +105,7 @@ APP_META = {
     "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
     "life-stats":             ("Life Stats Calculator",        "See how many heartbeats, breaths, and full moons you've lived through. Enter your birthday for live stats. Free tool."),
     "word-clock":             ("Word Clock",                   "A live clock that spells out the current time in words on a glowing letter grid. Free online word clock with fullscreen mode."),
+    "css-gradient-generator": ("CSS Gradient Generator",       "Generate linear, radial, and conic CSS gradients visually with live preview. Copy ready CSS code. Free online tool."),
 }
 
 def update_app(app_name, title, description):
