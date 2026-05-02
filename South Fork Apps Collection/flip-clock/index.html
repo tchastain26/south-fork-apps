@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flip Clock | South Fork Apps</title>
+  <meta name="description" content="A beautiful animated flip clock with smooth card-flip transitions and date display. Free online flip clock with fullscreen mode.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --font: 'Plus Jakarta Sans', sans-serif; --primary: #7ddb84; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #111412; font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 14px 20px; border-bottom: 1px solid #3f493e; display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; color: #e1e3df; }
+    .ctrl { margin-left: auto; display: flex; gap: 8px; }
+    .ctrl button { background: transparent; border: 1px solid #3f493e; border-radius: 6px; color: #899486; font-family: var(--font); font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; }
+    .ctrl button:hover { border-color: var(--primary); color: var(--primary); }
+    .stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 32px 20px; }
+    .clock-row { display: flex; align-items: center; gap: 8px; }
+    .sep { font-size: clamp(40px,8vw,72px); font-weight: 800; color: #3f493e; line-height: 1; margin: 0 2px; padding-bottom: 8px; }
+    .unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .unit-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #899486; }
+    .flip { position: relative; width: clamp(70px,14vw,110px); height: clamp(84px,17vw,132px); perspective: 400px; }
+    .card { position: absolute; inset: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: clamp(44px,9vw,80px); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+    .card-top { background: #1d201e; clip-path: inset(0 0 50% 0); }
+    .card-bot { background: #161918; clip-path: inset(50% 0 0 0); }
+    .card-text { color: #e1e3df; }
+    /* Fold animation */
+    .fold { position: absolute; inset: 0; transform-origin: 50% 100%; border-radius: 10px 10px 0 0; clip-path: inset(0 0 50% 0); transform-style: preserve-3d; animation: foldUp .25s ease-in forwards; }
+    .fold-back { position: absolute; inset: 0; transform-origin: 50% 0%; border-radius: 0 0 10px 10px; clip-path: inset(50% 0 0 0); transform-style: preserve-3d; animation: unfoldDown .25s ease-out .25s forwards; opacity: 0; }
+    @keyframes foldUp { from{transform:rotateX(0deg)} to{transform:rotateX(-90deg)} }
+    @keyframes unfoldDown { from{transform:rotateX(90deg);opacity:1} to{transform:rotateX(0deg);opacity:1} }
+    .date-row { font-size: 15px; color: #899486; font-weight: 600; letter-spacing: .05em; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Flip Clock</h1>
+  <div class="ctrl">
+    <button onclick="toggleFullscreen()">Fullscreen</button>
+  </div>
+</header>
+<div class="stage">
+  <div class="clock-row">
+    <div class="unit"><div class="flip" id="h1"></div><div class="flip" id="h2"></div><div class="unit-label">Hours</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="flip" id="m1"></div><div class="flip" id="m2"></div><div class="unit-label">Minutes</div></div>
+    <div class="sep">:</div>
+    <div class="unit"><div class="flip" id="s1"></div><div class="flip" id="s2"></div><div class="unit-label">Seconds</div></div>
+  </div>
+  <div class="date-row" id="dateRow"></div>
+</div>
+<script>
+let prev = { h1:null, h2:null, m1:null, m2:null, s1:null, s2:null };
+
+function makeCard(val, bg) {
+  const d = document.createElement('div');
+  d.className = 'card ' + bg;
+  const t = document.createElement('span');
+  t.className = 'card-text';
+  t.textContent = val;
+  d.appendChild(t);
+  return d;
+}
+
+function setFlip(id, val) {
+  const el = document.getElementById(id);
+  const s = String(val);
+  if (s === prev[id]) return;
+  const old = prev[id] ?? s;
+  prev[id] = s;
+
+  el.innerHTML = '';
+
+  // Static cards
+  const top = makeCard(s, 'card-top');
+  const bot = makeCard(old, 'card-bot');
+  el.appendChild(top);
+  el.appendChild(bot);
+
+  // Animated fold (old top folds down)
+  const fold = document.createElement('div');
+  fold.className = 'fold';
+  const fTop = makeCard(old, '');
+  fTop.style.cssText = 'background:#1d201e;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px 10px 0 0';
+  fold.appendChild(fTop);
+  el.appendChild(fold);
+
+  // New bottom unfolds
+  const unfold = document.createElement('div');
+  unfold.className = 'fold-back';
+  const uBot = makeCard(s, '');
+  uBot.style.cssText = 'background:#161918;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:0 0 10px 10px';
+  unfold.appendChild(uBot);
+  el.appendChild(unfold);
+
+  // Clean up after animation
+  setTimeout(() => {
+    el.innerHTML = '';
+    el.appendChild(makeCard(s, 'card-top'));
+    el.appendChild(makeCard(s, 'card-bot'));
+  }, 550);
+}
+
+function tick() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+
+  setFlip('h1', h[0]);
+  setFlip('h2', h[1]);
+  setFlip('m1', m[0]);
+  setFlip('m2', m[1]);
+  setFlip('s1', s[0]);
+  setFlip('s2', s[1]);
+
+  document.getElementById('dateRow').textContent = now.toLocaleDateString('en-US', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
