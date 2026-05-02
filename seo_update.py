@@ -112,6 +112,7 @@ APP_META = {
     "box-shadow-generator":   ("CSS Box Shadow Generator",     "Generate CSS box shadows visually. Stack multiple layers, adjust blur, spread, and offset. Free online box shadow tool."),
     "flip-clock":             ("Flip Clock",                   "A beautiful animated flip clock with smooth card-flip transitions and date display. Free online flip clock with fullscreen mode."),
     "random-quote":           ("Random Quote Generator",       "Get inspired with random quotes filtered by category. Wisdom, tech, creativity, motivation, and life. Free online quote generator."),
+    "number-to-words":        ("Number to Words Converter",    "Convert numbers to words in standard, currency, and ordinal formats. Great for checks and documents. Free online converter."),
 }
 
 def update_app(app_name, title, description):
