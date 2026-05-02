@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch with Laps | South Fork Apps</title>
+  <meta name="description" content="A precise stopwatch with lap tracking, fastest and slowest lap highlights, and CSV export. Free online stopwatch.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', 'Courier New', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 32px 20px; gap: 24px; }
+    header { width: 100%; max-width: 520px; display: flex; align-items: center; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .clock { font-family: var(--mono); font-size: clamp(52px, 15vw, 88px); font-weight: 700; color: var(--primary); letter-spacing: -.02em; text-align: center; line-height: 1; font-variant-numeric: tabular-nums; }
+    .clock .ms { font-size: .45em; color: var(--text-mid); }
+    .lap-delta { font-family: var(--mono); font-size: 18px; color: var(--text-dim); text-align: center; font-variant-numeric: tabular-nums; min-height: 24px; }
+    .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn { width: 80px; height: 80px; border-radius: 50%; border: none; font-size: 14px; font-weight: 800; cursor: pointer; font-family: var(--font); transition: transform .1s, box-shadow .1s; }
+    .btn:active { transform: scale(0.95); }
+    .btn.start { background: var(--primary-dim); color: var(--text); box-shadow: 0 0 0 4px rgba(125,219,132,.2); }
+    .btn.start:hover { background: var(--primary); color: #111; }
+    .btn.stop { background: rgba(242,139,130,.15); color: var(--danger); border: 2px solid var(--danger); }
+    .btn.stop:hover { background: var(--danger); color: #111; }
+    .btn.lap { background: var(--surface2); color: var(--text-mid); border: 1px solid var(--border); }
+    .btn.lap:hover { border-color: var(--primary); color: var(--primary); }
+    .btn.reset { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+    .btn.reset:hover { border-color: var(--danger); color: var(--danger); }
+    .btn:disabled { opacity: .3; cursor: not-allowed; }
+    .laps { width: 100%; max-width: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .laps-header { padding: 10px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .laps-list { max-height: 300px; overflow-y: auto; }
+    .lap-row { display: grid; grid-template-columns: 40px 1fr 1fr 1fr; gap: 8px; padding: 10px 16px; border-bottom: 1px solid rgba(63,73,62,.5); align-items: center; font-variant-numeric: tabular-nums; font-size: 14px; }
+    .lap-row:last-child { border-bottom: none; }
+    .lap-num { color: var(--text-dim); font-size: 12px; font-weight: 700; }
+    .lap-time { font-family: var(--mono); font-weight: 700; color: var(--text); }
+    .lap-split { font-family: var(--mono); color: var(--text-mid); }
+    .lap-total { font-family: var(--mono); color: var(--text-dim); font-size: 12px; }
+    .lap-row.fastest { background: rgba(125,219,132,.06); }
+    .lap-row.fastest .lap-split { color: var(--primary); }
+    .lap-row.slowest { background: rgba(242,139,130,.06); }
+    .lap-row.slowest .lap-split { color: var(--danger); }
+    .export-btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 5px; padding: 3px 9px; cursor: pointer; font-family: var(--font); }
+    .export-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .empty-laps { padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Stopwatch</h1>
+</header>
+
+<div class="clock" id="clock">00:00<span class="ms">.00</span></div>
+<div class="lap-delta" id="lapDelta"></div>
+
+<div class="btns">
+  <button class="btn reset" id="resetBtn" onclick="reset()" disabled>Reset</button>
+  <button class="btn start" id="mainBtn" onclick="toggle()">Start</button>
+  <button class="btn lap" id="lapBtn" onclick="lap()" disabled>Lap</button>
+</div>
+
+<div class="laps" id="lapsBox" style="display:none">
+  <div class="laps-header">
+    <span>Laps (<span id="lapCount">0</span>)</span>
+    <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+  </div>
+  <div class="laps-list" id="lapsList"></div>
+</div>
+
+<script>
+let running = false;
+let startTime = 0;
+let elapsed = 0;
+let lapStart = 0;
+let rafId = null;
+let laps = [];
+
+function pad(n, d=2) { return String(Math.floor(n)).padStart(d,'0'); }
+
+function fmt(ms) {
+  const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000), cs = Math.floor((ms%1000)/10);
+  return `${pad(m)}:${pad(s)}<span class="ms">.${pad(cs)}</span>`;
+}
+
+function fmtPlain(ms) {
+  const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000), cs = Math.floor((ms%1000)/10);
+  return `${pad(m)}:${pad(s)}.${pad(cs)}`;
+}
+
+function tick() {
+  elapsed = Date.now() - startTime;
+  document.getElementById('clock').innerHTML = fmt(elapsed);
+  const lapElapsed = elapsed - (laps.length ? laps.reduce((a,l)=>a+l.split,0) : 0);
+  document.getElementById('lapDelta').textContent = laps.length ? '+ ' + fmtPlain(lapElapsed) : '';
+  rafId = requestAnimationFrame(tick);
+}
+
+function toggle() {
+  if (running) {
+    cancelAnimationFrame(rafId);
+    elapsed = Date.now() - startTime;
+    running = false;
+    document.getElementById('mainBtn').textContent = 'Resume';
+    document.getElementById('mainBtn').className = 'btn start';
+    document.getElementById('lapBtn').disabled = true;
+    document.getElementById('resetBtn').disabled = false;
+  } else {
+    startTime = Date.now() - elapsed;
+    running = true;
+    document.getElementById('mainBtn').textContent = 'Stop';
+    document.getElementById('mainBtn').className = 'btn stop';
+    document.getElementById('lapBtn').disabled = false;
+    document.getElementById('resetBtn').disabled = true;
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+function lap() {
+  if (!running) return;
+  const now = elapsed;
+  const prevTotal = laps.reduce((a,l)=>a+l.split, 0);
+  const split = now - prevTotal;
+  laps.unshift({ num: laps.length + 1, split, total: now });
+  renderLaps();
+  document.getElementById('lapsBox').style.display = 'block';
+}
+
+function renderLaps() {
+  document.getElementById('lapCount').textContent = laps.length;
+  if (!laps.length) { document.getElementById('lapsList').innerHTML = '<div class="empty-laps">No laps yet.</div>'; return; }
+
+  const splits = laps.map(l=>l.split);
+  const minSplit = Math.min(...splits), maxSplit = Math.max(...splits);
+
+  document.getElementById('lapsList').innerHTML = laps.map(l => {
+    const cls = splits.length > 1 ? (l.split === minSplit ? 'fastest' : l.split === maxSplit ? 'slowest' : '') : '';
+    return `<div class="lap-row ${cls}">
+      <span class="lap-num">${l.num}</span>
+      <span class="lap-time">${fmtPlain(l.split)}</span>
+      <span class="lap-split">${fmtPlain(l.split)}</span>
+      <span class="lap-total">${fmtPlain(l.total)}</span>
+    </div>`;
+  }).join('');
+}
+
+function reset() {
+  if (running) return;
+  elapsed = 0;
+  laps = [];
+  document.getElementById('clock').innerHTML = '00:00<span class="ms">.00</span>';
+  document.getElementById('lapDelta').textContent = '';
+  document.getElementById('mainBtn').textContent = 'Start';
+  document.getElementById('mainBtn').className = 'btn start';
+  document.getElementById('lapBtn').disabled = true;
+  document.getElementById('resetBtn').disabled = true;
+  document.getElementById('lapsBox').style.display = 'none';
+  renderLaps();
+}
+
+function exportCSV() {
+  const lines = ['Lap,Split,Total'];
+  [...laps].reverse().forEach(l => lines.push(`${l.num},${fmtPlain(l.split)},${fmtPlain(l.total)}`));
+  navigator.clipboard.writeText(lines.join('\n'));
+}
+</script>
+</body>
+</html>

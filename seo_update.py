@@ -108,6 +108,7 @@ APP_META = {
     "css-gradient-generator": ("CSS Gradient Generator",       "Generate linear, radial, and conic CSS gradients visually with live preview. Copy ready CSS code. Free online tool."),
     "password-strength":      ("Password Strength Checker",    "Check password strength with entropy score and time-to-crack estimate. All checks run locally. Free online password checker."),
     "color-palette":          ("Color Palette Generator",      "Generate complementary, analogous, triadic, and square color palettes from any base color. Free online color palette tool."),
+    "stopwatch":              ("Stopwatch with Laps",          "A precise stopwatch with lap tracking, fastest and slowest lap highlights, and CSV export. Free online stopwatch."),
 }
 
 def update_app(app_name, title, description):
