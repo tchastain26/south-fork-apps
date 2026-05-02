@@ -102,6 +102,7 @@ APP_META = {
     "compound-interest":      ("Compound Interest Calculator", "Calculate compound interest with monthly contributions. Includes growth chart and year-by-year table. Free online calculator."),
     "roman-numerals":         ("Roman Numeral Converter",      "Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown."),
     "zalgo-text":             ("Zalgo Text Generator",         "Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker."),
+    "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
 }
 
 def update_app(app_name, title, description):
