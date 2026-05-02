@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Cost Tracker | South Fork Apps</title>
+  <meta name="description" content="See how much your meeting costs in real time. Enter attendees and salaries and watch the cost tick up. Free tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 680px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .cost-hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; position: relative; overflow: hidden; }
+    .cost-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); margin-bottom: 8px; }
+    .cost-amount { font-size: 72px; font-weight: 800; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
+    .cost-amount.warn { color: var(--warn); }
+    .cost-amount.danger { color: var(--danger); }
+    .cost-sub { font-size: 14px; color: var(--text-dim); margin-top: 10px; }
+    .timer-display { font-size: 18px; font-weight: 700; color: var(--text-mid); font-variant-numeric: tabular-nums; }
+    .controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 12px 28px; border: none; border-radius: 40px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: var(--font); transition: all .15s; }
+    .btn.start { background: var(--primary-dim); color: var(--text); }
+    .btn.start:hover { background: var(--primary); color: #111; }
+    .btn.stop { background: rgba(242,139,130,.2); color: var(--danger); border: 1px solid var(--danger); }
+    .btn.stop:hover { background: var(--danger); color: #111; }
+    .btn.reset { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.reset:hover { border-color: var(--primary); color: var(--primary); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .input-row { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .prefix { padding: 0 10px; font-size: 13px; color: var(--text-dim); background: var(--surface2); border-right: 1px solid var(--border); height: 42px; display: flex; align-items: center; font-weight: 700; }
+    input[type=number], input[type=range] { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; font-weight: 700; padding: 10px 12px; }
+    input[type=range] { accent-color: var(--primary); padding: 12px; }
+    .attendee-count { font-size: 32px; font-weight: 800; color: var(--primary); text-align: center; }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-mid); font-family: var(--font); }
+    .preset-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .stat-value { font-size: 16px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+    .running-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-right: 6px; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Meeting Cost Tracker</h1>
+</header>
+<main>
+  <div class="cost-hero">
+    <div class="cost-label"><span id="runningDot" style="display:none" class="running-dot"></span>Meeting Cost</div>
+    <div class="cost-amount" id="costDisplay">$0.00</div>
+    <div class="cost-sub"><span class="timer-display" id="timerDisplay">0:00:00</span> elapsed</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn start" id="startBtn" onclick="startMeeting()">Start Meeting</button>
+    <button class="btn stop" id="stopBtn" onclick="stopMeeting()" style="display:none">Stop</button>
+    <button class="btn reset" onclick="resetMeeting()">Reset</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Attendees</div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <input type="range" id="attendeeSlider" min="1" max="50" value="5" oninput="updateAttendees(this.value)" style="flex:1;padding:8px 0;">
+      <div class="attendee-count" id="attendeeCount">5</div>
+    </div>
+    <div class="presets">
+      <button class="preset-chip" onclick="setAttendees(2)">2 people</button>
+      <button class="preset-chip" onclick="setAttendees(5)">5 people</button>
+      <button class="preset-chip" onclick="setAttendees(10)">10 people</button>
+      <button class="preset-chip" onclick="setAttendees(20)">20 people</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Average Salary</div>
+    <div class="input-row">
+      <span class="prefix">$/yr</span>
+      <input type="number" id="salaryInput" value="75000" min="1" oninput="updateCalc()">
+    </div>
+    <div class="presets">
+      <button class="preset-chip" onclick="setSalary(50000)">$50k</button>
+      <button class="preset-chip" onclick="setSalary(75000)">$75k</button>
+      <button class="preset-chip" onclick="setSalary(100000)">$100k</button>
+      <button class="preset-chip" onclick="setSalary(150000)">$150k</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-label">Cost / min</div><div class="stat-value" id="perMin">$0.00</div></div>
+    <div class="stat"><div class="stat-label">Cost / hr</div><div class="stat-value" id="perHour">$0.00</div></div>
+    <div class="stat"><div class="stat-label">Productivity lost</div><div class="stat-value" id="prodLost">—</div></div>
+  </div>
+</main>
+<script>
+let interval = null;
+let seconds = 0;
+let running = false;
+
+function getCostPerSecond() {
+  const attendees = parseInt(document.getElementById('attendeeSlider').value) || 1;
+  const salary = parseFloat(document.getElementById('salaryInput').value) || 0;
+  const costPerYear = salary * attendees;
+  return costPerYear / (52 * 40 * 3600);
+}
+
+function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function fmtTime(s) { const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60; return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
+
+function updateDisplay() {
+  const cost = seconds * getCostPerSecond();
+  const el = document.getElementById('costDisplay');
+  el.textContent = fmt(cost);
+  el.className = 'cost-amount' + (cost > 1000 ? ' danger' : cost > 500 ? ' warn' : '');
+  document.getElementById('timerDisplay').textContent = fmtTime(seconds);
+}
+
+function updateCalc() {
+  const cps = getCostPerSecond();
+  document.getElementById('perMin').textContent = fmt(cps * 60);
+  document.getElementById('perHour').textContent = fmt(cps * 3600);
+  const attendees = parseInt(document.getElementById('attendeeSlider').value) || 1;
+  document.getElementById('prodLost').textContent = attendees + ' person-hrs/hr';
+  updateDisplay();
+}
+
+function startMeeting() {
+  if (running) return;
+  running = true;
+  document.getElementById('startBtn').style.display = 'none';
+  document.getElementById('stopBtn').style.display = 'inline-flex';
+  document.getElementById('runningDot').style.display = 'inline-block';
+  interval = setInterval(() => { seconds++; updateDisplay(); }, 1000);
+}
+
+function stopMeeting() {
+  running = false;
+  clearInterval(interval);
+  document.getElementById('startBtn').style.display = 'inline-flex';
+  document.getElementById('stopBtn').style.display = 'none';
+  document.getElementById('runningDot').style.display = 'none';
+}
+
+function resetMeeting() {
+  stopMeeting();
+  seconds = 0;
+  updateDisplay();
+}
+
+function updateAttendees(val) {
+  document.getElementById('attendeeCount').textContent = val;
+  updateCalc();
+}
+
+function setAttendees(n) {
+  document.getElementById('attendeeSlider').value = n;
+  updateAttendees(n);
+}
+
+function setSalary(n) {
+  document.getElementById('salaryInput').value = n;
+  updateCalc();
+}
+
+updateCalc();
+</script>
+</body>
+</html>
