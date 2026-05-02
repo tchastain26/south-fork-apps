@@ -114,6 +114,7 @@ APP_META = {
     "random-quote":           ("Random Quote Generator",       "Get inspired with random quotes filtered by category. Wisdom, tech, creativity, motivation, and life. Free online quote generator."),
     "number-to-words":        ("Number to Words Converter",    "Convert numbers to words in standard, currency, and ordinal formats. Great for checks and documents. Free online converter."),
     "text-to-speech":         ("Text to Speech",               "Convert text to speech using your browser's built-in voices. Adjust rate, pitch, and volume. Free online text-to-speech tool."),
+    "css-unit-converter":     ("CSS Unit Converter",           "Convert between px, rem, em, vw, vh, pt, and cm. Set viewport and root font size. Free online CSS unit converter for developers."),
 }
 
 def update_app(app_name, title, description):

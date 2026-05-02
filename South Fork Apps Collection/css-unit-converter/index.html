@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Unit Converter | South Fork Apps</title>
+  <meta name="description" content="Convert between px, rem, em, vw, vh, pt, and cm. Set viewport and root font size. Free online CSS unit converter for developers.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 680px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .settings-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: var(--text-mid); }
+    .settings-bar label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .settings-bar input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 6px 10px; outline: none; width: 70px; text-align: center; }
+    .settings-bar input:focus { border-color: var(--primary); }
+    .units-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 500px) { .units-grid { grid-template-columns: repeat(3, 1fr); } }
+    .unit-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; transition: border-color .15s; }
+    .unit-card:hover { border-color: rgba(125,219,132,.4); }
+    .unit-card.active { border-color: var(--primary); background: rgba(125,219,132,.04); }
+    .unit-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); display: flex; justify-content: space-between; }
+    .unit-full { font-size: 10px; color: var(--text-dim); }
+    .unit-input { background: transparent; border: none; outline: none; color: var(--primary); font-family: var(--font); font-size: 22px; font-weight: 800; width: 100%; font-variant-numeric: tabular-nums; }
+    .unit-input::placeholder { color: var(--text-dim); font-size: 16px; font-weight: 400; }
+    .copy-btn { font-size: 10px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; padding: 2px 7px; cursor: pointer; font-family: var(--font); align-self: flex-end; }
+    .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .formula-note { font-size: 12px; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>CSS Unit Converter</h1>
+</header>
+<main>
+  <div class="settings-bar">
+    <div>
+      <label>Root Font Size</label><br>
+      <input type="number" id="rootSize" value="16" min="1" max="100" oninput="recalc(lastSource)"> px
+    </div>
+    <div>
+      <label>Viewport Width</label><br>
+      <input type="number" id="vw" value="1440" min="1" oninput="recalc(lastSource)"> px
+    </div>
+    <div>
+      <label>Viewport Height</label><br>
+      <input type="number" id="vh" value="900" min="1" oninput="recalc(lastSource)"> px
+    </div>
+  </div>
+
+  <div class="units-grid" id="unitsGrid"></div>
+
+  <div class="formula-note" id="formulaNote"></div>
+</main>
+<script>
+const UNITS = [
+  { id:'px',   name:'px',  full:'Pixels',         toPx: v => v,                          fromPx: v => v },
+  { id:'rem',  name:'rem', full:'Root em',         toPx: (v,r)=>v*r,                      fromPx: (v,r)=>v/r },
+  { id:'em',   name:'em',  full:'Em (same as rem)', toPx:(v,r)=>v*r,                      fromPx: (v,r)=>v/r },
+  { id:'pt',   name:'pt',  full:'Points',          toPx: v=>v*(4/3),                      fromPx: v=>v*(3/4) },
+  { id:'cm',   name:'cm',  full:'Centimeters',     toPx: v=>v*37.7953,                    fromPx: v=>v/37.7953 },
+  { id:'mm',   name:'mm',  full:'Millimeters',     toPx: v=>v*3.77953,                    fromPx: v=>v/3.77953 },
+  { id:'in',   name:'in',  full:'Inches',          toPx: v=>v*96,                         fromPx: v=>v/96 },
+  { id:'vw',   name:'vw',  full:'Viewport Width %', toPx:(v,r,vw)=>v*vw/100,             fromPx:(v,r,vw)=>v/vw*100 },
+  { id:'vh',   name:'vh',  full:'Viewport Height %',toPx:(v,r,vw,vh)=>v*vh/100,          fromPx:(v,r,vw,vh)=>v/vh*100 },
+];
+
+let lastSource = 'px';
+let lastPxVal = 16;
+
+function getCtx() {
+  return {
+    root: parseFloat(document.getElementById('rootSize').value) || 16,
+    vw: parseFloat(document.getElementById('vw').value) || 1440,
+    vh: parseFloat(document.getElementById('vh').value) || 900,
+  };
+}
+
+function recalc(sourceId) {
+  lastSource = sourceId;
+  const ctx = getCtx();
+  const sourceUnit = UNITS.find(u=>u.id===sourceId);
+  const sourceEl = document.getElementById('input-'+sourceId);
+  const val = parseFloat(sourceEl.value);
+  if (isNaN(val)) { UNITS.filter(u=>u.id!==sourceId).forEach(u=>{ const el=document.getElementById('input-'+u.id); if(el) el.value=''; }); return; }
+
+  const px = sourceUnit.toPx(val, ctx.root, ctx.vw, ctx.vh);
+  lastPxVal = px;
+
+  UNITS.forEach(u => {
+    if (u.id === sourceId) return;
+    const el = document.getElementById('input-'+u.id);
+    if (!el) return;
+    const converted = u.fromPx(px, ctx.root, ctx.vw, ctx.vh);
+    el.value = parseFloat(converted.toFixed(6));
+  });
+
+  document.getElementById('formulaNote').textContent = `${val}${sourceId} = ${parseFloat(px.toFixed(4))}px`;
+
+  document.querySelectorAll('.unit-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('card-'+sourceId)?.classList.add('active');
+}
+
+function buildGrid() {
+  const grid = document.getElementById('unitsGrid');
+  grid.innerHTML = UNITS.map(u => `
+    <div class="unit-card" id="card-${u.id}" onclick="document.getElementById('input-${u.id}').focus()">
+      <div class="unit-label"><span>${u.name}</span><button class="copy-btn" onclick="event.stopPropagation();navigator.clipboard.writeText(document.getElementById('input-${u.id}').value+'${u.id}')">Copy</button></div>
+      <div class="unit-full">${u.full}</div>
+      <input class="unit-input" id="input-${u.id}" type="number" placeholder="0" oninput="recalc('${u.id}')" step="any">
+    </div>
+  `).join('');
+}
+
+buildGrid();
+document.getElementById('input-px').value = 16;
+recalc('px');
+</script>
+</body>
+</html>
