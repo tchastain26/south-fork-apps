@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars Opening Crawl Generator | South Fork Apps</title>
+  <meta name="description" content="Create your own Star Wars-style opening crawl with custom text. Free online Star Wars crawl generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=News+Cycle:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .layout { flex: 1; display: grid; grid-template-columns: 360px 1fr; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 0; overflow-y: auto; }
+    .inputs { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    input, textarea, select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px; padding: 10px 12px; outline: none; width: 100%; }
+    input:focus, textarea:focus, select:focus { border-color: var(--primary); }
+    textarea { resize: vertical; min-height: 120px; }
+    .btn { padding: 11px; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); width: 100%; }
+    .btn.primary { background: var(--primary-dim); color: var(--text); }
+    .btn.primary:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); margin-top: 6px; }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Crawl */
+    .crawl-stage { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; min-height: 400px; }
+    .stars { position: absolute; inset: 0; background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%); }
+    .crawl-perspective { position: absolute; inset: 0; perspective: 300px; perspective-origin: 50% 100%; }
+    .crawl-content {
+      position: absolute; bottom: -100%; left: 50%; width: 70%; max-width: 600px;
+      transform: translateX(-50%) rotateX(25deg);
+      transform-origin: 50% 100%;
+      animation: none;
+      color: #FFE81F;
+      font-family: 'News Cycle', Georgia, serif;
+      text-align: justify;
+      line-height: 1.6;
+      padding-bottom: 60%;
+    }
+    .crawl-content.playing { animation: crawl var(--duration, 60s) linear forwards; }
+    @keyframes crawl { from { bottom: -20%; } to { bottom: 120%; } }
+    .crawl-episode { font-size: clamp(16px, 3vw, 28px); font-weight: 700; letter-spacing: .15em; text-align: center; margin-bottom: 1.5em; opacity: .85; }
+    .crawl-title { font-size: clamp(24px, 5vw, 48px); font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1.5em; line-height: 1.2; }
+    .crawl-body { font-size: clamp(14px, 2.5vw, 22px); }
+    .crawl-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'News Cycle', Georgia, serif; font-size: clamp(40px, 10vw, 80px); font-weight: 700; color: #FFE81F; letter-spacing: .1em; text-shadow: 0 0 40px rgba(255,232,31,.4); animation: logoFade 4s ease-in-out forwards; z-index: 10; text-align: center; }
+    @keyframes logoFade { 0%{opacity:0;transform:translate(-50%,-50%) scale(1.4)} 30%{opacity:1;transform:translate(-50%,-50%) scale(1)} 70%{opacity:1} 100%{opacity:0;transform:translate(-50%,-50%) scale(.4)} }
+    .crawl-overlay-top { position: absolute; top: 0; left: 0; right: 0; height: 25%; background: linear-gradient(to bottom, #000 0%, transparent 100%); z-index: 5; pointer-events: none; }
+    .crawl-controls { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 20; }
+    .crawl-ctrl { background: rgba(0,0,0,.7); border: 1px solid rgba(255,232,31,.3); border-radius: 6px; color: #FFE81F; font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; font-family: var(--font); }
+    .crawl-ctrl:hover { background: rgba(255,232,31,.1); }
+    .idle-msg { color: rgba(255,232,31,.3); font-family: 'News Cycle', Georgia, serif; font-size: 18px; text-align: center; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Star Wars Opening Crawl</h1>
+</header>
+<div class="layout">
+  <div class="sidebar">
+    <div class="inputs">
+      <div class="field">
+        <label>Episode</label>
+        <input type="text" id="episode" value="Episode IV" placeholder="Episode IV">
+      </div>
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="title" value="A NEW HOPE" placeholder="A NEW HOPE">
+      </div>
+      <div class="field">
+        <label>Crawl Text</label>
+        <textarea id="crawlText" rows="8">It is a period of civil war. Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.
+
+During the battle, Rebel spies managed to steal secret plans to the Empire's ultimate weapon, the DEATH STAR, an armored space station with enough power to destroy an entire planet.
+
+Pursued by the Empire's sinister agents, Princess Leia races home aboard her starship, custodian of the stolen plans that can save her people and restore freedom to the galaxy....</textarea>
+      </div>
+      <div class="field">
+        <label>Speed</label>
+        <select id="speed">
+          <option value="90">Slow (90s)</option>
+          <option value="60" selected>Normal (60s)</option>
+          <option value="45">Fast (45s)</option>
+          <option value="30">Very Fast (30s)</option>
+        </select>
+      </div>
+      <button class="btn primary" onclick="playCrawl()">▶ Play Crawl</button>
+      <button class="btn ghost" onclick="resetCrawl()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="crawl-stage" id="crawlStage">
+    <div class="stars"></div>
+    <div class="crawl-overlay-top"></div>
+    <div id="idleMsg" class="idle-msg">Press Play to begin your crawl →</div>
+    <div class="crawl-perspective">
+      <div class="crawl-content" id="crawlContent"></div>
+    </div>
+    <div class="crawl-controls">
+      <button class="crawl-ctrl" id="pauseBtn" onclick="togglePause()" style="display:none">⏸ Pause</button>
+      <button class="crawl-ctrl" onclick="resetCrawl()">✕ Stop</button>
+    </div>
+  </div>
+</div>
+<script>
+let logoEl = null;
+let paused = false;
+let logoTimeout = null;
+
+function playCrawl() {
+  resetCrawl();
+  document.getElementById('idleMsg').style.display = 'none';
+  document.getElementById('pauseBtn').style.display = 'inline-block';
+
+  const episode = document.getElementById('episode').value.trim();
+  const title = document.getElementById('title').value.trim();
+  const body = document.getElementById('crawlText').value.trim();
+  const duration = parseInt(document.getElementById('speed').value);
+
+  // Logo intro
+  logoEl = document.createElement('div');
+  logoEl.className = 'crawl-logo';
+  logoEl.innerHTML = 'SOUTH FORK<br>APPS';
+  document.getElementById('crawlStage').appendChild(logoEl);
+
+  logoTimeout = setTimeout(() => {
+    if (logoEl) logoEl.remove();
+    const content = document.getElementById('crawlContent');
+    content.style.setProperty('--duration', duration + 's');
+    content.innerHTML = `
+      <div class="crawl-episode">${esc(episode)}</div>
+      <div class="crawl-title">${esc(title)}</div>
+      <div class="crawl-body">${esc(body).replace(/\n\n/g,'<br><br>').replace(/\n/g,' ')}</div>
+    `;
+    content.classList.add('playing');
+    paused = false;
+  }, 4000);
+}
+
+function togglePause() {
+  const content = document.getElementById('crawlContent');
+  paused = !paused;
+  content.style.animationPlayState = paused ? 'paused' : 'running';
+  document.getElementById('pauseBtn').textContent = paused ? '▶ Resume' : '⏸ Pause';
+}
+
+function resetCrawl() {
+  clearTimeout(logoTimeout);
+  if (logoEl) { logoEl.remove(); logoEl = null; }
+  const content = document.getElementById('crawlContent');
+  content.classList.remove('playing');
+  content.innerHTML = '';
+  content.style.animationPlayState = 'running';
+  paused = false;
+  document.getElementById('pauseBtn').style.display = 'none';
+  document.getElementById('pauseBtn').textContent = '⏸ Pause';
+  document.getElementById('idleMsg').style.display = 'block';
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
