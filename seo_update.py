@@ -94,6 +94,7 @@ APP_META = {
     "qr-code-generator":      ("QR Code Generator",           "Generate QR codes from any URL, text, WiFi, or contact info. Download as PNG. Free online QR code generator."),
     "decision-spinner":       ("Decision Spinner",            "Can't decide? Add your options and spin the wheel. Free online decision spinner and random picker wheel."),
     "meeting-cost-tracker":   ("Meeting Cost Tracker",        "See how much your meeting costs in real time. Enter attendees and salaries and watch the cost tick up. Free tool."),
+    "teleprompter":           ("Teleprompter",                "Free browser-based teleprompter for video creators. Adjust speed, font size, and mirror mode. No signup required."),
 }
 
 def update_app(app_name, title, description):

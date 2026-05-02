@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teleprompter | South Fork Apps</title>
+  <meta name="description" content="Free browser-based teleprompter for video creators. Adjust speed, font size, and mirror mode. No signup required.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .edit-view { flex: 1; display: flex; flex-direction: column; }
+    .toolbar { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .field-inline { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-mid); }
+    input[type=range] { width: 80px; accent-color: var(--primary); }
+    input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 13px; padding: 4px 8px; outline: none; width: 56px; text-align: center; }
+    .btn { padding: 8px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+    .btn.primary { background: var(--primary-dim); color: var(--text); }
+    .btn.primary:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.8; padding: 20px; border: none; outline: none; resize: none; min-height: 300px; }
+
+    /* Prompt view */
+    .prompt-view { display: none; position: fixed; inset: 0; background: #000; z-index: 100; flex-direction: column; overflow: hidden; cursor: none; }
+    .prompt-view.active { display: flex; }
+    .prompt-text { flex: 1; overflow: hidden; position: relative; }
+    .prompt-inner { padding: 10vh 8vw; line-height: 1.6; color: #fff; font-weight: 600; transition: none; }
+    .prompt-guide { position: absolute; left: 0; right: 0; top: 50%; height: 4px; background: rgba(125,219,132,.3); pointer-events: none; transform: translateY(-50%); }
+    .prompt-guide::before, .prompt-guide::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, #000, transparent);
+    }
+    .prompt-guide::before { top: -80px; }
+    .prompt-guide::after { top: 4px; background: linear-gradient(to top, #000, transparent); }
+    .prompt-controls { padding: 16px 24px; background: rgba(0,0,0,.8); display: flex; align-items: center; gap: 16px; border-top: 1px solid #222; }
+    .ctrl-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 8px; color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700; padding: 8px 18px; cursor: pointer; }
+    .ctrl-btn:hover { background: rgba(255,255,255,.2); }
+    .ctrl-btn.exit { background: rgba(242,139,130,.2); border-color: rgba(242,139,130,.5); color: #f28b82; }
+    .ctrl-btn.exit:hover { background: #f28b82; color: #111; }
+    .speed-display { color: rgba(255,255,255,.6); font-size: 13px; }
+    .mirror-text { transform: scaleX(-1); display: inline-block; width: 100%; }
+    .word-count { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Teleprompter</h1>
+</header>
+
+<div class="edit-view" id="editView">
+  <div class="toolbar">
+    <button class="btn primary" onclick="startPrompt()">▶ Start</button>
+    <div class="field-inline">
+      <span>Speed:</span>
+      <input type="range" id="speedSlider" min="1" max="20" value="5">
+      <span id="speedVal">5</span>
+    </div>
+    <div class="field-inline">
+      <span>Font:</span>
+      <input type="number" id="fontSize" value="48" min="16" max="120">
+      <span>px</span>
+    </div>
+    <div class="field-inline">
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+        <input type="checkbox" id="mirrorCheck" style="accent-color:var(--primary)"> Mirror
+      </label>
+    </div>
+    <div class="field-inline">
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+        <input type="checkbox" id="invertCheck" style="accent-color:var(--primary)"> White bg
+      </label>
+    </div>
+    <span class="word-count" id="wordCount">0 words</span>
+  </div>
+  <textarea id="scriptArea" placeholder="Paste your script here...&#10;&#10;Use line breaks to create natural pauses.&#10;&#10;Press Start when ready." oninput="updateWordCount()">Welcome to the South Fork Apps Teleprompter.
+
+Paste your script here and press Start to begin scrolling.
+
+Adjust the speed with the slider — slower for careful delivery, faster to match a quicker pace.
+
+Use the mirror option if you're reading from a reflective surface in front of your camera.</textarea>
+</div>
+
+<div class="prompt-view" id="promptView">
+  <div class="prompt-text" id="promptScroll">
+    <div class="prompt-guide"></div>
+    <div class="prompt-inner" id="promptInner"></div>
+  </div>
+  <div class="prompt-controls">
+    <button class="ctrl-btn" id="playPauseBtn" onclick="togglePlay()">⏸ Pause</button>
+    <button class="ctrl-btn" onclick="restart()">↺ Restart</button>
+    <div class="field-inline" style="color:#fff">
+      <span style="color:rgba(255,255,255,.5);font-size:13px">Speed:</span>
+      <input type="range" id="promptSpeed" min="1" max="20" value="5" style="accent-color:#7ddb84;" oninput="updateSpeed(this.value)">
+      <span class="speed-display" id="promptSpeedVal">5</span>
+    </div>
+    <button class="ctrl-btn exit" onclick="exitPrompt()">✕ Exit</button>
+  </div>
+</div>
+
+<script>
+let scrollInterval = null;
+let playing = false;
+let scrollPos = 0;
+
+document.getElementById('speedSlider').addEventListener('input', function() {
+  document.getElementById('speedVal').textContent = this.value;
+});
+
+function updateWordCount() {
+  const words = document.getElementById('scriptArea').value.trim().split(/\s+/).filter(w => w).length;
+  document.getElementById('wordCount').textContent = `${words} words · ~${Math.ceil(words/130)} min read`;
+}
+
+function startPrompt() {
+  const script = document.getElementById('scriptArea').value.trim();
+  if (!script) return;
+
+  const fontSize = parseInt(document.getElementById('fontSize').value) || 48;
+  const mirror = document.getElementById('mirrorCheck').checked;
+  const invert = document.getElementById('invertCheck').checked;
+  const speed = parseInt(document.getElementById('speedSlider').value);
+
+  document.getElementById('promptSpeed').value = speed;
+  document.getElementById('promptSpeedVal').textContent = speed;
+
+  const inner = document.getElementById('promptInner');
+  inner.style.fontSize = fontSize + 'px';
+  inner.style.color = invert ? '#111' : '#fff';
+  inner.innerHTML = (mirror ? `<div class="mirror-text">${esc(script)}</div>` : esc(script)).replace(/\n/g, '<br>');
+  document.getElementById('promptView').style.background = invert ? '#fff' : '#000';
+
+  document.getElementById('promptView').classList.add('active');
+  scrollPos = 0;
+  document.getElementById('promptScroll').scrollTop = 0;
+  playing = true;
+  startScrolling(speed);
+  updateWordCount();
+}
+
+function startScrolling(speed) {
+  clearInterval(scrollInterval);
+  const px = speed * 0.4;
+  scrollInterval = setInterval(() => {
+    if (!playing) return;
+    scrollPos += px;
+    document.getElementById('promptScroll').scrollTop = scrollPos;
+  }, 16);
+}
+
+function togglePlay() {
+  playing = !playing;
+  document.getElementById('playPauseBtn').textContent = playing ? '⏸ Pause' : '▶ Play';
+}
+
+function restart() {
+  scrollPos = 0;
+  document.getElementById('promptScroll').scrollTop = 0;
+  playing = true;
+  document.getElementById('playPauseBtn').textContent = '⏸ Pause';
+}
+
+function updateSpeed(val) {
+  document.getElementById('promptSpeedVal').textContent = val;
+  startScrolling(parseInt(val));
+}
+
+function exitPrompt() {
+  clearInterval(scrollInterval);
+  playing = false;
+  document.getElementById('promptView').classList.remove('active');
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Keyboard controls
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('promptView').classList.contains('active')) return;
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+  if (e.key === 'Escape') exitPrompt();
+  if (e.key === 'ArrowUp') { scrollPos = Math.max(0, scrollPos - 100); document.getElementById('promptScroll').scrollTop = scrollPos; }
+  if (e.key === 'ArrowDown') { scrollPos += 100; document.getElementById('promptScroll').scrollTop = scrollPos; }
+});
+
+// Click to pause
+document.getElementById('promptScroll').addEventListener('click', togglePlay);
+
+updateWordCount();
+</script>
+</body>
+</html>
