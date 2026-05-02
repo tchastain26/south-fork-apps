@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Quote Generator | South Fork Apps</title>
+  <meta name="description" content="Get inspired with random quotes filtered by category. Wisdom, tech, creativity, motivation, and life. Free online quote generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 16px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 680px; margin: 0 auto; width: 100%; padding: 40px 20px; display: flex; flex-direction: column; gap: 24px; align-items: center; justify-content: center; }
+    .categories { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .cat-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text-mid); font-family: var(--font); transition: all .15s; }
+    .cat-btn:hover, .cat-btn.active { background: var(--primary-dim); border-color: var(--primary-dim); color: var(--text); }
+    .quote-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 32px; text-align: center; width: 100%; position: relative; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+    .quote-mark { font-size: 80px; line-height: .6; color: var(--primary-dim); font-family: 'Playfair Display', serif; font-style: italic; align-self: flex-start; }
+    .quote-text { font-family: 'Playfair Display', serif; font-size: clamp(18px, 4vw, 26px); font-style: italic; line-height: 1.5; color: var(--text); }
+    .quote-author { font-size: 14px; font-weight: 700; color: var(--primary); letter-spacing: .05em; }
+    .quote-category { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); background: var(--surface2); padding: 3px 10px; border-radius: 10px; }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .btn { padding: 11px 24px; border: none; border-radius: 40px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+    .btn.primary { background: var(--primary-dim); color: var(--text); }
+    .btn.primary:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .count { font-size: 12px; color: var(--text-dim); }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .fade { animation: fadeIn .35s ease; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Random Quote Generator</h1>
+</header>
+<main>
+  <div class="categories" id="cats"></div>
+
+  <div class="quote-card" id="quoteCard">
+    <div class="quote-mark">"</div>
+    <div class="quote-text" id="quoteText">Click "New Quote" to get inspired.</div>
+    <div class="quote-author" id="quoteAuthor"></div>
+    <div class="quote-category" id="quoteCat"></div>
+  </div>
+
+  <div class="btns">
+    <button class="btn primary" onclick="newQuote()">New Quote</button>
+    <button class="btn ghost" onclick="copyQuote()">Copy</button>
+    <button class="btn ghost" onclick="shareQuote()">Share</button>
+  </div>
+  <div class="count" id="countEl"></div>
+</main>
+<script>
+const QUOTES = [
+  // Wisdom
+  {t:"The only way to do great work is to love what you do.",a:"Steve Jobs",c:"Wisdom"},
+  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein",c:"Wisdom"},
+  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius",c:"Wisdom"},
+  {t:"Life is what happens when you're busy making other plans.",a:"John Lennon",c:"Wisdom"},
+  {t:"The future belongs to those who believe in the beauty of their dreams.",a:"Eleanor Roosevelt",c:"Wisdom"},
+  {t:"Tell me and I forget. Teach me and I remember. Involve me and I learn.",a:"Benjamin Franklin",c:"Wisdom"},
+  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb",c:"Wisdom"},
+  {t:"An unexamined life is not worth living.",a:"Socrates",c:"Wisdom"},
+  {t:"Simplicity is the ultimate sophistication.",a:"Leonardo da Vinci",c:"Wisdom"},
+  {t:"A fool thinks himself to be wise, but a wise man knows himself to be a fool.",a:"William Shakespeare",c:"Wisdom"},
+  // Motivation
+  {t:"The secret of getting ahead is getting started.",a:"Mark Twain",c:"Motivation"},
+  {t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson",c:"Motivation"},
+  {t:"Whether you think you can or you think you can't, you're right.",a:"Henry Ford",c:"Motivation"},
+  {t:"You miss 100% of the shots you don't take.",a:"Wayne Gretzky",c:"Motivation"},
+  {t:"The harder I work, the luckier I get.",a:"Samuel Goldwyn",c:"Motivation"},
+  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt",c:"Motivation"},
+  {t:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill",c:"Motivation"},
+  {t:"Do one thing every day that scares you.",a:"Eleanor Roosevelt",c:"Motivation"},
+  {t:"It always seems impossible until it's done.",a:"Nelson Mandela",c:"Motivation"},
+  {t:"Start where you are. Use what you have. Do what you can.",a:"Arthur Ashe",c:"Motivation"},
+  // Creativity
+  {t:"Creativity is intelligence having fun.",a:"Albert Einstein",c:"Creativity"},
+  {t:"You can't use up creativity. The more you use, the more you have.",a:"Maya Angelou",c:"Creativity"},
+  {t:"Every artist was first an amateur.",a:"Ralph Waldo Emerson",c:"Creativity"},
+  {t:"Art is not what you see, but what you make others see.",a:"Edgar Degas",c:"Creativity"},
+  {t:"The worst enemy of creativity is self-doubt.",a:"Sylvia Plath",c:"Creativity"},
+  {t:"Creativity takes courage.",a:"Henri Matisse",c:"Creativity"},
+  {t:"An idea that is not dangerous is unworthy of being called an idea at all.",a:"Oscar Wilde",c:"Creativity"},
+  {t:"Logic will get you from A to B. Imagination will take you everywhere.",a:"Albert Einstein",c:"Creativity"},
+  // Tech
+  {t:"Any sufficiently advanced technology is indistinguishable from magic.",a:"Arthur C. Clarke",c:"Tech"},
+  {t:"The best way to predict the future is to invent it.",a:"Alan Kay",c:"Tech"},
+  {t:"Software is eating the world.",a:"Marc Andreessen",c:"Tech"},
+  {t:"First, solve the problem. Then, write the code.",a:"John Johnson",c:"Tech"},
+  {t:"Programs must be written for people to read, and only incidentally for machines to execute.",a:"Harold Abelson",c:"Tech"},
+  {t:"Measuring programming progress by lines of code is like measuring aircraft building progress by weight.",a:"Bill Gates",c:"Tech"},
+  {t:"It's not a bug — it's an undocumented feature.",a:"Anonymous",c:"Tech"},
+  {t:"The most disruptive companies ask 'what if' not 'why not'.",a:"Larry Page",c:"Tech"},
+  // Life
+  {t:"Be yourself; everyone else is already taken.",a:"Oscar Wilde",c:"Life"},
+  {t:"Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",a:"Albert Einstein",c:"Life"},
+  {t:"You only live once, but if you do it right, once is enough.",a:"Mae West",c:"Life"},
+  {t:"In three words I can sum up everything I've learned about life: it goes on.",a:"Robert Frost",c:"Life"},
+  {t:"To live is the rarest thing in the world. Most people exist, that is all.",a:"Oscar Wilde",c:"Life"},
+  {t:"We accept the love we think we deserve.",a:"Stephen Chbosky",c:"Life"},
+  {t:"Not all those who wander are lost.",a:"J.R.R. Tolkien",c:"Life"},
+];
+
+const CATS = ['All', ...new Set(QUOTES.map(q=>q.c))];
+let activecat = 'All';
+let lastIdx = -1;
+
+// Build categories
+const catEl = document.getElementById('cats');
+CATS.forEach(c => {
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn' + (c==='All'?' active':'');
+  btn.textContent = c;
+  btn.onclick = () => { activecat = c; document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); newQuote(); };
+  catEl.appendChild(btn);
+});
+
+function filtered() { return activecat==='All' ? QUOTES : QUOTES.filter(q=>q.c===activecat); }
+
+function newQuote() {
+  const pool = filtered();
+  let idx;
+  do { idx = Math.floor(Math.random()*pool.length); } while (idx===lastIdx && pool.length>1);
+  lastIdx = idx;
+  const q = pool[idx];
+  const card = document.getElementById('quoteCard');
+  card.classList.remove('fade');
+  void card.offsetWidth;
+  card.classList.add('fade');
+  document.getElementById('quoteText').textContent = q.t;
+  document.getElementById('quoteAuthor').textContent = '— ' + q.a;
+  document.getElementById('quoteCat').textContent = q.c;
+  document.getElementById('countEl').textContent = `${idx+1} of ${pool.length} in ${activecat}`;
+}
+
+function copyQuote() {
+  const t = document.getElementById('quoteText').textContent;
+  const a = document.getElementById('quoteAuthor').textContent;
+  navigator.clipboard.writeText(`"${t}" ${a}`);
+}
+
+function shareQuote() {
+  const t = document.getElementById('quoteText').textContent;
+  const a = document.getElementById('quoteAuthor').textContent;
+  if (navigator.share) navigator.share({ text: `"${t}" ${a}` });
+  else copyQuote();
+}
+
+newQuote();
+</script>
+</body>
+</html>
