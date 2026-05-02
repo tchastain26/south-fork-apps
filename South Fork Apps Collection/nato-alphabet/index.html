@@ -47,7 +47,7 @@
 </head>
 <body>
 <header>
-  <a href="../../">← South Fork Apps</a>
+  <a href="https://southforkapps.com">← South Fork Apps</a>
   <h1>NATO Phonetic Alphabet</h1>
 </header>
 <main>
@@ -98,21 +98,24 @@ function convert() {
   const rows = [];
   const words = [];
 
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   chars.forEach(ch => {
+    const safe = esc(ch);
     if (ch === ' ') {
       rows.push(`<div class="char-row"><span class="char-letter">·</span><span class="char-space">[ space ]</span></div>`);
       words.push('·');
     } else if (NATO[ch]) {
       rows.push(`<div class="char-row">
-        <span class="char-letter">${ch}</span>
+        <span class="char-letter">${safe}</span>
         <span class="char-word">${NATO[ch]}</span>
         <span class="char-type">${/[A-Z]/.test(ch)?'Letter':'Number'}</span>
       </div>`);
       words.push(NATO[ch]);
     } else {
       rows.push(`<div class="char-row">
-        <span class="char-letter" style="color:var(--text-dim)">${ch}</span>
-        <span class="char-word" style="color:var(--text-dim)">${ch}</span>
+        <span class="char-letter" style="color:var(--text-dim)">${safe}</span>
+        <span class="char-word" style="color:var(--text-dim)">${safe}</span>
         <span class="char-type">Symbol</span>
       </div>`);
       words.push(ch);
@@ -142,5 +145,7 @@ Object.entries(NATO).forEach(([letter, word]) => {
   refEl.appendChild(div);
 });
 </script>
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>

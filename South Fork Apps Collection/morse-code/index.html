@@ -45,7 +45,7 @@
 </head>
 <body>
 <header>
-  <a href="../../">← South Fork Apps</a>
+  <a href="https://southforkapps.com">← South Fork Apps</a>
   <h1>Morse Code Translator</h1>
 </header>
 <main>
@@ -119,11 +119,13 @@ function translate() {
 
   morseOutputEl.textContent = morseWords.join(' ');
 
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   charDisplayEl.innerHTML = text.split('').map((c, i) => {
     if (c === ' ') return `<div class="char-chip" data-i="${i}"><span class="chip-letter">·</span><span class="chip-morse">/</span></div>`;
     const m = MORSE[c];
     if (!m) return '';
-    return `<div class="char-chip" data-i="${i}"><span class="chip-letter">${c}</span><span class="chip-morse">${m}</span></div>`;
+    return `<div class="char-chip" data-i="${i}"><span class="chip-letter">${esc(c)}</span><span class="chip-morse">${m}</span></div>`;
   }).join('');
 }
 
@@ -208,5 +210,7 @@ function decodeMorse() {
 
 function copyMorse() { navigator.clipboard.writeText(morseOutputEl.textContent); }
 </script>
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>

@@ -6,7 +6,7 @@
   <title>QR Code Generator | South Fork Apps</title>
   <meta name="description" content="Generate QR codes from any URL, text, WiFi, or contact info. Download as PNG. Free online QR code generator.">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" integrity="sha384-Izc791esqyEy3BEIC42q7jbE0AaOkACziN+dyyXgYeDmpeMCLz0xA+xYN3aCd5zz" crossorigin="anonymous"></script>
   <style>
     :root {
       --bg: #111412; --surface: #1d201e; --surface2: #282b29;
@@ -50,7 +50,7 @@
 </head>
 <body>
 <header>
-  <a href="../../">← South Fork Apps</a>
+  <a href="https://southforkapps.com">← South Fork Apps</a>
   <h1>QR Code Generator</h1>
 </header>
 <main>
@@ -172,5 +172,7 @@ async function copyImage() {
 
 generate();
 </script>
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>

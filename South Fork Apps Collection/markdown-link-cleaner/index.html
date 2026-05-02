@@ -154,6 +154,7 @@
   <div class="controls">
     <label><input type="checkbox" id="removeTrackers" checked> Strip UTM tracking parameters</label>
     <label><input type="checkbox" id="fetchTitles"> Fetch live page titles (takes longer)</label>
+    <p id="fetchDisclosure" style="display:none;margin:0.25rem 0 0 1.5rem;font-size:0.8rem;color:var(--text-muted);opacity:0.8;">⚠ URLs are sent to a third-party proxy (allorigins.win) to fetch titles. Don't use this for internal or private URLs.</p>
     <label>List Format:
       <select id="listFormat">
         <option value="none">None</option>
@@ -172,6 +173,10 @@
 </div>
 
 <script>
+  document.getElementById('fetchTitles').addEventListener('change', function() {
+    document.getElementById('fetchDisclosure').style.display = this.checked ? 'block' : 'none';
+  });
+
   async function convertUrls() {
     const convertBtn = document.getElementById('convertBtn');
     convertBtn.disabled = true;
@@ -253,5 +258,7 @@
     });
   }
 </script>
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>

@@ -51,7 +51,7 @@
 </head>
 <body>
 <header>
-  <a href="../../">← South Fork Apps</a>
+  <a href="https://southforkapps.com">← South Fork Apps</a>
   <h1>Markdown to HTML</h1>
 </header>
 <div class="layout">
@@ -123,6 +123,20 @@ function mdToHtml(md) {
 
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function sanitize(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('script,iframe,object,embed,form').forEach(el => el.remove());
+  tmp.querySelectorAll('*').forEach(el => {
+    [...el.attributes].forEach(attr => {
+      if (attr.name.startsWith('on') || (attr.name === 'href' || attr.name === 'src' || attr.name === 'action') && /^\s*javascript:/i.test(attr.value)) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  return tmp.innerHTML;
+}
+
 let currentTab = 'html';
 let lastHtml = '';
 
@@ -135,7 +149,7 @@ function convert() {
   }
   lastHtml = mdToHtml(md);
   document.getElementById('htmlOutput').textContent = lastHtml;
-  document.getElementById('previewOutput').innerHTML = lastHtml;
+  document.getElementById('previewOutput').innerHTML = sanitize(lastHtml);
 }
 
 function showTab(tab) {
@@ -152,5 +166,7 @@ function copyOutput() { navigator.clipboard.writeText(lastHtml); }
 document.getElementById('mdInput').value = `# Welcome to Markdown to HTML\n\nPaste your **Markdown** here and see the *converted HTML* on the right.\n\n## Features\n\n- Headings, bold, italic\n- \`inline code\` and code blocks\n- Links, lists, blockquotes\n- Tables and horizontal rules\n\n> This is a blockquote.\n\n\`\`\`js\nconsole.log("Hello, world!");\n\`\`\``;
 convert();
 </script>
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>

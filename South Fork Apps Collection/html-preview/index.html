@@ -40,7 +40,7 @@
 </head>
 <body>
 <header>
-  <a href="../../">← South Fork Apps</a>
+  <a href="https://southforkapps.com">← South Fork Apps</a>
   <h1>HTML Live Preview</h1>
   <div class="toolbar">
     <select class="template-sel" id="templateSel" onchange="loadTemplate()">
@@ -73,7 +73,7 @@
         <input type="checkbox" id="darkBg" onchange="updateBg()"> Dark bg
       </label>
     </div>
-    <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+    <iframe id="preview" sandbox="allow-scripts"></iframe>
   </div>
 </div>
 <script>
@@ -274,5 +274,6 @@ editor.addEventListener('keydown', e => {
 editor.value = DEFAULT;
 update();
 </script>
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
 </html>
