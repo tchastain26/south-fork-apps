@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Numeral Converter | South Fork Apps</title>
+  <meta name="description" content="Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 660px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; gap: 4px; }
+    .tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--text-mid); border: none; background: transparent; font-family: var(--font); }
+    .tab.active { background: var(--primary-dim); color: var(--text); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); display: block; margin-bottom: 6px; }
+    input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 24px; font-weight: 700; padding: 14px 16px; outline: none; letter-spacing: .05em; }
+    input:focus { border-color: var(--primary); }
+    .result-hero { text-align: center; padding: 28px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); }
+    .result-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); margin-bottom: 12px; }
+    .result-value { font-size: 52px; font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: .05em; }
+    .result-error { font-size: 16px; color: var(--text-dim); }
+    .btn { padding: 10px; background: var(--primary-dim); color: var(--text); border: none; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+    .btn:hover { background: var(--primary); color: #111; }
+    .breakdown { display: flex; flex-wrap: wrap; gap: 8px; }
+    .breakdown-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .b-roman { font-size: 18px; font-weight: 800; color: var(--primary); }
+    .b-value { font-size: 12px; color: var(--text-dim); }
+    .reference-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+    .ref-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .ref-item:hover { border-color: var(--primary); }
+    .ref-roman { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .ref-num { font-size: 13px; color: var(--text-mid); }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Roman Numeral Converter</h1>
+</header>
+<main>
+  <div class="tabs">
+    <button class="tab active" id="tab1" onclick="setMode('toRoman')">Number → Roman</button>
+    <button class="tab" id="tab2" onclick="setMode('toNumber')">Roman → Number</button>
+  </div>
+
+  <div class="card" id="toRomanPane">
+    <div>
+      <label>Enter a Number (1–3,999,999)</label>
+      <input type="number" id="numInput" value="2024" min="1" max="3999999" oninput="convertToRoman()">
+    </div>
+    <div class="result-hero">
+      <div class="result-label">Roman Numeral</div>
+      <div class="result-value" id="romanResult">—</div>
+    </div>
+    <button class="btn" onclick="copyResult('romanResult')">Copy Roman Numeral</button>
+    <div>
+      <div class="section-label" style="margin-bottom:10px;">Breakdown</div>
+      <div class="breakdown" id="breakdown"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="toNumberPane">
+    <div>
+      <label>Enter Roman Numerals</label>
+      <input type="text" id="romanInput" value="MMXXIV" placeholder="e.g. MMXXIV" oninput="convertToNumber()" style="text-transform:uppercase">
+    </div>
+    <div class="result-hero">
+      <div class="result-label">Number</div>
+      <div class="result-value" id="numberResult">—</div>
+    </div>
+    <button class="btn" onclick="copyResult('numberResult')">Copy Number</button>
+  </div>
+
+  <div>
+    <div class="section-label" style="margin-bottom:10px;">Common References — click to load</div>
+    <div class="reference-grid" id="refGrid"></div>
+  </div>
+</main>
+<script>
+const VALS = [
+  [1000000,'M̄'],[900000,'C̄M̄'],[500000,'D̄'],[400000,'C̄D̄'],
+  [100000,'C̄'],[90000,'X̄C̄'],[50000,'L̄'],[40000,'X̄L̄'],
+  [10000,'X̄'],[9000,'MX̄'],[5000,'V̄'],[4000,'MV̄'],
+  [1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],
+  [100,'C'],[90,'XC'],[50,'L'],[40,'XL'],
+  [10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']
+];
+
+const SIMPLE = [
+  [1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],
+  [100,'C'],[90,'XC'],[50,'L'],[40,'XL'],
+  [10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']
+];
+
+const REFS = [1,4,5,9,10,14,15,19,40,50,90,100,400,500,900,1000,1999,2024,3999];
+
+function toRoman(n) {
+  if (n <= 0 || n > 3999999) return null;
+  let result = '', parts = [];
+  for (const [val, sym] of VALS) {
+    while (n >= val) { result += sym; parts.push({sym, val}); n -= val; }
+  }
+  return { result, parts };
+}
+
+function toNumber(roman) {
+  roman = roman.toUpperCase().trim();
+  const map = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+  let total = 0, prev = 0;
+  for (let i = roman.length - 1; i >= 0; i--) {
+    const curr = map[roman[i]];
+    if (!curr) return null;
+    total += curr < prev ? -curr : curr;
+    prev = curr;
+  }
+  return total > 0 ? total : null;
+}
+
+function convertToRoman() {
+  const n = parseInt(document.getElementById('numInput').value);
+  const res = toRoman(n);
+  if (!res) {
+    document.getElementById('romanResult').textContent = '—';
+    document.getElementById('romanResult').className = 'result-value result-error';
+    document.getElementById('breakdown').innerHTML = '';
+    return;
+  }
+  document.getElementById('romanResult').textContent = res.result;
+  document.getElementById('romanResult').className = 'result-value';
+  document.getElementById('breakdown').innerHTML = res.parts.map(p =>
+    `<div class="breakdown-item"><span class="b-roman">${p.sym}</span><span class="b-value">${p.val.toLocaleString()}</span></div>`
+  ).join('');
+}
+
+function convertToNumber() {
+  const roman = document.getElementById('romanInput').value.toUpperCase();
+  document.getElementById('romanInput').value = roman;
+  const num = toNumber(roman);
+  const el = document.getElementById('numberResult');
+  el.textContent = num ? num.toLocaleString() : 'Invalid';
+  el.className = 'result-value' + (num ? '' : ' result-error');
+}
+
+let mode = 'toRoman';
+function setMode(m) {
+  mode = m;
+  document.getElementById('toRomanPane').classList.toggle('hidden', m !== 'toRoman');
+  document.getElementById('toNumberPane').classList.toggle('hidden', m !== 'toNumber');
+  document.getElementById('tab1').classList.toggle('active', m === 'toRoman');
+  document.getElementById('tab2').classList.toggle('active', m === 'toNumber');
+}
+
+function copyResult(id) { navigator.clipboard.writeText(document.getElementById(id).textContent); }
+
+// Reference grid
+const grid = document.getElementById('refGrid');
+REFS.forEach(n => {
+  const r = toRoman(n);
+  if (!r) return;
+  const div = document.createElement('div');
+  div.className = 'ref-item';
+  div.innerHTML = `<span class="ref-roman">${r.result}</span><span class="ref-num">${n.toLocaleString()}</span>`;
+  div.onclick = () => {
+    document.getElementById('numInput').value = n;
+    setMode('toRoman');
+    convertToRoman();
+  };
+  grid.appendChild(div);
+});
+
+// Add hidden class style
+const style = document.createElement('style');
+style.textContent = '.hidden { display: none !important; }';
+document.head.appendChild(style);
+
+convertToRoman();
+</script>
+</body>
+</html>
