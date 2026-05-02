@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dice Roller | South Fork Apps</title>
+  <meta name="description" content="Roll d4, d6, d8, d10, d12, d20, and d100 with modifiers and roll history. Free online dice roller for tabletop games.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 640px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .dice-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .die-btn { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: all .15s; min-width: 72px; }
+    .die-btn:hover { border-color: var(--primary); background: rgba(125,219,132,.05); }
+    .die-btn.active { border-color: var(--primary); background: rgba(125,219,132,.1); }
+    .die-icon { font-size: 28px; line-height: 1; }
+    .die-label { font-size: 13px; font-weight: 800; color: var(--primary); }
+    .die-count { font-size: 11px; color: var(--text-dim); background: var(--surface2); border-radius: 10px; padding: 1px 8px; min-width: 24px; text-align: center; }
+    .modifier-row { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; flex-wrap: wrap; }
+    .mod-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .mod-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font); }
+    .mod-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .mod-val { font-size: 20px; font-weight: 800; color: var(--primary); min-width: 40px; text-align: center; font-variant-numeric: tabular-nums; }
+    .roll-btn { width: 100%; padding: 16px; background: var(--primary-dim); border: none; border-radius: var(--radius); font-size: 18px; font-weight: 800; cursor: pointer; font-family: var(--font); color: var(--text); transition: background .15s, transform .1s; letter-spacing: -.01em; }
+    .roll-btn:hover { background: var(--primary); color: #111; }
+    .roll-btn:active { transform: scale(0.98); }
+    .roll-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .result-card { background: var(--surface); border: 2px solid var(--primary); border-radius: var(--radius); padding: 24px; text-align: center; display: none; }
+    .result-total { font-size: 64px; font-weight: 800; color: var(--primary); line-height: 1; font-variant-numeric: tabular-nums; }
+    .result-breakdown { font-size: 14px; color: var(--text-mid); margin-top: 10px; font-family: 'Courier New', monospace; word-break: break-all; }
+    .result-formula { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
+    .history { display: flex; flex-direction: column; gap: 8px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .clear-btn { font-size: 11px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 5px; padding: 3px 9px; cursor: pointer; font-family: var(--font); }
+    .clear-btn:hover { border-color: var(--danger, #f28b82); color: var(--danger, #f28b82); }
+    .history-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+    .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .hist-formula { color: var(--text-dim); font-family: 'Courier New', monospace; }
+    .hist-total { font-weight: 800; color: var(--primary); font-size: 16px; font-variant-numeric: tabular-nums; }
+    .hist-breakdown { font-size: 11px; color: var(--text-dim); }
+    @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    .bouncing { animation: bounce .3s ease; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Dice Roller</h1>
+</header>
+<main>
+  <div class="dice-grid" id="diceGrid"></div>
+
+  <div class="modifier-row">
+    <span class="mod-label">Modifier</span>
+    <button class="mod-btn" onclick="changeMod(-1)">−</button>
+    <span class="mod-val" id="modVal">+0</span>
+    <button class="mod-btn" onclick="changeMod(1)">+</button>
+    <span style="font-size:12px;color:var(--text-dim);margin-left:auto" id="formulaPreview"></span>
+  </div>
+
+  <button class="roll-btn" id="rollBtn" onclick="roll()" disabled>Roll Dice</button>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-total" id="resultTotal"></div>
+    <div class="result-breakdown" id="resultBreakdown"></div>
+    <div class="result-formula" id="resultFormula"></div>
+  </div>
+
+  <div class="history">
+    <div class="history-header">
+      <span class="section-label">History</span>
+      <button class="clear-btn" onclick="clearHistory()">Clear</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</main>
+<script>
+const DICE = [
+  {sides:4,  icon:'🔷', color:'#4361ee'},
+  {sides:6,  icon:'⬜', color:'#7ddb84'},
+  {sides:8,  icon:'🔶', color:'#f7c876'},
+  {sides:10, icon:'🔟', color:'#aaccda'},
+  {sides:12, icon:'🔴', color:'#f28b82'},
+  {sides:20, icon:'🎲', color:'#c586c0'},
+  {sides:100,icon:'💯', color:'#b5cea8'},
+];
+
+let counts = {};
+let modifier = 0;
+let history = [];
+
+DICE.forEach(d => counts[d.sides] = 0);
+
+function buildGrid() {
+  document.getElementById('diceGrid').innerHTML = DICE.map(d => `
+    <div class="die-btn" id="btn-${d.sides}" onclick="changeDie(${d.sides}, 1)" oncontextmenu="event.preventDefault();changeDie(${d.sides},-1)">
+      <span class="die-icon">${d.icon}</span>
+      <span class="die-label">d${d.sides}</span>
+      <span class="die-count" id="count-${d.sides}">0</span>
+    </div>
+  `).join('');
+}
+
+function changeDie(sides, delta) {
+  counts[sides] = Math.max(0, (counts[sides]||0) + delta);
+  document.getElementById('count-'+sides).textContent = counts[sides];
+  document.getElementById('btn-'+sides).classList.toggle('active', counts[sides] > 0);
+  updateUI();
+}
+
+function changeMod(delta) {
+  modifier = Math.max(-20, Math.min(20, modifier + delta));
+  document.getElementById('modVal').textContent = modifier >= 0 ? '+'+modifier : modifier;
+  updateUI();
+}
+
+function updateUI() {
+  const hasAny = Object.values(counts).some(v=>v>0);
+  document.getElementById('rollBtn').disabled = !hasAny;
+  const parts = DICE.filter(d=>counts[d.sides]>0).map(d=>`${counts[d.sides]}d${d.sides}`);
+  if (modifier !== 0) parts.push(modifier > 0 ? '+'+modifier : String(modifier));
+  document.getElementById('formulaPreview').textContent = parts.join(' + ') || '';
+}
+
+function roll() {
+  const rolls = {};
+  let total = modifier;
+  DICE.forEach(d => {
+    if (!counts[d.sides]) return;
+    rolls[d.sides] = Array.from({length:counts[d.sides]}, ()=>Math.floor(Math.random()*d.sides)+1);
+    total += rolls[d.sides].reduce((a,b)=>a+b,0);
+  });
+
+  const parts = DICE.filter(d=>counts[d.sides]>0).map(d=>`${counts[d.sides]}d${d.sides}`);
+  const formula = parts.join('+') + (modifier!==0 ? (modifier>0?'+':'')+modifier : '');
+  const breakdown = DICE.filter(d=>rolls[d.sides]).map(d=>`d${d.sides}: [${rolls[d.sides].join(', ')}]`).join('  ');
+
+  const card = document.getElementById('resultCard');
+  card.style.display = 'block';
+  card.classList.remove('bouncing');
+  void card.offsetWidth;
+  card.classList.add('bouncing');
+  document.getElementById('resultTotal').textContent = total;
+  document.getElementById('resultBreakdown').textContent = breakdown;
+  document.getElementById('resultFormula').textContent = formula + ' = ' + total;
+
+  history.unshift({formula, total, breakdown});
+  if (history.length > 20) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!history.length) { list.innerHTML = '<div style="font-size:13px;color:var(--text-dim);padding:8px 0">No rolls yet.</div>'; return; }
+  list.innerHTML = history.map(h=>`
+    <div class="history-item">
+      <div><div class="hist-formula">${h.formula}</div><div class="hist-breakdown">${h.breakdown}</div></div>
+      <div class="hist-total">${h.total}</div>
+    </div>
+  `).join('');
+}
+
+function clearHistory() { history=[]; renderHistory(); }
+
+buildGrid();
+renderHistory();
+</script>
+</body>
+</html>
