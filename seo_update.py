@@ -99,6 +99,7 @@ APP_META = {
     "html-preview":           ("HTML Live Preview",           "Write HTML and see it rendered live in a preview pane. Includes templates and download. Free online HTML editor."),
     "nato-alphabet":          ("NATO Phonetic Alphabet Converter", "Convert any text to the NATO phonetic alphabet. Alpha, Bravo, Charlie. Free online NATO alphabet converter."),
     "morse-code":             ("Morse Code Translator",       "Translate text to Morse code and back with audio playback. Free online Morse code translator and decoder."),
+    "compound-interest":      ("Compound Interest Calculator", "Calculate compound interest with monthly contributions. Includes growth chart and year-by-year table. Free online calculator."),
 }
 
 def update_app(app_name, title, description):
