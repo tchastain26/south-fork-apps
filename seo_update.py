@@ -107,6 +107,7 @@ APP_META = {
     "word-clock":             ("Word Clock",                   "A live clock that spells out the current time in words on a glowing letter grid. Free online word clock with fullscreen mode."),
     "css-gradient-generator": ("CSS Gradient Generator",       "Generate linear, radial, and conic CSS gradients visually with live preview. Copy ready CSS code. Free online tool."),
     "password-strength":      ("Password Strength Checker",    "Check password strength with entropy score and time-to-crack estimate. All checks run locally. Free online password checker."),
+    "color-palette":          ("Color Palette Generator",      "Generate complementary, analogous, triadic, and square color palettes from any base color. Free online color palette tool."),
 }
 
 def update_app(app_name, title, description):
