@@ -104,6 +104,7 @@ APP_META = {
     "zalgo-text":             ("Zalgo Text Generator",         "Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker."),
     "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
     "life-stats":             ("Life Stats Calculator",        "See how many heartbeats, breaths, and full moons you've lived through. Enter your birthday for live stats. Free tool."),
+    "word-clock":             ("Word Clock",                   "A live clock that spells out the current time in words on a glowing letter grid. Free online word clock with fullscreen mode."),
 }
 
 def update_app(app_name, title, description):
