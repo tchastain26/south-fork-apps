@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Decoder | South Fork Apps</title>
+  <meta name="description" content="Decode JSON Web Tokens instantly. See header, payload, expiration, and claims. Everything runs in your browser. Free online JWT decoder.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876; --ok: #7ddb84;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+      --j-key: #aaccda; --j-str: #f7c876; --j-num: #b5cea8; --j-bool: #569cd6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .privacy-note { padding: 8px 20px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+    .privacy-note span { color: var(--primary); font-weight: 700; }
+    main { flex: 1; max-width: 800px; margin: 0 auto; width: 100%; padding: 24px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .token-input { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .token-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; padding: 12px 14px; outline: none; resize: vertical; min-height: 90px; width: 100%; word-break: break-all; }
+    textarea:focus { border-color: var(--primary); }
+    .token-display { font-family: 'Courier New', monospace; font-size: 13px; word-break: break-all; line-height: 1.8; }
+    .part-header { color: var(--primary); font-weight: 700; }
+    .part-payload { color: var(--warn); font-weight: 700; }
+    .part-sig { color: var(--text-dim); font-weight: 700; }
+    .sections { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .sections { grid-template-columns: 1fr; } }
+    .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .section-header { padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; display: flex; justify-content: space-between; align-items: center; }
+    .section-header.header-color { color: var(--primary); }
+    .section-header.payload-color { color: var(--warn); }
+    .section-header.sig-color { color: var(--text-dim); }
+    .section-body { padding: 14px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; white-space: pre; }
+    .j-key { color: var(--j-key); }
+    .j-str { color: var(--j-str); }
+    .j-num { color: var(--j-num); }
+    .j-bool { color: var(--j-bool); }
+    .claims-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; grid-column: span 2; }
+    @media (max-width: 600px) { .claims-grid { grid-column: span 1; } }
+    .claim { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+    .claim-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+    .claim-value { font-size: 14px; font-weight: 700; color: var(--text); }
+    .claim-value.ok { color: var(--ok); }
+    .claim-value.warn { color: var(--warn); }
+    .claim-value.err { color: var(--danger); }
+    .empty { color: var(--text-dim); font-size: 14px; text-align: center; padding: 20px 0; }
+    .copy-btn { font-size: 10px; font-weight: 700; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; padding: 2px 7px; cursor: pointer; font-family: var(--font); }
+    .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>JWT Decoder</h1>
+</header>
+<div class="privacy-note"><span>🔒 Private:</span> Your token never leaves your browser. All decoding happens locally.</div>
+<main>
+  <div class="token-input">
+    <div class="token-label">Paste a JSON Web Token</div>
+    <textarea id="tokenIn" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" oninput="decode()" spellcheck="false"></textarea>
+    <div class="token-display" id="tokenDisplay"></div>
+  </div>
+
+  <div id="results"><p class="empty">Paste a JWT above to inspect it.</p></div>
+</main>
+<script>
+function b64decode(str) {
+  str = str.replace(/-/g,'+').replace(/_/g,'/');
+  while (str.length % 4) str += '=';
+  try { return JSON.parse(atob(str)); } catch(e) { return null; }
+}
+
+function hl(obj) {
+  return JSON.stringify(obj, null, 2)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*")(\s*:)?/g, (m,_1,_2,colon) =>
+      colon ? `<span class="j-key">${m}</span>` : `<span class="j-str">${m}</span>`)
+    .replace(/\b(true|false)\b/g, '<span class="j-bool">$1</span>')
+    .replace(/\b(-?\d+\.?\d*)\b/g, '<span class="j-num">$1</span>');
+}
+
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  return d.toLocaleString();
+}
+
+function decode() {
+  const raw = document.getElementById('tokenIn').value.trim();
+  if (!raw) { document.getElementById('results').innerHTML = '<p class="empty">Paste a JWT above to inspect it.</p>'; document.getElementById('tokenDisplay').innerHTML=''; return; }
+
+  const parts = raw.split('.');
+  if (parts.length !== 3) {
+    document.getElementById('results').innerHTML = `<p class="empty" style="color:var(--danger)">Not a valid JWT — expected 3 parts separated by dots.</p>`;
+    document.getElementById('tokenDisplay').innerHTML = '';
+    return;
+  }
+
+  const [hPart, pPart, sPart] = parts;
+  const header = b64decode(hPart);
+  const payload = b64decode(pPart);
+
+  document.getElementById('tokenDisplay').innerHTML =
+    `<span class="part-header">${hPart}</span>.<span class="part-payload">${pPart}</span>.<span class="part-sig">${sPart}</span>`;
+
+  if (!header || !payload) {
+    document.getElementById('results').innerHTML = `<p class="empty" style="color:var(--danger)">Could not decode token parts.</p>`;
+    return;
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  const exp = payload.exp;
+  const nbf = payload.nbf;
+  const iat = payload.iat;
+
+  let expStatus = '—', expClass = '';
+  if (exp) {
+    const secs = exp - now;
+    if (secs < 0) { expStatus = `Expired ${Math.abs(Math.floor(secs/60))} min ago`; expClass = 'err'; }
+    else if (secs < 300) { expStatus = `Expires in ${secs}s`; expClass = 'warn'; }
+    else { expStatus = `Valid — expires ${fmtTime(exp)}`; expClass = 'ok'; }
+  }
+
+  document.getElementById('results').innerHTML = `
+    <div class="sections">
+      <div class="section">
+        <div class="section-header header-color">
+          <span>Header</span>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(JSON.stringify(${JSON.stringify(header)}, null, 2))">Copy</button>
+        </div>
+        <div class="section-body">${hl(header)}</div>
+      </div>
+      <div class="section">
+        <div class="section-header payload-color">
+          <span>Payload</span>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(JSON.stringify(${JSON.stringify(payload)}, null, 2))">Copy</button>
+        </div>
+        <div class="section-body">${hl(payload)}</div>
+      </div>
+      <div class="section" style="grid-column:span 2">
+        <div class="section-header sig-color"><span>Signature</span></div>
+        <div class="section-body" style="color:var(--text-dim);white-space:normal;word-break:break-all">${sPart}<br><br><span style="color:var(--text-dim);font-family:var(--font);font-size:12px">⚠ Signature is not verified — this tool only decodes. Never trust a JWT without server-side verification.</span></div>
+      </div>
+    </div>
+    <div class="claims-grid">
+      ${exp ? `<div class="claim"><div class="claim-label">Expiration (exp)</div><div class="claim-value ${expClass}">${expStatus}</div></div>` : ''}
+      ${iat ? `<div class="claim"><div class="claim-label">Issued At (iat)</div><div class="claim-value">${fmtTime(iat)}</div></div>` : ''}
+      ${nbf ? `<div class="claim"><div class="claim-label">Not Before (nbf)</div><div class="claim-value">${fmtTime(nbf)}</div></div>` : ''}
+      ${payload.sub ? `<div class="claim"><div class="claim-label">Subject (sub)</div><div class="claim-value">${String(payload.sub).slice(0,40)}</div></div>` : ''}
+      ${payload.iss ? `<div class="claim"><div class="claim-label">Issuer (iss)</div><div class="claim-value">${String(payload.iss).slice(0,40)}</div></div>` : ''}
+      ${payload.aud ? `<div class="claim"><div class="claim-label">Audience (aud)</div><div class="claim-value">${String(Array.isArray(payload.aud)?payload.aud.join(', '):payload.aud).slice(0,40)}</div></div>` : ''}
+      <div class="claim"><div class="claim-label">Algorithm</div><div class="claim-value">${header.alg || '—'}</div></div>
+      <div class="claim"><div class="claim-label">Token Type</div><div class="claim-value">${header.typ || '—'}</div></div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>

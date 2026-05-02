@@ -117,6 +117,7 @@ APP_META = {
     "css-unit-converter":     ("CSS Unit Converter",           "Convert between px, rem, em, vw, vh, pt, and cm. Set viewport and root font size. Free online CSS unit converter for developers."),
     "csv-json-converter":     ("CSV to JSON Converter",        "Convert CSV to JSON and JSON to CSV instantly. Supports custom delimiters and headers. Free online CSV JSON converter."),
     "dice-roller":            ("Dice Roller",                  "Roll d4, d6, d8, d10, d12, d20, and d100 with modifiers and roll history. Free online dice roller for tabletop games."),
+    "jwt-decoder":            ("JWT Decoder",                  "Decode JSON Web Tokens instantly. See header, payload, expiration, and claims. Everything runs in your browser. Free online JWT decoder."),
 }
 
 def update_app(app_name, title, description):
