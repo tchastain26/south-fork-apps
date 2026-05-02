@@ -98,6 +98,7 @@ APP_META = {
     "star-wars-crawl":        ("Star Wars Opening Crawl Generator", "Create your own Star Wars-style opening crawl with custom text. Free online Star Wars crawl generator."),
     "html-preview":           ("HTML Live Preview",           "Write HTML and see it rendered live in a preview pane. Includes templates and download. Free online HTML editor."),
     "nato-alphabet":          ("NATO Phonetic Alphabet Converter", "Convert any text to the NATO phonetic alphabet. Alpha, Bravo, Charlie. Free online NATO alphabet converter."),
+    "morse-code":             ("Morse Code Translator",       "Translate text to Morse code and back with audio playback. Free online Morse code translator and decoder."),
 }
 
 def update_app(app_name, title, description):
