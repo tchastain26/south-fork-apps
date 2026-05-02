@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator | South Fork Apps</title>
+  <meta name="description" content="Generate QR codes from any URL, text, WiFi, or contact info. Download as PNG. Free online QR code generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 700px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; }
+    @media (max-width: 600px) { .layout { grid-template-columns: 1fr; } }
+    .controls { display: flex; flex-direction: column; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    textarea, input, select { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 14px; padding: 12px 14px; outline: none; width: 100%; }
+    textarea:focus, input:focus, select:focus { border-color: var(--primary); }
+    textarea { resize: vertical; min-height: 100px; }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-mid); font-family: var(--font); }
+    .preset-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .qr-panel { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .qr-canvas-wrap { background: white; border-radius: var(--radius); padding: 16px; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1; }
+    canvas { max-width: 100%; max-height: 100%; }
+    .qr-placeholder { width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 13px; text-align: center; }
+    .download-btns { display: flex; gap: 8px; width: 100%; }
+    .btn { flex: 1; padding: 11px; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font); text-align: center; }
+    .btn.primary { background: var(--primary-dim); color: var(--text); }
+    .btn.primary:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .size-note { font-size: 11px; color: var(--text-dim); text-align: center; }
+    input[type=color] { height: 42px; padding: 4px 8px; cursor: pointer; }
+    input[type=range] { padding: 8px 0; accent-color: var(--primary); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>QR Code Generator</h1>
+</header>
+<main>
+  <div class="layout">
+    <div class="controls">
+      <div class="field">
+        <label>Content</label>
+        <textarea id="content" placeholder="https://yoursite.com" oninput="generate()">https://southforkapps.com</textarea>
+      </div>
+
+      <div class="field">
+        <label>Quick Presets</label>
+        <div class="presets">
+          <button class="preset-btn" onclick="setPreset('url')">URL</button>
+          <button class="preset-btn" onclick="setPreset('wifi')">WiFi</button>
+          <button class="preset-btn" onclick="setPreset('email')">Email</button>
+          <button class="preset-btn" onclick="setPreset('phone')">Phone</button>
+          <button class="preset-btn" onclick="setPreset('sms')">SMS</button>
+          <button class="preset-btn" onclick="setPreset('vcard')">Contact</button>
+        </div>
+      </div>
+
+      <div class="options-grid">
+        <div class="field">
+          <label>Size (px)</label>
+          <input type="number" id="size" value="256" min="64" max="1024" step="32" oninput="generate()">
+        </div>
+        <div class="field">
+          <label>Error Correction</label>
+          <select id="ecLevel" onchange="generate()">
+            <option value="L">Low (7%)</option>
+            <option value="M" selected>Medium (15%)</option>
+            <option value="Q">Quartile (25%)</option>
+            <option value="H">High (30%)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>QR Color</label>
+          <input type="color" id="darkColor" value="#000000" oninput="generate()">
+        </div>
+        <div class="field">
+          <label>Background</label>
+          <input type="color" id="lightColor" value="#ffffff" oninput="generate()">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Margin</label>
+        <input type="range" id="margin" min="0" max="10" value="4" oninput="generate()">
+      </div>
+    </div>
+
+    <div class="qr-panel">
+      <div class="qr-canvas-wrap">
+        <canvas id="qrCanvas"></canvas>
+      </div>
+      <div class="size-note" id="sizeNote"></div>
+      <div class="download-btns">
+        <button class="btn primary" onclick="downloadPNG()">Download PNG</button>
+        <button class="btn ghost" onclick="copyImage()">Copy</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+const PRESETS = {
+  url: 'https://',
+  wifi: 'WIFI:T:WPA;S:NetworkName;P:Password;;',
+  email: 'mailto:you@example.com?subject=Hello&body=Hi there',
+  phone: 'tel:+1234567890',
+  sms: 'sms:+1234567890?body=Hello',
+  vcard: 'BEGIN:VCARD\nVERSION:3.0\nFN:Your Name\nTEL:+1234567890\nEMAIL:you@example.com\nEND:VCARD',
+};
+
+function setPreset(type) {
+  document.getElementById('content').value = PRESETS[type];
+  generate();
+}
+
+function generate() {
+  const text = document.getElementById('content').value.trim();
+  const size = Math.min(Math.max(parseInt(document.getElementById('size').value) || 256, 64), 1024);
+  const ecLevel = document.getElementById('ecLevel').value;
+  const dark = document.getElementById('darkColor').value;
+  const light = document.getElementById('lightColor').value;
+  const margin = parseInt(document.getElementById('margin').value);
+
+  if (!text) return;
+
+  QRCode.toCanvas(document.getElementById('qrCanvas'), text, {
+    width: size,
+    margin: margin,
+    color: { dark, light },
+    errorCorrectionLevel: ecLevel,
+  }, err => {
+    if (err) console.error(err);
+    document.getElementById('sizeNote').textContent = `${size}×${size}px · ${text.length} characters`;
+  });
+}
+
+function downloadPNG() {
+  const canvas = document.getElementById('qrCanvas');
+  const a = document.createElement('a');
+  a.download = 'qr-code.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+async function copyImage() {
+  try {
+    const canvas = document.getElementById('qrCanvas');
+    canvas.toBlob(async blob => {
+      await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+    });
+  } catch(e) {
+    alert('Copy not supported in this browser. Use Download instead.');
+  }
+}
+
+generate();
+</script>
+</body>
+</html>

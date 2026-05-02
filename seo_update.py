@@ -91,6 +91,7 @@ APP_META = {
     "bmi-calculator":         ("BMI Calculator",              "Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range."),
     "loan-calculator":        ("Loan Payment Calculator",     "Calculate monthly loan payments, total interest, and a full amortization schedule. Free online loan calculator."),
     "timezone-converter":     ("Timezone Converter",          "Convert times between any two timezones instantly with a live world clock. Free online timezone converter."),
+    "qr-code-generator":      ("QR Code Generator",           "Generate QR codes from any URL, text, WiFi, or contact info. Download as PNG. Free online QR code generator."),
 }
 
 def update_app(app_name, title, description):
