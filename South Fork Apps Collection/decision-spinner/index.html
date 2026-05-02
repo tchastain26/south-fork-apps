@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Spinner | South Fork Apps</title>
+  <meta name="description" content="Can't decide? Add your options and spin the wheel. Free online decision spinner and random picker wheel.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; display: grid; grid-template-columns: 1fr 320px; gap: 0; }
+    @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
+    .wheel-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 20px; gap: 20px; position: relative; }
+    .wheel-wrap { position: relative; }
+    .pointer { position: absolute; right: -12px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 28px solid var(--primary); filter: drop-shadow(0 0 8px rgba(125,219,132,.6)); z-index: 10; }
+    canvas { display: block; border-radius: 50%; }
+    .spin-btn { padding: 14px 40px; background: var(--primary-dim); color: var(--text); border: none; border-radius: 40px; font-size: 18px; font-weight: 800; cursor: pointer; font-family: var(--font); letter-spacing: -0.01em; transition: background .15s, transform .1s; }
+    .spin-btn:hover { background: var(--primary); color: #111; }
+    .spin-btn:active { transform: scale(0.97); }
+    .spin-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .result-box { background: var(--surface); border: 2px solid var(--primary); border-radius: var(--radius); padding: 16px 24px; text-align: center; min-width: 220px; }
+    .result-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); margin-bottom: 6px; }
+    .result-text { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .sidebar { border-left: 1px solid var(--border); display: flex; flex-direction: column; }
+    .sidebar-header { padding: 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    .options-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .option-row { display: flex; gap: 6px; align-items: center; }
+    .color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .option-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px; padding: 8px 10px; outline: none; }
+    .option-input:focus { border-color: var(--primary); }
+    .del-btn { background: transparent; border: none; color: var(--text-dim); font-size: 18px; cursor: pointer; padding: 0 4px; line-height: 1; }
+    .del-btn:hover { color: var(--danger, #f28b82); }
+    .add-row { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+    .add-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px; padding: 9px 12px; outline: none; }
+    .add-input:focus { border-color: var(--primary); }
+    .add-btn { background: var(--primary-dim); border: none; border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 14px; font-weight: 700; padding: 9px 14px; cursor: pointer; }
+    .add-btn:hover { background: var(--primary); color: #111; }
+    .presets-row { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 5px; }
+    .preset-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 3px 9px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--text-mid); font-family: var(--font); }
+    .preset-chip:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Decision Spinner</h1>
+</header>
+<main>
+  <div class="wheel-panel">
+    <div class="wheel-wrap">
+      <canvas id="wheel" width="320" height="320"></canvas>
+      <div class="pointer"></div>
+    </div>
+    <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN</button>
+    <div class="result-box" id="resultBox" style="display:none">
+      <div class="result-label">The wheel chose</div>
+      <div class="result-text" id="resultText"></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span>Options (<span id="countEl">0</span>)</span>
+      <button style="background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--text-mid);font-family:var(--font);font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer;" onclick="clearAll()">Clear All</button>
+    </div>
+    <div class="presets-row">
+      <button class="preset-chip" onclick="loadPreset('yesno')">Yes / No</button>
+      <button class="preset-chip" onclick="loadPreset('lunch')">Lunch spots</button>
+      <button class="preset-chip" onclick="loadPreset('days')">Days of week</button>
+      <button class="preset-chip" onclick="loadPreset('nums')">1–6 (dice)</button>
+    </div>
+    <div class="options-list" id="optionsList"></div>
+    <div class="add-row">
+      <input class="add-input" id="addInput" placeholder="Add an option…" onkeydown="if(event.key==='Enter')addOption()">
+      <button class="add-btn" onclick="addOption()">Add</button>
+    </div>
+  </div>
+</main>
+<script>
+const COLORS = ['#7ddb84','#4361ee','#f7c876','#f28b82','#aaccda','#c586c0','#b5cea8','#ff6b35','#27863a','#003049','#e1c1a4','#569cd6'];
+const PRESETS = {
+  yesno: ['Yes','No','Maybe','Ask again later'],
+  lunch: ['Pizza','Tacos','Sushi','Burgers','Salad','Sandwiches','Thai','Indian'],
+  days: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+  nums: ['1','2','3','4','5','6'],
+};
+
+let options = ['Option A','Option B','Option C','Option D'];
+let spinning = false;
+let angle = 0;
+
+function loadPreset(key) { options = [...PRESETS[key]]; renderList(); drawWheel(); }
+function clearAll() { options = []; renderList(); drawWheel(); document.getElementById('resultBox').style.display='none'; }
+
+function addOption() {
+  const inp = document.getElementById('addInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  options.push(val);
+  inp.value = '';
+  renderList();
+  drawWheel();
+}
+
+function removeOption(i) {
+  options.splice(i, 1);
+  renderList();
+  drawWheel();
+}
+
+function updateOption(i, val) {
+  options[i] = val;
+  drawWheel();
+}
+
+function renderList() {
+  document.getElementById('countEl').textContent = options.length;
+  document.getElementById('optionsList').innerHTML = options.map((opt, i) => `
+    <div class="option-row">
+      <div class="color-dot" style="background:${COLORS[i % COLORS.length]}"></div>
+      <input class="option-input" value="${opt.replace(/"/g,'&quot;')}" oninput="updateOption(${i}, this.value)" onblur="drawWheel()">
+      <button class="del-btn" onclick="removeOption(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function drawWheel(rotationAngle = angle) {
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 4;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (options.length === 0) {
+    ctx.fillStyle = '#1d201e';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#899486';
+    ctx.font = '14px Plus Jakarta Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('Add options →', cx, cy);
+    return;
+  }
+
+  const slice = (2 * Math.PI) / options.length;
+  options.forEach((opt, i) => {
+    const start = rotationAngle + i * slice;
+    const end = start + slice;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length];
+    ctx.fill();
+    ctx.strokeStyle = '#111412';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(start + slice / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#111';
+    ctx.font = `bold ${Math.min(14, 120 / options.length + 4)}px Plus Jakarta Sans`;
+    const label = opt.length > 16 ? opt.slice(0, 14) + '…' : opt;
+    ctx.fillText(label, r - 10, 5);
+    ctx.restore();
+  });
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+  ctx.fillStyle = '#111412';
+  ctx.fill();
+  ctx.strokeStyle = '#7ddb84';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function spin() {
+  if (spinning || options.length < 2) return;
+  spinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('resultBox').style.display = 'none';
+
+  const extraSpins = (5 + Math.random() * 5) * Math.PI * 2;
+  const slice = (2 * Math.PI) / options.length;
+  const winnerIndex = Math.floor(Math.random() * options.length);
+  const winnerAngle = -winnerIndex * slice - slice / 2 + Math.PI;
+  const targetAngle = angle + extraSpins + ((winnerAngle - ((angle + extraSpins) % (Math.PI * 2)) + Math.PI * 4) % (Math.PI * 2));
+
+  const duration = 3000 + Math.random() * 1000;
+  const startAngle = angle;
+  const startTime = performance.now();
+
+  function ease(t) { return t < 1 ? 1 - Math.pow(1 - t, 4) : 1; }
+
+  function frame(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    angle = startAngle + (targetAngle - startAngle) * ease(t);
+    drawWheel(angle);
+    if (t < 1) { requestAnimationFrame(frame); return; }
+    angle = targetAngle % (Math.PI * 2);
+    spinning = false;
+    document.getElementById('spinBtn').disabled = false;
+    document.getElementById('resultText').textContent = options[winnerIndex];
+    document.getElementById('resultBox').style.display = 'block';
+  }
+
+  requestAnimationFrame(frame);
+}
+
+renderList();
+drawWheel();
+</script>
+</body>
+</html>
