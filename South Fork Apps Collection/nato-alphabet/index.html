@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NATO Phonetic Alphabet Converter | South Fork Apps</title>
+  <meta name="description" content="Convert any text to the NATO phonetic alphabet. Alpha, Bravo, Charlie. Free online NATO alphabet converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 720px; margin: 0 auto; width: 100%; padding: 28px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .input-row { display: flex; gap: 10px; }
+    input[type=text] { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 18px; font-weight: 600; padding: 14px 16px; outline: none; letter-spacing: .05em; }
+    input[type=text]:focus { border-color: var(--primary); }
+    .btn { padding: 14px 20px; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font); background: var(--primary-dim); color: var(--text); white-space: nowrap; }
+    .btn:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; min-height: 80px; }
+    .result-empty { color: var(--text-dim); font-size: 14px; }
+    .char-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .char-row:last-child { border-bottom: none; }
+    .char-letter { font-size: 22px; font-weight: 800; color: var(--primary); width: 32px; text-align: center; font-variant: small-caps; }
+    .char-word { font-size: 18px; font-weight: 600; flex: 1; }
+    .char-type { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
+    .char-space { color: var(--text-dim); font-style: italic; font-size: 14px; }
+    .output-text { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 15px; line-height: 1.8; color: var(--text-mid); font-family: 'Courier New', monospace; word-break: break-word; }
+    .reference { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+    .ref-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .ref-item:hover { border-color: var(--primary); }
+    .ref-letter { font-size: 20px; font-weight: 800; color: var(--primary); width: 24px; }
+    .ref-word { font-size: 13px; font-weight: 600; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+    .result-header { display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>NATO Phonetic Alphabet</h1>
+</header>
+<main>
+  <div class="input-row">
+    <input type="text" id="inputEl" placeholder="Type anything… e.g. HELLO" oninput="convert()" autofocus>
+    <button class="btn ghost" onclick="document.getElementById('inputEl').value='';convert()">Clear</button>
+    <button class="btn" onclick="copyOutput()">Copy</button>
+  </div>
+
+  <div>
+    <div class="result-header" style="margin-bottom:10px;">
+      <span class="section-label">Phonetic Output</span>
+    </div>
+    <div class="output-text" id="outputText" style="display:none"></div>
+    <div class="result" id="resultEl">
+      <p class="result-empty">Type something above to see the NATO phonetic alphabet.</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label" style="margin-bottom:10px;">Full Reference — click any letter to add it</div>
+    <div class="reference" id="referenceEl"></div>
+  </div>
+</main>
+<script>
+const NATO = {
+  A:'Alpha', B:'Bravo', C:'Charlie', D:'Delta', E:'Echo', F:'Foxtrot',
+  G:'Golf', H:'Hotel', I:'India', J:'Juliet', K:'Kilo', L:'Lima',
+  M:'Mike', N:'November', O:'Oscar', P:'Papa', Q:'Quebec', R:'Romeo',
+  S:'Sierra', T:'Tango', U:'Uniform', V:'Victor', W:'Whiskey',
+  X:'X-ray', Y:'Yankee', Z:'Zulu',
+  '0':'Zero', '1':'One', '2':'Two', '3':'Three', '4':'Four',
+  '5':'Five', '6':'Six', '7':'Seven', '8':'Eight', '9':'Nine',
+};
+
+function convert() {
+  const input = document.getElementById('inputEl').value;
+  const resultEl = document.getElementById('resultEl');
+  const outputText = document.getElementById('outputText');
+
+  if (!input.trim()) {
+    resultEl.innerHTML = '<p class="result-empty">Type something above to see the NATO phonetic alphabet.</p>';
+    outputText.style.display = 'none';
+    return;
+  }
+
+  const chars = input.toUpperCase().split('');
+  const rows = [];
+  const words = [];
+
+  chars.forEach(ch => {
+    if (ch === ' ') {
+      rows.push(`<div class="char-row"><span class="char-letter">·</span><span class="char-space">[ space ]</span></div>`);
+      words.push('·');
+    } else if (NATO[ch]) {
+      rows.push(`<div class="char-row">
+        <span class="char-letter">${ch}</span>
+        <span class="char-word">${NATO[ch]}</span>
+        <span class="char-type">${/[A-Z]/.test(ch)?'Letter':'Number'}</span>
+      </div>`);
+      words.push(NATO[ch]);
+    } else {
+      rows.push(`<div class="char-row">
+        <span class="char-letter" style="color:var(--text-dim)">${ch}</span>
+        <span class="char-word" style="color:var(--text-dim)">${ch}</span>
+        <span class="char-type">Symbol</span>
+      </div>`);
+      words.push(ch);
+    }
+  });
+
+  resultEl.innerHTML = rows.join('');
+  outputText.textContent = words.join(' — ');
+  outputText.style.display = 'block';
+}
+
+function copyOutput() {
+  const text = document.getElementById('outputText').textContent;
+  if (text) navigator.clipboard.writeText(text);
+}
+
+// Build reference grid
+const refEl = document.getElementById('referenceEl');
+Object.entries(NATO).forEach(([letter, word]) => {
+  const div = document.createElement('div');
+  div.className = 'ref-item';
+  div.innerHTML = `<span class="ref-letter">${letter}</span><span class="ref-word">${word}</span>`;
+  div.onclick = () => {
+    document.getElementById('inputEl').value += letter;
+    convert();
+  };
+  refEl.appendChild(div);
+});
+</script>
+</body>
+</html>

@@ -97,6 +97,7 @@ APP_META = {
     "teleprompter":           ("Teleprompter",                "Free browser-based teleprompter for video creators. Adjust speed, font size, and mirror mode. No signup required."),
     "star-wars-crawl":        ("Star Wars Opening Crawl Generator", "Create your own Star Wars-style opening crawl with custom text. Free online Star Wars crawl generator."),
     "html-preview":           ("HTML Live Preview",           "Write HTML and see it rendered live in a preview pane. Includes templates and download. Free online HTML editor."),
+    "nato-alphabet":          ("NATO Phonetic Alphabet Converter", "Convert any text to the NATO phonetic alphabet. Alpha, Bravo, Charlie. Free online NATO alphabet converter."),
 }
 
 def update_app(app_name, title, description):
