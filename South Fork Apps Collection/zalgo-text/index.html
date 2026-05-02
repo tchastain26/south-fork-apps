@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zalgo Text Generator | South Fork Apps</title>
+  <meta name="description" content="Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --radius: 12px;
+      --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 650px) { main { grid-template-columns: 1fr; } }
+    .pane { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .pane:last-child { border-right: none; }
+    .pane-header { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); display: flex; justify-content: space-between; align-items: center; }
+    textarea { flex: 1; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.7; padding: 16px; border: none; outline: none; resize: none; min-height: 240px; }
+    .output-area { flex: 1; background: var(--bg); font-family: var(--font); font-size: 18px; line-height: 2.5; padding: 16px; overflow-y: auto; min-height: 240px; word-break: break-word; color: var(--danger); }
+    .controls { padding: 12px 16px; background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+    .control-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+    input[type=range] { flex: 1; accent-color: var(--primary); }
+    input[type=checkbox] { accent-color: var(--primary); }
+    .level-val { font-size: 12px; color: var(--primary); font-weight: 700; min-width: 40px; }
+    .btn { padding: 7px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font); background: var(--primary-dim); color: var(--text); }
+    .btn:hover { background: var(--primary); color: #111; }
+    .btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+    .btn.ghost:hover { border-color: var(--primary); color: var(--primary); }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px; border-top: 1px solid var(--border); }
+    .preset-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--text-mid); font-family: var(--font); }
+    .preset-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .char-count { font-size: 11px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Zalgo Text Generator</h1>
+</header>
+<main>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Input</span>
+      <button class="btn ghost" style="padding:3px 10px;font-size:11px;" onclick="inputEl.value='';generate()">Clear</button>
+    </div>
+    <textarea id="inputEl" placeholder="Type your text here…" oninput="generate()">Hello World</textarea>
+    <div class="controls">
+      <div class="control-row">
+        <span>Chaos Level</span>
+        <input type="range" id="level" min="1" max="10" value="5" oninput="generate()">
+        <span class="level-val" id="levelVal">5</span>
+      </div>
+      <div class="control-row">
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" id="upCheck" checked onchange="generate()"> Up</label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" id="midCheck" checked onchange="generate()"> Middle</label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" id="downCheck" checked onchange="generate()"> Down</label>
+      </div>
+    </div>
+    <div class="presets">
+      <button class="preset-btn" onclick="setLevel(2)">Mild</button>
+      <button class="preset-btn" onclick="setLevel(5)">Creepy</button>
+      <button class="preset-btn" onclick="setLevel(8)">Cursed</button>
+      <button class="preset-btn" onclick="setLevel(10)">C̸̷h̷̸a̷̴o̷̸s̸̷</button>
+    </div>
+  </div>
+  <div class="pane">
+    <div class="pane-header">
+      <span>Zalgo Output</span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <span class="char-count" id="charCount"></span>
+        <button class="btn" onclick="copyOutput()">Copy</button>
+      </div>
+    </div>
+    <div class="output-area" id="outputEl"></div>
+  </div>
+</main>
+<script>
+const UP = [
+  '̍','̎','̄','̅','̿','̑','̆','̐','͒','͗','͑','̇','̈','̊','͂','̓','̈́','͊','͋','͌','̃','̂','̌','͐','̀','́','̋','̏','̒','̓','̔','̽','̉','ͣ','ͤ','ͥ','ͦ','ͧ','ͨ','ͩ','ͪ','ͫ','ͬ','ͭ','ͮ','ͯ','̾','͛','͆','̚'
+];
+const MID = [
+  '̕','̛','̀','́','͘','̡','̢','̧','̨','̴','̵','̶','͏','͜','͝','͞','͟','͠','͢','̸','̷','͡','҉'
+];
+const DOWN = [
+  '̖','̗','̘','̙','̜','̝','̞','̟','̠','̤','̥','̦','̩','̪','̫','̬','̭','̮','̯','̰','̱','̲','̳','̹','̺','̻','̼','ͅ','͇','͈','͉','͍','͎','͓','͔','͕','͖','͙','͚','̣'
+];
+
+function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function zalgoChar(ch, level, up, mid, down) {
+  if (ch === ' ' || ch === '\n') return ch;
+  let result = ch;
+  const count = Math.ceil(level * 1.5);
+  if (up) for (let i = 0; i < Math.floor(Math.random() * count); i++) result += rnd(UP);
+  if (mid) for (let i = 0; i < Math.floor(Math.random() * Math.ceil(count / 2)); i++) result += rnd(MID);
+  if (down) for (let i = 0; i < Math.floor(Math.random() * count); i++) result += rnd(DOWN);
+  return result;
+}
+
+function generate() {
+  const text = document.getElementById('inputEl').value;
+  const level = parseInt(document.getElementById('level').value);
+  const up = document.getElementById('upCheck').checked;
+  const mid = document.getElementById('midCheck').checked;
+  const down = document.getElementById('downCheck').checked;
+  document.getElementById('levelVal').textContent = level;
+
+  const output = text.split('').map(ch => zalgoChar(ch, level, up, mid, down)).join('');
+  document.getElementById('outputEl').textContent = output;
+  document.getElementById('charCount').textContent = output.length.toLocaleString() + ' chars';
+}
+
+function setLevel(n) {
+  document.getElementById('level').value = n;
+  generate();
+}
+
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputEl').textContent);
+}
+
+generate();
+</script>
+</body>
+</html>
