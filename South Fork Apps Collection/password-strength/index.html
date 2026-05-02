@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Checker | South Fork Apps</title>
+  <meta name="description" content="Check password strength with entropy score and time-to-crack estimate. All checks run locally. Free online password checker.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876; --ok: #7ddb84;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    main { flex: 1; max-width: 600px; margin: 0 auto; width: 100%; padding: 32px 20px; display: flex; flex-direction: column; gap: 20px; }
+    .privacy-note { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+    .privacy-note span { color: var(--primary); font-weight: 700; }
+    .input-wrap { position: relative; }
+    input[type=text], input[type=password] { width: 100%; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 20px; font-weight: 600; padding: 16px 52px 16px 18px; outline: none; letter-spacing: .05em; transition: border-color .2s; }
+    input:focus { border-color: var(--primary); }
+    .toggle-vis { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 20px; line-height: 1; }
+    .strength-bar-wrap { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+    .strength-bar { height: 100%; border-radius: 4px; transition: width .4s, background .4s; }
+    .score-row { display: flex; justify-content: space-between; align-items: center; }
+    .score-label { font-size: 18px; font-weight: 800; }
+    .score-sub { font-size: 13px; color: var(--text-dim); }
+    .crack-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .crack-label { font-size: 13px; color: var(--text-mid); }
+    .crack-time { font-size: 22px; font-weight: 800; }
+    .checks { display: flex; flex-direction: column; gap: 8px; }
+    .check-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .check-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .check-icon.pass { background: rgba(125,219,132,.15); color: var(--ok); }
+    .check-icon.fail { background: rgba(242,139,130,.1); color: var(--danger); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+    .empty { color: var(--text-dim); font-size: 14px; text-align: center; padding: 20px 0; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="../../">← South Fork Apps</a>
+  <h1>Password Strength Checker</h1>
+</header>
+<main>
+  <div class="privacy-note"><span>🔒 Private:</span> Your password never leaves your device. All checks run locally.</div>
+
+  <div class="input-wrap">
+    <input type="password" id="pwInput" placeholder="Enter a password to check…" oninput="check()" autocomplete="off" spellcheck="false">
+    <button class="toggle-vis" onclick="toggleVis()" id="visBtn" title="Show/hide">👁</button>
+  </div>
+
+  <div id="results"><p class="empty">Enter a password above to check its strength.</p></div>
+</main>
+<script>
+let visible = false;
+
+function toggleVis() {
+  visible = !visible;
+  const inp = document.getElementById('pwInput');
+  inp.type = visible ? 'text' : 'password';
+  document.getElementById('visBtn').textContent = visible ? '🙈' : '👁';
+}
+
+function check() {
+  const pw = document.getElementById('pwInput').value;
+  if (!pw) { document.getElementById('results').innerHTML = '<p class="empty">Enter a password above to check its strength.</p>'; return; }
+
+  const has = {
+    lower: /[a-z]/.test(pw),
+    upper: /[A-Z]/.test(pw),
+    digit: /\d/.test(pw),
+    special: /[^a-zA-Z0-9]/.test(pw),
+    length8: pw.length >= 8,
+    length12: pw.length >= 12,
+    length16: pw.length >= 16,
+    noRepeat: !/(.)\1{2,}/.test(pw),
+    noSeq: !/(?:abc|bcd|cde|def|efg|fgh|123|234|345|456|qwerty|asdf)/i.test(pw),
+    noCommon: !['password','123456','qwerty','letmein','monkey','dragon','master','welcome','sunshine'].includes(pw.toLowerCase()),
+  };
+
+  // Entropy estimate
+  let pool = 0;
+  if (has.lower) pool += 26;
+  if (has.upper) pool += 26;
+  if (has.digit) pool += 10;
+  if (has.special) pool += 32;
+  const entropy = pw.length * Math.log2(pool || 1);
+
+  // Score 0-100
+  let score = 0;
+  score += Math.min(30, pw.length * 2.5);
+  if (has.lower) score += 10;
+  if (has.upper) score += 10;
+  if (has.digit) score += 10;
+  if (has.special) score += 15;
+  if (has.noRepeat) score += 5;
+  if (has.noSeq) score += 5;
+  if (!has.noCommon) score = Math.min(score, 15);
+  score = Math.min(100, Math.round(score));
+
+  const [label, color] = score < 25 ? ['Very Weak','#f28b82'] : score < 50 ? ['Weak','#f7c876'] : score < 75 ? ['Fair','#aaccda'] : score < 90 ? ['Strong','#7ddb84'] : ['Very Strong','#7ddb84'];
+
+  // Crack time estimate (guesses/sec: 1B for online, 100T for offline)
+  function crackTime(guessesPerSec) {
+    const guesses = Math.pow(pool, pw.length);
+    const sec = guesses / guessesPerSec;
+    if (sec < 1) return 'instantly';
+    if (sec < 60) return `${Math.round(sec)} seconds`;
+    if (sec < 3600) return `${Math.round(sec/60)} minutes`;
+    if (sec < 86400) return `${Math.round(sec/3600)} hours`;
+    if (sec < 31536000) return `${Math.round(sec/86400)} days`;
+    if (sec < 31536000*1000) return `${Math.round(sec/31536000)} years`;
+    return `${(sec/31536000/1e6).toFixed(0)}M years`;
+  }
+
+  const CHECKS = [
+    [has.length8,  'At least 8 characters'],
+    [has.length12, 'At least 12 characters'],
+    [has.length16, 'At least 16 characters'],
+    [has.lower,    'Contains lowercase letters'],
+    [has.upper,    'Contains uppercase letters'],
+    [has.digit,    'Contains numbers'],
+    [has.special,  'Contains special characters'],
+    [has.noRepeat, 'No repeated characters (aaa)'],
+    [has.noSeq,    'No keyboard sequences (qwerty, 123)'],
+    [has.noCommon, 'Not a common password'],
+  ];
+
+  document.getElementById('results').innerHTML = `
+    <div class="score-row">
+      <span class="score-label" style="color:${color}">${label}</span>
+      <span class="score-sub">Score: ${score}/100 · Entropy: ${Math.round(entropy)} bits</span>
+    </div>
+    <div class="strength-bar-wrap">
+      <div class="strength-bar" style="width:${score}%;background:${color}"></div>
+    </div>
+    <div class="crack-box">
+      <div>
+        <div class="crack-label">Time to crack (online attack)</div>
+        <div class="crack-time" style="color:${color}">${crackTime(1e9)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="crack-label">Offline (fast GPU)</div>
+        <div class="crack-time" style="color:${color};font-size:16px">${crackTime(1e14)}</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val">${pw.length}</div><div class="stat-label">Length</div></div>
+      <div class="stat"><div class="stat-val">${pool}</div><div class="stat-label">Character Pool</div></div>
+      <div class="stat"><div class="stat-val">${Math.round(entropy)}</div><div class="stat-label">Bits Entropy</div></div>
+    </div>
+    <div class="checks">
+      ${CHECKS.map(([pass, label]) => `
+        <div class="check-item">
+          <div class="check-icon ${pass?'pass':'fail'}">${pass?'✓':'✗'}</div>
+          <span style="color:${pass?'var(--text)':'var(--text-dim)'}">${label}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
