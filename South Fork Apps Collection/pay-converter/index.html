@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pay Converter | South Fork Apps</title>
+  <meta name="description" content="Convert any salary between hourly, daily, weekly, biweekly, monthly, and annual pay rates instantly. Free online pay rate converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border); }
+    .nav-back { color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500; }
+    .nav-back:hover { text-decoration:underline; }
+    .nav-title { color:var(--text);font-size:.875rem;font-weight:600; }
+    main { width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;display:grid;gap:1rem; }
+    .panel { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem; }
+    h1 { margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1; }
+    p { margin:0;color:var(--muted);line-height:1.6; }
+    .input-row { display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:end;margin-top:1rem; }
+    label { font-size:.84rem;font-weight:700;color:var(--muted);display:block;margin-bottom:.4rem; }
+    input[type=number] { width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1.4rem;font-weight:700;padding:.9rem 1rem;outline:none; }
+    input[type=number]:focus { border-color:var(--accent); }
+    select { border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;font-weight:700;padding:.9rem 1rem;outline:none;cursor:pointer; }
+    select:focus { border-color:var(--accent); }
+    .assumptions { display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem;padding:1rem;background:var(--surface-2);border-radius:8px;border:1px solid var(--border); }
+    .assumptions label { font-size:.8rem; }
+    .assumptions input { font-size:.95rem;padding:.6rem .75rem; }
+    .results { display:grid;gap:.5rem;margin-top:1rem; }
+    .result-row { display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s; }
+    .result-row:hover { border-color:var(--accent); }
+    .result-row.active { border-color:var(--accent);background:rgba(125,219,132,.06); }
+    .result-period { font-size:.9rem;font-weight:700;color:var(--muted); }
+    .result-amount { font-size:1.2rem;font-weight:800;font-variant-numeric:tabular-nums; }
+    .result-row.active .result-amount { color:var(--accent); }
+    .empty { color:var(--muted);font-size:.9rem;text-align:center;padding:1.5rem 0; }
+    footer { margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Pay Converter</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>Convert your pay.</h1>
+    <p>Enter any pay amount and period — see the equivalent in every other timeframe instantly.</p>
+
+    <div class="input-row">
+      <div>
+        <label>Pay amount</label>
+        <input type="number" id="amount" value="75000" min="0" step="0.01" oninput="calc()">
+      </div>
+      <div>
+        <label>Per</label>
+        <select id="period" onchange="calc()">
+          <option value="annual">Year</option>
+          <option value="monthly">Month</option>
+          <option value="biweekly">2 Weeks</option>
+          <option value="weekly">Week</option>
+          <option value="daily">Day</option>
+          <option value="hourly">Hour</option>
+        </select>
+      </div>
+    </div>
+
+    <details style="margin-top:.75rem">
+      <summary style="cursor:pointer;font-size:.84rem;font-weight:700;color:var(--muted)">Assumptions</summary>
+      <div class="assumptions">
+        <div>
+          <label>Hours per day</label>
+          <input type="number" id="hpd" value="8" min="1" max="24" step=".5" oninput="calc()">
+        </div>
+        <div>
+          <label>Days per week</label>
+          <input type="number" id="dpw" value="5" min="1" max="7" step=".5" oninput="calc()">
+        </div>
+      </div>
+    </details>
+
+    <div class="results" id="results"></div>
+    <footer>v1.0</footer>
+  </section>
+</main>
+<script>
+  const PERIODS = [
+    { id:'annual',    label:'Annual',      },
+    { id:'monthly',   label:'Monthly',     },
+    { id:'biweekly',  label:'Biweekly',    },
+    { id:'weekly',    label:'Weekly',      },
+    { id:'daily',     label:'Daily',       },
+    { id:'hourly',    label:'Hourly',      },
+  ];
+
+  const fmt = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2});
+
+  function toAnnual(amount, period, hpd, dpw){
+    const wpY=52, dpY=wpY*dpw, hpY=dpY*hpd;
+    switch(period){
+      case 'annual':   return amount;
+      case 'monthly':  return amount*12;
+      case 'biweekly': return amount*26;
+      case 'weekly':   return amount*wpY;
+      case 'daily':    return amount*dpY;
+      case 'hourly':   return amount*hpY;
+    }
+  }
+
+  function fromAnnual(annual, period, hpd, dpw){
+    const wpY=52, dpY=wpY*dpw, hpY=dpY*hpd;
+    switch(period){
+      case 'annual':   return annual;
+      case 'monthly':  return annual/12;
+      case 'biweekly': return annual/26;
+      case 'weekly':   return annual/wpY;
+      case 'daily':    return annual/dpY;
+      case 'hourly':   return annual/hpY;
+    }
+  }
+
+  function calc(){
+    const amount = parseFloat(document.getElementById('amount').value)||0;
+    const period = document.getElementById('period').value;
+    const hpd = parseFloat(document.getElementById('hpd').value)||8;
+    const dpw = parseFloat(document.getElementById('dpw').value)||5;
+    if(amount<=0){ document.getElementById('results').innerHTML='<p class="empty">Enter a pay amount above.</p>'; return; }
+    const annual = toAnnual(amount, period, hpd, dpw);
+    const html = PERIODS.map(p=>{
+      const val = fromAnnual(annual, p.id, hpd, dpw);
+      const active = p.id===period;
+      return `<div class="result-row${active?' active':''}" onclick="switchPeriod('${p.id}',${val})">
+        <span class="result-period">${p.label}</span>
+        <span class="result-amount">${fmt.format(val)}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('results').innerHTML=html;
+  }
+
+  function switchPeriod(period, val){
+    document.getElementById('period').value=period;
+    document.getElementById('amount').value=Math.round(val*100)/100;
+    calc();
+  }
+
+  calc();
+</script>
+</body>
+</html>

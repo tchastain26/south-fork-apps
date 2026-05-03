@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleep Cycle Calculator | South Fork Apps</title>
+  <meta name="description" content="Find the best times to wake up or go to sleep based on 90-minute sleep cycles. Wake up refreshed instead of groggy. Free online sleep calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border); }
+    .nav-back { color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500; }
+    .nav-back:hover { text-decoration:underline; }
+    .nav-title { color:var(--text);font-size:.875rem;font-weight:600; }
+    main { width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;display:grid;gap:1rem; }
+    .panel { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem; }
+    h1 { margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1; }
+    p { margin:0;color:var(--muted);line-height:1.6; }
+    .tabs { display:flex;gap:.5rem;margin:1rem 0; }
+    .tab { flex:1;padding:.75rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--muted);font:inherit;font-weight:700;cursor:pointer;font-size:.875rem; }
+    .tab.active { border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08); }
+    .field { display:grid;gap:.4rem;margin-bottom:1rem; }
+    label { font-size:.84rem;font-weight:700;color:var(--muted); }
+    input[type=time] { width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1.6rem;font-weight:700;padding:1rem;outline:none;text-align:center; }
+    input[type=time]:focus { border-color:var(--accent); }
+    .section-label { font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem; }
+    .cycles { display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem; }
+    @media(max-width:480px){ .cycles{grid-template-columns:repeat(2,1fr)} }
+    .cycle-card { background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center;cursor:default; }
+    .cycle-card.best { border-color:var(--accent);background:rgba(125,219,132,.07); }
+    .cycle-card.best .cycle-time { color:var(--accent); }
+    .cycle-time { font-size:1.25rem;font-weight:800; }
+    .cycle-sub { font-size:.75rem;color:var(--muted);margin-top:.3rem;line-height:1.4; }
+    .cycle-badge { display:inline-block;font-size:.65rem;font-weight:800;background:var(--accent);color:#102113;border-radius:4px;padding:1px 5px;margin-top:.3rem; }
+    .note { font-size:.82rem;color:var(--muted);margin-top:1rem;padding:.75rem 1rem;background:var(--surface-2);border-radius:8px;border-left:3px solid rgba(125,219,132,.4); }
+    footer { margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Sleep Cycle Calculator</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>Sleep smarter.</h1>
+    <p>Each sleep cycle is ~90 minutes. Waking between cycles means waking up refreshed instead of groggy.</p>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-sleep" type="button" onclick="setMode('sleep')">I want to sleep at…</button>
+      <button class="tab" id="tab-wake" type="button" onclick="setMode('wake')">I need to wake at…</button>
+    </div>
+
+    <div id="mode-sleep">
+      <div class="field">
+        <label>Bedtime (when you'll fall asleep)</label>
+        <input type="time" id="sleepTime" value="23:00" oninput="calc()">
+      </div>
+      <div class="section-label">Best wake-up times</div>
+      <div class="cycles" id="wakeResults"></div>
+    </div>
+
+    <div id="mode-wake" style="display:none">
+      <div class="field">
+        <label>Wake-up time (when your alarm goes off)</label>
+        <input type="time" id="wakeTime" value="07:00" oninput="calc()">
+      </div>
+      <div class="section-label">Best bedtimes</div>
+      <div class="cycles" id="sleepResults"></div>
+    </div>
+
+    <div class="note">Add ~14 minutes for average sleep onset time. The highlighted times (5–6 cycles) give 7.5–9 hours of sleep.</div>
+    <footer>v1.0</footer>
+  </section>
+</main>
+<script>
+  let mode = 'sleep';
+  const CYCLE = 90;
+  const ONSET = 14;
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('mode-sleep').style.display = m==='sleep'?'block':'none';
+    document.getElementById('mode-wake').style.display = m==='wake'?'block':'none';
+    document.getElementById('tab-sleep').classList.toggle('active', m==='sleep');
+    document.getElementById('tab-wake').classList.toggle('active', m==='wake');
+    calc();
+  }
+
+  function toMin(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
+  function fromMin(total){
+    const m=((total%1440)+1440)%1440;
+    const h=Math.floor(m/60), min=m%60;
+    return String(h).padStart(2,'0')+':'+String(min).padStart(2,'0');
+  }
+  function fmt12(t){
+    const [h,m]=t.split(':').map(Number);
+    const ap=h<12?'AM':'PM', h12=h%12||12;
+    return `${h12}:${String(m).padStart(2,'0')} ${ap}`;
+  }
+
+  function calc() {
+    if(mode==='sleep') {
+      const base = toMin(document.getElementById('sleepTime').value) + ONSET;
+      const html = [3,4,5,6].map(c=>{
+        const best=c>=5;
+        return `<div class="cycle-card${best?' best':''}">
+          <div class="cycle-time">${fmt12(fromMin(base+c*CYCLE))}</div>
+          <div class="cycle-sub">${c} cycles · ${c*1.5}h${best?`<div class="cycle-badge">BEST</div>`:''}</div>
+        </div>`;
+      }).join('');
+      document.getElementById('wakeResults').innerHTML=html;
+    } else {
+      const base = toMin(document.getElementById('wakeTime').value);
+      const html = [6,5,4,3].map(c=>{
+        const best=c>=5;
+        return `<div class="cycle-card${best?' best':''}">
+          <div class="cycle-time">${fmt12(fromMin(base-c*CYCLE-ONSET))}</div>
+          <div class="cycle-sub">${c} cycles · ${c*1.5}h${best?`<div class="cycle-badge">BEST</div>`:''}</div>
+        </div>`;
+      }).join('');
+      document.getElementById('sleepResults').innerHTML=html;
+    }
+  }
+
+  calc();
+</script>
+</body>
+</html>

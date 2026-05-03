@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Splitter | South Fork Apps</title>
+  <meta name="description" content="Split a restaurant bill unevenly between any number of people. Assign individual subtotals and split tax and tip proportionally. Free online bill splitter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border); }
+    .nav-back { color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500; }
+    .nav-back:hover { text-decoration:underline; }
+    .nav-title { color:var(--text);font-size:.875rem;font-weight:600; }
+    main { width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;display:grid;gap:1rem;grid-template-columns:1fr 1fr; }
+    @media(max-width:640px){ main{grid-template-columns:1fr} }
+    .panel { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem; }
+    h1 { margin:0 0 .5rem;font-size:clamp(2rem,7vw,3.5rem);line-height:1; }
+    h2 { margin:0 0 1rem;font-size:1rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em; }
+    p { margin:0;color:var(--muted);line-height:1.6; }
+    .field { display:grid;gap:.4rem;margin-bottom:.75rem; }
+    label { font-size:.84rem;font-weight:700;color:var(--muted); }
+    input { width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;padding:.75rem 1rem;outline:none; }
+    input:focus { border-color:var(--accent); }
+    .person-row { display:grid;grid-template-columns:1fr 110px 32px;gap:.5rem;align-items:center;margin-bottom:.5rem; }
+    button { min-height:2.6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font:inherit;font-weight:700;padding:0 1rem;cursor:pointer; }
+    button:hover { border-color:var(--accent); }
+    .primary { border-color:var(--accent);background:var(--accent);color:#102113; }
+    .primary:hover { background:#5ec966; }
+    .remove-btn { border:none;background:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px; }
+    .remove-btn:hover { color:#ff9f9f; }
+    .result-row { display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--border); }
+    .result-row:last-child { border-bottom:none; }
+    .person-name { font-weight:600; }
+    .amount-out { color:var(--accent);font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums; }
+    .summary-line { display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:.3rem; }
+    .summary-total { display:flex;justify-content:space-between;font-weight:800;padding-top:.5rem;border-top:1px solid var(--border);margin-top:.5rem; }
+    .empty { color:var(--muted);font-size:.9rem;text-align:center;padding:1.5rem 0; }
+    footer { margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Bill Splitter</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>Split the bill.</h1>
+    <p>Enter each person's subtotal. Tax and tip split proportionally by what they ordered.</p>
+    <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="field">
+        <label>Tax (%)</label>
+        <input type="number" id="tax" value="9.75" min="0" step="0.25" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Tip (%)</label>
+        <input type="number" id="tip" value="18" min="0" step="1" oninput="calc()">
+      </div>
+    </div>
+    <h2 style="margin-top:1rem">People</h2>
+    <div id="people"></div>
+    <button type="button" onclick="addPerson()" class="primary" style="width:100%;margin-top:.25rem">+ Add Person</button>
+    <footer>v1.0</footer>
+  </section>
+
+  <section class="panel">
+    <h2>Each person owes</h2>
+    <div id="results"><p class="empty">Add people and subtotals to see the split.</p></div>
+    <div id="summary" style="margin-top:1rem"></div>
+  </section>
+</main>
+<script>
+  let people = [{name:'Alice',sub:28.00},{name:'Bob',sub:19.50},{name:'Carol',sub:22.00}];
+
+  function fmt(n){ return '$'+n.toFixed(2); }
+
+  function addPerson(){
+    people.push({name:'Person '+(people.length+1),sub:0});
+    render();
+  }
+
+  function removePerson(i){
+    people.splice(i,1);
+    render();
+  }
+
+  function calc(){
+    const tax = Math.max(0,parseFloat(document.getElementById('tax').value)||0)/100;
+    const tip = Math.max(0,parseFloat(document.getElementById('tip').value)||0)/100;
+    const subtotalTotal = people.reduce((s,p)=>s+p.sub,0);
+    const resultsEl = document.getElementById('results');
+    const summaryEl = document.getElementById('summary');
+
+    if(!people.length || subtotalTotal<=0){
+      resultsEl.innerHTML='<p class="empty">Add people and subtotals to see the split.</p>';
+      summaryEl.innerHTML='';
+      return;
+    }
+
+    let html='', grandTotal=0;
+    people.forEach(p=>{
+      const total = p.sub*(1+tax+tip);
+      grandTotal+=total;
+      html+=`<div class="result-row"><span class="person-name">${p.name}</span><span class="amount-out">${fmt(total)}</span></div>`;
+    });
+    resultsEl.innerHTML=html;
+
+    summaryEl.innerHTML=`
+      <div class="summary-line"><span>Subtotal</span><span>${fmt(subtotalTotal)}</span></div>
+      <div class="summary-line"><span>Tax (${(tax*100).toFixed(2)}%)</span><span>${fmt(subtotalTotal*tax)}</span></div>
+      <div class="summary-line"><span>Tip (${(tip*100).toFixed(0)}%)</span><span>${fmt(subtotalTotal*tip)}</span></div>
+      <div class="summary-total"><span>Grand Total</span><span>${fmt(grandTotal)}</span></div>`;
+  }
+
+  function render(){
+    const container = document.getElementById('people');
+    container.innerHTML='';
+    people.forEach((p,i)=>{
+      const row=document.createElement('div');
+      row.className='person-row';
+      const nameId='n'+i, subId='s'+i;
+      row.innerHTML=`
+        <input type="text" id="${nameId}" value="${p.name}" placeholder="Name" oninput="people[${i}].name=this.value;calc()">
+        <input type="number" id="${subId}" value="${p.sub||''}" min="0" step="0.01" placeholder="$0.00" oninput="people[${i}].sub=parseFloat(this.value)||0;calc()">
+        <button class="remove-btn" type="button" onclick="removePerson(${i})">✕</button>`;
+      container.appendChild(row);
+    });
+    calc();
+  }
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breath Timer | South Fork Apps</title>
+  <meta name="description" content="Guided breathing timer with animated visual cues for box breathing, 4-7-8, and calm patterns. Free online breath timer.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border); }
+    .nav-back { color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500; }
+    .nav-back:hover { text-decoration:underline; }
+    .nav-title { color:var(--text);font-size:.875rem;font-weight:600; }
+    main { width:min(560px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;display:grid;gap:1rem; }
+    .panel { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem; }
+    h1 { margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1; }
+    p { margin:0;color:var(--muted);line-height:1.6; }
+    .patterns { display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:1rem 0; }
+    .pat-btn { padding:.7rem .5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--muted);font:inherit;font-weight:700;cursor:pointer;font-size:.8rem;text-align:center;line-height:1.4; }
+    .pat-btn.active { border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08); }
+    .circle-wrap { display:flex;justify-content:center;align-items:center;padding:1.5rem 0; }
+    .circle-outer { position:relative;width:210px;height:210px; }
+    .circle-outer svg { position:absolute;top:0;left:0;width:100%;height:100%; }
+    .circle-track { fill:none;stroke:var(--border);stroke-width:10; }
+    .circle-prog { fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:577;stroke-dashoffset:577;transform-origin:50% 50%;transform:rotate(-90deg); }
+    .circle-inner { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem; }
+    .phase-label { font-size:1.1rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em; }
+    .phase-count { font-size:2.5rem;font-weight:800;color:var(--text);line-height:1; }
+    .cycle-info { text-align:center;color:var(--muted);font-size:.875rem;margin-bottom:1rem;min-height:1.4em; }
+    .btn-row { display:flex;gap:.75rem; }
+    .btn-start { flex:1;min-height:3rem;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#102113;font:inherit;font-weight:800;font-size:1rem;cursor:pointer; }
+    .btn-start:hover { background:#5ec966; }
+    .btn-reset { min-height:3rem;padding:0 1.5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font:inherit;font-weight:700;cursor:pointer; }
+    .btn-reset:hover { border-color:var(--accent); }
+    footer { margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Breath Timer</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>Breathe.</h1>
+    <p>Pick a pattern, press Start, and follow the circle.</p>
+
+    <div class="patterns">
+      <button class="pat-btn active" id="pat-box" type="button" onclick="setPat('box')">Box<br><small>4-4-4-4</small></button>
+      <button class="pat-btn" id="pat-478" type="button" onclick="setPat('478')">4-7-8<br><small>Calming</small></button>
+      <button class="pat-btn" id="pat-calm" type="button" onclick="setPat('calm')">Calm<br><small>5-0-5-0</small></button>
+    </div>
+
+    <div class="circle-wrap">
+      <div class="circle-outer">
+        <svg viewBox="0 0 210 210">
+          <circle class="circle-track" cx="105" cy="105" r="92"/>
+          <circle class="circle-prog" id="prog" cx="105" cy="105" r="92"/>
+        </svg>
+        <div class="circle-inner">
+          <div class="phase-label" id="phaseLabel">Ready</div>
+          <div class="phase-count" id="phaseCount">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cycle-info" id="cycleInfo">Press Start to begin</div>
+
+    <div class="btn-row">
+      <button class="btn-start" type="button" id="startBtn" onclick="startStop()">Start</button>
+      <button class="btn-reset" type="button" onclick="resetTimer()">Reset</button>
+    </div>
+    <footer>v1.0</footer>
+  </section>
+</main>
+<script>
+  const PATS = {
+    box:  { phases:['Inhale','Hold','Exhale','Hold'], times:[4,4,4,4] },
+    '478':{ phases:['Inhale','Hold','Exhale',''],     times:[4,7,8,0] },
+    calm: { phases:['Inhale','Exhale','',''],         times:[5,5,0,0] },
+  };
+  const CIRC = 2*Math.PI*92;
+
+  let pat='box', running=false, timer=null;
+  let phase=0, secs=0, cycles=0;
+
+  function setPat(id){
+    if(running) return;
+    pat=id;
+    document.querySelectorAll('.pat-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('pat-'+id).classList.add('active');
+    resetTimer();
+  }
+
+  function resetTimer(){
+    clearInterval(timer); running=false;
+    phase=0; secs=0; cycles=0;
+    document.getElementById('phaseLabel').textContent='Ready';
+    document.getElementById('phaseCount').textContent='—';
+    document.getElementById('cycleInfo').textContent='Press Start to begin';
+    document.getElementById('prog').style.strokeDashoffset=CIRC;
+    document.getElementById('startBtn').textContent='Start';
+  }
+
+  function startStop(){
+    if(running){ clearInterval(timer); running=false; document.getElementById('startBtn').textContent='Resume'; }
+    else{ running=true; document.getElementById('startBtn').textContent='Pause'; nextPhase(); }
+  }
+
+  function nextPhase(){
+    const p=PATS[pat];
+    // advance to next non-zero phase
+    while(p.times[phase]===0){ phase=(phase+1)%4; if(phase===0) cycles++; }
+    secs=p.times[phase];
+    updateUI();
+    timer=setInterval(tick,1000);
+  }
+
+  function tick(){
+    secs--;
+    if(secs<=0){
+      clearInterval(timer);
+      phase=(phase+1)%4;
+      if(phase===0) cycles++;
+      if(running) nextPhase();
+      return;
+    }
+    updateUI();
+  }
+
+  function updateUI(){
+    const p=PATS[pat], total=p.times[phase], progress=(total-secs)/total;
+    document.getElementById('prog').style.strokeDashoffset=CIRC*(1-progress);
+    document.getElementById('phaseLabel').textContent=p.phases[phase]||'—';
+    document.getElementById('phaseCount').textContent=secs;
+    document.getElementById('cycleInfo').textContent=`Cycle ${cycles+1}`;
+  }
+</script>
+</body>
+</html>
