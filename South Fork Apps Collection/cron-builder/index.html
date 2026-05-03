@@ -1,1 +1,185 @@
-<!-- stub -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRON Expression Builder | South Fork Apps</title>
+  <meta name="description" content="Build and explain CRON expressions visually with plain-English descriptions and common presets. Free online CRON builder.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412; --surface:#1a1f1b; --surface-2:#202722; --border:#2a2f2b; --accent:#7ddb84; --text:#e8e8e8; --muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex; align-items:center; gap:1rem; padding:.75rem 1.5rem; background:var(--surface); border-bottom:1px solid var(--border); }
+    .nav a { color:var(--accent); text-decoration:none; font-size:.875rem; font-weight:500; }
+    .nav a:hover { text-decoration:underline; }
+    .nav-title { color:var(--text); font-size:.875rem; font-weight:600; }
+    main { width:min(760px,calc(100% - 2rem)); margin:0 auto; padding:2rem 0; display:flex; flex-direction:column; gap:1rem; }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.5rem; }
+    h1 { margin:0 0 .4rem; font-size:clamp(2rem,7vw,3.5rem); line-height:1; }
+    .sub { color:var(--muted); margin:0 0 1.5rem; line-height:1.6; }
+    .cron-display { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .cron-field { flex:1; min-width:80px; }
+    .cron-field label { display:block; font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.3rem; text-align:center; }
+    .cron-field input { width:100%; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--accent); font-family:'Courier New',monospace; font-size:1.4rem; font-weight:800; text-align:center; padding:.7rem .5rem; outline:none; }
+    .cron-field input:focus { border-color:var(--accent); }
+    .cron-field input.error { border-color:#ff9f9f; color:#ff9f9f; }
+    .expression { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; font-family:'Courier New',monospace; font-size:1.4rem; font-weight:800; color:var(--accent); letter-spacing:.05em; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; gap:.75rem; word-break:break-all; }
+    .copy-btn { border:1px solid var(--border); border-radius:6px; background:var(--surface-2); color:var(--text); font:inherit; font-size:.8rem; font-weight:700; padding:.4rem .85rem; cursor:pointer; white-space:nowrap; flex-shrink:0; }
+    .copy-btn:hover { border-color:var(--accent); }
+    .description { background:rgba(125,219,132,.07); border:1px solid rgba(125,219,132,.2); border-radius:8px; padding:1rem 1.25rem; font-size:1rem; color:var(--text); line-height:1.6; margin-bottom:1rem; min-height:3.5rem; }
+    .error-msg { color:#ff9f9f; font-size:.875rem; margin-bottom:.75rem; min-height:1.4em; }
+    .presets-label { font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.5rem; }
+    .presets { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.4rem; }
+    .preset { padding:.6rem .9rem; border:1px solid var(--border); border-radius:6px; background:var(--surface-2); color:var(--muted); font:inherit; font-size:.8rem; font-weight:700; cursor:pointer; text-align:left; line-height:1.4; }
+    .preset:hover { border-color:var(--accent); color:var(--accent); }
+    .preset code { display:block; font-family:'Courier New',monospace; font-size:.75rem; color:var(--accent); opacity:.7; margin-top:.1rem; }
+    footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:.75rem; }
+    @media(max-width:480px) { .nav { padding-inline:1rem; } .cron-field input { font-size:1.1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com">← South Fork Apps</a>
+    <span class="nav-title">CRON Expression Builder</span>
+  </nav>
+  <main>
+    <div class="panel">
+      <h1>Build a cron job.</h1>
+      <p class="sub">Edit each field or paste a full expression. Get a plain-English description instantly.</p>
+
+      <div class="cron-display">
+        <div class="cron-field"><label>Minute</label><input id="f0" value="0" oninput="fromFields()"></div>
+        <div class="cron-field"><label>Hour</label><input id="f1" value="*" oninput="fromFields()"></div>
+        <div class="cron-field"><label>Day (month)</label><input id="f2" value="*" oninput="fromFields()"></div>
+        <div class="cron-field"><label>Month</label><input id="f3" value="*" oninput="fromFields()"></div>
+        <div class="cron-field"><label>Day (week)</label><input id="f4" value="*" oninput="fromFields()"></div>
+      </div>
+
+      <div class="expression">
+        <span id="exprDisplay">0 * * * *</span>
+        <button class="copy-btn" onclick="copyExpr()">Copy</button>
+      </div>
+
+      <div class="description" id="description">Loading…</div>
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="presets-label">Common presets</div>
+      <div class="presets">
+        <button class="preset" onclick="setExpr('* * * * *')">Every minute<code>* * * * *</code></button>
+        <button class="preset" onclick="setExpr('0 * * * *')">Every hour<code>0 * * * *</code></button>
+        <button class="preset" onclick="setExpr('0 0 * * *')">Daily at midnight<code>0 0 * * *</code></button>
+        <button class="preset" onclick="setExpr('0 9 * * *')">Daily at 9 AM<code>0 9 * * *</code></button>
+        <button class="preset" onclick="setExpr('0 0 * * 0')">Every Sunday midnight<code>0 0 * * 0</code></button>
+        <button class="preset" onclick="setExpr('0 9 * * 1-5')">Weekdays at 9 AM<code>0 9 * * 1-5</code></button>
+        <button class="preset" onclick="setExpr('0 0 1 * *')">First of every month<code>0 0 1 * *</code></button>
+        <button class="preset" onclick="setExpr('*/15 * * * *')">Every 15 minutes<code>*/15 * * * *</code></button>
+        <button class="preset" onclick="setExpr('0 0 1 1 *')">Once a year (Jan 1)<code>0 0 1 1 *</code></button>
+        <button class="preset" onclick="setExpr('30 23 * * 5')">Friday at 11:30 PM<code>30 23 * * 5</code></button>
+      </div>
+      <footer>v1.0</footer>
+    </div>
+  </main>
+
+  <script>
+    const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    function parseField(val, min, max, names) {
+      val = val.trim();
+      if (val === '*') return {type:'every'};
+      if (/^\*\/\d+$/.test(val)) { const step=parseInt(val.slice(2)); return {type:'step',step}; }
+      if (/^\d+$/.test(val)) { const n=parseInt(val); if(n<min||n>max) return null; return {type:'exact',val:n}; }
+      if (/^\d+-\d+$/.test(val)) { const [a,b]=val.split('-').map(Number); if(a<min||b>max||a>b) return null; return {type:'range',from:a,to:b}; }
+      if (/^\d+-\d+\/\d+$/.test(val)) { const [range,step]=val.split('/'); const [a,b]=range.split('-').map(Number); return {type:'rangeStep',from:a,to:b,step:parseInt(step)}; }
+      if (val.includes(',')) {
+        const parts = val.split(',').map(v => parseInt(v.trim())).filter(n => !isNaN(n));
+        if (parts.some(n => n<min||n>max)) return null;
+        return {type:'list', vals:parts, names};
+      }
+      return null;
+    }
+
+    function descField(parsed, unit, names, offset=0) {
+      if (!parsed) return `[invalid ${unit}]`;
+      if (parsed.type==='every') return `every ${unit}`;
+      if (parsed.type==='step') return `every ${parsed.step} ${unit}s`;
+      if (parsed.type==='exact') return names ? names[parsed.val - offset] || parsed.val : `${unit} ${parsed.val}`;
+      if (parsed.type==='range') {
+        const a = names ? names[parsed.from-offset]||parsed.from : parsed.from;
+        const b = names ? names[parsed.to-offset]||parsed.to : parsed.to;
+        return `${unit}s ${a} through ${b}`;
+      }
+      if (parsed.type==='rangeStep') return `every ${parsed.step} ${unit}s from ${parsed.from} to ${parsed.to}`;
+      if (parsed.type==='list') {
+        const labels = parsed.vals.map(v => names ? names[v-offset]||v : v);
+        return labels.join(', ');
+      }
+      return unit;
+    }
+
+    function describe(parts) {
+      const [min, hr, dom, mon, dow] = parts;
+      const pMin = parseField(min, 0, 59, null);
+      const pHr  = parseField(hr,  0, 23, null);
+      const pDom = parseField(dom, 1, 31, null);
+      const pMon = parseField(mon, 1, 12, MONTHS);
+      const pDow = parseField(dow, 0,  6, DAYS);
+
+      if (!pMin||!pHr||!pDom||!pMon||!pDow) return null;
+
+      let s = 'Runs ';
+      const minDesc = descField(pMin, 'minute', null);
+      const hrDesc  = descField(pHr,  'hour',   null);
+
+      if (pMin.type==='exact' && pHr.type==='exact') {
+        s += `at ${String(pHr.val).padStart(2,'0')}:${String(pMin.val).padStart(2,'0')}`;
+      } else if (pMin.type==='every' && pHr.type==='every') {
+        s += 'every minute';
+      } else if (pMin.type==='step' && pHr.type==='every') {
+        s += `every ${pMin.step} minutes`;
+      } else if (pMin.type==='exact' && pHr.type==='every') {
+        s += `at minute ${pMin.val} of every hour`;
+      } else {
+        s += `at ${minDesc} past ${hrDesc}`;
+      }
+
+      if (pDow.type !== 'every') s += `, on ${descField(pDow,'day',DAYS)}`;
+      if (pDom.type !== 'every') s += `, on day ${descField(pDom,'day')} of the month`;
+      if (pMon.type !== 'every') s += `, in ${descField(pMon,'month',MONTHS,1)}`;
+
+      return s + '.';
+    }
+
+    function fromFields() {
+      const parts = [0,1,2,3,4].map(i => document.getElementById('f'+i).value.trim()||'*');
+      const expr = parts.join(' ');
+      document.getElementById('exprDisplay').textContent = expr;
+      const desc = describe(parts);
+      document.getElementById('description').textContent = desc || 'Invalid expression — check your field values.';
+      document.getElementById('errorMsg').textContent = desc ? '' : 'One or more fields contain an invalid value.';
+      [0,1,2,3,4].forEach((i,idx) => {
+        const mins=[0,0,1,1,0], maxs=[59,23,31,12,6];
+        const f = document.getElementById('f'+i);
+        const p = parseField(parts[idx], mins[idx], maxs[idx], null);
+        f.classList.toggle('error', !p);
+      });
+    }
+
+    function setExpr(expr) {
+      const parts = expr.split(/\s+/);
+      if (parts.length !== 5) return;
+      parts.forEach((v,i) => document.getElementById('f'+i).value = v);
+      fromFields();
+    }
+
+    function copyExpr() {
+      navigator.clipboard.writeText(document.getElementById('exprDisplay').textContent);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',1200);
+    }
+
+    fromFields();
+  </script>
+</body>
+</html>

@@ -11,6 +11,14 @@ BASE_URL = "https://southforkapps.com"
 TODAY = date.today().isoformat()
 
 APP_META = {
+    "sleep-cycle-calculator": ("Sleep Cycle Calculator",     "Calculate optimal bedtimes or wake-up times based on 90-minute sleep cycles. Free online sleep cycle calculator."),
+    "breath-timer":           ("Breath Timer",               "Guided breathing timer with animated visual cues for box breathing, 4-7-8, and calm breathing patterns. Free online breath timer."),
+    "file-size-converter":    ("File Size Converter",        "Convert between bytes, KB, MB, GB, TB, and PB instantly. Free online file size converter with bit equivalents."),
+    "metronome":              ("Metronome",                  "Free online metronome with BPM slider, tap tempo, visual beat, and audio click. Works in your browser with no install."),
+    "tag-stripper":           ("Tag Stripper",               "Remove HTML tags, XML tags, or Markdown formatting from any text instantly. Free online tag and markup stripper."),
+    "word-wrap":              ("Word Wrap",                  "Wrap text at any column width with hard or soft wrapping. Free online word wrap formatter for text, code, and emails."),
+    "cron-builder":           ("CRON Expression Builder",    "Build and explain CRON expressions visually with plain-English descriptions and common presets. Free online CRON builder."),
+    "pace-calculator":        ("Pace Calculator",            "Calculate running or walking pace, distance, or time. Enter any two values and get the third. Free online pace calculator."),
     "add-line-numbers":       ("Add Line Numbers",           "Free online tool to add line numbers to any block of text. Paste your text and instantly number every line."),
     "add-prefix-suffix":      ("Add Prefix / Suffix",        "Add a custom prefix, suffix, or both to every line of text. Fast, free, and works in your browser."),
     "age-calculator":         ("Age Calculator",             "Calculate your exact age in years, months, and days from any birth date. Free online age calculator."),

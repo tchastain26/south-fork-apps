@@ -1,1 +1,140 @@
-<!-- stub -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Wrap | South Fork Apps</title>
+  <meta name="description" content="Wrap text at any column width with hard or soft wrapping. Free online word wrap formatter for text, code, and emails.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412; --surface:#1a1f1b; --surface-2:#202722; --border:#2a2f2b; --accent:#7ddb84; --text:#e8e8e8; --muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex; align-items:center; gap:1rem; padding:.75rem 1.5rem; background:var(--surface); border-bottom:1px solid var(--border); }
+    .nav a { color:var(--accent); text-decoration:none; font-size:.875rem; font-weight:500; }
+    .nav a:hover { text-decoration:underline; }
+    .nav-title { color:var(--text); font-size:.875rem; font-weight:600; }
+    main { width:min(980px,calc(100% - 2rem)); margin:0 auto; padding:2rem 0; display:grid; gap:1rem; }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+    h1 { margin:0 0 .5rem; font-size:clamp(2rem,7vw,4rem); line-height:1; }
+    p { margin:0; color:var(--muted); line-height:1.6; }
+    .controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; margin-top:1rem; }
+    .ctrl-group { display:flex; align-items:center; gap:.5rem; }
+    .ctrl-group label { color:var(--muted); font-size:.875rem; font-weight:700; }
+    input[type="number"] { width:70px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font:inherit; padding:.5rem .75rem; outline:none; text-align:center; }
+    input[type="number"]:focus { border-color:var(--accent); }
+    .check-label { display:flex; align-items:center; gap:.4rem; color:var(--muted); font-size:.875rem; font-weight:600; cursor:pointer; }
+    input[type="checkbox"] { accent-color:var(--accent); width:15px; height:15px; cursor:pointer; }
+    .layout { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+    @media(max-width:700px) { .layout { grid-template-columns:1fr; } }
+    .col label { display:block; font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:.4rem; }
+    textarea { width:100%; min-height:22rem; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font-family:'Courier New',monospace; font-size:.875rem; line-height:1.6; padding:1rem; outline:none; resize:vertical; }
+    textarea:focus { border-color:var(--accent); }
+    .actions { display:flex; gap:.75rem; margin-top:.75rem; flex-wrap:wrap; }
+    button { min-height:2.8rem; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text); font:inherit; font-weight:800; padding:0 1.25rem; cursor:pointer; }
+    button:hover { border-color:var(--accent); }
+    .primary { border-color:var(--accent); background:var(--accent); color:#102113; }
+    .primary:hover { background:#5ec966; }
+    .meta { margin-top:.5rem; color:var(--muted); font-size:.875rem; font-weight:700; min-height:1.4em; }
+    footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:.75rem; }
+    @media(max-width:480px) { .nav { padding-inline:1rem; } .controls { flex-direction:column; align-items:flex-start; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com">← South Fork Apps</a>
+    <span class="nav-title">Word Wrap</span>
+  </nav>
+  <main>
+    <section class="panel">
+      <h1>Wrap text.</h1>
+      <p>Reformat text to a fixed column width — useful for emails, code comments, changelogs, and terminal output.</p>
+      <div class="controls">
+        <div class="ctrl-group">
+          <label>Wrap at column</label>
+          <input type="number" id="colWidth" value="80" min="10" max="500" oninput="wrap()">
+        </div>
+        <label class="check-label"><input type="checkbox" id="preserveBreaks" checked onchange="wrap()"> Preserve blank lines</label>
+        <label class="check-label"><input type="checkbox" id="hardWrap" checked onchange="wrap()"> Hard wrap (break long words)</label>
+      </div>
+      <div class="layout">
+        <div class="col">
+          <label>Input</label>
+          <textarea id="input" placeholder="Paste text here..." oninput="wrap()"></textarea>
+        </div>
+        <div class="col">
+          <label>Wrapped Output</label>
+          <textarea id="output" readonly placeholder="Wrapped text will appear here..."></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="wrap()">Wrap</button>
+        <button onclick="copyOutput()">Copy Output</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+      <div class="meta" id="meta">Ready.</div>
+      <footer>v1.0</footer>
+    </section>
+  </main>
+
+  <script>
+    function wrapLine(line, width, hard) {
+      if (line.length <= width) return line;
+      const words = line.split(' ');
+      const result = [];
+      let current = '';
+      for (const word of words) {
+        if (!word) { current += ' '; continue; }
+        const testLine = current ? current + ' ' + word : word;
+        if (testLine.length <= width) {
+          current = testLine;
+        } else {
+          if (current) result.push(current);
+          if (hard && word.length > width) {
+            // Break long word at width
+            let w = word;
+            while (w.length > width) { result.push(w.slice(0, width)); w = w.slice(width); }
+            current = w;
+          } else {
+            current = word;
+          }
+        }
+      }
+      if (current) result.push(current);
+      return result.join('\n');
+    }
+
+    function wrap() {
+      const input = document.getElementById('input').value;
+      if (!input.trim()) {
+        document.getElementById('output').value = '';
+        document.getElementById('meta').textContent = 'Paste text above.';
+        return;
+      }
+      const width = Math.max(10, parseInt(document.getElementById('colWidth').value) || 80);
+      const preserve = document.getElementById('preserveBreaks').checked;
+      const hard = document.getElementById('hardWrap').checked;
+
+      const paragraphs = preserve ? input.split(/\n\n+/) : [input.replace(/\n/g, ' ')];
+      const wrapped = paragraphs.map(para => {
+        return para.split('\n').map(line => line.trim() ? wrapLine(line.trim(), width, hard) : '').join('\n');
+      }).join('\n\n');
+
+      document.getElementById('output').value = wrapped;
+      const lines = wrapped.split('\n').length;
+      document.getElementById('meta').textContent = `${lines.toLocaleString()} lines · max ${width} chars per line.`;
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('output').value;
+      if (val) { navigator.clipboard.writeText(val); document.getElementById('meta').textContent = 'Copied to clipboard.'; }
+    }
+
+    function clearAll() {
+      document.getElementById('input').value = '';
+      document.getElementById('output').value = '';
+      document.getElementById('meta').textContent = 'Ready.';
+    }
+  </script>
+</body>
+</html>

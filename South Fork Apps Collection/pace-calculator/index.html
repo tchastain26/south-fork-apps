@@ -1,1 +1,147 @@
-<!-- stub -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pace Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate running or walking pace, distance, or time. Enter any two values and get the third. Free online pace calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#111412; --surface:#1a1f1b; --surface-2:#202722; --border:#2a2f2b; --accent:#7ddb84; --text:#e8e8e8; --muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex; align-items:center; gap:1rem; padding:.75rem 1.5rem; background:var(--surface); border-bottom:1px solid var(--border); }
+    .nav a { color:var(--accent); text-decoration:none; font-size:.875rem; font-weight:500; }
+    .nav a:hover { text-decoration:underline; }
+    .nav-title { color:var(--text); font-size:.875rem; font-weight:600; }
+    main { width:min(700px,calc(100% - 2rem)); margin:0 auto; padding:2rem 0; display:flex; flex-direction:column; gap:1rem; }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.5rem; }
+    h1 { margin:0 0 .4rem; font-size:clamp(2rem,7vw,3.5rem); line-height:1; }
+    .sub { color:var(--muted); margin:0 0 1.5rem; line-height:1.6; }
+    .unit-toggle { display:flex; gap:.5rem; margin-bottom:1.25rem; }
+    .unit-btn { flex:1; padding:.6rem; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--muted); font:inherit; font-weight:700; cursor:pointer; font-size:.875rem; }
+    .unit-btn.active { border-color:var(--accent); background:rgba(125,219,132,.1); color:var(--accent); }
+    .fields { display:grid; gap:.75rem; }
+    .field { display:grid; gap:.4rem; }
+    .field label { font-size:.84rem; font-weight:700; color:var(--muted); display:flex; justify-content:space-between; }
+    .field label span { font-weight:400; font-size:.8rem; }
+    .field-inner { display:grid; grid-template-columns:1fr auto; gap:.5rem; align-items:center; }
+    input[type="text"], input[type="number"] { width:100%; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font:inherit; font-size:1.1rem; padding:.8rem 1rem; outline:none; }
+    input:focus { border-color:var(--accent); }
+    input[readonly] { background:rgba(125,219,132,.06); border-color:rgba(125,219,132,.3); color:var(--accent); font-weight:700; cursor:default; }
+    .solve-btn { min-height:3rem; border:1px solid var(--accent); border-radius:8px; background:var(--accent); color:#102113; font:inherit; font-weight:800; cursor:pointer; padding:0 1.25rem; margin-top:.25rem; white-space:nowrap; }
+    .solve-btn:hover { background:#5ec966; }
+    .calc-btns { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin-top:.75rem; }
+    .calc-btn { padding:.6rem; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--muted); font:inherit; font-size:.8rem; font-weight:700; cursor:pointer; }
+    .calc-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(125,219,132,.08); }
+    .races { margin-top:1.25rem; }
+    .races-label { font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.5rem; }
+    .race-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.4rem; }
+    .race-row { display:flex; justify-content:space-between; padding:.7rem 1rem; background:var(--bg); border:1px solid var(--border); border-radius:8px; font-size:.875rem; }
+    .race-name { font-weight:700; color:var(--muted); }
+    .race-time { font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
+    .error { color:#ff9f9f; font-size:.875rem; margin-top:.5rem; min-height:1.4em; }
+    footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:.75rem; }
+    @media(max-width:480px) { .race-grid { grid-template-columns:1fr; } .nav { padding-inline:1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com">← South Fork Apps</a>
+    <span class="nav-title">Pace Calculator</span>
+  </nav>
+  <main>
+    <div class="panel">
+      <h1>Find your pace.</h1>
+      <p class="sub">Enter any two of the three values and calculate the third. Time format: H:MM:SS or M:SS.</p>
+
+      <div class="unit-toggle">
+        <button class="unit-btn active" id="unitMi" onclick="setUnit('mi')">Miles</button>
+        <button class="unit-btn" id="unitKm" onclick="setUnit('km')">Kilometers</button>
+      </div>
+
+      <div class="calc-btns">
+        <button class="calc-btn active" id="solvePace" onclick="setSolve('pace')">Calculate Pace</button>
+        <button class="calc-btn" id="solveTime" onclick="setSolve('time')">Calculate Time</button>
+        <button class="calc-btn" id="solveDist" onclick="setSolve('dist')">Calculate Distance</button>
+      </div>
+
+      <div class="fields" style="margin-top:.75rem">
+        <div class="field" id="distField">
+          <label>Distance <span id="distUnit">miles</span></label>
+          <input type="number" id="dist" placeholder="e.g. 5.0" min="0" step="0.01" oninput="calc()">
+        </div>
+        <div class="field" id="timeField">
+          <label>Time <span>H:MM:SS or M:SS</span></label>
+          <input type="text" id="time" placeholder="e.g. 45:00" oninput="calc()">
+        </div>
+        <div class="field" id="paceField">
+          <label>Pace <span id="paceUnit">min/mile</span></label>
+          <input type="text" id="pace" placeholder="e.g. 9:00" oninput="calc()">
+        </div>
+      </div>
+
+      <div class="error" id="error"></div>
+
+      <div class="races" id="races" style="display:none">
+        <div class="races-label">Predicted race times</div>
+        <div class="race-grid" id="raceGrid"></div>
+      </div>
+      <footer>v1.0</footer>
+    </div>
+  </main>
+
+  <script>
+    let unit='mi', solve='pace';
+    const RACES=[['5K',5],['10K',10],['Half',21.0975],['Marathon',42.195]];
+
+    function setUnit(u) { unit=u; document.getElementById('unitMi').classList.toggle('active',u==='mi'); document.getElementById('unitKm').classList.toggle('active',u==='km'); document.getElementById('distUnit').textContent=u==='mi'?'miles':'km'; document.getElementById('paceUnit').textContent=u==='mi'?'min/mile':'min/km'; calc(); }
+
+    function setSolve(s) { solve=s; ['pace','time','dist'].forEach(x=>{document.getElementById('solve'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active',x===s); document.getElementById(x==='dist'?'distField':x+'Field').querySelector('input').readOnly=x===s;}); calc(); }
+
+    function parseTime(str) { str=str.trim(); const parts=str.split(':').map(Number); if(parts.some(isNaN)) return null; if(parts.length===2) return parts[0]*60+parts[1]; if(parts.length===3) return parts[0]*3600+parts[1]*60+parts[2]; return null; }
+
+    function fmtTime(secs) { secs=Math.round(secs); const h=Math.floor(secs/3600), m=Math.floor((secs%3600)/60), s=secs%60; return h>0?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`; }
+
+    function calc() {
+      const distInput=document.getElementById('dist'), timeInput=document.getElementById('time'), paceInput=document.getElementById('pace'), errEl=document.getElementById('error');
+      errEl.textContent='';
+
+      const distKm = unit==='mi' ? parseFloat(distInput.value||'')*1.60934 : parseFloat(distInput.value||'');
+      const timeSec = parseTime(timeInput.value||'');
+      const paceSec = parseTime(paceInput.value||'');
+
+      // Convert pace to per-km for calcs
+      let paceKmSec = paceSec ? (unit==='mi' ? paceSec/1.60934 : paceSec) : null;
+
+      if (solve==='pace') {
+        if (isNaN(distKm)||distKm<=0||timeSec===null||timeSec<=0) { paceInput.value=''; document.getElementById('races').style.display='none'; return; }
+        const ps = timeSec / distKm;
+        paceInput.value = fmtTime(unit==='mi' ? ps*1.60934 : ps);
+        paceKmSec = ps;
+      } else if (solve==='time') {
+        if (isNaN(distKm)||distKm<=0||paceKmSec===null||paceKmSec<=0) { timeInput.value=''; document.getElementById('races').style.display='none'; return; }
+        timeInput.value = fmtTime(distKm * paceKmSec);
+      } else {
+        if (timeSec===null||timeSec<=0||paceKmSec===null||paceKmSec<=0) { distInput.value=''; document.getElementById('races').style.display='none'; return; }
+        const dk = timeSec / paceKmSec;
+        distInput.value = unit==='mi' ? (dk/1.60934).toFixed(2) : dk.toFixed(2);
+        paceKmSec = paceKmSec;
+      }
+
+      // Race predictions
+      if (paceKmSec && paceKmSec > 0) {
+        const grid=document.getElementById('raceGrid'); grid.innerHTML='';
+        RACES.forEach(([name,km]) => {
+          const row=document.createElement('div'); row.className='race-row';
+          row.innerHTML=`<span class="race-name">${name}</span><span class="race-time">${fmtTime(km*paceKmSec)}</span>`;
+          grid.appendChild(row);
+        });
+        document.getElementById('races').style.display='block';
+      }
+    }
+
+    setSolve('pace');
+  </script>
+</body>
+</html>
