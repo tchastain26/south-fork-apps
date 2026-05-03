@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen Size Checker | South Fork Apps</title>
+  <meta name="description" content="See your browser viewport, screen resolution, device pixel ratio, and orientation in real time. Free online tool.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:680px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.5rem}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:480px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem 1.25rem}
+  .card-label{font-size:.75rem;color:var(--muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
+  .card-value{font-size:1.5rem;font-weight:600;color:var(--accent);font-family:'Courier New',monospace;word-break:break-all}
+  .card-note{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+  .badge{display:inline-block;padding:.25rem .65rem;border-radius:2rem;font-size:.85rem;font-weight:600;margin-top:.25rem}
+  .mobile{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid var(--accent)}
+  .desktop{background:rgba(170,181,172,.1);color:var(--muted);border:1px solid var(--border)}
+  .live{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted);margin-bottom:1rem}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Screen Size Checker</span></nav>
+<main>
+  <h1>Screen Size Checker</h1>
+  <p class="subtitle">Live browser and screen metrics. Updates on resize.</p>
+  <div class="live"><div class="dot"></div> Live — resize the window to update</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Viewport Width</div>
+      <div class="card-value" id="vw">—</div>
+      <div class="card-note">CSS pixels (window.innerWidth)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Viewport Height</div>
+      <div class="card-value" id="vh">—</div>
+      <div class="card-note">CSS pixels (window.innerHeight)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Screen Width</div>
+      <div class="card-value" id="sw">—</div>
+      <div class="card-note">Physical screen (screen.width)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Screen Height</div>
+      <div class="card-value" id="sh">—</div>
+      <div class="card-note">Physical screen (screen.height)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Device Pixel Ratio</div>
+      <div class="card-value" id="dpr">—</div>
+      <div class="card-note">Physical px per CSS px</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Color Depth</div>
+      <div class="card-value" id="cd">—</div>
+      <div class="card-note">Bits per pixel</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Orientation</div>
+      <div class="card-value" id="orient">—</div>
+      <div class="card-note">Portrait or Landscape</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Device Type</div>
+      <div class="card-value" id="dtype" style="font-size:1rem;padding-top:.25rem"></div>
+      <div class="card-note">Based on screen width &amp; user agent</div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+function update(){
+  document.getElementById('vw').textContent=window.innerWidth+'px';
+  document.getElementById('vh').textContent=window.innerHeight+'px';
+  document.getElementById('sw').textContent=screen.width+'px';
+  document.getElementById('sh').textContent=screen.height+'px';
+  document.getElementById('dpr').textContent=window.devicePixelRatio||1;
+  document.getElementById('cd').textContent=(screen.colorDepth||screen.pixelDepth||'?')+'-bit';
+  const landscape=window.innerWidth>window.innerHeight;
+  document.getElementById('orient').textContent=landscape?'Landscape':'Portrait';
+  const mobile=/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)||window.innerWidth<=768;
+  const el=document.getElementById('dtype');
+  el.innerHTML=mobile?'<span class="badge mobile">Mobile</span>':'<span class="badge desktop">Desktop</span>';
+}
+update();
+window.addEventListener('resize',update);
+</script>
+</body>
+</html>

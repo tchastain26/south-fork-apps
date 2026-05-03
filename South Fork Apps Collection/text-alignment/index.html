@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Alignment Formatter | South Fork Apps</title>
+  <meta name="description" content="Left, right, center, or justify text to a fixed column width. Free online text alignment and padding tool.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:900px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;padding:.875rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem;margin-bottom:1rem}
+  label{font-size:.85rem;color:var(--muted)}
+  .seg{display:flex;border:1px solid var(--border);border-radius:.375rem;overflow:hidden}
+  .seg button{background:var(--surface-2);color:var(--muted);border:none;padding:.35rem .85rem;font-size:.85rem;font-family:inherit;cursor:pointer;transition:.15s}
+  .seg button.active{background:var(--accent);color:#111412;font-weight:600}
+  .width-row{display:flex;align-items:center;gap:.5rem}
+  input[type=number]{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .55rem;border-radius:.375rem;font-size:.875rem;font-family:inherit;width:60px;text-align:center}
+  .check-row{display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer;color:var(--muted)}
+  .check-row input{accent-color:var(--accent);width:14px;height:14px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:620px){.cols{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+  .panel-header{display:flex;justify-content:space-between;align-items:center;font-size:.875rem}
+  textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:.375rem;padding:.6rem;font-size:.82rem;font-family:'Courier New',monospace;resize:vertical;min-height:280px;line-height:1.5;tab-size:2}
+  .ruler{font-family:'Courier New',monospace;font-size:.75rem;color:var(--muted);letter-spacing:0;white-space:pre;overflow:hidden;margin-bottom:.25rem;border-bottom:1px solid var(--border);padding-bottom:.25rem}
+  .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .75rem;border-radius:.375rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Text Alignment Formatter</span></nav>
+<main>
+  <h1>Text Alignment Formatter</h1>
+  <p class="subtitle">Pad and align text to a fixed column width — left, right, center, or justified.</p>
+  <div class="controls">
+    <label>Alignment:</label>
+    <div class="seg">
+      <button class="active" id="aLeft" onclick="setAlign('left')">Left</button>
+      <button id="aRight" onclick="setAlign('right')">Right</button>
+      <button id="aCenter" onclick="setAlign('center')">Center</button>
+      <button id="aJustify" onclick="setAlign('justify')">Justify</button>
+    </div>
+    <div class="width-row">
+      <label>Width:</label>
+      <input type="number" id="colWidth" value="60" min="10" max="200" oninput="align()">
+    </div>
+    <label class="check-row"><input type="checkbox" id="preserveParas" checked onchange="align()"> Preserve paragraph breaks</label>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-header"><strong>Input</strong><span id="inStats" style="color:var(--muted);font-size:.78rem"></span></div>
+      <textarea id="inputArea" placeholder="Paste your text here…" oninput="align()"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><strong>Aligned Output</strong></div>
+      <div class="ruler" id="ruler"></div>
+      <textarea id="outputArea" readonly></textarea>
+      <button class="btn" onclick="copyOut()">Copy</button>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+let alignMode='left';
+function setAlign(a){
+  alignMode=a;
+  ['Left','Right','Center','Justify'].forEach(x=>document.getElementById('a'+x).className='');
+  document.getElementById('a'+a.charAt(0).toUpperCase()+a.slice(1)).className='active';
+  align();
+}
+
+function padLeft(s,w){return s.padStart(w);}
+function padRight(s,w){return s.padEnd(w);}
+function padCenter(s,w){const p=w-s.length;const l=Math.floor(p/2),r=p-l;return ' '.repeat(l)+s+' '.repeat(r);}
+function justifyLine(s,w){
+  const words=s.trim().split(/\s+/);
+  if(words.length<=1) return s.padEnd(w);
+  const totalSpaces=w-words.join('').length;
+  const gaps=words.length-1;
+  const base=Math.floor(totalSpaces/gaps),extra=totalSpaces%gaps;
+  return words.map((ww,i)=>i<gaps?ww+' '.repeat(base+(i<extra?1:0)):ww).join('');
+}
+
+function alignLine(line,w,mode){
+  const t=line.trimEnd();
+  if(t.length>=w) return t;
+  if(mode==='left') return padRight(t,w);
+  if(mode==='right') return padLeft(t,w);
+  if(mode==='center') return padCenter(t,w);
+  if(mode==='justify') return justifyLine(t,w);
+  return t;
+}
+
+function align(){
+  const text=document.getElementById('inputArea').value;
+  const w=Math.max(10,Math.min(200,parseInt(document.getElementById('colWidth').value)||60));
+  const preserveParas=document.getElementById('preserveParas').checked;
+  document.getElementById('inStats').textContent=text.length+' chars · '+text.split('\n').length+' lines';
+
+  // Build ruler
+  let ruler='';
+  for(let i=1;i<=w;i++) ruler+=i%10===0?(i/10)%10:i%5===0?'+':'.';
+  document.getElementById('ruler').textContent=ruler;
+
+  if(!text){document.getElementById('outputArea').value='';return;}
+
+  let lines;
+  if(preserveParas){
+    lines=text.split('\n');
+  } else {
+    // Reflow: collapse whitespace within paragraphs, split by blank lines
+    const paras=text.split(/\n\n+/);
+    lines=paras.map(p=>p.replace(/\s+/g,' ').trim());
+  }
+
+  const out=lines.map(l=>l===''?'':alignLine(l,w,alignMode)).join('\n');
+  document.getElementById('outputArea').value=out;
+}
+
+function copyOut(){
+  navigator.clipboard.writeText(document.getElementById('outputArea').value).then(()=>{
+    const b=document.querySelector('.btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);
+  });
+}
+align();
+</script>
+</body>
+</html>

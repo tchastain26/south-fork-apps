@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tab ↔ Space Converter | South Fork Apps</title>
+  <meta name="description" content="Convert tabs to spaces or spaces to tabs with custom tab width. Free online code indentation converter.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:860px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-bottom:1rem;padding:.875rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem}
+  label{font-size:.875rem;color:var(--muted)}
+  select,input[type=number]{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .6rem;border-radius:.375rem;font-size:.875rem;font-family:inherit}
+  .seg{display:flex;border:1px solid var(--border);border-radius:.375rem;overflow:hidden}
+  .seg button{background:var(--surface-2);color:var(--muted);border:none;padding:.35rem .85rem;font-size:.875rem;font-family:inherit;cursor:pointer;transition:.15s}
+  .seg button.active{background:var(--accent);color:#111412;font-weight:600}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:600px){.cols{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+  .panel-header{display:flex;justify-content:space-between;align-items:center}
+  .panel-header span{font-size:.8rem;color:var(--muted)}
+  textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:.375rem;padding:.6rem;font-size:.85rem;font-family:'Courier New',monospace;resize:vertical;min-height:280px;line-height:1.5}
+  .stats{font-size:.78rem;color:var(--muted)}
+  .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .75rem;border-radius:.375rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Tab ↔ Space Converter</span></nav>
+<main>
+  <h1>Tab ↔ Space Converter</h1>
+  <p class="subtitle">Convert between tabs and spaces. Live conversion as you type.</p>
+  <div class="controls">
+    <label>Direction:</label>
+    <div class="seg">
+      <button class="active" id="btnT2S" onclick="setDir('t2s')">Tabs → Spaces</button>
+      <button id="btnS2T" onclick="setDir('s2t')">Spaces → Tabs</button>
+    </div>
+    <label>Tab width:</label>
+    <div class="seg">
+      <button class="active" id="tw2" onclick="setWidth(2)">2</button>
+      <button id="tw4" onclick="setWidth(4)">4</button>
+      <button id="tw8" onclick="setWidth(8)">8</button>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-header"><strong>Input</strong><span id="inStats">0 chars · 0 lines</span></div>
+      <textarea id="inputArea" placeholder="Paste your code here…" oninput="convert()"></textarea>
+      <div class="stats" id="inDetail"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><strong>Output</strong><span id="outStats">0 chars · 0 lines</span></div>
+      <textarea id="outputArea" readonly></textarea>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="btn" onclick="copyOutput()">Copy</button>
+        <span class="stats" id="outDetail"></span>
+      </div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+let dir = 't2s', width = 2;
+function setDir(d){
+  dir=d;
+  document.getElementById('btnT2S').className=d==='t2s'?'active':'';
+  document.getElementById('btnS2T').className=d==='s2t'?'active':'';
+  convert();
+}
+function setWidth(w){
+  width=w;
+  ['tw2','tw4','tw8'].forEach(id=>document.getElementById(id).className='');
+  document.getElementById('tw'+w).className='active';
+  convert();
+}
+function convert(){
+  const inp=document.getElementById('inputArea').value;
+  const lines=inp.split('\n').length;
+  const tabs=(inp.match(/\t/g)||[]).length;
+  const spaces=(inp.match(/ /g)||[]).length;
+  document.getElementById('inStats').textContent=inp.length+' chars · '+lines+' lines';
+  document.getElementById('inDetail').textContent='Tabs: '+tabs+' · Spaces: '+spaces;
+  let out;
+  if(dir==='t2s'){
+    out=inp.split('\t').join(' '.repeat(width));
+  } else {
+    const sp=' '.repeat(width);
+    out=inp.replace(new RegExp(sp,'g'),'\t');
+  }
+  document.getElementById('outputArea').value=out;
+  const otabs=(out.match(/\t/g)||[]).length;
+  const ospaces=(out.match(/ /g)||[]).length;
+  document.getElementById('outStats').textContent=out.length+' chars · '+out.split('\n').length+' lines';
+  document.getElementById('outDetail').textContent='Tabs: '+otabs+' · Spaces: '+ospaces;
+}
+function copyOutput(){
+  const v=document.getElementById('outputArea').value;
+  navigator.clipboard.writeText(v).then(()=>{
+    const b=document.querySelector('.btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);
+  });
+}
+</script>
+</body>
+</html>

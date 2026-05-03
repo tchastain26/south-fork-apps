@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Minifier | South Fork Apps</title>
+  <meta name="description" content="Minify HTML by stripping whitespace and comments. See byte savings instantly. Free online HTML minifier tool.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:900px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .options{display:flex;flex-wrap:wrap;gap:.75rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:.5rem;margin-bottom:1rem;align-items:center}
+  .opt{display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer;color:var(--muted)}
+  .opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+  .opt.active{color:var(--text)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:620px){.cols{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+  .panel-header{display:flex;justify-content:space-between;align-items:center;font-size:.85rem}
+  .panel-header strong{font-size:.9rem}
+  textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:.375rem;padding:.6rem;font-size:.82rem;font-family:'Courier New',monospace;resize:vertical;min-height:300px;line-height:1.4}
+  .stats{font-size:.8rem;color:var(--muted)}
+  .savings{color:var(--accent);font-weight:600}
+  .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .75rem;border-radius:.375rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">HTML Minifier</span></nav>
+<main>
+  <h1>HTML Minifier</h1>
+  <p class="subtitle">Strip whitespace and comments from HTML. See byte savings instantly.</p>
+  <div class="options">
+    <label class="opt active"><input type="checkbox" id="optComments" checked onchange="minify()"> Remove HTML comments</label>
+    <label class="opt active"><input type="checkbox" id="optWhitespace" checked onchange="minify()"> Collapse whitespace between tags</label>
+    <label class="opt active"><input type="checkbox" id="optOptional" checked onchange="minify()"> Remove optional closing tags (li/dt/dd/p)</label>
+    <label class="opt active"><input type="checkbox" id="optAttr" checked onchange="minify()"> Strip unnecessary attributes</label>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-header"><strong>Input HTML</strong><span id="inSize" class="stats">0 bytes</span></div>
+      <textarea id="inputArea" placeholder="Paste HTML here…" oninput="minify()"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><strong>Minified HTML</strong><span id="outSize" class="stats">0 bytes</span></div>
+      <textarea id="outputArea" readonly></textarea>
+      <div style="display:flex;gap:.75rem;align-items:center">
+        <button class="btn" onclick="copyOut()">Copy</button>
+        <span class="stats" id="savings"></span>
+      </div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+function minify(){
+  let h=document.getElementById('inputArea').value;
+  const inSize=new TextEncoder().encode(h).length;
+  document.getElementById('inSize').textContent=fmt(inSize);
+  let out=h;
+  if(document.getElementById('optComments').checked){
+    out=out.replace(/<!--[\s\S]*?-->/g,'');
+  }
+  if(document.getElementById('optWhitespace').checked){
+    out=out.replace(/>\s+</g,'><');
+    out=out.replace(/\s{2,}/g,' ');
+    out=out.trim();
+  }
+  if(document.getElementById('optOptional').checked){
+    out=out.replace(/<\/(li|dt|dd|p)>/gi,'');
+  }
+  if(document.getElementById('optAttr').checked){
+    // Remove type="text/javascript" and type="text/css"
+    out=out.replace(/\s+type="text\/(javascript|css)"/gi,'');
+    // Remove method="get" (default)
+    out=out.replace(/\s+method="get"/gi,'');
+    // Remove language="javascript"
+    out=out.replace(/\s+language="javascript"/gi,'');
+  }
+  const outSize=new TextEncoder().encode(out).length;
+  document.getElementById('outSize').textContent=fmt(outSize);
+  document.getElementById('outputArea').value=out;
+  const saved=inSize-outSize;
+  const pct=inSize>0?Math.round(saved/inSize*100):0;
+  document.getElementById('savings').innerHTML=saved>0?'<span class="savings">Saved '+fmt(saved)+' ('+pct+'%)</span>':'<span>No savings</span>';
+}
+function fmt(b){return b>=1024?(b/1024).toFixed(1)+' KB':b+' B';}
+function copyOut(){
+  navigator.clipboard.writeText(document.getElementById('outputArea').value).then(()=>{
+    const b=document.querySelector('.btn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);
+  });
+}
+</script>
+</body>
+</html>

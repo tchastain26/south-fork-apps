@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCD & LCM Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate the greatest common divisor and least common multiple of up to 6 numbers. Free online GCD LCM calculator.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:720px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .input-area{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;margin-bottom:1rem}
+  input[type=text]{width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.55rem .75rem;border-radius:.5rem;font-size:1rem;font-family:inherit}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .hint{font-size:.78rem;color:var(--muted);margin-top:.4rem}
+  .results{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  @media(max-width:500px){.results{grid-template-columns:1fr}}
+  .big-stat{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;text-align:center}
+  .big-label{font-size:.8rem;color:var(--muted);margin-bottom:.4rem}
+  .big-val{font-size:2rem;font-weight:600;color:var(--accent);font-family:'Courier New',monospace;word-break:break-all}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;margin-bottom:1rem}
+  .panel h3{font-size:.9rem;margin-bottom:.6rem;color:var(--muted)}
+  .step{font-size:.85rem;font-family:'Courier New',monospace;padding:.2rem 0;border-bottom:1px solid var(--border);color:var(--text)}
+  .step:last-child{border-bottom:none}
+  .pfact{font-size:.85rem;font-family:'Courier New',monospace;padding:.15rem 0}
+  .coprime-badge{display:inline-block;padding:.2rem .6rem;border-radius:.25rem;font-size:.8rem;font-weight:600}
+  .yes{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid var(--accent)}
+  .no{background:rgba(170,181,172,.1);color:var(--muted);border:1px solid var(--border)}
+  .error{color:#f87171;font-size:.875rem;padding:.5rem 0}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">GCD &amp; LCM Calculator</span></nav>
+<main>
+  <h1>GCD &amp; LCM Calculator</h1>
+  <p class="subtitle">Enter up to 6 positive integers. See GCD and LCM with step-by-step working.</p>
+  <div class="input-area">
+    <input type="text" id="nums" placeholder="e.g. 12, 48, 180" oninput="calculate()">
+    <div class="hint">Separate numbers with commas or spaces. Up to 6 numbers.</div>
+    <div class="error" id="error" style="display:none"></div>
+  </div>
+  <div class="results">
+    <div class="big-stat"><div class="big-label">Greatest Common Divisor (GCD)</div><div class="big-val" id="gcdVal">—</div></div>
+    <div class="big-stat"><div class="big-label">Least Common Multiple (LCM)</div><div class="big-val" id="lcmVal">—</div></div>
+  </div>
+  <div id="extra" style="display:none">
+    <div class="panel" style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem">
+      <span style="font-size:.875rem">Are the numbers coprime (GCD = 1)?</span>
+      <span class="coprime-badge" id="coprimeBadge"></span>
+    </div>
+    <div class="panel">
+      <h3>GCD — Euclidean Algorithm Steps</h3>
+      <div id="gcdSteps"></div>
+    </div>
+    <div class="panel">
+      <h3>Prime Factorizations</h3>
+      <div id="primeFactors"></div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+function gcd2(a,b){const steps=[];while(b!==0n){steps.push(`gcd(${a}, ${b}) → ${a} = ${b} × ${a/b}n + ${a%b}`);[a,b]=[b,a%b];}return{g:a,steps};}
+function lcm2(a,b){return a/gcd2(a,b).g*b;}
+function primeFactors(n){
+  const f=new Map();let x=n;
+  for(let d=2n;d*d<=x;d++){while(x%d===0n){f.set(d,(f.get(d)||0)+1);x/=d;}}
+  if(x>1n)f.set(x,(f.get(x)||0)+1);
+  return f;
+}
+function factorStr(n){
+  const f=primeFactors(n);
+  if(f.size===0) return n.toString();
+  return n+' = '+[...f.entries()].sort((a,b)=>a[0]<b[0]?-1:1).map(([p,e])=>e===1?p.toString():p+'<sup>'+e+'</sup>').join(' × ');
+}
+function calculate(){
+  const raw=document.getElementById('nums').value;
+  const err=document.getElementById('error');
+  const extra=document.getElementById('extra');
+  if(!raw.trim()){err.style.display='none';extra.style.display='none';document.getElementById('gcdVal').textContent='—';document.getElementById('lcmVal').textContent='—';return;}
+  const parts=raw.split(/[\s,]+/).filter(Boolean);
+  if(parts.length<2){err.textContent='Enter at least 2 numbers.';err.style.display='block';extra.style.display='none';return;}
+  if(parts.length>6){err.textContent='Max 6 numbers.';err.style.display='block';extra.style.display='none';return;}
+  let nums;
+  try{nums=parts.map(p=>{const n=BigInt(p);if(n<=0n)throw new Error();return n;});}
+  catch(e){err.textContent='All values must be positive integers.';err.style.display='block';extra.style.display='none';return;}
+  err.style.display='none';
+
+  // GCD of all
+  let g=nums[0];
+  const allSteps=[];
+  for(let i=1;i<nums.length;i++){
+    const {g:ng,steps}=gcd2(g,nums[i]);
+    allSteps.push(...steps.map(s=>`Step ${allSteps.length+steps.indexOf(s)+1}: `+s));
+    g=ng;
+  }
+  // LCM of all
+  let l=nums[0];
+  for(let i=1;i<nums.length;i++) l=lcm2(l,nums[i]);
+
+  document.getElementById('gcdVal').textContent=g.toString();
+  document.getElementById('lcmVal').textContent=l.toString();
+  document.getElementById('coprimeBadge').innerHTML=g===1n?'<span class="coprime-badge yes">Yes</span>':'<span class="coprime-badge no">No</span>';
+  document.getElementById('coprimeBadge').innerHTML=g===1n?'<span class="yes">Yes (GCD = 1)</span>':'<span class="no">No (GCD = '+g+')</span>';
+
+  document.getElementById('gcdSteps').innerHTML=allSteps.length?allSteps.map(s=>'<div class="step">'+s+'</div>').join('')+'<div class="step" style="color:var(--accent)">GCD = '+g+'</div>':'<div class="step">GCD of single pair is trivial.</div>';
+
+  document.getElementById('primeFactors').innerHTML=nums.map(n=>'<div class="pfact">'+factorStr(n)+'</div>').join('');
+
+  extra.style.display='block';
+}
+</script>
+</body>
+</html>

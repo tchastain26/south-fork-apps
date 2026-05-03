@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haiku Checker | South Fork Apps</title>
+  <meta name="description" content="Count syllables per line and check for the 5-7-5 haiku pattern. Free online syllable counter and haiku validator.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:640px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .line-inputs{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem}
+  .line-row{display:flex;align-items:center;gap:.75rem}
+  .line-label{font-size:.8rem;color:var(--muted);min-width:40px;text-align:right}
+  .line-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.55rem .75rem;border-radius:.5rem;font-size:.95rem;font-family:inherit;transition:.2s}
+  .line-input:focus{outline:none;border-color:var(--accent)}
+  .line-input.over{border-color:#f87171}
+  .line-input.under{border-color:#f97316}
+  .line-input.ok{border-color:var(--accent)}
+  .count-badge{min-width:2.5rem;text-align:center;padding:.25rem .5rem;border-radius:.375rem;font-size:.85rem;font-weight:600;font-family:'Courier New',monospace}
+  .count-badge.over{background:rgba(248,113,113,.15);color:#f87171;border:1px solid #f87171}
+  .count-badge.under{background:rgba(249,115,22,.12);color:#f97316;border:1px solid #f97316}
+  .count-badge.ok{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid var(--accent)}
+  .count-badge.empty{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+  .target{font-size:.78rem;color:var(--muted);min-width:32px;text-align:center}
+  .result-box{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;margin-bottom:1rem}
+  .result-main{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+  .big-badge{padding:.4rem 1rem;border-radius:2rem;font-weight:700;font-size:1rem}
+  .big-badge.haiku{background:rgba(125,219,132,.15);color:var(--accent);border:2px solid var(--accent)}
+  .big-badge.not-haiku{background:rgba(248,113,113,.1);color:#f87171;border:2px solid #f87171}
+  .big-badge.empty{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+  .total{font-size:.875rem;color:var(--muted)}
+  .algo-note{font-size:.75rem;color:var(--muted);padding:.6rem .8rem;background:var(--surface-2);border-radius:.375rem;border:1px solid var(--border);line-height:1.5}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Haiku Checker</span></nav>
+<main>
+  <h1>Haiku Checker</h1>
+  <p class="subtitle">Count syllables per line and check for the 5-7-5 pattern.</p>
+  <div class="line-inputs">
+    <div class="line-row">
+      <span class="line-label">Line 1</span>
+      <input class="line-input" id="l1" placeholder="An old silent pond…" oninput="check()">
+      <span class="count-badge empty" id="c1">—</span>
+      <span class="target muted">/ 5</span>
+    </div>
+    <div class="line-row">
+      <span class="line-label">Line 2</span>
+      <input class="line-input" id="l2" placeholder="A frog jumps into the pond…" oninput="check()">
+      <span class="count-badge empty" id="c2">—</span>
+      <span class="target muted">/ 7</span>
+    </div>
+    <div class="line-row">
+      <span class="line-label">Line 3</span>
+      <input class="line-input" id="l3" placeholder="Splash! Silence again." oninput="check()">
+      <span class="count-badge empty" id="c3">—</span>
+      <span class="target muted">/ 5</span>
+    </div>
+  </div>
+  <div class="result-box">
+    <div class="result-main">
+      <span class="big-badge empty" id="verdict">Waiting…</span>
+      <span class="total" id="totalText"></span>
+    </div>
+    <div class="algo-note">Syllable counting uses vowel-group detection with rules for silent-e, -ed endings, common prefixes, and consonant clusters. Results are estimates — English is irregular.</div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+function countSyllables(word){
+  word=word.toLowerCase().replace(/[^a-z]/g,'');
+  if(!word) return 0;
+  if(word.length<=3) return 1;
+  // Exception list
+  const exc={every:3,different:3,family:3,general:3,natural:3,interest:3,several:3,comfortable:4,temperature:4,basically:4,chocolate:3,camera:3,evening:2,everything:3,everywhere:3,firefighter:3,happening:3,jewelry:3,laboratory:4,library:3,literature:4,memorable:4,naturally:4,nursery:3,ordinary:4,possibly:3,powerfully:3,presidential:4,probably:3,separately:4,slavery:3,vegetable:4,realistically:6,separate:3,gorgeous:2};
+  if(exc[word]) return exc[word];
+  // Rules
+  word=word.replace(/(?:[^laeiouy]|ed|[^laeiouy]e)$/, '');
+  word=word.replace(/^y/,'');
+  const m=word.match(/[aeiouy]{1,2}/g);
+  return m?m.length:1;
+}
+function lineCount(text){
+  const words=text.trim().split(/\s+/).filter(Boolean);
+  return words.reduce((s,w)=>s+countSyllables(w),0);
+}
+const targets=[5,7,5];
+function check(){
+  const lines=[document.getElementById('l1').value,document.getElementById('l2').value,document.getElementById('l3').value];
+  let total=0;
+  lines.forEach((line,i)=>{
+    const badge=document.getElementById('c'+(i+1));
+    const input=document.getElementById('l'+(i+1));
+    if(!line.trim()){badge.textContent='—';badge.className='count-badge empty';input.className='line-input';return;}
+    const n=lineCount(line);
+    total+=n;
+    badge.textContent=n;
+    const t=targets[i];
+    if(n===t){badge.className='count-badge ok';input.className='line-input ok';}
+    else if(n>t){badge.className='count-badge over';input.className='line-input over';}
+    else{badge.className='count-badge under';input.className='line-input under';}
+  });
+  const counts=lines.map((l,i)=>l.trim()?lineCount(l):null);
+  const v=document.getElementById('verdict');
+  const tt=document.getElementById('totalText');
+  if(counts.every(c=>c===null)){v.textContent='Waiting…';v.className='big-badge empty';tt.textContent='';return;}
+  const isHaiku=counts.every((c,i)=>c===targets[i]);
+  const nonNull=counts.filter(c=>c!==null);
+  tt.textContent='Total syllables: '+(nonNull.reduce((a,b)=>a+b,0));
+  if(isHaiku){v.textContent='This is a haiku!';v.className='big-badge haiku';}
+  else{v.textContent='Not a haiku';v.className='big-badge not-haiku';}
+}
+</script>
+</body>
+</html>

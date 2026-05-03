@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Frontmatter Generator | South Fork Apps</title>
+  <meta name="description" content="Generate YAML or TOML frontmatter for blog posts and static sites. Free online frontmatter builder.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:840px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+  @media(max-width:640px){.layout{grid-template-columns:1fr}}
+  .form-panel{display:flex;flex-direction:column;gap:.75rem}
+  .field{display:flex;flex-direction:column;gap:.3rem}
+  label{font-size:.8rem;color:var(--muted);font-weight:500}
+  input[type=text],input[type=date]{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.45rem .65rem;border-radius:.375rem;font-size:.875rem;font-family:inherit;width:100%}
+  input:focus{outline:none;border-color:var(--accent)}
+  .check-row{display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer}
+  .check-row input{accent-color:var(--accent);width:15px;height:15px}
+  .seg{display:flex;border:1px solid var(--border);border-radius:.375rem;overflow:hidden;width:fit-content}
+  .seg button{background:var(--surface);color:var(--muted);border:none;padding:.35rem .9rem;font-size:.8rem;font-family:inherit;cursor:pointer;transition:.15s}
+  .seg button.active{background:var(--accent);color:#111412;font-weight:600}
+  .kv-section{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.75rem}
+  .kv-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem}
+  .kv-row input{flex:1;min-width:0}
+  .kv-row button{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:.25rem;width:26px;height:26px;cursor:pointer;font-size:.9rem;line-height:1;transition:.15s}
+  .kv-row button:hover{border-color:var(--accent);color:var(--accent)}
+  .add-kv-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.3rem .65rem;border-radius:.375rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:.15s}
+  .add-kv-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .output-panel{display:flex;flex-direction:column;gap:.5rem}
+  .out-header{display:flex;justify-content:space-between;align-items:center}
+  pre{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem;font-family:'Courier New',monospace;font-size:.82rem;white-space:pre-wrap;word-break:break-all;flex:1;min-height:300px;color:var(--accent);line-height:1.6;overflow-y:auto}
+  .btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.35rem .75rem;border-radius:.375rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-size:.75rem;color:var(--muted)}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Markdown Frontmatter Generator</span></nav>
+<main>
+  <h1>Markdown Frontmatter Generator</h1>
+  <p class="subtitle">Fill in the form and copy the generated frontmatter block.</p>
+  <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1rem">
+    <span style="font-size:.85rem;color:var(--muted)">Format:</span>
+    <div class="seg">
+      <button class="active" id="btnYaml" onclick="setFmt('yaml')">YAML (---)</button>
+      <button id="btnToml" onclick="setFmt('toml')">TOML (+++)</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="form-panel">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="fTitle" placeholder="My Blog Post" oninput="onTitle()">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="fDate" oninput="gen()">
+      </div>
+      <div class="field">
+        <label>Slug (auto-generated from title)</label>
+        <input type="text" id="fSlug" placeholder="my-blog-post" oninput="gen()">
+      </div>
+      <div class="field">
+        <label>Author</label>
+        <input type="text" id="fAuthor" placeholder="Jane Doe" oninput="gen()">
+      </div>
+      <div class="field">
+        <label>Tags (comma-separated)</label>
+        <input type="text" id="fTags" placeholder="web, development, tutorial" oninput="gen()">
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="fDesc" placeholder="A short description…" oninput="gen()">
+      </div>
+      <label class="check-row"><input type="checkbox" id="fDraft" onchange="gen()"> Draft</label>
+      <div class="kv-section">
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">Custom key-value pairs (up to 5)</div>
+        <div id="kvRows"></div>
+        <button class="add-kv-btn" onclick="addKv()">+ Add field</button>
+      </div>
+    </div>
+    <div class="output-panel">
+      <div class="out-header"><strong style="font-size:.9rem">Output</strong><button class="btn" id="copyBtn" onclick="copyOut()">Copy</button></div>
+      <pre id="output"></pre>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+let fmt='yaml';
+const today=new Date().toISOString().split('T')[0];
+document.getElementById('fDate').value=today;
+
+function setFmt(f){fmt=f;document.getElementById('btnYaml').className=f==='yaml'?'active':'';document.getElementById('btnToml').className=f==='toml'?'active':'';gen();}
+
+function slugify(s){return s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim().replace(/^-|-$/g,'');}
+
+let slugManual=false;
+function onTitle(){
+  const t=document.getElementById('fTitle').value;
+  if(!slugManual) document.getElementById('fSlug').value=slugify(t);
+  gen();
+}
+document.getElementById('fSlug').addEventListener('input',()=>{slugManual=true;gen();});
+
+function addKv(){
+  const rows=document.querySelectorAll('.kv-row');
+  if(rows.length>=5) return;
+  const d=document.getElementById('kvRows');
+  const row=document.createElement('div');row.className='kv-row';
+  row.innerHTML='<input type="text" placeholder="key" oninput="gen()" style="max-width:100px"><input type="text" placeholder="value" oninput="gen()"><button onclick="this.closest(\'.kv-row\').remove();gen()">✕</button>';
+  d.appendChild(row);
+}
+
+function getKvs(){
+  const rows=document.querySelectorAll('.kv-row');
+  const out=[];
+  rows.forEach(r=>{
+    const inputs=r.querySelectorAll('input');
+    const k=inputs[0].value.trim(),v=inputs[1].value.trim();
+    if(k) out.push([k,v]);
+  });
+  return out;
+}
+
+function yamlStr(v){
+  if(/[\n:{}[\]#&*!|>'"%@`]/.test(v)||v.startsWith(' ')||v.endsWith(' ')) return '"'+v.replace(/"/g,'\\"')+'"';
+  return v||'""';
+}
+
+function gen(){
+  const title=document.getElementById('fTitle').value.trim();
+  const date=document.getElementById('fDate').value;
+  const slug=document.getElementById('fSlug').value.trim();
+  const author=document.getElementById('fAuthor').value.trim();
+  const tagsRaw=document.getElementById('fTags').value.trim();
+  const desc=document.getElementById('fDesc').value.trim();
+  const draft=document.getElementById('fDraft').checked;
+  const kvs=getKvs();
+  const tags=tagsRaw?tagsRaw.split(',').map(t=>t.trim()).filter(Boolean):[];
+  const delim=fmt==='yaml'?'---':'+++';
+  let lines=[delim];
+  if(fmt==='yaml'){
+    if(title) lines.push('title: '+yamlStr(title));
+    if(date) lines.push('date: '+date);
+    if(slug) lines.push('slug: '+yamlStr(slug));
+    if(author) lines.push('author: '+yamlStr(author));
+    if(tags.length) lines.push('tags:\n'+tags.map(t=>'  - '+t).join('\n'));
+    if(desc) lines.push('description: '+yamlStr(desc));
+    lines.push('draft: '+draft);
+    kvs.forEach(([k,v])=>lines.push(k+': '+yamlStr(v)));
+  } else {
+    if(title) lines.push('title = "'+title.replace(/"/g,'\\"')+'"');
+    if(date) lines.push('date = '+date+'T00:00:00Z');
+    if(slug) lines.push('slug = "'+slug+'"');
+    if(author) lines.push('author = "'+author+'"');
+    if(tags.length) lines.push('tags = ['+tags.map(t=>'"'+t+'"').join(', ')+']');
+    if(desc) lines.push('description = "'+desc.replace(/"/g,'\\"')+'"');
+    lines.push('draft = '+draft);
+    kvs.forEach(([k,v])=>lines.push(k+' = "'+v.replace(/"/g,'\\"')+'"'));
+  }
+  lines.push(delim);
+  document.getElementById('output').textContent=lines.join('\n');
+}
+
+function copyOut(){
+  navigator.clipboard.writeText(document.getElementById('output').textContent).then(()=>{
+    const b=document.getElementById('copyBtn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);
+  });
+}
+gen();
+</script>
+</body>
+</html>

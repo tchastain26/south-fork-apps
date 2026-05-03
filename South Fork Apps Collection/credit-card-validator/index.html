@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Card Validator | South Fork Apps</title>
+  <meta name="description" content="Validate card numbers using the Luhn algorithm and detect card type. Visa, Mastercard, Amex, and more. Free tool.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}.nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:580px;margin:0 auto;width:100%}
+  h1{font-size:1.4rem;margin-bottom:.25rem}
+  .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .input-wrap{position:relative;margin-bottom:1rem}
+  input[type=text]{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.7rem 1rem;border-radius:.5rem;font-size:1.3rem;font-family:'Courier New',monospace;letter-spacing:.1em;transition:.2s}
+  input[type=text]:focus{outline:none;border-color:var(--accent)}
+  .result-card{background:var(--surface);border:2px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem;transition:.2s}
+  .result-card.valid{border-color:var(--accent)}
+  .result-card.invalid{border-color:#f87171}
+  .status{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+  .badge{padding:.35rem .85rem;border-radius:2rem;font-weight:700;font-size:.9rem}
+  .badge.valid{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid var(--accent)}
+  .badge.invalid{background:rgba(248,113,113,.15);color:#f87171;border:1px solid #f87171}
+  .card-type{font-size:1.1rem;font-weight:600}
+  .ascii-logo{font-family:'Courier New',monospace;font-size:.7rem;color:var(--muted);white-space:pre;line-height:1.2;margin-bottom:.75rem}
+  .formatted{font-size:1.4rem;font-family:'Courier New',monospace;color:var(--accent);letter-spacing:.15em;margin-bottom:.75rem}
+  .specs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
+  .spec{background:var(--surface-2);border:1px solid var(--border);border-radius:.375rem;padding:.5rem .75rem;text-align:center}
+  .spec-label{font-size:.7rem;color:var(--muted)}
+  .spec-value{font-size:.95rem;font-weight:600;margin-top:.1rem}
+  footer{text-align:center;padding:.75rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+  .placeholder-text{color:var(--muted);font-size:.875rem;text-align:center;padding:1.5rem}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Credit Card Validator</span></nav>
+<main>
+  <h1>Credit Card Validator</h1>
+  <p class="subtitle">Luhn algorithm validation with card type detection. Numbers are never stored or sent.</p>
+  <div class="input-wrap">
+    <input type="text" id="cardInput" placeholder="4111 1111 1111 1111" oninput="validate()" maxlength="23" autocomplete="off">
+  </div>
+  <div id="output"><div class="placeholder-text">Enter a card number above to validate.</div></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const CARDS=[
+  {name:'American Express',prefixes:[/^3[47]/],lengths:[15],cvv:4,format:s=>s.slice(0,4)+' '+s.slice(4,10)+' '+s.slice(10,15),logo:'  /\\  /\\\n /  \\/  \\\n\\  AMEX /\n \\_____/'},
+  {name:'Visa',prefixes:[/^4/],lengths:[13,16,19],cvv:3,format:s=>s.replace(/(.{4})/g,'$1 ').trim(),logo:'__   ___\n\\ \\ / (_)___  __ _\n \\ V /| / __|/ _` |\n  \\_/ |_\\__ \\ (_| |\n  /_/  |_|___/\\__,_|'},
+  {name:'Mastercard',prefixes:[/^5[1-5]/,/^2(?:2[2-9][1-9]|[3-6]\\d{2}|7[01]\\d|720)/],lengths:[16],cvv:3,format:s=>s.replace(/(.{4})/g,'$1 ').trim(),logo:' __  __  ___\n|  \\/  |/ __|\n| |\\/| | (__ \n|_|  |_|\\___|'},
+  {name:'Discover',prefixes:[/^6011/,/^65/,/^64[4-9]/,/^622/],lengths:[16,19],cvv:3,format:s=>s.replace(/(.{4})/g,'$1 ').trim(),logo:' ____  _\n|  _ \\(_)___  ___ _____   _____ _ __\n| | | | / __|/ __/ _ \\ \\ / / _ \\ \'__|\n| |_| | \\__ \\ (_| (_) \\ V /  __/ |\n|____/|_|___/\\___\\___/ \\_/ \\___|_|'},
+  {name:'Diners Club',prefixes:[/^30[0-5]/,/^36/,/^38/],lengths:[14],cvv:3,format:s=>s.slice(0,4)+' '+s.slice(4,10)+' '+s.slice(10,14),logo:' ____  _\n|  _ \\(_)_ __   ___ _ __ ___\n| | | | | \'_ \\ / _ \\ \'__/ __|\n| |_| | | | | |  __/ |  \\__ \\\n|____/|_|_| |_|\\___|_|  |___/'},
+];
+
+function luhn(s){
+  let sum=0,alt=false;
+  for(let i=s.length-1;i>=0;i--){
+    let d=parseInt(s[i]);
+    if(alt){d*=2;if(d>9)d-=9;}
+    sum+=d;alt=!alt;
+  }
+  return sum%10===0;
+}
+
+function detectCard(digits){
+  for(const c of CARDS){
+    if(c.prefixes.some(r=>r.test(digits))&&c.lengths.includes(digits.length)) return c;
+  }
+  // Type only (no length match yet)
+  for(const c of CARDS){
+    if(c.prefixes.some(r=>r.test(digits))) return {...c,lengthMatch:false};
+  }
+  return null;
+}
+
+function validate(){
+  const raw=document.getElementById('cardInput').value;
+  const digits=raw.replace(/[\s\-]/g,'');
+  const out=document.getElementById('output');
+  if(!digits){out.innerHTML='<div class="placeholder-text">Enter a card number above to validate.</div>';return;}
+
+  const card=detectCard(digits);
+  const isComplete=card&&(card.lengths||[]).includes(digits.length);
+  const isValid=isComplete&&luhn(digits);
+
+  let html='<div class="result-card '+(isValid?'valid':isComplete?'invalid':'')+'"><div class="status">';
+  if(isComplete){
+    html+='<span class="badge '+(isValid?'valid':'invalid')+'">'+(isValid?'Valid':'Invalid')+'</span>';
+  } else {
+    html+='<span class="badge" style="border-color:var(--border);color:var(--muted)">Incomplete</span>';
+  }
+  html+='<span class="card-type">'+(card?card.name:'Unknown Card')+'</span></div>';
+
+  if(card){
+    html+='<div class="ascii-logo">'+escHtml(card.logo)+'</div>';
+    const formatted=isComplete?card.format(digits):'';
+    if(formatted) html+='<div class="formatted">'+formatted+'</div>';
+    html+='<div class="specs"><div class="spec"><div class="spec-label">Card Type</div><div class="spec-value">'+card.name+'</div></div>';
+    html+='<div class="spec"><div class="spec-label">CVV Digits</div><div class="spec-value">'+card.cvv+'</div></div>';
+    html+='<div class="spec"><div class="spec-label">Valid Lengths</div><div class="spec-value">'+card.lengths.join(', ')+'</div></div></div>';
+  }
+  html+='</div>';
+  out.innerHTML=html;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
