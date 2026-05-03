@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Mixer | South Fork Apps</title>
+  <meta name="description" content="Blend two colors with a ratio slider and see the result as HEX, RGB, and HSL. Free online color mixing tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .color-row{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start;}
+    .color-col label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.85rem;font-weight:700;}
+    .color-input-row{display:flex;gap:.5rem;align-items:center;}
+    input[type=color]{width:48px;height:42px;padding:2px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;}
+    input[type=text].hex{flex:1;padding:.55rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.95rem;outline:none;font-family:ui-monospace,monospace;}
+    input[type=text].hex:focus{border-color:var(--accent);}
+    .vs{display:flex;align-items:center;justify-content:center;padding-top:1.6rem;color:var(--muted);font-weight:700;}
+    .swatch-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:1rem;}
+    .swatch{height:80px;border-radius:8px;border:1px solid var(--border);}
+    .swatch-label{text-align:center;font-size:.75rem;color:var(--muted);margin-top:.3rem;}
+    label.slider-label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.85rem;font-weight:700;}
+    input[type=range]{width:100%;accent-color:var(--accent);}
+    .ratio-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:.25rem;}
+    .result-row{display:grid;gap:.5rem;margin-top:.5rem;}
+    .result-item{display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:.75rem;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;}
+    .result-item:hover{border-color:var(--accent);}
+    .result-label{font-size:.8rem;color:var(--muted);font-weight:700;}
+    .result-val{font-family:ui-monospace,monospace;font-size:.9rem;color:var(--text);}
+    .copy-hint{font-size:.72rem;color:var(--muted);}
+    .copied{color:var(--accent)!important;}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:500px){.color-row{grid-template-columns:1fr;} .vs{padding-top:0;} .swatch-row{grid-template-columns:1fr 1fr 1fr;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Color Mixer</span></nav>
+<main>
+  <h1>Color Mixer</h1>
+  <p class="sub">Pick two colors, set the blend ratio, and see the result.</p>
+  <div class="panel">
+    <div class="color-row">
+      <div class="color-col">
+        <label>Color A</label>
+        <div class="color-input-row">
+          <input type="color" id="pickerA" value="#7ddb84" oninput="syncFromPicker('A')">
+          <input type="text" class="hex" id="hexA" value="#7ddb84" oninput="syncFromHex('A')" maxlength="7">
+        </div>
+      </div>
+      <div class="vs">&#8594;</div>
+      <div class="color-col">
+        <label>Color B</label>
+        <div class="color-input-row">
+          <input type="color" id="pickerB" value="#111412" oninput="syncFromPicker('B')">
+          <input type="text" class="hex" id="hexB" value="#111412" oninput="syncFromHex('B')" maxlength="7">
+        </div>
+      </div>
+    </div>
+    <div class="swatch-row">
+      <div>
+        <div class="swatch" id="swatchA"></div>
+        <div class="swatch-label">A</div>
+      </div>
+      <div>
+        <div class="swatch" id="swatchMix"></div>
+        <div class="swatch-label">Mix</div>
+      </div>
+      <div>
+        <div class="swatch" id="swatchB"></div>
+        <div class="swatch-label">B</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <label class="slider-label">Ratio &mdash; A <span id="ratioVal">50</span>% / B <span id="ratioBVal">50</span>%</label>
+    <input type="range" id="ratio" min="0" max="100" value="50" oninput="onRatio()">
+    <div class="ratio-labels"><span>100% A</span><span>50/50</span><span>100% B</span></div>
+  </div>
+  <div class="panel">
+    <label class="slider-label">Result &mdash; click any row to copy</label>
+    <div class="result-row">
+      <div class="result-item" onclick="copyResult('hex')"><span class="result-label">HEX</span><span class="result-val" id="resHex">#000000</span><span class="copy-hint" id="chHex">copy</span></div>
+      <div class="result-item" onclick="copyResult('rgb')"><span class="result-label">RGB</span><span class="result-val" id="resRgb">rgb(0,0,0)</span><span class="copy-hint" id="chRgb">copy</span></div>
+      <div class="result-item" onclick="copyResult('hsl')"><span class="result-label">HSL</span><span class="result-val" id="resHsl">hsl(0,0%,0%)</span><span class="copy-hint" id="chHsl">copy</span></div>
+    </div>
+  </div>
+  <div class="panel"><footer>v1.0</footer></div>
+</main>
+<script>
+function hexToRgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255};}
+function rgbToHex(r,g,b){'#'+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('')}
+function toLinear(c){c/=255;return c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);}
+function toSRGB(c){return c<=.0031308?c*12.92:1.055*Math.pow(c,.41667)-.055;}
+function mix(h1,h2,t){
+  const a=hexToRgb(h1),b=hexToRgb(h2);
+  const lr=toLinear(a.r),lg=toLinear(a.g),lb=toLinear(a.b);
+  const rr=toLinear(b.r),rg=toLinear(b.g),rb=toLinear(b.b);
+  const mr=toSRGB(lr*(1-t)+rr*t),mg=toSRGB(lg*(1-t)+rg*t),mb=toSRGB(lb*(1-t)+rb*t);
+  return{r:Math.round(mr*255),g:Math.round(mg*255),b:Math.round(mb*255)};
+}
+function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min){h=s=0;}else{const d=max-min;s=l>.5?d/(2-max-min):d/(max+min);switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
+
+function getHexA(){return document.getElementById('hexA').value;}
+function getHexB(){return document.getElementById('hexB').value;}
+
+function isValidHex(h){return /^#[0-9a-fA-F]{6}$/.test(h);}
+
+function update(){
+  const hA=getHexA(),hB=getHexB();
+  if(!isValidHex(hA)||!isValidHex(hB))return;
+  const t=document.getElementById('ratio').value/100;
+  document.getElementById('swatchA').style.background=hA;
+  document.getElementById('swatchB').style.background=hB;
+  const m=mix(hA,hB,t);
+  const mHex='#'+[m.r,m.g,m.b].map(v=>v.toString(16).padStart(2,'0')).join('');
+  document.getElementById('swatchMix').style.background=mHex;
+  document.getElementById('resHex').textContent=mHex;
+  document.getElementById('resRgb').textContent=`rgb(${m.r}, ${m.g}, ${m.b})`;
+  const hsl=rgbToHsl(m.r,m.g,m.b);
+  document.getElementById('resHsl').textContent=`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+}
+
+function syncFromPicker(side){
+  const p=document.getElementById('picker'+side);
+  document.getElementById('hex'+side).value=p.value;
+  update();
+}
+function syncFromHex(side){
+  const h=document.getElementById('hex'+side).value;
+  if(isValidHex(h)) document.getElementById('picker'+side).value=h;
+  update();
+}
+function onRatio(){
+  const v=document.getElementById('ratio').value;
+  document.getElementById('ratioVal').textContent=100-v;
+  document.getElementById('ratioBVal').textContent=v;
+  update();
+}
+
+function copyResult(type){
+  const val=document.getElementById('res'+type.charAt(0).toUpperCase()+type.slice(1)).textContent;
+  navigator.clipboard.writeText(val).then(()=>{
+    const el=document.getElementById('ch'+type.charAt(0).toUpperCase()+type.slice(1));
+    el.textContent='copied!';el.classList.add('copied');
+    setTimeout(()=>{el.textContent='copy';el.classList.remove('copied');},1500);
+  });
+}
+
+update();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Filter Generator | South Fork Apps</title>
+  <meta name="description" content="Generate CSS filter strings with sliders for blur, brightness, contrast, grayscale, hue-rotate, and more. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .layout{display:grid;grid-template-columns:300px 1fr;gap:1rem;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .slider-group{margin-bottom:.9rem;}
+    .slider-group label{display:flex;justify-content:space-between;margin-bottom:.3rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    .slider-group label span{color:var(--text);}
+    input[type=range]{width:100%;accent-color:var(--accent);}
+    .preview-area{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;}
+    .color-block{height:90px;border-radius:6px;}
+    .preview-label{font-size:.75rem;color:var(--muted);margin-bottom:.4rem;}
+    .css-output{position:relative;}
+    .css-output textarea{width:100%;min-height:80px;padding:.75rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--accent);font-family:ui-monospace,monospace;font-size:.82rem;line-height:1.5;resize:none;outline:none;}
+    .copy-btn{display:block;width:100%;margin-top:.5rem;padding:.55rem;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .reset-btn{display:block;width:100%;margin-top:.4rem;padding:.45rem;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;}
+    .reset-btn:hover{color:var(--text);}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:640px){.layout{grid-template-columns:1fr;} .preview-area{grid-template-columns:1fr 1fr 1fr;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">CSS Filter Generator</span></nav>
+<main>
+  <h1>CSS Filter Generator</h1>
+  <p class="sub">Adjust the sliders to build a CSS filter string. Live preview on colored blocks.</p>
+  <div class="layout">
+    <div>
+      <div class="panel" id="sliders"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="preview-label">Preview (filtered vs original)</div>
+        <div class="preview-area">
+          <div class="color-block" id="pFiltered" style="background:linear-gradient(135deg,#e74c3c,#3498db,#2ecc71,#f39c12)"></div>
+          <div class="color-block" style="background:linear-gradient(135deg,#e74c3c,#3498db,#2ecc71,#f39c12)"></div>
+        </div>
+        <div class="preview-label">CSS Output &mdash; click to copy</div>
+        <div class="css-output">
+          <textarea id="cssOut" readonly></textarea>
+          <button class="copy-btn" onclick="copyCss()">Copy CSS</button>
+          <button class="reset-btn" onclick="resetAll()">Reset all</button>
+        </div>
+      </div>
+      <div class="panel"><footer>v1.0</footer></div>
+    </div>
+  </div>
+</main>
+<script>
+const FILTERS = [
+  {id:'blur',      label:'blur',       min:0,  max:20,  step:.5, def:0,   unit:'px'},
+  {id:'brightness',label:'brightness', min:0,  max:300, step:1,  def:100, unit:'%'},
+  {id:'contrast',  label:'contrast',   min:0,  max:300, step:1,  def:100, unit:'%'},
+  {id:'grayscale', label:'grayscale',  min:0,  max:100, step:1,  def:0,   unit:'%'},
+  {id:'hue-rotate',label:'hue-rotate', min:0,  max:360, step:1,  def:0,   unit:'deg'},
+  {id:'invert',    label:'invert',     min:0,  max:100, step:1,  def:0,   unit:'%'},
+  {id:'opacity',   label:'opacity',    min:0,  max:100, step:1,  def:100, unit:'%'},
+  {id:'saturate',  label:'saturate',   min:0,  max:500, step:1,  def:100, unit:'%'},
+  {id:'sepia',     label:'sepia',      min:0,  max:100, step:1,  def:0,   unit:'%'},
+];
+
+const container = document.getElementById('sliders');
+FILTERS.forEach(f => {
+  const div = document.createElement('div');
+  div.className = 'slider-group';
+  div.innerHTML = `<label>${f.label}<span id="val_${f.id}">${f.def}${f.unit}</span></label><input type="range" id="s_${f.id}" min="${f.min}" max="${f.max}" step="${f.step}" value="${f.def}" oninput="onSlide('${f.id}','${f.unit}')">`;
+  container.appendChild(div);
+});
+
+function onSlide(id, unit) {
+  const v = document.getElementById('s_'+id).value;
+  document.getElementById('val_'+id).textContent = v+unit;
+  buildFilter();
+}
+
+function buildFilter() {
+  const parts = [];
+  FILTERS.forEach(f => {
+    const v = parseFloat(document.getElementById('s_'+f.id).value);
+    if (v !== f.def) parts.push(`${f.id}(${v}${f.unit})`);
+  });
+  const str = parts.length ? parts.join(' ') : 'none';
+  document.getElementById('pFiltered').style.filter = str;
+  document.getElementById('cssOut').value = `filter: ${str};`;
+}
+
+function copyCss() {
+  navigator.clipboard.writeText(document.getElementById('cssOut').value).then(()=>{
+    const b=document.querySelector('.copy-btn');
+    b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy CSS',1500);
+  });
+}
+
+function resetAll() {
+  FILTERS.forEach(f => {
+    document.getElementById('s_'+f.id).value = f.def;
+    document.getElementById('val_'+f.id).textContent = f.def+f.unit;
+  });
+  buildFilter();
+}
+
+buildFilter();
+</script>
+</body>
+</html>

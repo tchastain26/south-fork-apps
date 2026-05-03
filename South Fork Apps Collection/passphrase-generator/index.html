@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passphrase Generator | South Fork Apps</title>
+  <meta name="description" content="Generate strong memorable passphrases from a 200+ word list. Customize word count, separator, capitalization, and numbers.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+    label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    select{width:100%;padding:.6rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.95rem;outline:none;}
+    select:focus{border-color:var(--accent);}
+    select option{background:var(--surface);}
+    .check-row{display:flex;align-items:center;gap:.6rem;padding:.65rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-bottom:.4rem;}
+    .check-row input[type=checkbox]{width:1.1rem;height:1.1rem;accent-color:var(--accent);}
+    .check-row span{font-size:.88rem;font-weight:600;}
+    .passphrase-box{font-size:1.2rem;font-weight:700;font-family:ui-monospace,monospace;padding:1rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;word-break:break-all;line-height:1.5;color:var(--accent);min-height:70px;}
+    .strength-bar-wrap{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-top:.5rem;}
+    .strength-bar{height:100%;border-radius:4px;transition:width .3s;}
+    .strength-label{font-size:.78rem;color:var(--muted);margin-top:.25rem;}
+    .btn-row{display:flex;gap:.6rem;margin-top:.75rem;}
+    .gen-btn{flex:2;padding:.65rem;border:1px solid var(--accent);border-radius:6px;background:var(--accent);color:#102113;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;}
+    .gen-btn:hover{filter:brightness(1.08);}
+    .copy-btn{flex:1;padding:.65rem;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--muted);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;}
+    .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:480px){.grid2{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Passphrase Generator</span></nav>
+<main>
+  <h1>Passphrase Generator</h1>
+  <p class="sub">Strong passphrases you can actually remember.</p>
+  <div class="panel">
+    <div class="grid2">
+      <div>
+        <label>Number of Words</label>
+        <select id="wordCount" onchange="generate()">
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+        </select>
+      </div>
+      <div>
+        <label>Separator</label>
+        <select id="separator" onchange="generate()">
+          <option value=" ">Space</option>
+          <option value="-" selected>Dash -</option>
+          <option value=".">Dot .</option>
+          <option value="">None</option>
+        </select>
+      </div>
+    </div>
+    <label class="check-row" style="cursor:pointer;">
+      <input type="checkbox" id="capitalize" checked onchange="generate()">
+      <span>Capitalize first letter of each word</span>
+    </label>
+    <label class="check-row" style="cursor:pointer;">
+      <input type="checkbox" id="addNumber" onchange="generate()">
+      <span>Add a random number at the end</span>
+    </label>
+  </div>
+  <div class="panel">
+    <label>Your Passphrase</label>
+    <div class="passphrase-box" id="ppBox">&nbsp;</div>
+    <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar" style="width:0%;background:var(--accent)"></div></div>
+    <div class="strength-label" id="strengthLabel"></div>
+    <div class="btn-row">
+      <button class="gen-btn" onclick="generate()">&#8635; Regenerate</button>
+      <button class="copy-btn" id="copyBtn" onclick="copyPP()">Copy</button>
+    </div>
+  </div>
+  <div class="panel"><footer>v1.0</footer></div>
+</main>
+<script>
+const WORDS = [
+  'apple','arrow','atlas','beach','blade','blaze','blend','bloom','board','brave',
+  'bread','brick','brook','brown','brush','build','cable','candy','chain','chalk',
+  'chase','chess','chest','child','chime','chord','civil','claim','class','clean',
+  'clear','climb','clock','cloud','coast','coral','couch','count','cover','craft',
+  'crane','creek','crisp','cross','crowd','crown','crush','curve','dance','delta',
+  'depth','derby','desert','digit','dodge','draft','drain','dream','drift','drill',
+  'drink','drive','drops','drums','dunes','eagle','earth','ember','equal','event',
+  'exact','falls','fence','ferry','field','fibre','final','first','flame','flash',
+  'flask','float','flock','floor','flute','focus','forge','forge','found','frame',
+  'fresh','front','frost','fruit','gauge','given','glade','glare','glass','gleam',
+  'glide','glint','gloom','gloss','glove','glyph','grace','grade','grain','grand',
+  'grant','graph','grasp','gravel','great','green','grief','grill','grind','gripe',
+  'groan','grope','group','grove','growl','guard','guide','guild','guile','guise',
+  'gully','haiku','harbor','harsh','haste','haven','heart','heavy','hedge','helix',
+  'hence','herald','hinge','hoist','homer','honor','horse','house','hover','human',
+  'humor','hyena','ideal','image','inbox','index','inner','input','inter','intro',
+  'ivory','jewel','judge','jumbo','ketch','knack','knave','knife','knoll','kraft',
+  'lance','laser','latch','laugh','layer','leach','learn','ledge','level','light',
+  'limit','linen','links','liter','lodge','logic','lotus','lower','lucid','lunar',
+  'magma','maple','march','marsh','match','medal','merge','merit','metal','miles',
+  'model','moist','money','month','mossy','mount','mouth','mural','music','naive',
+  'night','noble','north','notch','novel','nymph','ocean','olive','omega','onset',
+  'orbit','order','organ','otter','outer','oxide','ozone','paint','panel','paper',
+  'patch','pause','peace','pearl','pedal','perch','phase','pilot','pixel','pivot',
+  'place','plaid','plain','plank','plant','plaza','plume','plunge','point','polar',
+  'porch','power','prism','probe','proof','proud','pulse','punch','pupil','purge',
+  'quest','quick','quiet','quota','quote','radar','radio','ranch','range','rapid',
+  'ratio','reach','realm','recon','redis','refine','relay','remix','renew','repay',
+  'reset','reuse','ridge','right','river','robot','rocky','rough','round','route',
+  'rover','royal','rugby','ruler','rustic','scale','scene','score','scout','seam',
+  'sense','serve','seven','shade','shaft','shake','shape','share','sharp','shift',
+  'shine','shore','short','shout','sight','sigma','since','sixth','skill','slate',
+  'sleep','slide','slope','smith','smoke','solar','solid','south','space','spark',
+  'speak','spell','spend','spoke','spoon','sport','spray','squad','stack','staff',
+  'stage','stain','stalk','stand','stare','stark','start','state','steel','steep',
+  'stern','stick','stone','store','storm','story','stove','strap','straw','stray',
+  'strip','strobe','study','style','sugar','suite','sunny','surge','swamp','swarm',
+  'sweep','sweet','swift','sword','table','talon','tempo','theme','thick','third',
+  'thorn','thumb','tidal','tiger','timed','token','tonal','topic','torch','total',
+  'touch','tough','tower','trace','track','trade','trail','train','trait','tread',
+  'trend','triad','trial','tribe','trick','tried','trout','truck','truly','trust',
+  'truth','tuber','tuner','union','unite','until','upper','urban','usage','valid',
+  'value','vapor','vault','verse','video','vigor','viral','vista','vital','voice',
+  'vowel','wagon','watch','water','weave','wedge','wheat','wheel','where','white',
+  'whole','wider','willow','wired','witch','world','worth','would','wrath','yield',
+  'zebra','zenith','zest','zinc','zone','zones'
+];
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+let current='';
+
+function generate(){
+  const count=parseInt(document.getElementById('wordCount').value);
+  const sep=document.getElementById('separator').value;
+  const cap=document.getElementById('capitalize').checked;
+  const num=document.getElementById('addNumber').checked;
+
+  const words=[];
+  for(let i=0;i<count;i++){
+    let w=rand(WORDS);
+    if(cap)w=w[0].toUpperCase()+w.slice(1);
+    words.push(w);
+  }
+  let pp=words.join(sep);
+  if(num) pp+=sep+(Math.floor(Math.random()*900)+100);
+
+  current=pp;
+  document.getElementById('ppBox').textContent=pp;
+
+  // strength estimate: bits of entropy
+  const wordEntropy=count*Math.log2(WORDS.length);
+  const numEntropy=num?Math.log2(900):0;
+  const bits=wordEntropy+numEntropy;
+  const pct=Math.min(bits/128*100,100);
+  const bar=document.getElementById('strengthBar');
+  const lbl=document.getElementById('strengthLabel');
+  bar.style.width=pct+'%';
+  bar.style.background=bits<50?'#ff9f9f':bits<80?'#f0e040':'var(--accent)';
+  lbl.textContent=`~${Math.round(bits)} bits of entropy — ${bits<50?'Weak':bits<80?'Good':'Strong'}`;
+}
+
+function copyPP(){
+  if(!current)return;
+  navigator.clipboard.writeText(current).then(()=>{
+    const b=document.getElementById('copyBtn');
+    b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500);
+  });
+}
+
+generate();
+</script>
+</body>
+</html>

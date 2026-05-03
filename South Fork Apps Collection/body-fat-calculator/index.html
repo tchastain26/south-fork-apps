@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Fat Calculator | South Fork Apps</title>
+  <meta name="description" content="Estimate body fat percentage using the US Navy method. Supports imperial and metric. Shows category and visual bar.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .toggle-row{display:flex;gap:.4rem;margin-bottom:1rem;}
+    .toggle-btn{padding:.4rem 1rem;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--muted);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;}
+    .toggle-btn.active{border-color:var(--accent);color:var(--accent);}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    input[type=number]{width:100%;padding:.6rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:1rem;outline:none;}
+    input:focus{border-color:var(--accent);}
+    .sex-row{display:flex;gap:.4rem;margin-bottom:.75rem;}
+    .sex-btn{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--muted);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;}
+    .sex-btn.active{border-color:var(--accent);color:var(--accent);}
+    .calc-btn{display:block;width:100%;margin-top:.85rem;padding:.65rem;border:1px solid var(--accent);border-radius:6px;background:var(--accent);color:#102113;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;}
+    .calc-btn:hover{filter:brightness(1.08);}
+    .result-wrap{margin-top:.75rem;}
+    .result-pct{font-size:2.8rem;font-weight:900;color:var(--accent);line-height:1;}
+    .result-cat{font-size:1rem;font-weight:700;color:var(--muted);margin-top:.3rem;}
+    .bar-wrap{margin-top:1rem;height:20px;border-radius:10px;background:var(--surface-2);overflow:hidden;position:relative;}
+    .bar-fill{height:100%;border-radius:10px;transition:width .4s ease;background:linear-gradient(90deg,var(--accent),#f0e040,#ff9f9f);}
+    .bar-marker{position:absolute;top:0;width:3px;height:100%;background:#fff;border-radius:2px;transition:left .4s ease;}
+    .categories{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;margin-top:.5rem;}
+    .cat-item{text-align:center;font-size:.65rem;color:var(--muted);padding:.2rem;}
+    .cat-item.current{color:var(--accent);font-weight:800;}
+    .error{color:#ff9f9f;font-size:.85rem;margin-top:.5rem;}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:480px){.grid2{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Body Fat Calculator</span></nav>
+<main>
+  <h1>Body Fat Calculator</h1>
+  <p class="sub">US Navy method. Enter your measurements and get an estimate.</p>
+  <div class="panel">
+    <div class="toggle-row">
+      <button class="toggle-btn active" onclick="setUnit('in',this)">Inches</button>
+      <button class="toggle-btn" onclick="setUnit('cm',this)">Centimeters</button>
+    </div>
+    <div class="sex-row">
+      <button class="sex-btn active" id="sexM" onclick="setSex('male')">Male</button>
+      <button class="sex-btn" id="sexF" onclick="setSex('female')">Female</button>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="height">Height (<span class="unit-label">in</span>)</label>
+        <input type="number" id="height" value="70" min="0" step="0.1">
+      </div>
+      <div>
+        <label for="waist">Waist at navel (<span class="unit-label">in</span>)</label>
+        <input type="number" id="waist" value="34" min="0" step="0.1">
+      </div>
+      <div>
+        <label for="neck">Neck (<span class="unit-label">in</span>)</label>
+        <input type="number" id="neck" value="16" min="0" step="0.1">
+      </div>
+      <div id="hipDiv" style="display:none;">
+        <label for="hip">Hip (<span class="unit-label">in</span>)</label>
+        <input type="number" id="hip" value="38" min="0" step="0.1">
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calc()">Calculate</button>
+    <div class="error" id="err"></div>
+  </div>
+  <div class="panel" id="resultPanel" style="display:none;">
+    <div class="result-wrap">
+      <div class="result-pct" id="pctDisplay">--%</div>
+      <div class="result-cat" id="catDisplay"></div>
+      <div class="bar-wrap">
+        <div class="bar-fill" id="barFill" style="width:0%"></div>
+        <div class="bar-marker" id="barMarker" style="left:0%"></div>
+      </div>
+      <div class="categories" id="catGrid"></div>
+    </div>
+  </div>
+  <div class="panel"><footer>v1.0</footer></div>
+</main>
+<script>
+let sex='male';
+let unit='in';
+
+const CATS_M=[
+  {name:'Essential',max:5},{name:'Athletes',max:13},{name:'Fitness',max:17},{name:'Average',max:24},{name:'Obese',max:100}
+];
+const CATS_F=[
+  {name:'Essential',max:13},{name:'Athletes',max:20},{name:'Fitness',max:24},{name:'Average',max:31},{name:'Obese',max:100}
+];
+
+function setSex(s){
+  sex=s;
+  document.getElementById('sexM').classList.toggle('active',s==='male');
+  document.getElementById('sexF').classList.toggle('active',s==='female');
+  document.getElementById('hipDiv').style.display=s==='female'?'':'none';
+}
+
+function setUnit(u,btn){
+  unit=u;
+  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.unit-label').forEach(el=>el.textContent=u);
+}
+
+function toInches(v){return unit==='in'?v:v/2.54;}
+
+function calc(){
+  const h=toInches(parseFloat(document.getElementById('height').value));
+  const w=toInches(parseFloat(document.getElementById('waist').value));
+  const n=toInches(parseFloat(document.getElementById('neck').value));
+  const hip=sex==='female'?toInches(parseFloat(document.getElementById('hip').value||'0')):0;
+  const err=document.getElementById('err');
+  if(isNaN(h)||isNaN(w)||isNaN(n)||(sex==='female'&&isNaN(hip))){err.textContent='Please fill in all fields.';return;}
+  if(w<=n||(sex==='female'&&(w+hip)<=n)){err.textContent='Waist (+ hip for female) must be greater than neck.';return;}
+  err.textContent='';
+
+  let bf;
+  if(sex==='male'){
+    bf=86.010*Math.log10(w-n)-70.041*Math.log10(h)+36.76;
+  } else {
+    bf=163.205*Math.log10(w+hip-n)-97.684*Math.log10(h)-78.387;
+  }
+  bf=Math.max(0,Math.min(bf,100));
+
+  const cats=sex==='male'?CATS_M:CATS_F;
+  let catName='';
+  for(const c of cats){if(bf<=c.max){catName=c.name;break;}}
+  if(!catName)catName='Obese';
+
+  document.getElementById('pctDisplay').textContent=bf.toFixed(1)+'%';
+  document.getElementById('catDisplay').textContent='Category: '+catName;
+  document.getElementById('resultPanel').style.display='';
+
+  // bar: map 0-50% body fat to 0-100% width
+  const pct=Math.min(bf/50*100,100);
+  document.getElementById('barFill').style.width=pct+'%';
+  document.getElementById('barMarker').style.left=Math.max(0,pct-0.5)+'%';
+
+  const grid=document.getElementById('catGrid');
+  grid.innerHTML=cats.map(c=>`<div class="cat-item${c.name===catName?' current':''}">${c.name}<br><small>&le;${c.max}%</small></div>`).join('');
+}
+
+calc();
+</script>
+</body>
+</html>

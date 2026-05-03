@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Formatter | South Fork Apps</title>
+  <meta name="description" content="Format numbers with custom decimal places, currency symbols, thousand separators, and get formatted, scientific, ordinal, and word output.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(800px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;}
+    label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    input[type=text],select{width:100%;padding:.6rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.95rem;outline:none;}
+    input[type=text]:focus,select:focus{border-color:var(--accent);}
+    select option{background:var(--surface);}
+    .result-list{display:grid;gap:.5rem;}
+    .result-item{display:grid;grid-template-columns:140px 1fr 60px;align-items:center;gap:.75rem;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color .15s;}
+    .result-item:hover{border-color:var(--accent);}
+    .result-label{font-size:.8rem;color:var(--muted);font-weight:700;}
+    .result-val{font-family:ui-monospace,monospace;font-size:.9rem;color:var(--text);overflow-wrap:anywhere;}
+    .copy-hint{font-size:.72rem;color:var(--muted);text-align:right;}
+    .copied-hint{color:var(--accent)!important;}
+    .error{color:#ff9f9f;font-size:.85rem;margin-top:.5rem;}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:520px){.grid2,.grid3{grid-template-columns:1fr;} .result-item{grid-template-columns:110px 1fr 50px;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Number Formatter</span></nav>
+<main>
+  <h1>Number Formatter</h1>
+  <p class="sub">Enter a number, set your options, and click any result to copy.</p>
+  <div class="panel">
+    <label for="numIn">Number</label>
+    <input type="text" id="numIn" value="1234567.89" oninput="format()" placeholder="e.g. 1234567.89">
+    <div class="error" id="err"></div>
+  </div>
+  <div class="panel">
+    <div class="grid3" style="margin-bottom:.75rem;">
+      <div>
+        <label>Decimal Places</label>
+        <select id="decPlaces" onchange="format()">
+          <option value="-1">Auto</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+        </select>
+      </div>
+      <div>
+        <label>Currency Symbol</label>
+        <select id="currency" onchange="format()">
+          <option value="">None</option>
+          <option value="$" selected>$ Dollar</option>
+          <option value="&#8364;">&#8364; Euro</option>
+          <option value="&#163;">&#163; Pound</option>
+          <option value="&#165;">&#165; Yen</option>
+        </select>
+      </div>
+      <div>
+        <label>Thousands Sep</label>
+        <select id="thousandsSep" onchange="format()">
+          <option value="," selected>Comma ,</option>
+          <option value=".">Period .</option>
+          <option value=" ">Space</option>
+          <option value="_">Underscore _</option>
+          <option value="">None</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label>Decimal Separator</label>
+        <select id="decSep" onchange="format()">
+          <option value="." selected>Period .</option>
+          <option value=",">Comma ,</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <label>Results &mdash; click any row to copy</label>
+    <div class="result-list" id="results"></div>
+  </div>
+  <div class="panel"><footer>v1.0</footer></div>
+</main>
+<script>
+const ONES=['','one','two','three','four','five','six','seven','eight','nine','ten',
+  'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+
+function numToWords(n){
+  if(n===0)return 'zero';
+  if(n<0)return 'negative '+numToWords(-n);
+  if(n>=1e12)return numToWords(Math.floor(n/1e12))+' trillion'+(n%1e12?(' '+numToWords(n%1e12)):'');
+  if(n>=1e9)return numToWords(Math.floor(n/1e9))+' billion'+(n%1e9?(' '+numToWords(n%1e9)):'');
+  if(n>=1e6)return numToWords(Math.floor(n/1e6))+' million'+(n%1e6?(' '+numToWords(n%1e6)):'');
+  if(n>=1000)return numToWords(Math.floor(n/1000))+' thousand'+(n%1000?(' '+numToWords(n%1000)):'');
+  if(n>=100)return ONES[Math.floor(n/100)]+' hundred'+(n%100?(' '+numToWords(n%100)):'');
+  if(n<20)return ONES[n];
+  return TENS[Math.floor(n/10)]+(n%10?('-'+ONES[n%10]):'');
+}
+
+function ordinal(n){
+  const abs=Math.abs(Math.round(n));
+  const s=['th','st','nd','rd'];
+  const v=abs%100;
+  return abs+(s[(v-20)%10]||s[v]||s[0]);
+}
+
+function formatNum(raw,dp,curr,tSep,dSep){
+  let n=parseFloat(raw);
+  if(isNaN(n))return null;
+  let s=dp===-1?Math.abs(n).toString():Math.abs(n).toFixed(dp);
+  // split integer and decimal
+  let [intPart,decPart]=s.split('.');
+  // add thousands separator
+  if(tSep!==''){
+    intPart=intPart.replace(/\B(?=(\d{3})+(?!\d))/g,tSep);
+  }
+  let result=(n<0?'-':'')+(curr||'')+intPart+(decPart!==undefined?dSep+decPart:'');
+  return result;
+}
+
+function format(){
+  const raw=document.getElementById('numIn').value.trim();
+  const err=document.getElementById('err');
+  const n=parseFloat(raw);
+  if(raw===''||isNaN(n)){err.textContent=raw?'Not a valid number.':'';renderResults([]);return;}
+  err.textContent='';
+  const dp=parseInt(document.getElementById('decPlaces').value);
+  const curr=document.getElementById('currency').value;
+  const tSep=document.getElementById('thousandsSep').value;
+  const dSep=document.getElementById('decSep').value;
+
+  const formatted=formatNum(raw,dp,curr,tSep,dSep);
+  const integer=Math.trunc(n).toLocaleString('en-US').replace(/,/g,tSep||'');
+  const sci=n.toExponential(dp<0?2:Math.max(dp,2));
+  const pct=(n*100).toFixed(dp<0?2:dp)+'%';
+  const ord=ordinal(n);
+  const absInt=Math.abs(Math.round(n));
+  const words=(n<0?'negative ':'')+numToWords(absInt);
+
+  renderResults([
+    ['Formatted', formatted],
+    ['Integer Only', (n<0?'-':'')+(curr||'')+Math.abs(Math.trunc(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,tSep)],
+    ['Scientific', sci],
+    ['Percentage', pct],
+    ['Ordinal', ord],
+    ['In Words', words],
+  ]);
+}
+
+function renderResults(rows){
+  const el=document.getElementById('results');
+  if(!rows.length){el.innerHTML='';return;}
+  el.innerHTML=rows.map(([l,v],i)=>
+    `<div class="result-item" onclick="copyRow(this,'${escape(v)}')">
+      <span class="result-label">${l}</span>
+      <span class="result-val">${v}</span>
+      <span class="copy-hint">copy</span>
+    </div>`
+  ).join('');
+}
+
+function copyRow(el,v){
+  navigator.clipboard.writeText(unescape(v)).then(()=>{
+    const hint=el.querySelector('.copy-hint');
+    hint.textContent='copied!';hint.classList.add('copied-hint');
+    setTimeout(()=>{hint.textContent='copy';hint.classList.remove('copied-hint');},1500);
+  });
+}
+
+format();
+</script>
+</body>
+</html>

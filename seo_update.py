@@ -32,7 +32,6 @@ APP_META = {
     "dedupe-lines":           ("Duplicate Line Remover",     "Remove duplicate lines from any list of text instantly. Free online tool to deduplicate text."),
     "dog-poop-tracker":       ("Dog Poop Tracker",           "Track where your dog goes in the yard using GPS. Mark, map, and clear poop locations with this free PWA."),
     "email-extractor":        ("Email Extractor",            "Extract all email addresses from a block of text instantly. Free online email address extractor tool."),
-    "extract-urls":           ("URL Extractor",              "Extract all URLs and links from any block of text. Free online link extractor tool."),
     "gemini-3-1-flash-tts-studio": ("Gemini TTS Studio",    "Convert text to speech using Google Gemini. Free browser-based text-to-speech studio powered by Gemini API."),
     "habit-tracker":          ("Habit Tracker",              "Track your daily habits with a simple, free habit tracker. No account required — works right in your browser."),
     "hex-code-color-generator": ("Hex Color Code Generator","Generate random hex color codes or convert colors instantly. Free online hex color picker and generator."),
@@ -132,6 +131,18 @@ APP_META = {
     "pay-converter":          ("Pay Converter",                "Convert any salary between hourly, daily, weekly, biweekly, monthly, and annual pay rates instantly. Free online pay rate converter."),
     "savings-goal-planner":   ("Savings Goal Planner",         "Calculate how long it takes to reach a savings goal or how much to save per month. Includes interest. Free online savings calculator."),
     "noise-generator":        ("Noise Generator",              "Play white, brown, or pink ambient noise in your browser. No download required. Free online noise generator for focus and sleep."),
+    "ascii-art-generator":    ("ASCII Art Generator",          "Convert text to ASCII block letter art with multiple style options. Free online ASCII art text generator."),
+    "color-mixer":            ("Color Mixer",                  "Blend two colors with a ratio slider and see the result as HEX, RGB, and HSL. Free online color mixing tool."),
+    "css-filter-generator":   ("CSS Filter Generator",         "Generate CSS filter strings with sliders for blur, brightness, contrast, grayscale, hue-rotate, and more. Free online tool."),
+    "number-formatter":       ("Number Formatter",             "Format numbers with custom decimal places, currency symbols, thousand separators, and get formatted, scientific, ordinal, and word output."),
+    "chmod-calculator":       ("chmod Calculator",             "Calculate Unix file permissions with a checkbox grid or octal input. Shows symbolic, binary, and chmod command output. Free online tool."),
+    "coin-flipper":           ("Coin Flipper",                 "Flip a virtual coin with a satisfying animation. Tracks heads and tails counts and current streak. Free online coin flip tool."),
+    "isbn-validator":         ("ISBN Validator",               "Validate ISBN-10 or ISBN-13 numbers, format with hyphens, and convert between ISBN-10 and ISBN-13. Free online tool."),
+    "color-name-finder":      ("Color Name Finder",            "Find the closest CSS named color to any hex value. Shows the 5 nearest named colors with swatches. Free online color name tool."),
+    "fibonacci-sequence":     ("Fibonacci Sequence",           "Generate Fibonacci sequences, find the Nth term, or check if a number is a Fibonacci number. Free online Fibonacci tool."),
+    "body-fat-calculator":    ("Body Fat Calculator",          "Estimate body fat percentage using the US Navy method. Supports imperial and metric. Shows category and visual bar."),
+    "passphrase-generator":   ("Passphrase Generator",         "Generate strong memorable passphrases from a 200+ word list. Customize word count, separator, capitalization, and numbers."),
+    "base-converter":         ("Base Converter",               "Convert numbers between any base from 2-36 including binary, octal, decimal, hex, and base-32. Click any row to copy."),
 }
 
 def update_app(app_name, title, description):

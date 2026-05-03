@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base Converter | South Fork Apps</title>
+  <meta name="description" content="Convert numbers between any base from 2-36 including binary, octal, decimal, hex, and base-32. Click any row to copy.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#ff9f9f;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(720px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+    h1{margin:0 0 .5rem;font-size:clamp(1.8rem,4vw,2.6rem);}
+    p.sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+    .input-group{display:grid;grid-template-columns:1fr 120px;gap:.6rem;align-items:end;}
+    label{display:block;margin-bottom:.4rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    input[type=text]{width:100%;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:1rem;font-family:ui-monospace,monospace;outline:none;}
+    input[type=text]:focus{border-color:var(--accent);}
+    select{width:100%;padding:.65rem .75rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font:inherit;font-size:.95rem;outline:none;}
+    select:focus{border-color:var(--accent);}
+    select option{background:var(--surface);}
+    .error{color:var(--danger);font-size:.82rem;margin-top:.4rem;}
+    .result-list{display:grid;gap:.5rem;}
+    .result-item{display:grid;grid-template-columns:110px 1fr 60px;align-items:center;gap:.75rem;padding:.65rem .85rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color .15s;}
+    .result-item:hover{border-color:var(--accent);}
+    .result-label{font-size:.8rem;color:var(--muted);font-weight:700;}
+    .result-val{font-family:ui-monospace,monospace;font-size:.88rem;color:var(--text);overflow-wrap:anywhere;}
+    .copy-hint{font-size:.72rem;color:var(--muted);text-align:right;}
+    .copied-hint{color:var(--accent)!important;}
+    .custom-row{display:flex;align-items:center;gap:.6rem;margin-top:.75rem;}
+    .custom-row label{margin:0;white-space:nowrap;}
+    input.custom-base{width:70px;padding:.5rem .6rem;text-align:center;}
+    footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    @media(max-width:480px){.input-group{grid-template-columns:1fr;} .result-item{grid-template-columns:90px 1fr 50px;}}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Base Converter</span></nav>
+<main>
+  <h1>Base Converter</h1>
+  <p class="sub">Enter a number in any base from 2&ndash;36. Click any row to copy.</p>
+  <div class="panel">
+    <label>Input Number &amp; Base</label>
+    <div class="input-group">
+      <input type="text" id="numIn" value="255" oninput="convert()" placeholder="Enter number">
+      <select id="baseIn" onchange="convert()">
+        <option value="2">Base 2 (bin)</option>
+        <option value="8">Base 8 (oct)</option>
+        <option value="10" selected>Base 10 (dec)</option>
+        <option value="16">Base 16 (hex)</option>
+        <option value="32">Base 32</option>
+        <option value="36">Base 36</option>
+      </select>
+    </div>
+    <div class="error" id="err"></div>
+    <div class="custom-row">
+      <label class="muted" style="font-size:.82rem;font-weight:700;color:var(--muted);">Custom output base:</label>
+      <input type="text" class="custom-base" id="customBase" value="36" maxlength="2" oninput="convert()">
+    </div>
+  </div>
+  <div class="panel">
+    <label>Conversions &mdash; click to copy</label>
+    <div class="result-list" id="resultList"></div>
+  </div>
+  <div class="panel"><footer>v1.0</footer></div>
+</main>
+<script>
+const BASES = [
+  {base:2,  label:'Binary (base 2)'},
+  {base:8,  label:'Octal (base 8)'},
+  {base:10, label:'Decimal (base 10)'},
+  {base:16, label:'Hex (base 16)'},
+  {base:32, label:'Base 32'},
+];
+
+function convert(){
+  const raw=document.getElementById('numIn').value.trim();
+  const inputBase=parseInt(document.getElementById('baseIn').value);
+  const customBase=parseInt(document.getElementById('customBase').value);
+  const err=document.getElementById('err');
+  const list=document.getElementById('resultList');
+
+  if(!raw){list.innerHTML='';err.textContent='';return;}
+
+  // Parse with BigInt
+  let decimal;
+  try {
+    decimal=BigInt(0);
+    const chars=raw.toUpperCase();
+    for(const ch of chars){
+      let v=ch>='0'&&ch<='9'?parseInt(ch):ch.charCodeAt(0)-55;
+      if(v<0||v>=inputBase)throw new Error('Invalid digit: '+ch);
+      decimal=decimal*BigInt(inputBase)+BigInt(v);
+    }
+  } catch(e) {
+    err.textContent='Invalid number for base '+inputBase+'.';
+    list.innerHTML='';
+    return;
+  }
+  err.textContent='';
+
+  function toBase(n,base){
+    if(base<2||base>36)return'—';
+    if(n===0n)return'0';
+    const digits='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result='';
+    while(n>0n){result=digits[Number(n%BigInt(base))]+result;n=n/BigInt(base);}
+    return result;
+  }
+
+  const rows=[...BASES];
+  if(!isNaN(customBase)&&customBase>=2&&customBase<=36&&!BASES.find(b=>b.base===customBase)){
+    rows.push({base:customBase,label:'Custom (base '+customBase+')'});
+  }
+
+  list.innerHTML=rows.map(({base,label})=>{
+    const val=toBase(decimal,base);
+    return `<div class="result-item" onclick="copyRow(this)">
+      <span class="result-label">${label}</span>
+      <span class="result-val">${val}</span>
+      <span class="copy-hint">copy</span>
+    </div>`;
+  }).join('');
+}
+
+function copyRow(el){
+  const val=el.querySelector('.result-val').textContent;
+  navigator.clipboard.writeText(val).then(()=>{
+    const hint=el.querySelector('.copy-hint');
+    hint.textContent='copied!';hint.classList.add('copied-hint');
+    setTimeout(()=>{hint.textContent='copy';hint.classList.remove('copied-hint');},1500);
+  });
+}
+
+convert();
+</script>
+</body>
+</html>
