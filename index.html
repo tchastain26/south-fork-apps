@@ -219,14 +219,9 @@
 <main class="relative">
   <canvas id="riverCanvas"></canvas>
 
-    <section id="latest-drop" class="pt-28 pb-10 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
-    <div class="mb-8 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-      <div>
-        <span class="mb-3 block font-label text-xs font-black uppercase tracking-[0.22em] text-primary">Latest Drop</span>
-        <h1 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface md:text-6xl">Four fresh apps, shipped now.</h1>
-        <p class="mt-4 max-w-3xl text-base leading-7 text-on-surface-variant md:text-lg">The newest South Fork release adds four web-side utilities for UUIDs, robots rules, fluid CSS, and SVG background workflows.</p>
-      </div>
-      <a href="#repository" class="inline-flex items-center justify-center rounded-xl border border-primary/30 bg-primary/10 px-6 py-3 font-headline text-sm font-bold uppercase tracking-[0.18em] text-primary transition-all hover:border-primary hover:bg-primary hover:text-on-primary">Browse the full library</a>
+  <section id="latest-drop" class="pt-28 pb-10 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
+    <div class="mb-8">
+      <h1 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-5xl">New</h1>
     </div>
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <a href="./South Fork Apps Collection/uuid-generator/" target="_blank" rel="noopener" class="group rounded-2xl border border-primary/20 bg-surface-container-low/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-surface-container">
@@ -273,21 +268,8 @@
   </section>
 
   <section id="repository" class="pt-8 pb-20 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
-    <div class="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-      <div>
-        <span class="mb-3 block font-label text-xs font-black uppercase tracking-[0.22em] text-primary">Library</span>
-        <h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-5xl">Browse by category, not by clutter.</h2>
-      </div>
-      <p class="max-w-2xl text-sm leading-6 text-on-surface-variant md:text-base">The library now sorts into six lanes that reflect how these apps actually get used: everyday tools, docs, code, media, planning, and fun.</p>
-    </div>
-    <div class="mb-6 flex flex-wrap gap-3">
-      <button type="button" data-quick-category="all" class="quick-category rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:border-primary hover:text-primary">All Apps <span class="ml-2 text-primary/80">146</span></button>
-      <button type="button" data-quick-category="Everyday Tools" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Everyday Tools <span class="ml-2 text-on-surface-variant/80">30</span></button>
-      <button type="button" data-quick-category="Text &amp; Docs" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Text &amp; Docs <span class="ml-2 text-on-surface-variant/80">39</span></button>
-      <button type="button" data-quick-category="Code &amp; Web" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Code &amp; Web <span class="ml-2 text-on-surface-variant/80">31</span></button>
-      <button type="button" data-quick-category="Design &amp; Media" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Design &amp; Media <span class="ml-2 text-on-surface-variant/80">19</span></button>
-      <button type="button" data-quick-category="Productivity &amp; Planning" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Productivity &amp; Planning <span class="ml-2 text-on-surface-variant/80">12</span></button>
-      <button type="button" data-quick-category="Fun &amp; Games" class="quick-category rounded-full border border-outline-variant/30 bg-surface-container-low/70 px-4 py-2 text-sm font-semibold text-on-surface transition-colors hover:border-primary/40 hover:text-primary">Fun &amp; Games <span class="ml-2 text-on-surface-variant/80">15</span></button>
+    <div class="mb-6">
+      <h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-5xl">Library</h2>
     </div>
     <div class="mb-8 grid gap-3 rounded-lg border border-outline-variant/20 bg-surface-container-low/80 p-3 backdrop-blur-sm md:grid-cols-[1fr_260px_auto] md:items-end">
       <label class="block">
@@ -1498,7 +1480,6 @@
   const noResults = document.getElementById('noResults');
   const appGrid = document.getElementById('appGrid');
   const appCards = Array.from(document.querySelectorAll('[data-app-card]'));
-  const quickCategoryButtons = Array.from(document.querySelectorAll('[data-quick-category]'));
   const categoryOrder = ['Everyday Tools', 'Text & Docs', 'Code & Web', 'Design & Media', 'Productivity & Planning', 'Fun & Games'];
 
   function launchRandom() {
@@ -1523,18 +1504,6 @@
     sorted.forEach((card) => appGrid.appendChild(card));
   }
 
-  function syncQuickCategoryButtons() {
-    quickCategoryButtons.forEach((button) => {
-      const isActive = button.dataset.quickCategory === categoryFilter.value || (button.dataset.quickCategory === 'all' && categoryFilter.value === 'all');
-      button.classList.toggle('border-primary/30', isActive);
-      button.classList.toggle('bg-primary/10', isActive);
-      button.classList.toggle('text-primary', isActive);
-      button.classList.toggle('border-outline-variant/30', !isActive);
-      button.classList.toggle('bg-surface-container-low/70', !isActive);
-      button.classList.toggle('text-on-surface', !isActive);
-    });
-  }
-
   function filterApps() {
     const query = appSearch.value.trim().toLowerCase();
     const category = categoryFilter.value;
@@ -1552,17 +1521,10 @@
 
     resultCount.textContent = appCountLabel(visibleCount);
     noResults.classList.toggle('hidden', visibleCount !== 0);
-    syncQuickCategoryButtons();
   }
 
   appSearch.addEventListener('input', filterApps);
   categoryFilter.addEventListener('change', filterApps);
-  quickCategoryButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      categoryFilter.value = button.dataset.quickCategory === 'all' ? 'all' : button.dataset.quickCategory;
-      filterApps();
-    });
-  });
 
   sortCards();
   filterApps();
