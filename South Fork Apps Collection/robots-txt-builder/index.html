@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robots.txt Builder | South Fork Apps</title>
+<meta name="description" content="Build a clean robots.txt file with disallow rules, sitemap lines, crawl delay, and optional AI crawler blocking. Free online robots.txt generator.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f87171}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}
+  .nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:1080px;margin:0 auto;width:100%}
+  h1{font-size:1.55rem;margin-bottom:.3rem}
+  .subtitle{color:var(--muted);font-size:.95rem;line-height:1.5;margin-bottom:1.3rem}
+  .layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:1.25rem}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+  .form-grid{display:grid;gap:.9rem}
+  .field{display:grid;gap:.35rem}
+  label{font-size:.8rem;font-weight:600;color:var(--muted)}
+  input[type=text],input[type=number],textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:.6rem;color:var(--text);padding:.75rem .85rem;font:inherit}
+  textarea{min-height:108px;resize:vertical;line-height:1.5}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+  @media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+  .check{display:flex;align-items:flex-start;gap:.6rem;font-size:.92rem;line-height:1.45}
+  .check input{accent-color:var(--accent);width:1rem;height:1rem;transform:translateY(.15rem)}
+  .button-row{display:flex;gap:.65rem;flex-wrap:wrap}
+  button{border:none;border-radius:.7rem;padding:.78rem 1rem;font:inherit;font-weight:700;cursor:pointer;transition:.15s}
+  button:hover{transform:translateY(-1px)}
+  .primary{background:var(--accent);color:#0e1510}
+  .secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+  .tiny{padding:.45rem .7rem;font-size:.8rem}
+  .helper{font-size:.8rem;color:var(--muted);line-height:1.45}
+  .chips{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:.85rem}
+  .chip{display:inline-flex;align-items:center;padding:.35rem .6rem;border-radius:999px;border:1px solid var(--border);font-size:.75rem;color:var(--muted);font-weight:700}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:1rem;white-space:pre-wrap;word-break:break-word;min-height:360px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.55}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-bottom:1rem}
+  @media(max-width:640px){.stats{grid-template-columns:1fr}}
+  .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:.85rem}
+  .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .stat-value{font-size:1.1rem;font-weight:700;margin-top:.3rem}
+  .error{color:var(--danger)}
+  footer{text-align:center;padding:.85rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">Back to South Fork Apps</a><span class="nav-title">Robots.txt Builder</span></nav>
+<main>
+  <h1>Robots.txt Builder</h1>
+  <p class="subtitle">Create a clean `robots.txt` file without hand-typing every rule. Start open, hide specific paths, add sitemap lines, and optionally block common AI crawlers in one click.</p>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="form-grid">
+        <div class="grid-2">
+          <div class="field">
+            <label for="siteUrl">Site URL</label>
+            <input id="siteUrl" type="text" placeholder="https://example.com">
+          </div>
+          <div class="field">
+            <label for="crawlDelay">Crawl delay (optional)</label>
+            <input id="crawlDelay" type="number" min="0" max="120" step="1" placeholder="10">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="allowPaths">Allow paths (one per line)</label>
+            <textarea id="allowPaths" placeholder="/&#10;/blog/"></textarea>
+          </div>
+          <div class="field">
+            <label for="disallowPaths">Disallow paths (one per line)</label>
+            <textarea id="disallowPaths" placeholder="/admin/&#10;/private/"></textarea>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="sitemapUrls">Sitemaps (one per line)</label>
+            <textarea id="sitemapUrls" placeholder="https://example.com/sitemap.xml"></textarea>
+          </div>
+          <div class="field">
+            <label for="hostField">Host (optional)</label>
+            <input id="hostField" type="text" placeholder="example.com">
+          </div>
+        </div>
+
+        <label class="check"><input id="defaultSitemapToggle" type="checkbox" checked> Auto-add `/sitemap.xml` from the site URL when the sitemap box is empty.</label>
+        <label class="check"><input id="blockAiToggle" type="checkbox"> Add `Disallow: /` rules for common AI crawlers (GPTBot, ClaudeBot, Claude-SearchBot, PerplexityBot, CCBot, Google-Extended, ChatGPT-User).</label>
+
+        <div class="button-row">
+          <button class="secondary tiny" id="starterPreset" type="button">Starter preset</button>
+          <button class="secondary tiny" id="adminPreset" type="button">Hide admin paths</button>
+          <button class="secondary tiny" id="clearPreset" type="button">Clear</button>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="copyButton" type="button">Copy robots.txt</button>
+          <button class="secondary" id="downloadButton" type="button">Download file</button>
+        </div>
+
+        <p id="message" class="helper">Preview updates live as you type. Rules are generated locally in your browser.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="chips">
+        <span class="chip">Local only</span>
+        <span class="chip" id="modeChip">Open site</span>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Rule lines</div>
+          <div id="lineCount" class="stat-value">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Blocked paths</div>
+          <div id="blockedCount" class="stat-value">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Sitemaps</div>
+          <div id="sitemapCount" class="stat-value">0</div>
+        </div>
+      </div>
+      <pre id="output"></pre>
+    </section>
+  </div>
+</main>
+<footer>v1.0</footer>
+<script>
+const siteUrl=document.getElementById('siteUrl');
+const crawlDelay=document.getElementById('crawlDelay');
+const allowPaths=document.getElementById('allowPaths');
+const disallowPaths=document.getElementById('disallowPaths');
+const sitemapUrls=document.getElementById('sitemapUrls');
+const hostField=document.getElementById('hostField');
+const defaultSitemapToggle=document.getElementById('defaultSitemapToggle');
+const blockAiToggle=document.getElementById('blockAiToggle');
+const output=document.getElementById('output');
+const modeChip=document.getElementById('modeChip');
+const lineCount=document.getElementById('lineCount');
+const blockedCount=document.getElementById('blockedCount');
+const sitemapCount=document.getElementById('sitemapCount');
+const message=document.getElementById('message');
+const AI_BOTS=['GPTBot','ChatGPT-User','ClaudeBot','Claude-SearchBot','PerplexityBot','CCBot','Google-Extended'];
+
+function normalizeRoot(url){
+  const trimmed=url.trim();
+  if(!trimmed) return '';
+  const withProtocol=/^https?:\/\//i.test(trimmed)?trimmed:`https://${trimmed}`;
+  try{
+    const parsed=new URL(withProtocol);
+    return `${parsed.origin}${parsed.pathname.replace(/\/+$/,'')}`;
+  }catch(error){
+    return '';
+  }
+}
+
+function readLines(value,kind){
+  return value
+    .split('\n')
+    .map((line)=>line.trim())
+    .filter(Boolean)
+    .map((line)=>{
+      if(kind!=='url'&&line!=='/'&&!line.startsWith('/')&&!line.startsWith('*')){
+        return `/${line}`;
+      }
+      return line;
+    });
+}
+
+function buildRules(){
+  const allow=readLines(allowPaths.value,'path');
+  const disallow=readLines(disallowPaths.value,'path');
+  const sitemaps=readLines(sitemapUrls.value,'url');
+  const root=normalizeRoot(siteUrl.value);
+  const lines=['User-agent: *'];
+
+  if(!allow.length&&!disallow.length){
+    lines.push('Allow: /');
+  }else{
+    allow.forEach((path)=>lines.push(`Allow: ${path}`));
+    disallow.forEach((path)=>lines.push(`Disallow: ${path}`));
+  }
+
+  const crawlDelayValue=Number.parseInt(crawlDelay.value,10);
+  if(!Number.isNaN(crawlDelayValue)&&crawlDelayValue>0){
+    lines.push(`Crawl-delay: ${crawlDelayValue}`);
+  }
+
+  const hostValue=hostField.value.trim();
+  if(hostValue){
+    lines.push(`Host: ${hostValue}`);
+  }
+
+  const finalSitemaps=[...sitemaps];
+  if(!finalSitemaps.length&&defaultSitemapToggle.checked&&root){
+    finalSitemaps.push(`${root}/sitemap.xml`);
+  }
+
+  finalSitemaps.forEach((url)=>lines.push(`Sitemap: ${url}`));
+
+  if(blockAiToggle.checked){
+    AI_BOTS.forEach((bot)=>{
+      lines.push('');
+      lines.push(`User-agent: ${bot}`);
+      lines.push('Disallow: /');
+    });
+  }
+
+  return {
+    text:lines.join('\n'),
+    allowCount:allow.length,
+    disallowCount:disallow.length+(blockAiToggle.checked?AI_BOTS.length:0),
+    sitemapTotal:finalSitemaps.length
+  };
+}
+
+function update(){
+  const rules=buildRules();
+  output.textContent=rules.text;
+  lineCount.textContent=String(rules.text.split('\n').length);
+  blockedCount.textContent=String(rules.disallowCount);
+  sitemapCount.textContent=String(rules.sitemapTotal);
+
+  if(rules.disallowCount===0){
+    modeChip.textContent='Open site';
+  }else if(blockAiToggle.checked){
+    modeChip.textContent='Path rules + AI block';
+  }else{
+    modeChip.textContent='Path rules';
+  }
+
+  if(siteUrl.value.trim()&&!normalizeRoot(siteUrl.value)){
+    message.textContent='Site URL looks invalid. The output still works, but the default sitemap line is being skipped.';
+    message.className='helper error';
+  }else{
+    message.textContent='Preview updates live as you type. Rules are generated locally in your browser.';
+    message.className='helper';
+  }
+}
+
+async function copyOutput(button){
+  try{
+    await navigator.clipboard.writeText(output.textContent);
+    const previous=button.textContent;
+    button.textContent='Copied';
+    setTimeout(()=>{button.textContent=previous;},1200);
+  }catch(error){
+    message.textContent='Clipboard permission was blocked. Try again with a direct click.';
+    message.className='helper error';
+  }
+}
+
+function downloadOutput(){
+  const blob=new Blob([output.textContent],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download='robots.txt';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function setStarterPreset(){
+  siteUrl.value='https://example.com';
+  crawlDelay.value='';
+  allowPaths.value='/';
+  disallowPaths.value='';
+  sitemapUrls.value='';
+  hostField.value='';
+  defaultSitemapToggle.checked=true;
+  blockAiToggle.checked=false;
+  update();
+}
+
+function setAdminPreset(){
+  siteUrl.value='https://example.com';
+  allowPaths.value='/';
+  disallowPaths.value='/admin/\n/private/\n/tmp/';
+  sitemapUrls.value='';
+  defaultSitemapToggle.checked=true;
+  blockAiToggle.checked=true;
+  update();
+}
+
+function clearAll(){
+  siteUrl.value='';
+  crawlDelay.value='';
+  allowPaths.value='';
+  disallowPaths.value='';
+  sitemapUrls.value='';
+  hostField.value='';
+  defaultSitemapToggle.checked=true;
+  blockAiToggle.checked=false;
+  update();
+}
+
+[siteUrl,crawlDelay,allowPaths,disallowPaths,sitemapUrls,hostField,defaultSitemapToggle,blockAiToggle].forEach((control)=>{
+  const eventName=control.tagName==='TEXTAREA'||control.type==='text'||control.type==='number'?'input':'change';
+  control.addEventListener(eventName,update);
+});
+
+document.getElementById('copyButton').addEventListener('click',(event)=>copyOutput(event.currentTarget));
+document.getElementById('downloadButton').addEventListener('click',downloadOutput);
+document.getElementById('starterPreset').addEventListener('click',setStarterPreset);
+document.getElementById('adminPreset').addEventListener('click',setAdminPreset);
+document.getElementById('clearPreset').addEventListener('click',clearAll);
+
+setStarterPreset();
+</script>
+</body>
+</html>

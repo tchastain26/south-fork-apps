@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Clamp Generator | South Fork Apps</title>
+<meta name="description" content="Generate fluid CSS clamp() values from min and max sizes and viewport widths. Includes live preview and ready-to-copy CSS. Free online clamp calculator.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f87171}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}
+  .nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:1020px;margin:0 auto;width:100%}
+  h1{font-size:1.55rem;margin-bottom:.3rem}
+  .subtitle{color:var(--muted);font-size:.95rem;line-height:1.5;margin-bottom:1.3rem}
+  .layout{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:1.25rem}
+  @media(max-width:840px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+  .form-grid{display:grid;gap:.9rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+  @media(max-width:540px){.grid-2{grid-template-columns:1fr}}
+  .field{display:grid;gap:.35rem}
+  label{font-size:.8rem;font-weight:600;color:var(--muted)}
+  input[type=number]{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:.6rem;color:var(--text);padding:.75rem .85rem;font:inherit}
+  input:focus{outline:none;border-color:var(--accent)}
+  .helper{font-size:.8rem;color:var(--muted);line-height:1.45}
+  .error{color:var(--danger)}
+  .result-grid{display:grid;gap:.9rem}
+  .result{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:.9rem}
+  .result-head{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.65rem}
+  .result-head strong{font-size:.95rem}
+  .tiny{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:.6rem;padding:.45rem .7rem;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
+  .tiny:hover{border-color:var(--accent);color:var(--accent)}
+  code{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92rem;line-height:1.55;word-break:break-all}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-bottom:1rem}
+  @media(max-width:680px){.stats{grid-template-columns:1fr}}
+  .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:.85rem}
+  .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .stat-value{font-size:1.08rem;font-weight:700;margin-top:.3rem}
+  .preview{background:linear-gradient(135deg,rgba(125,219,132,.07),rgba(125,219,132,.02));border:1px solid var(--border);border-radius:.9rem;padding:1.2rem}
+  .preview-note{font-size:.8rem;color:var(--muted);margin-bottom:.7rem}
+  .preview-sample{line-height:1.1;font-weight:700;letter-spacing:-.03em;max-width:14ch}
+  .preview-rule{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);line-height:1.55}
+  footer{text-align:center;padding:.85rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">Back to South Fork Apps</a><span class="nav-title">CSS Clamp Generator</span></nav>
+<main>
+  <h1>CSS Clamp Generator</h1>
+  <p class="subtitle">Build responsive `clamp()` values from a minimum size, a maximum size, and the viewport range where the fluid scaling should happen. Copy the formula in pixels or rem and preview it live.</p>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="form-grid">
+        <div class="grid-2">
+          <div class="field">
+            <label for="minViewport">Min viewport (px)</label>
+            <input id="minViewport" type="number" min="0" step="1" value="320">
+          </div>
+          <div class="field">
+            <label for="maxViewport">Max viewport (px)</label>
+            <input id="maxViewport" type="number" min="0" step="1" value="1280">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="minSize">Min size (px)</label>
+            <input id="minSize" type="number" min="0" step="0.1" value="18">
+          </div>
+          <div class="field">
+            <label for="maxSize">Max size (px)</label>
+            <input id="maxSize" type="number" min="0" step="0.1" value="42">
+          </div>
+        </div>
+        <div class="field">
+          <label for="rootSize">Root font size for rem output (px)</label>
+          <input id="rootSize" type="number" min="1" step="0.1" value="16">
+        </div>
+        <p id="message" class="helper">The preview uses the pixel formula so you can see the fluid scaling immediately.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Slope</div>
+          <div id="slopeValue" class="stat-value">0vw</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Intercept</div>
+          <div id="interceptValue" class="stat-value">0px</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Range</div>
+          <div id="rangeValue" class="stat-value">0px</div>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result">
+          <div class="result-head">
+            <strong>Clamp in px</strong>
+            <button class="tiny" data-copy-target="pxOutput" type="button">Copy</button>
+          </div>
+          <code id="pxOutput"></code>
+        </div>
+
+        <div class="result">
+          <div class="result-head">
+            <strong>Clamp in rem</strong>
+            <button class="tiny" data-copy-target="remOutput" type="button">Copy</button>
+          </div>
+          <code id="remOutput"></code>
+        </div>
+
+        <div class="result">
+          <div class="result-head">
+            <strong>Ready-to-copy CSS</strong>
+            <button class="tiny" data-copy-target="cssOutput" type="button">Copy</button>
+          </div>
+          <code id="cssOutput"></code>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="preview-note">Live preview</div>
+        <div id="previewSample" class="preview-sample">Fluid type that settles exactly where you want it.</div>
+        <div class="preview-rule" id="previewRule"></div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer>v1.0</footer>
+<script>
+const minViewport=document.getElementById('minViewport');
+const maxViewport=document.getElementById('maxViewport');
+const minSize=document.getElementById('minSize');
+const maxSize=document.getElementById('maxSize');
+const rootSize=document.getElementById('rootSize');
+const pxOutput=document.getElementById('pxOutput');
+const remOutput=document.getElementById('remOutput');
+const cssOutput=document.getElementById('cssOutput');
+const slopeValue=document.getElementById('slopeValue');
+const interceptValue=document.getElementById('interceptValue');
+const rangeValue=document.getElementById('rangeValue');
+const previewSample=document.getElementById('previewSample');
+const previewRule=document.getElementById('previewRule');
+const message=document.getElementById('message');
+
+function round(value){
+  return Number.parseFloat(value.toFixed(4));
+}
+
+function updateClamp(){
+  const minVp=Number.parseFloat(minViewport.value);
+  const maxVp=Number.parseFloat(maxViewport.value);
+  const minPx=Number.parseFloat(minSize.value);
+  const maxPx=Number.parseFloat(maxSize.value);
+  const rootPx=Number.parseFloat(rootSize.value);
+
+  if([minVp,maxVp,minPx,maxPx,rootPx].some((value)=>Number.isNaN(value))){
+    message.textContent='Fill every field with a number to generate the formula.';
+    message.className='helper error';
+    return;
+  }
+
+  if(maxVp<=minVp||maxPx<minPx||rootPx<=0){
+    message.textContent='Viewport max must be greater than min, max size must be at least min size, and root size must be above 0.';
+    message.className='helper error';
+    return;
+  }
+
+  const slope=((maxPx-minPx)/(maxVp-minVp))*100;
+  const intercept=minPx-(slope*minVp/100);
+  const pxClamp=`clamp(${round(minPx)}px, ${round(intercept)}px + ${round(slope)}vw, ${round(maxPx)}px)`;
+  const minRem=minPx/rootPx;
+  const maxRem=maxPx/rootPx;
+  const interceptRem=intercept/rootPx;
+  const remClamp=`clamp(${round(minRem)}rem, ${round(interceptRem)}rem + ${round(slope/rootPx)}vw, ${round(maxRem)}rem)`;
+  const cssLine=`font-size: ${pxClamp};`;
+
+  pxOutput.textContent=pxClamp;
+  remOutput.textContent=remClamp;
+  cssOutput.textContent=cssLine;
+  slopeValue.textContent=`${round(slope)}vw`;
+  interceptValue.textContent=`${round(intercept)}px`;
+  rangeValue.textContent=`${round(maxPx-minPx)}px`;
+  previewSample.style.fontSize=pxClamp;
+  previewRule.textContent=`At ${round(minVp)}px the size starts at ${round(minPx)}px and it stops growing at ${round(maxVp)}px when it reaches ${round(maxPx)}px.`;
+  message.textContent='The preview uses the pixel formula so you can see the fluid scaling immediately.';
+  message.className='helper';
+}
+
+async function copyFromTarget(button){
+  const target=document.getElementById(button.dataset.copyTarget);
+  try{
+    await navigator.clipboard.writeText(target.textContent);
+    const previous=button.textContent;
+    button.textContent='Copied';
+    setTimeout(()=>{button.textContent=previous;},1200);
+  }catch(error){
+    message.textContent='Clipboard permission was blocked. Try again with a direct click.';
+    message.className='helper error';
+  }
+}
+
+[minViewport,maxViewport,minSize,maxSize,rootSize].forEach((field)=>field.addEventListener('input',updateClamp));
+document.querySelectorAll('[data-copy-target]').forEach((button)=>{
+  button.addEventListener('click',()=>copyFromTarget(button));
+});
+
+updateClamp();
+</script>
+</body>
+</html>

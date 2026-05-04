@@ -11,8 +11,6 @@ BASE_URL = "https://southforkapps.com"
 TODAY = date.today().isoformat()
 
 APP_META = {
-    "sleep-cycle-calculator": ("Sleep Cycle Calculator",     "Calculate optimal bedtimes or wake-up times based on 90-minute sleep cycles. Free online sleep cycle calculator."),
-    "breath-timer":           ("Breath Timer",               "Guided breathing timer with animated visual cues for box breathing, 4-7-8, and calm breathing patterns. Free online breath timer."),
     "file-size-converter":    ("File Size Converter",        "Convert between bytes, KB, MB, GB, TB, and PB instantly. Free online file size converter with bit equivalents."),
     "metronome":              ("Metronome",                  "Free online metronome with BPM slider, tap tempo, visual beat, and audio click. Works in your browser with no install."),
     "tag-stripper":           ("Tag Stripper",               "Remove HTML tags, XML tags, or Markdown formatting from any text instantly. Free online tag and markup stripper."),
@@ -155,6 +153,10 @@ APP_META = {
     "body-fat-calculator":    ("Body Fat Calculator",          "Estimate body fat percentage using the US Navy method. Supports imperial and metric. Shows category and visual bar."),
     "passphrase-generator":   ("Passphrase Generator",         "Generate strong memorable passphrases from a 200+ word list. Customize word count, separator, capitalization, and numbers."),
     "base-converter":         ("Base Converter",               "Convert numbers between any base from 2-36 including binary, octal, decimal, hex, and base-32. Click any row to copy."),
+    "uuid-generator":         ("UUID Generator",               "Generate UUID v4 or v7 values in batches. Copy uppercase, lowercase, braced, or hyphenless IDs instantly. Free online UUID generator."),
+    "robots-txt-builder":     ("Robots.txt Builder",           "Build a clean robots.txt file with disallow rules, sitemap lines, crawl delay, and optional AI crawler blocking. Free online robots.txt generator."),
+    "css-clamp-generator":    ("CSS Clamp Generator",          "Generate fluid CSS clamp() values from min and max sizes and viewport widths. Includes live preview and ready-to-copy CSS. Free online clamp calculator."),
+    "svg-to-data-url":        ("SVG to Data URL Converter",    "Paste raw SVG markup and get a URL-encoded data URL plus ready-to-copy CSS background-image syntax. Free online SVG data URL converter."),
 }
 
 def update_app(app_name, title, description):

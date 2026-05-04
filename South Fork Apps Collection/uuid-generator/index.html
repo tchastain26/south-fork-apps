@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUID Generator | South Fork Apps</title>
+<meta name="description" content="Generate UUID v4 or v7 values in batches. Copy uppercase, lowercase, braced, or hyphenless IDs instantly. Free online UUID generator.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f87171}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}
+  .nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:960px;margin:0 auto;width:100%}
+  h1{font-size:1.55rem;margin-bottom:.3rem}
+  .subtitle{color:var(--muted);font-size:.95rem;line-height:1.5;margin-bottom:1.3rem}
+  .layout{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:1.25rem}
+  @media(max-width:760px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+  .controls{display:grid;gap:.9rem}
+  .field{display:grid;gap:.35rem}
+  label{font-size:.8rem;font-weight:600;color:var(--muted)}
+  input[type=number],select{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:.6rem;color:var(--text);padding:.75rem .85rem;font:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
+  .checks{display:grid;gap:.55rem}
+  .check{display:flex;align-items:center;gap:.55rem;font-size:.9rem;color:var(--text)}
+  .check input{accent-color:var(--accent);width:1rem;height:1rem}
+  .button-row{display:flex;gap:.65rem;flex-wrap:wrap}
+  button{border:none;border-radius:.7rem;padding:.8rem 1rem;font:inherit;font-weight:700;cursor:pointer;transition:.15s}
+  button:hover{transform:translateY(-1px)}
+  .primary{background:var(--accent);color:#0e1510}
+  .secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+  .tiny{padding:.45rem .7rem;font-size:.8rem}
+  .note{font-size:.8rem;color:var(--muted);line-height:1.5}
+  .summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+  .summary strong{font-size:1rem}
+  .summary span{font-size:.85rem;color:var(--muted)}
+  .uuid-list{list-style:none;display:grid;gap:.75rem}
+  .uuid-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.75rem;align-items:center;padding:.85rem;border:1px solid var(--border);border-radius:.8rem;background:var(--surface-2)}
+  .uuid-value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.95rem;word-break:break-all;line-height:1.45}
+  .badge-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+  .badge{display:inline-flex;align-items:center;padding:.3rem .55rem;border-radius:999px;border:1px solid var(--border);color:var(--muted);font-size:.74rem;font-weight:700;letter-spacing:.02em}
+  .empty{padding:1.4rem;border:1px dashed var(--border);border-radius:.8rem;color:var(--muted);text-align:center}
+  .error{color:var(--danger)}
+  footer{text-align:center;padding:.85rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">Back to South Fork Apps</a><span class="nav-title">UUID Generator</span></nav>
+<main>
+  <h1>UUID Generator</h1>
+  <p class="subtitle">Generate browser-native UUIDs in bulk, switch between v4 and v7, and copy them in the format your project needs. Everything runs locally with the Web Crypto API.</p>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="controls">
+        <div class="field">
+          <label for="versionSelect">Version</label>
+          <select id="versionSelect">
+            <option value="v4">UUID v4 (random)</option>
+            <option value="v7">UUID v7 (time-ordered)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="countInput">How many IDs</label>
+          <input id="countInput" type="number" min="1" max="100" value="6">
+        </div>
+        <div class="checks">
+          <label class="check"><input id="uppercaseToggle" type="checkbox"> Uppercase letters</label>
+          <label class="check"><input id="braceToggle" type="checkbox"> Wrap in braces</label>
+          <label class="check"><input id="hyphenToggle" type="checkbox"> Remove hyphens</label>
+        </div>
+        <div class="button-row">
+          <button class="primary" id="generateButton" type="button">Generate IDs</button>
+          <button class="secondary" id="copyAllButton" type="button">Copy All</button>
+        </div>
+        <p class="note">UUID v7 sorts more cleanly in logs and databases because the timestamp comes first. Count is capped at 100 per batch.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="summary">
+        <div>
+          <strong id="summaryTitle">6 UUIDs ready</strong>
+          <span id="summaryDetail">Lowercase v4 output</span>
+        </div>
+        <div class="badge-row">
+          <span class="badge" id="modeBadge">v4</span>
+          <span class="badge">Local only</span>
+        </div>
+      </div>
+      <div id="message" class="note" aria-live="polite"></div>
+      <ul id="uuidList" class="uuid-list"></ul>
+    </section>
+  </div>
+</main>
+<footer>v1.0</footer>
+<script>
+const versionSelect=document.getElementById('versionSelect');
+const countInput=document.getElementById('countInput');
+const uppercaseToggle=document.getElementById('uppercaseToggle');
+const braceToggle=document.getElementById('braceToggle');
+const hyphenToggle=document.getElementById('hyphenToggle');
+const uuidList=document.getElementById('uuidList');
+const summaryTitle=document.getElementById('summaryTitle');
+const summaryDetail=document.getElementById('summaryDetail');
+const modeBadge=document.getElementById('modeBadge');
+const message=document.getElementById('message');
+
+function bytesToUuid(bytes){
+  const hex=[...bytes].map((byte)=>byte.toString(16).padStart(2,'0')).join('');
+  return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+}
+
+function generateV4(){
+  if(window.crypto.randomUUID){
+    return window.crypto.randomUUID();
+  }
+  const bytes=new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  bytes[6]=(bytes[6]&0x0f)|0x40;
+  bytes[8]=(bytes[8]&0x3f)|0x80;
+  return bytesToUuid(bytes);
+}
+
+function generateV7(){
+  const bytes=new Uint8Array(16);
+  const randomTail=new Uint8Array(10);
+  window.crypto.getRandomValues(randomTail);
+  let timestamp=BigInt(Date.now());
+
+  for(let index=5;index>=0;index-=1){
+    bytes[index]=Number(timestamp&0xffn);
+    timestamp>>=8n;
+  }
+
+  bytes[6]=0x70|(randomTail[0]&0x0f);
+  bytes[7]=randomTail[1];
+  bytes[8]=0x80|(randomTail[2]&0x3f);
+
+  for(let index=9;index<16;index+=1){
+    bytes[index]=randomTail[index-6];
+  }
+
+  return bytesToUuid(bytes);
+}
+
+function formatUuid(value){
+  let output=value;
+  if(hyphenToggle.checked){
+    output=output.replace(/-/g,'');
+  }
+  if(uppercaseToggle.checked){
+    output=output.toUpperCase();
+  }
+  if(braceToggle.checked){
+    output=`{${output}}`;
+  }
+  return output;
+}
+
+function clampCount(){
+  const numeric=Number.parseInt(countInput.value,10);
+  if(Number.isNaN(numeric)) return 1;
+  return Math.min(100,Math.max(1,numeric));
+}
+
+async function copyText(text,button){
+  try{
+    await navigator.clipboard.writeText(text);
+    const previous=button.textContent;
+    button.textContent='Copied';
+    setTimeout(()=>{button.textContent=previous;},1200);
+  }catch(error){
+    message.textContent='Clipboard permission was blocked. Try again with a direct click.';
+    message.className='note error';
+  }
+}
+
+function renderEmpty(){
+  const empty=document.createElement('li');
+  empty.className='empty';
+  empty.textContent='Generate a batch to see UUIDs here.';
+  uuidList.replaceChildren(empty);
+}
+
+function renderBatch(values){
+  if(!values.length){
+    renderEmpty();
+    return;
+  }
+
+  const fragment=document.createDocumentFragment();
+  values.forEach((value,index)=>{
+    const item=document.createElement('li');
+    item.className='uuid-item';
+
+    const code=document.createElement('div');
+    code.className='uuid-value';
+    code.textContent=value;
+
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='secondary tiny';
+    button.textContent='Copy';
+    button.addEventListener('click',()=>copyText(value,button));
+
+    item.append(code,button);
+    item.dataset.position=String(index+1);
+    fragment.appendChild(item);
+  });
+
+  uuidList.replaceChildren(fragment);
+}
+
+function updateSummary(count){
+  const versionLabel=versionSelect.value.toUpperCase();
+  const formatBits=[];
+  if(uppercaseToggle.checked) formatBits.push('uppercase');
+  if(braceToggle.checked) formatBits.push('braced');
+  if(hyphenToggle.checked) formatBits.push('hyphenless');
+
+  summaryTitle.textContent=`${count} UUID${count===1?'':'s'} ready`;
+  summaryDetail.textContent=`${formatBits.length?formatBits.join(', '):'standard'} ${versionLabel} output`;
+  modeBadge.textContent=versionLabel;
+}
+
+function generateBatch(){
+  const count=clampCount();
+  countInput.value=String(count);
+  const generator=versionSelect.value==='v7'?generateV7:generateV4;
+  const values=[];
+
+  for(let index=0;index<count;index+=1){
+    values.push(formatUuid(generator()));
+  }
+
+  updateSummary(count);
+  renderBatch(values);
+  message.textContent='Fresh batch generated in your browser.';
+  message.className='note';
+}
+
+document.getElementById('generateButton').addEventListener('click',generateBatch);
+document.getElementById('copyAllButton').addEventListener('click',()=>{
+  const values=[...uuidList.querySelectorAll('.uuid-value')].map((node)=>node.textContent);
+  if(!values.length){
+    message.textContent='Generate a batch before copying.';
+    message.className='note error';
+    return;
+  }
+  copyText(values.join('\n'),document.getElementById('copyAllButton'));
+});
+
+[versionSelect,countInput,uppercaseToggle,braceToggle,hyphenToggle].forEach((control)=>{
+  control.addEventListener('change',generateBatch);
+});
+
+generateBatch();
+</script>
+</body>
+</html>

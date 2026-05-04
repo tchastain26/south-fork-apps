@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG to Data URL Converter | South Fork Apps</title>
+<meta name="description" content="Paste raw SVG markup and get a URL-encoded data URL plus ready-to-copy CSS background-image syntax. Free online SVG data URL converter.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f87171}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);font-size:.875rem}
+  .nav a{color:var(--accent);text-decoration:none}
+  .nav a:hover{text-decoration:underline}
+  .nav-title{color:var(--muted)}
+  main{flex:1;padding:1.5rem;max-width:1120px;margin:0 auto;width:100%}
+  h1{font-size:1.55rem;margin-bottom:.3rem}
+  .subtitle{color:var(--muted);font-size:.95rem;line-height:1.5;margin-bottom:1.3rem}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:1.25rem}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:.9rem;padding:1rem}
+  .field{display:grid;gap:.35rem}
+  label{font-size:.8rem;font-weight:600;color:var(--muted)}
+  textarea{width:100%;min-height:360px;background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;color:var(--text);padding:.9rem;font:inherit;line-height:1.5;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--accent)}
+  .checks{display:grid;gap:.55rem;margin:1rem 0}
+  .check{display:flex;align-items:flex-start;gap:.6rem;font-size:.92rem;line-height:1.45}
+  .check input{accent-color:var(--accent);width:1rem;height:1rem;transform:translateY(.15rem)}
+  .button-row{display:flex;gap:.65rem;flex-wrap:wrap}
+  button{border:none;border-radius:.7rem;padding:.78rem 1rem;font:inherit;font-weight:700;cursor:pointer;transition:.15s}
+  button:hover{transform:translateY(-1px)}
+  .primary{background:var(--accent);color:#0e1510}
+  .secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+  .tiny{padding:.45rem .7rem;font-size:.8rem}
+  .helper{font-size:.8rem;color:var(--muted);line-height:1.45}
+  .error{color:var(--danger)}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-bottom:1rem}
+  @media(max-width:640px){.stats{grid-template-columns:1fr}}
+  .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:.85rem}
+  .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .stat-value{font-size:1.08rem;font-weight:700;margin-top:.3rem}
+  .result{display:grid;gap:.9rem}
+  .result-box{background:var(--surface-2);border:1px solid var(--border);border-radius:.8rem;padding:.9rem}
+  .result-head{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.65rem}
+  .result-head strong{font-size:.95rem}
+  pre{white-space:pre-wrap;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88rem;line-height:1.5}
+  .preview{display:grid;gap:.75rem}
+  .preview-stage{min-height:200px;border:1px dashed var(--border);border-radius:.8rem;display:grid;place-items:center;background:
+      linear-gradient(45deg,rgba(255,255,255,.04) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.04) 75%),
+      linear-gradient(45deg,rgba(255,255,255,.04) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.04) 75%);
+    background-size:20px 20px;background-position:0 0,10px 10px}
+  .preview-stage img{max-width:100%;max-height:180px}
+  footer{text-align:center;padding:.85rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">Back to South Fork Apps</a><span class="nav-title">SVG to Data URL Converter</span></nav>
+<main>
+  <h1>SVG to Data URL Converter</h1>
+  <p class="subtitle">Paste raw SVG markup and turn it into a URL-encoded data URL for CSS, HTML, or inline browser tooling. The preview updates locally and never uploads your SVG anywhere.</p>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="field">
+        <label for="svgInput">SVG markup</label>
+        <textarea id="svgInput" spellcheck="false" aria-label="SVG markup"></textarea>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input id="stripXmlToggle" type="checkbox" checked> Remove XML declarations like `<?xml ... ?>`.</label>
+        <label class="check"><input id="stripCommentsToggle" type="checkbox" checked> Remove SVG comments.</label>
+        <label class="check"><input id="collapseWhitespaceToggle" type="checkbox" checked> Collapse extra whitespace to shrink the final URL.</label>
+      </div>
+
+      <div class="button-row">
+        <button class="primary" id="convertButton" type="button">Convert SVG</button>
+        <button class="secondary" id="sampleButton" type="button">Load sample</button>
+      </div>
+
+      <p id="message" class="helper" style="margin-top:1rem">Use the sample if you want to see the output shape first.</p>
+    </section>
+
+    <section class="panel">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Source bytes</div>
+          <div id="sourceBytes" class="stat-value">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Output bytes</div>
+          <div id="outputBytes" class="stat-value">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Reduction</div>
+          <div id="reductionValue" class="stat-value">0%</div>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="result-box">
+          <div class="result-head">
+            <strong>Data URL</strong>
+            <button class="tiny secondary" data-copy-target="dataUrlOutput" type="button">Copy</button>
+          </div>
+          <pre id="dataUrlOutput"></pre>
+        </div>
+
+        <div class="result-box">
+          <div class="result-head">
+            <strong>CSS background-image</strong>
+            <button class="tiny secondary" data-copy-target="cssOutput" type="button">Copy</button>
+          </div>
+          <pre id="cssOutput"></pre>
+        </div>
+
+        <div class="preview">
+          <div class="result-head" style="margin-bottom:0">
+            <strong>Preview</strong>
+          </div>
+          <div class="preview-stage">
+            <img id="previewImage" alt="SVG preview">
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer>v1.0</footer>
+<script>
+const SAMPLE_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-label="South Fork sample">
+  <defs>
+    <linearGradient id="g" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#7ddb84"/>
+      <stop offset="100%" stop-color="#1f6f34"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="120" rx="20" fill="#111412"/>
+  <path d="M16 84C48 48 78 98 112 62C138 34 176 88 224 38" fill="none" stroke="url(#g)" stroke-linecap="round" stroke-width="14"/>
+  <circle cx="168" cy="48" r="12" fill="#7ddb84"/>
+  <text x="22" y="34" fill="#e8e8e8" font-family="Arial, sans-serif" font-size="18">South Fork</text>
+</svg>`;
+
+const svgInput=document.getElementById('svgInput');
+const stripXmlToggle=document.getElementById('stripXmlToggle');
+const stripCommentsToggle=document.getElementById('stripCommentsToggle');
+const collapseWhitespaceToggle=document.getElementById('collapseWhitespaceToggle');
+const dataUrlOutput=document.getElementById('dataUrlOutput');
+const cssOutput=document.getElementById('cssOutput');
+const previewImage=document.getElementById('previewImage');
+const sourceBytes=document.getElementById('sourceBytes');
+const outputBytes=document.getElementById('outputBytes');
+const reductionValue=document.getElementById('reductionValue');
+const message=document.getElementById('message');
+
+function optimizeSvg(svg){
+  let output=svg.trim();
+  if(stripXmlToggle.checked){
+    output=output.replace(/<\?xml[\s\S]*?\?>/gi,'').trim();
+  }
+  if(stripCommentsToggle.checked){
+    output=output.replace(/<!--[\s\S]*?-->/g,'').trim();
+  }
+  if(collapseWhitespaceToggle.checked){
+    output=output.replace(/>\s+</g,'><').replace(/\s{2,}/g,' ').trim();
+  }
+  return output;
+}
+
+function buildDataUrl(svg){
+  const cleaned=optimizeSvg(svg).replace(/"/g,"'");
+  const encoded=encodeURIComponent(cleaned);
+  return {
+    cleaned,
+    dataUrl:`data:image/svg+xml,${encoded}`
+  };
+}
+
+function byteLength(text){
+  return new TextEncoder().encode(text).length;
+}
+
+function updateStats(source,output){
+  const sourceSize=byteLength(source);
+  const outputSize=byteLength(output);
+  const delta=sourceSize?Math.round(((sourceSize-outputSize)/sourceSize)*100):0;
+
+  sourceBytes.textContent=String(sourceSize);
+  outputBytes.textContent=String(outputSize);
+  reductionValue.textContent=`${delta}%`;
+}
+
+function convert(){
+  const raw=svgInput.value.trim();
+  if(!raw){
+    dataUrlOutput.textContent='';
+    cssOutput.textContent='';
+    previewImage.removeAttribute('src');
+    updateStats('', '');
+    message.textContent='Paste SVG markup or load the sample to generate a data URL.';
+    message.className='helper error';
+    return;
+  }
+
+  const optimized=optimizeSvg(raw);
+  if(!/^<svg[\s>]/i.test(optimized)){
+    message.textContent='This does not look like SVG markup. The output may be wrong until the input starts with <svg>.';
+    message.className='helper error';
+  }else{
+    message.textContent='Converted locally. Copy the data URL or the CSS snippet below.';
+    message.className='helper';
+  }
+
+  const result=buildDataUrl(raw);
+  dataUrlOutput.textContent=result.dataUrl;
+  cssOutput.textContent=`background-image: url("${result.dataUrl}");`;
+  previewImage.src=result.dataUrl;
+  updateStats(raw,result.dataUrl);
+}
+
+async function copyTarget(button){
+  const target=document.getElementById(button.dataset.copyTarget);
+  try{
+    await navigator.clipboard.writeText(target.textContent);
+    const previous=button.textContent;
+    button.textContent='Copied';
+    setTimeout(()=>{button.textContent=previous;},1200);
+  }catch(error){
+    message.textContent='Clipboard permission was blocked. Try again with a direct click.';
+    message.className='helper error';
+  }
+}
+
+document.getElementById('convertButton').addEventListener('click',convert);
+document.getElementById('sampleButton').addEventListener('click',()=>{
+  svgInput.value=SAMPLE_SVG;
+  convert();
+});
+[svgInput,stripXmlToggle,stripCommentsToggle,collapseWhitespaceToggle].forEach((control)=>{
+  const eventName=control.tagName==='TEXTAREA'?'input':'change';
+  control.addEventListener(eventName,convert);
+});
+document.querySelectorAll('[data-copy-target]').forEach((button)=>{
+  button.addEventListener('click',()=>copyTarget(button));
+});
+
+svgInput.value=SAMPLE_SVG;
+convert();
+</script>
+</body>
+</html>
