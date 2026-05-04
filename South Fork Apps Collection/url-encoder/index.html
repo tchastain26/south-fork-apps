@@ -1,2 +1,142 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>URL Encoder | South Fork Apps</title>
-  <meta name="description" content="Encode text to URL-safe percent-encoded format instantly. Free online URL encoding tool."><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}.nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:#1a1f1b;border-bottom:1px solid #2a2f2b;font-family:'Plus Jakarta Sans',sans-serif}.nav-back{color:#7ddb84;text-decoration:none;font-size:.875rem;font-weight:500}.nav-back:hover{text-decoration:underline}.nav-title{color:#e8e8e8;font-size:.875rem;font-weight:600}main{width:min(1100px,calc(100% - 2rem));margin:0 auto;padding:2rem 0}.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem}h1{margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1}p{margin:0;color:var(--muted);line-height:1.6}.layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}textarea{width:100%;min-height:20rem;border:1px solid var(--border);border-radius:8px;background:#111412;color:var(--text);font:inherit;padding:1rem;resize:vertical}.actions{display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap}button{min-height:2.8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font:inherit;font-weight:800;padding:0 1rem;cursor:pointer}.primary{border-color:var(--accent);background:var(--accent);color:#102113}.meta{margin-top:.75rem;color:var(--muted);font-size:.9rem;font-weight:700}footer{margin-top:1rem;text-align:center;color:var(--muted);font-size:.8rem}@media(max-width:860px){.layout{grid-template-columns:1fr}.nav{padding-inline:1rem}}</style></head><body><nav class="nav"><a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a><span class="nav-title">URL Encoder</span></nav><main><section class="panel"><h1>Encode for URLs.</h1><p>Make text safe for query strings or path segments.</p><div class="layout"><textarea id="input" placeholder="Tucker & Amanda"></textarea><textarea id="output" readonly placeholder="Tucker%20%26%20Amanda"></textarea></div><div class="actions"><button id="copy" class="primary" type="button">Copy Result</button><button id="clear" type="button">Clear</button></div><div id="meta" class="meta">Ready.</div><footer>v1.0</footer></section></main><script>const i=document.getElementById('input'),o=document.getElementById('output'),m=document.getElementById('meta');function u(){o.value=encodeURIComponent(i.value);m.textContent=`${i.value.length} characters encoded.`}i.addEventListener('input',u);document.getElementById('copy').addEventListener('click',async()=>{await navigator.clipboard.writeText(o.value);m.textContent='Copied result.'});document.getElementById('clear').addEventListener('click',()=>{i.value='';u()});u();</script></body></html>
+  <meta name="description" content="Encode text to URL-safe percent-encoded format instantly. Free online URL encoding tool."><!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="URL Encoder">
+<meta property="og:description" content="Encode text into URL-safe form for query strings and path segments.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/">
+<meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/share.jpg">
+<meta property="og:image:alt" content="URL Encoder preview image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="URL Encoder">
+<meta name="twitter:description" content="Encode text into URL-safe form for query strings and path segments.">
+<meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/share.jpg">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}.nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:#1a1f1b;border-bottom:1px solid #2a2f2b;font-family:'Plus Jakarta Sans',sans-serif}.nav-back{color:#7ddb84;text-decoration:none;font-size:.875rem;font-weight:500}.nav-back:hover{text-decoration:underline}.nav-title{color:#e8e8e8;font-size:.875rem;font-weight:600}main{width:min(1100px,calc(100% - 2rem));margin:0 auto;padding:2rem 0}.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem}h1{margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1}p{margin:0;color:var(--muted);line-height:1.6}.layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}textarea{width:100%;min-height:20rem;border:1px solid var(--border);border-radius:8px;background:#111412;color:var(--text);font:inherit;padding:1rem;resize:vertical}.actions{display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap}button{min-height:2.8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font:inherit;font-weight:800;padding:0 1rem;cursor:pointer}.primary{border-color:var(--accent);background:var(--accent);color:#102113}.meta{margin-top:.75rem;color:var(--muted);font-size:.9rem;font-weight:700}footer{margin-top:1rem;text-align:center;color:var(--muted);font-size:.8rem}@media(max-width:860px){.layout{grid-template-columns:1fr}.nav{padding-inline:1rem}}
+/* SFA_DISCOVERY_START */
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-related-grid{grid-template-columns:1fr;}
+}
+/* SFA_DISCOVERY_END */
+</style><!-- SFA_JSONLD_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DeveloperApplication",
+  "name": "URL Encoder",
+  "description": "Encode text into URL-safe form for query strings and path segments.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "url": "https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/",
+  "image": "https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/share.jpg",
+  "screenshot": "https://southforkapps.com/South%20Fork%20Apps%20Collection/url-encoder/screenshot.jpg",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Tucker Chastain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "South Fork Apps",
+    "url": "https://southforkapps.com"
+  }
+}
+</script>
+<!-- SFA_JSONLD_END -->
+</head><body><nav class="nav"><a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a><span class="nav-title">URL Encoder</span></nav><main><section class="panel"><h1>Encode for URLs.</h1><p>Make text safe for query strings or path segments.</p><div class="layout"><textarea id="input" placeholder="Tucker & Amanda"></textarea><textarea id="output" readonly placeholder="Tucker%20%26%20Amanda"></textarea></div><div class="actions"><button id="copy" class="primary" type="button">Copy Result</button><button id="clear" type="button">Clear</button></div><div id="meta" class="meta">Ready.</div><footer>v1.0</footer></section>
+<!-- SFA_RELATED_START -->
+<section class="sfa-related" aria-label="More apps in Code &amp; Web">
+  <div class="sfa-related-shell">
+    <div class="sfa-related-header">
+      <div class="sfa-related-title">More Code &amp; Web</div>
+      <div class="sfa-related-meta">South Fork Apps</div>
+    </div>
+    <div class="sfa-related-grid">
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/uuid-generator/">
+          <strong>UUID Generator</strong>
+          <span>Generate UUID v4 or v7 values in batches with uppercase, braced, and hyphenless output options.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/vigenere-cipher/">
+          <strong>Vigenère Cipher</strong>
+          <span>Encode or decode text with a keyword using the Vigenère cipher. See the repeating key pattern below the output.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/whitespace-visualizer/">
+          <strong>Whitespace Visualizer</strong>
+          <span>Make spaces, tabs, and line breaks visible when pasted text gets weird.</span>
+        </a>
+    </div>
+  </div>
+</section>
+<!-- SFA_RELATED_END -->
+</main><script>const i=document.getElementById('input'),o=document.getElementById('output'),m=document.getElementById('meta');function u(){o.value=encodeURIComponent(i.value);m.textContent=`${i.value.length} characters encoded.`}i.addEventListener('input',u);document.getElementById('copy').addEventListener('click',async()=>{await navigator.clipboard.writeText(o.value);m.textContent='Copied result.'});document.getElementById('clear').addEventListener('click',()=>{i.value='';u()});u();</script></body></html>

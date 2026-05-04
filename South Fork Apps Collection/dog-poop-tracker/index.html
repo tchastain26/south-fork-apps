@@ -8,7 +8,21 @@
   <meta name="apple-mobile-web-app-title" content="Poop Tracker" />
   <title>Dog Poop Tracker | South Fork Apps</title>
   <meta name="description" content="Track where your dog goes in the yard using GPS. Mark, map, and clear poop locations with this free PWA.">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Dog Poop Tracker">
+<meta property="og:description" content="Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/">
+<meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/share.jpg">
+<meta property="og:image:alt" content="Dog Poop Tracker preview image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dog Poop Tracker">
+<meta name="twitter:description" content="Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.">
+<meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/share.jpg">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root[data-theme="light"] {
@@ -422,7 +436,78 @@
       #map-container { margin-bottom: 0.75rem; }
       #cal-orientation-note { font-size: 0.64rem; }
     }
-  </style>
+  
+/* SFA_DISCOVERY_START */
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-related-grid{grid-template-columns:1fr;}
+}
+/* SFA_DISCOVERY_END */
+</style>
 
   <script>
     (function() {
@@ -432,6 +517,36 @@
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
+<!-- SFA_JSONLD_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Dog Poop Tracker",
+  "description": "Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "url": "https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/",
+  "image": "https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/share.jpg",
+  "screenshot": "https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/screenshot.jpg",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Tucker Chastain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "South Fork Apps",
+    "url": "https://southforkapps.com"
+  }
+}
+</script>
+<!-- SFA_JSONLD_END -->
 </head>
 <body>
 <nav><a href="https://southforkapps.com">← South Fork Apps</a></nav>
@@ -997,6 +1112,31 @@ function vibrate() { if (navigator.vibrate) navigator.vibrate(100); }
     });
   }
 </script>
+<!-- SFA_RELATED_START -->
+<section class="sfa-related" aria-label="More apps in Everyday Tools">
+  <div class="sfa-related-shell">
+    <div class="sfa-related-header">
+      <div class="sfa-related-title">More Everyday Tools</div>
+      <div class="sfa-related-meta">South Fork Apps</div>
+    </div>
+    <div class="sfa-related-grid">
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/fibonacci-sequence/">
+          <strong>Fibonacci Sequence</strong>
+          <span>Generate Fibonacci sequences, find the Nth term, or check if a number is a Fibonacci number. Handles large values with BigInt.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/file-size-converter/">
+          <strong>File Size Converter</strong>
+          <span>Convert between bytes, KB, MB, GB, TB, and PB instantly. Includes bit equivalents. Click any result to copy it.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/gcd-lcm-calculator/">
+          <strong>GCD &amp; LCM Calculator</strong>
+          <span>Find the GCD and LCM of up to six numbers with step-by-step working using the Euclidean algorithm.</span>
+        </a>
+    </div>
+  </div>
+</section>
+<!-- SFA_RELATED_END -->
+
 
 <p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p>
 </body>
