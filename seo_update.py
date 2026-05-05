@@ -165,6 +165,59 @@ APP_META = {
     "nap-calculator":         ("Nap Calculator",                "Wake up refreshed every time. Calculate the perfect nap length or bedtime based on 90-minute sleep cycles. Free online sleep calculator."),
 }
 
+# Newest 4 apps shown in the "New" section on the homepage.
+# Update this list whenever new apps are pushed. Format:
+# (folder_name, display_title, category, material_icon, short_description)
+LATEST_APPS = [
+    ("hype-machine",   "The Hype Machine",       "Fun & Games",             "campaign",          "Type anything mundane and watch it become legendary. Three hype levels from subtle to completely unhinged."),
+    ("meeting-email",  "Could've Been an Email",  "Productivity & Planning", "mark_email_read",   "Answer 7 questions and get a blunt verdict on whether your meeting should have been an email."),
+    ("nap-calculator", "Nap Calculator",          "Everyday Tools",          "bedtime",           "Calculate the perfect nap length or bedtime based on 90-minute sleep cycles. Wake up refreshed every time."),
+    ("no-list",        "No List",                 "Productivity & Planning", "do_not_disturb_on", "Build a running record of the things you've committed to declining. Say no with intention and stick to it."),
+]
+
+def update_latest_drop():
+    index_path = os.path.join(BASE_DIR, "index.html")
+    if not os.path.exists(index_path):
+        print("SKIP (not found): index.html (latest drop)")
+        return
+
+    with open(index_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    card_class = (
+        'class="group rounded-2xl border border-primary/20 bg-surface-container-low/80 p-6 '
+        'backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-surface-container"'
+    )
+    cards = ""
+    for folder, title, category, icon, desc in LATEST_APPS:
+        cat_html = category.replace("&", "&amp;")
+        cards += (
+            f'      <a href="./South Fork Apps Collection/{folder}/" target="_blank" rel="noopener" {card_class}>\n'
+            f'        <div class="mb-5 flex items-start justify-between gap-3">\n'
+            f'          <span class="inline-flex rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-label text-[11px] font-black uppercase tracking-[0.18em] text-primary">New</span>\n'
+            f'          <span class="material-symbols-outlined text-3xl text-primary/90">{icon}</span>\n'
+            f'        </div>\n'
+            f'        <div class="mb-3 text-xs font-black uppercase tracking-[0.18em] text-on-surface-variant">{cat_html}</div>\n'
+            f'        <h3 class="mb-3 font-headline text-2xl font-bold text-on-surface">{title}</h3>\n'
+            f'        <p class="mb-5 text-sm leading-6 text-on-surface-variant">{desc}</p>\n'
+            f'        <span class="font-label text-xs font-black uppercase tracking-[0.18em] text-primary">Launch app</span>\n'
+            f'      </a>\n'
+        )
+
+    new_content = re.sub(
+        r'<!-- LATEST_DROP_START -->.*?<!-- LATEST_DROP_END -->',
+        f'<!-- LATEST_DROP_START -->\n{cards}<!-- LATEST_DROP_END -->',
+        content,
+        flags=re.DOTALL,
+    )
+
+    if new_content != content:
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        print("UPDATED: index.html (latest drop)")
+    else:
+        print("OK: index.html (latest drop)")
+
 def update_app(app_name, title, description):
     path = os.path.join(COLLECTION_DIR, app_name, "index.html")
     if not os.path.exists(path):
@@ -233,6 +286,9 @@ if __name__ == "__main__":
     print("=== Updating app meta tags ===")
     for app_name, (title, description) in APP_META.items():
         update_app(app_name, title, description)
+
+    print("\n=== Updating latest drop ===")
+    update_latest_drop()
 
     print("\n=== Building sitemap ===")
     build_sitemap()
