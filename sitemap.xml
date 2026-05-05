@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://southforkapps.com/</loc>
-    <lastmod>2026-05-04</lastmod>
-  </url>
-  <url>
     <loc>https://southforkapps.com/South%20Fork%20Apps%20Collection/add-line-numbers/</loc>
     <lastmod>2026-05-04</lastmod>
   </url>
@@ -586,6 +582,78 @@
   </url>
   <url>
     <loc>https://southforkapps.com/South%20Fork%20Apps%20Collection/zalgo-text/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/about/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/code-web/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/design-media/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/everyday-tools/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/fun-games/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/productivity-planning/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/categories/text-docs/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/contact/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/privacy/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/calculators/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/css-color-tools/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/developer-tools/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/generators/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/text-tools/</loc>
+    <lastmod>2026-05-04</lastmod>
+  </url>
+  <url>
+    <loc>https://southforkapps.com/topics/time-tools/</loc>
     <lastmod>2026-05-04</lastmod>
   </url>
 </urlset>

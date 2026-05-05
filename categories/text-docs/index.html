@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text and Document Tools | South Fork Apps</title>
+  <meta name="description" content="Free online text, writing, Markdown, formatting, extraction, and cleanup tools.">
+  <link rel="canonical" href="https://southforkapps.com/categories/text-docs/">
+  <meta property="og:site_name" content="South Fork Apps">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Text and Document Tools">
+  <meta property="og:description" content="Free online text, writing, Markdown, formatting, extraction, and cleanup tools.">
+  <meta property="og:url" content="https://southforkapps.com/categories/text-docs/">
+  <meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-line-numbers/share.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Text and Document Tools">
+  <meta name="twitter:description" content="Free online text, writing, Markdown, formatting, extraction, and cleanup tools.">
+  <meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-line-numbers/share.jpg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: rgba(29, 32, 30, 0.86);
+      --surface-strong: rgba(17, 20, 18, 0.92);
+      --border: rgba(63, 73, 62, 0.7);
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --text: #e1e3df;
+      --muted: #becaba;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(125, 219, 132, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(170, 204, 218, 0.08), transparent 38%),
+        linear-gradient(180deg, #0f1311 0%, #111412 100%);
+    }
+    a { color: inherit; }
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11, 18, 14, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(63, 73, 62, 0.45);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .brand {
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+    }
+    .hero {
+      padding: 4rem 0 2rem;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+    h1 {
+      margin: 0;
+      font-family: "Epilogue", sans-serif;
+      font-size: clamp(2.3rem, 5vw, 4.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+    }
+    .intro {
+      margin-top: 1rem;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+    .bullet-box {
+      margin-top: 1.5rem;
+      padding: 1.1rem 1.2rem;
+      border: 1px solid rgba(125, 219, 132, 0.16);
+      border-radius: 18px;
+      background: var(--surface-strong);
+      max-width: 900px;
+    }
+    .bullet-box ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text);
+    }
+    .bullet-box li {
+      margin: 0.45rem 0;
+      line-height: 1.65;
+    }
+    .section {
+      margin-top: 1.75rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(63, 73, 62, 0.58);
+      border-radius: 20px;
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+    }
+    .section h2 {
+      margin: 0 0 0.85rem;
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
+    }
+    .section p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      display: block;
+      padding: 1rem;
+      border: 1px solid rgba(63, 73, 62, 0.62);
+      border-radius: 16px;
+      text-decoration: none;
+      background: rgba(17, 20, 18, 0.9);
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(125, 219, 132, 0.44);
+      background: rgba(29, 32, 30, 0.96);
+    }
+    .card-meta {
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+    }
+    .card h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.45rem;
+      padding: 0 0.95rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--accent);
+      border: 1px solid rgba(125, 219, 132, 0.28);
+      background: var(--accent-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .meta-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(63, 73, 62, 0.45);
+      padding: 1.3rem 0 2.4rem;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-links nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      .hero {
+        padding-top: 2.8rem;
+      }
+      .nav-inner,
+      .footer-links {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Text and Document Tools",
+  "description": "Free online text, writing, Markdown, formatting, extraction, and cleanup tools.",
+  "url": "https://southforkapps.com/categories/text-docs/"
+}
+  </script>
+</head>
+<body class="category-page">
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="https://southforkapps.com/">South Fork Apps</a>
+      <div class="nav-links">
+        <a href="https://southforkapps.com/">Home</a>
+        <a href="https://southforkapps.com/categories/">Categories</a>
+        <a href="https://southforkapps.com/topics/">Topics</a>
+        <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">Field Notes</a>
+      </div>
+    </div>
+  </nav>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Category</div>
+      <h1>Text and Document Tools</h1>
+      <p class="intro">These tools help with writing, editing, cleanup, formatting, and conversion when text work is the job, not a side effect.</p>
+      <div class="bullet-box">
+        <ul>
+<li>Useful for writers, editors, marketers, and messy copy-paste workflows.</li>
+<li>Includes word stats, cleanup tools, Markdown helpers, and extraction tools.</li>
+<li>Fast enough for daily draft work and one-off formatting fixes.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Featured picks in Text and Document Tools</h2>
+      <p>Start with the higher-interest tools below, then browse the full category list if you need a narrower utility.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-line-numbers/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Add Line Numbers</h3>
+  <p>Insert sequential numbering at the start of each non-empty line.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-prefix-suffix/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Add Prefix Suffix</h3>
+  <p>Wrap every non-empty line with custom prefix and suffix text.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dedupe-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Dedupe Lines</h3>
+  <p>Remove duplicate lines while preserving first-seen order.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/email-extractor/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Email Extractor</h3>
+  <p>Find and list unique email addresses from pasted text or notes.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/haiku-checker/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Haiku Checker</h3>
+  <p>Count syllables line by line and check for the 5-7-5 haiku pattern. Highlights lines that are over or under.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/html-entity-decoder/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>HTML Entity Decoder</h3>
+  <p>Turn common HTML entities back into readable text fast.</p>
+</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Related topic hubs</h2>
+      <p>These hubs collect nearby tools by job to be done instead of by internal category.</p>
+      <div class="pill-row">
+<a class="pill" href="https://southforkapps.com/topics/text-tools/">Free Online Text Tools</a>
+<a class="pill" href="https://southforkapps.com/topics/generators/">Free Online Generators</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>All Text and Document Tools apps</h2>
+      <p>39 apps currently live in this category.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-line-numbers/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Add Line Numbers</h3>
+  <p>Insert sequential numbering at the start of each non-empty line.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/add-prefix-suffix/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Add Prefix Suffix</h3>
+  <p>Wrap every non-empty line with custom prefix and suffix text.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dedupe-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Dedupe Lines</h3>
+  <p>Remove duplicate lines while preserving first-seen order.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/email-extractor/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Email Extractor</h3>
+  <p>Find and list unique email addresses from pasted text or notes.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/haiku-checker/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Haiku Checker</h3>
+  <p>Count syllables line by line and check for the 5-7-5 haiku pattern. Highlights lines that are over or under.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/html-entity-decoder/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>HTML Entity Decoder</h3>
+  <p>Turn common HTML entities back into readable text fast.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/html-entity-encoder/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>HTML Entity Encoder</h3>
+  <p>Escape special characters into HTML-safe entities for easy code pasting.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/join-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Join Lines</h3>
+  <p>Combine separate lines into one string with a custom separator.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/lorem-ipsum-generator/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Lorem Ipsum Generator</h3>
+  <p>Generate Lorem Ipsum placeholder text by paragraphs, sentences, or words with one click.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/markdown-frontmatter/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Markdown Frontmatter Generator</h3>
+  <p>Build YAML or TOML frontmatter for blog posts. Fill in the form and copy the block.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/markdown-link-cleaner/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Markdown Link Cleaner</h3>
+  <p>Convert raw URLs into clean Markdown links. Strips tracking parameters and optionally fetches page titles.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/markdown-list-cleaner/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Markdown List Cleaner</h3>
+  <p>Normalize messy bullets and numbering into clean markdown list items.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/markdown-table-maker/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Markdown Table Maker</h3>
+  <p>Turn comma-separated rows into a basic markdown table fast.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/markdown-to-html/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Markdown to HTML</h3>
+  <p>Convert Markdown to clean HTML instantly with a live preview side by side.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/nato-alphabet/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>NATO Phonetic Alphabet</h3>
+  <p>Convert any text to the NATO phonetic alphabet instantly. Alpha, Bravo, Charlie — with a full clickable reference.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/number-extractor/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Number Extractor</h3>
+  <p>Pull integers and decimals out of mixed text and list them one per line.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/reading-level-analyzer/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Reading Level Analyzer</h3>
+  <p>Paste any text and get Flesch-Kincaid grade level, reading ease score, and full readability stats.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/reading-time-calculator/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Reading Time Calculator</h3>
+  <p>Paste any block of text and get a reading time estimate based on average reading speed.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/remove-empty-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Remove Empty Lines</h3>
+  <p>Strip blank rows out of pasted text so the result stays compact.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/reverse-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Reverse Lines</h3>
+  <p>Flip the order of pasted lines instantly without changing each line&#x27;s content.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/slugify-text/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Slugify Text</h3>
+  <p>Turn titles and headings into lowercase dash-separated URL slugs.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/smart-quotes-converter/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Smart Quotes Converter</h3>
+  <p>Replace curly quotes and apostrophes with straight ASCII versions.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/sort-lines-alpha/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Sort Lines Alpha</h3>
+  <p>Alphabetize pasted lines from A to Z or Z to A in one step.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/sort-lines-length/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Sort Lines Length</h3>
+  <p>Sort lines from shortest to longest or longest to shortest for quick cleanup.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/split-text/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Split Text</h3>
+  <p>Break one string into separate lines using a delimiter you choose.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/strip-line-numbers/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Strip Line Numbers</h3>
+  <p>Remove leading list numbers like 1. or 2) from pasted lines.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/symbol-pad/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Symbol Pad</h3>
+  <p>Search and copy frequent symbols fast, with a pinned strip that keeps your most-used characters at the top.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/tag-stripper/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Tag Stripper</h3>
+  <p>Remove HTML, XML, or Markdown tags from any text. Decode entities, collapse whitespace, and copy clean output.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/text-alignment/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Text Alignment Formatter</h3>
+  <p>Pad and align text to a fixed column width — left, right, center, or justified.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/text-case-converter/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Text Case Converter</h3>
+  <p>Instantly convert text between common and obscure cases like camelCase, snake_case, and more.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/text-diff/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Text Diff</h3>
+  <p>Compare two blocks of text line by line and see additions and deletions highlighted clearly.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/text-repeater/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Text Repeater</h3>
+  <p>Duplicate text any number of times with a custom separator.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/trim-lines/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Trim Lines</h3>
+  <p>Trim leading and trailing whitespace from every line without touching inner spaces.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/typing-test/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Typing Test</h3>
+  <p>Run a timed typing challenge with live WPM, accuracy tracking, and local best scores.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/unicode-normalizer/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Unicode Normalizer</h3>
+  <p>Normalize text into NFC, NFD, NFKC, or NFKD for safer comparisons.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/url-extractor/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>URL Extractor</h3>
+  <p>Find and list unique web links from pasted text or message threads.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/word-counter/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Word Counter</h3>
+  <p>Live counts for words, characters, sentences, paragraphs, reading time, and speaking time.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/word-frequency/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Word Frequency Counter</h3>
+  <p>Find the most common words in any text, ranked by usage with stop word filtering and CSV export.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/word-wrap/">
+  <div class="card-meta">Text &amp; Docs</div>
+  <h3>Word Wrap</h3>
+  <p>Reformat text to any column width. Hard or soft wrap, preserve blank lines. Great for code comments and emails.</p>
+</a>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap footer-links">
+      <div class="meta-note">Practical browser tools built by Tucker Chastain.</div>
+      <nav>
+        <a href="https://southforkapps.com/about/">About</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+        <a href="https://southforkapps.com/contact/">Contact</a>
+        <a href="https://southforkapps.com/">App Library</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Everyday Tools | South Fork Apps</title>
+  <meta name="description" content="Free online calculators, validators, converters, and practical browser tools for daily work.">
+  <link rel="canonical" href="https://southforkapps.com/categories/everyday-tools/">
+  <meta property="og:site_name" content="South Fork Apps">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Everyday Tools">
+  <meta property="og:description" content="Free online calculators, validators, converters, and practical browser tools for daily work.">
+  <meta property="og:url" content="https://southforkapps.com/categories/everyday-tools/">
+  <meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/age-calculator/share.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Everyday Tools">
+  <meta name="twitter:description" content="Free online calculators, validators, converters, and practical browser tools for daily work.">
+  <meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/age-calculator/share.jpg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: rgba(29, 32, 30, 0.86);
+      --surface-strong: rgba(17, 20, 18, 0.92);
+      --border: rgba(63, 73, 62, 0.7);
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --text: #e1e3df;
+      --muted: #becaba;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(125, 219, 132, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(170, 204, 218, 0.08), transparent 38%),
+        linear-gradient(180deg, #0f1311 0%, #111412 100%);
+    }
+    a { color: inherit; }
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11, 18, 14, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(63, 73, 62, 0.45);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .brand {
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+    }
+    .hero {
+      padding: 4rem 0 2rem;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+    h1 {
+      margin: 0;
+      font-family: "Epilogue", sans-serif;
+      font-size: clamp(2.3rem, 5vw, 4.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+    }
+    .intro {
+      margin-top: 1rem;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+    .bullet-box {
+      margin-top: 1.5rem;
+      padding: 1.1rem 1.2rem;
+      border: 1px solid rgba(125, 219, 132, 0.16);
+      border-radius: 18px;
+      background: var(--surface-strong);
+      max-width: 900px;
+    }
+    .bullet-box ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text);
+    }
+    .bullet-box li {
+      margin: 0.45rem 0;
+      line-height: 1.65;
+    }
+    .section {
+      margin-top: 1.75rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(63, 73, 62, 0.58);
+      border-radius: 20px;
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+    }
+    .section h2 {
+      margin: 0 0 0.85rem;
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
+    }
+    .section p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      display: block;
+      padding: 1rem;
+      border: 1px solid rgba(63, 73, 62, 0.62);
+      border-radius: 16px;
+      text-decoration: none;
+      background: rgba(17, 20, 18, 0.9);
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(125, 219, 132, 0.44);
+      background: rgba(29, 32, 30, 0.96);
+    }
+    .card-meta {
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+    }
+    .card h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.45rem;
+      padding: 0 0.95rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--accent);
+      border: 1px solid rgba(125, 219, 132, 0.28);
+      background: var(--accent-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .meta-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(63, 73, 62, 0.45);
+      padding: 1.3rem 0 2.4rem;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-links nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      .hero {
+        padding-top: 2.8rem;
+      }
+      .nav-inner,
+      .footer-links {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Everyday Tools",
+  "description": "Free online calculators, validators, converters, and practical browser tools for daily work.",
+  "url": "https://southforkapps.com/categories/everyday-tools/"
+}
+  </script>
+</head>
+<body class="category-page">
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="https://southforkapps.com/">South Fork Apps</a>
+      <div class="nav-links">
+        <a href="https://southforkapps.com/">Home</a>
+        <a href="https://southforkapps.com/categories/">Categories</a>
+        <a href="https://southforkapps.com/topics/">Topics</a>
+        <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">Field Notes</a>
+      </div>
+    </div>
+  </nav>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Category</div>
+      <h1>Everyday Tools</h1>
+      <p class="intro">This category groups the practical tools you reach for when you need a quick answer, a cleaner number, or a fast utility without opening a spreadsheet or installing an app.</p>
+      <div class="bullet-box">
+        <ul>
+<li>Health, money, time, and conversion tools in one place.</li>
+<li>Built for quick checks, planning, and real-life tasks.</li>
+<li>Works well for people who need answers faster than a search result thread.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Featured picks in Everyday Tools</h2>
+      <p>Start with the higher-interest tools below, then browse the full category list if you need a narrower utility.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/age-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Age Calculator</h3>
+  <p>Turn a birthdate into exact age, total days alive, rough heartbeats, breaths, and full moons.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bill-splitter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Bill Splitter</h3>
+  <p>Enter each person&#x27;s subtotal and split tax and tip proportionally. Handles unequal splits between any number of people.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bmi-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>BMI Calculator</h3>
+  <p>Calculate your Body Mass Index in imperial or metric. See your BMI category and healthy weight range.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/body-fat-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Body Fat Calculator</h3>
+  <p>Estimate body fat percentage using the US Navy method. Supports inches and centimeters. Shows category and a visual progress bar.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/compound-interest/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Compound Interest Calculator</h3>
+  <p>See how money grows over time with compound interest. Includes monthly contributions, growth chart, and year-by-year table.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/credit-card-validator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Credit Card Validator</h3>
+  <p>Validate card numbers with the Luhn algorithm. Detects Visa, Mastercard, Amex, Discover, and Diners.</p>
+</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Related topic hubs</h2>
+      <p>These hubs collect nearby tools by job to be done instead of by internal category.</p>
+      <div class="pill-row">
+<a class="pill" href="https://southforkapps.com/topics/calculators/">Free Online Calculators</a>
+<a class="pill" href="https://southforkapps.com/topics/generators/">Free Online Generators</a>
+<a class="pill" href="https://southforkapps.com/topics/time-tools/">Free Online Time Tools</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>All Everyday Tools apps</h2>
+      <p>30 apps currently live in this category.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/age-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Age Calculator</h3>
+  <p>Turn a birthdate into exact age, total days alive, rough heartbeats, breaths, and full moons.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bill-splitter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Bill Splitter</h3>
+  <p>Enter each person&#x27;s subtotal and split tax and tip proportionally. Handles unequal splits between any number of people.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bmi-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>BMI Calculator</h3>
+  <p>Calculate your Body Mass Index in imperial or metric. See your BMI category and healthy weight range.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/body-fat-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Body Fat Calculator</h3>
+  <p>Estimate body fat percentage using the US Navy method. Supports inches and centimeters. Shows category and a visual progress bar.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/compound-interest/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Compound Interest Calculator</h3>
+  <p>See how money grows over time with compound interest. Includes monthly contributions, growth chart, and year-by-year table.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/credit-card-validator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Credit Card Validator</h3>
+  <p>Validate card numbers with the Luhn algorithm. Detects Visa, Mastercard, Amex, Discover, and Diners.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/date-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Date Calculator</h3>
+  <p>Calculate the difference between two dates, or add and subtract days from any starting date.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Dog Poop Tracker</h3>
+  <p>Mark sections of your yard clean or dirty with a simple grid interface. Field-ready and weirdly practical.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/fibonacci-sequence/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Fibonacci Sequence</h3>
+  <p>Generate Fibonacci sequences, find the Nth term, or check if a number is a Fibonacci number. Handles large values with BigInt.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/file-size-converter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>File Size Converter</h3>
+  <p>Convert between bytes, KB, MB, GB, TB, and PB instantly. Includes bit equivalents. Click any result to copy it.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/gcd-lcm-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>GCD &amp; LCM Calculator</h3>
+  <p>Find the GCD and LCM of up to six numbers with step-by-step working using the Euclidean algorithm.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/isbn-validator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>ISBN Validator</h3>
+  <p>Validate ISBN-10 or ISBN-13 numbers, format with hyphens, and convert between the two formats.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/loan-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Loan Payment Calculator</h3>
+  <p>Calculate monthly payments, total interest, and a full amortization schedule for any loan.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/number-formatter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Number Formatter</h3>
+  <p>Format any number with custom decimal places, currency, thousands separator, and more. Shows formatted, scientific, ordinal, and word output.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/number-to-words/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Number to Words</h3>
+  <p>Convert any number to words. Supports standard, currency (USD), and ordinal modes. Great for checks and legal documents.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/pace-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Pace Calculator</h3>
+  <p>Calculate running pace, time, or distance. Enter any two values and get the third. Includes race time predictions.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/passphrase-generator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Passphrase Generator</h3>
+  <p>Generate strong memorable passphrases from a 200+ word list. Customize word count, separator, capitalization, and number suffix.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/password-generator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Password Generator</h3>
+  <p>Generate five random passwords at once with adjustable length, character options, copy buttons, and a strength readout.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/password-strength/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Password Strength Checker</h3>
+  <p>Check password strength instantly. Get entropy score, time-to-crack estimate, and improvement tips. Nothing leaves your device.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/pay-converter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Pay Converter</h3>
+  <p>Convert any salary between hourly, daily, weekly, biweekly, monthly, and annual rates. Click any result to switch modes.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/percentage-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Percentage Calculator</h3>
+  <p>Calculate what percent of a number is, percentage change, and add or subtract percentages instantly.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/prime-factorization/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Prime Factorization</h3>
+  <p>Break any number into its prime factors with exponents. Also shows factor count, sum, and primality.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/qr-code-generator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>QR Code Generator</h3>
+  <p>Generate QR codes from any URL, text, WiFi, or contact info. Customize colors and download as PNG.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/recipe-scaler/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Recipe Scaler</h3>
+  <p>Scale any recipe up or down by changing the serving count. Every ingredient adjusts instantly.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/roman-numerals/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Roman Numeral Converter</h3>
+  <p>Convert numbers to Roman numerals and back. Includes a full breakdown and common reference table up to 3,999,999.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/temperature-converter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Temperature Converter</h3>
+  <p>Convert between Fahrenheit, Celsius, and Kelvin instantly. Clean, fast, no extra steps.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/timezone-converter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Timezone Converter</h3>
+  <p>Convert times between any two timezones instantly, with a live world clock for 9 major cities.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/tip-calculator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Tip Calculator</h3>
+  <p>Split restaurant bills with custom tip percentages, quick-select tip buttons, totals, and per-person math.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/transfer-time-estimator/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Transfer Time Estimator</h3>
+  <p>Estimate how long a file transfer or download takes based on file size and connection speed.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/unit-converter/">
+  <div class="card-meta">Everyday Tools</div>
+  <h3>Unit Converter</h3>
+  <p>Switch between length, weight, temperature, volume, and speed with live conversions.</p>
+</a>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap footer-links">
+      <div class="meta-note">Practical browser tools built by Tucker Chastain.</div>
+      <nav>
+        <a href="https://southforkapps.com/about/">About</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+        <a href="https://southforkapps.com/contact/">Contact</a>
+        <a href="https://southforkapps.com/">App Library</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -13,6 +13,8 @@
 .idea/
 *.swp
 *.swo
+__pycache__/
+*.pyc
 
 # Mockup source (not shipped)
 South-Fork-Apps Stitch.zip

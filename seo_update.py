@@ -4,6 +4,8 @@
 import os
 import re
 from datetime import date
+from pathlib import Path
+from urllib.parse import quote
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 COLLECTION_DIR = os.path.join(BASE_DIR, "South Fork Apps Collection")
@@ -197,12 +199,20 @@ def update_app(app_name, title, description):
         print(f"OK: {app_name}")
 
 def build_sitemap():
-    urls = [BASE_URL + "/"]
-    for app_name in sorted(os.listdir(COLLECTION_DIR)):
-        app_path = os.path.join(COLLECTION_DIR, app_name)
-        if os.path.isdir(app_path) and os.path.exists(os.path.join(app_path, "index.html")):
-            encoded = app_name.replace(" ", "%20")
-            urls.append(f"{BASE_URL}/South%20Fork%20Apps%20Collection/{encoded}/")
+    base_path = Path(BASE_DIR)
+    urls = []
+
+    for index_path in sorted(base_path.rglob("index.html")):
+        if any(part.startswith(".") for part in index_path.relative_to(base_path).parts):
+            continue
+
+        rel = index_path.relative_to(base_path)
+        if rel == Path("index.html"):
+            urls.append(BASE_URL + "/")
+            continue
+
+        parts = [quote(part) for part in rel.parts[:-1]]
+        urls.append(f"{BASE_URL}/{'/'.join(parts)}/")
 
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

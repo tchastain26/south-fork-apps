@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun and Games | South Fork Apps</title>
+  <meta name="description" content="Free playful web apps, randomizers, novelty generators, clocks, and browser toys.">
+  <link rel="canonical" href="https://southforkapps.com/categories/fun-games/">
+  <meta property="og:site_name" content="South Fork Apps">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fun and Games">
+  <meta property="og:description" content="Free playful web apps, randomizers, novelty generators, clocks, and browser toys.">
+  <meta property="og:url" content="https://southforkapps.com/categories/fun-games/">
+  <meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/ascii-art-generator/share.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Fun and Games">
+  <meta name="twitter:description" content="Free playful web apps, randomizers, novelty generators, clocks, and browser toys.">
+  <meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/ascii-art-generator/share.jpg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: rgba(29, 32, 30, 0.86);
+      --surface-strong: rgba(17, 20, 18, 0.92);
+      --border: rgba(63, 73, 62, 0.7);
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --text: #e1e3df;
+      --muted: #becaba;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(125, 219, 132, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(170, 204, 218, 0.08), transparent 38%),
+        linear-gradient(180deg, #0f1311 0%, #111412 100%);
+    }
+    a { color: inherit; }
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11, 18, 14, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(63, 73, 62, 0.45);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .brand {
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+    }
+    .hero {
+      padding: 4rem 0 2rem;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+    h1 {
+      margin: 0;
+      font-family: "Epilogue", sans-serif;
+      font-size: clamp(2.3rem, 5vw, 4.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+    }
+    .intro {
+      margin-top: 1rem;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+    .bullet-box {
+      margin-top: 1.5rem;
+      padding: 1.1rem 1.2rem;
+      border: 1px solid rgba(125, 219, 132, 0.16);
+      border-radius: 18px;
+      background: var(--surface-strong);
+      max-width: 900px;
+    }
+    .bullet-box ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text);
+    }
+    .bullet-box li {
+      margin: 0.45rem 0;
+      line-height: 1.65;
+    }
+    .section {
+      margin-top: 1.75rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(63, 73, 62, 0.58);
+      border-radius: 20px;
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+    }
+    .section h2 {
+      margin: 0 0 0.85rem;
+      font-family: "Epilogue", sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
+    }
+    .section p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      display: block;
+      padding: 1rem;
+      border: 1px solid rgba(63, 73, 62, 0.62);
+      border-radius: 16px;
+      text-decoration: none;
+      background: rgba(17, 20, 18, 0.9);
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(125, 219, 132, 0.44);
+      background: rgba(29, 32, 30, 0.96);
+    }
+    .card-meta {
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+    }
+    .card h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.45rem;
+      padding: 0 0.95rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--accent);
+      border: 1px solid rgba(125, 219, 132, 0.28);
+      background: var(--accent-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .meta-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid rgba(63, 73, 62, 0.45);
+      padding: 1.3rem 0 2.4rem;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-links nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--accent);
+    }
+    @media (max-width: 720px) {
+      .hero {
+        padding-top: 2.8rem;
+      }
+      .nav-inner,
+      .footer-links {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Fun and Games",
+  "description": "Free playful web apps, randomizers, novelty generators, clocks, and browser toys.",
+  "url": "https://southforkapps.com/categories/fun-games/"
+}
+  </script>
+</head>
+<body class="category-page">
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="https://southforkapps.com/">South Fork Apps</a>
+      <div class="nav-links">
+        <a href="https://southforkapps.com/">Home</a>
+        <a href="https://southforkapps.com/categories/">Categories</a>
+        <a href="https://southforkapps.com/topics/">Topics</a>
+        <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">Field Notes</a>
+      </div>
+    </div>
+  </nav>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Category</div>
+      <h1>Fun and Games</h1>
+      <p class="intro">Not every useful tool has to be serious. This section collects the playful side of South Fork Apps: generators, pickers, clocks, and small browser toys that are still built with care.</p>
+      <div class="bullet-box">
+        <ul>
+<li>Good for breaks, icebreakers, classrooms, and harmless weirdness.</li>
+<li>Includes randomizers, novelty tools, and interactive experiments.</li>
+<li>Still browser-fast, still easy to share, just less serious.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Featured picks in Fun and Games</h2>
+      <p>Start with the higher-interest tools below, then browse the full category list if you need a narrower utility.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/ascii-art-generator/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>ASCII Art Generator</h3>
+  <p>Convert text to ASCII block letter art with block, mini, banner, and shadow style options. Input up to 20 characters.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bingo-maker/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Bingo Maker</h3>
+  <p>Build randomized 5x5 bingo cards from your own prompts and run a live caller in the browser.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/coin-flipper/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Coin Flipper</h3>
+  <p>Flip a virtual coin with a satisfying animation. Tracks heads and tails counts and your current streak.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/decision-spinner/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Decision Spinner</h3>
+  <p>Can&#x27;t decide? Add your options and spin the wheel. Animated canvas wheel with presets and custom entries.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dice-roller/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Dice Roller</h3>
+  <p>Roll any combination of d4, d6, d8, d10, d12, d20, and d100. Add modifiers and track full roll history.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/flip-clock/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Flip Clock</h3>
+  <p>A beautiful animated flip clock showing the current time with smooth card-flip transitions and date display.</p>
+</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Related topic hubs</h2>
+      <p>These hubs collect nearby tools by job to be done instead of by internal category.</p>
+      <div class="pill-row">
+<a class="pill" href="https://southforkapps.com/topics/generators/">Free Online Generators</a>
+<a class="pill" href="https://southforkapps.com/topics/time-tools/">Free Online Time Tools</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>All Fun and Games apps</h2>
+      <p>15 apps currently live in this category.</p>
+      <div class="grid">
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/ascii-art-generator/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>ASCII Art Generator</h3>
+  <p>Convert text to ASCII block letter art with block, mini, banner, and shadow style options. Input up to 20 characters.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bingo-maker/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Bingo Maker</h3>
+  <p>Build randomized 5x5 bingo cards from your own prompts and run a live caller in the browser.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/coin-flipper/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Coin Flipper</h3>
+  <p>Flip a virtual coin with a satisfying animation. Tracks heads and tails counts and your current streak.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/decision-spinner/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Decision Spinner</h3>
+  <p>Can&#x27;t decide? Add your options and spin the wheel. Animated canvas wheel with presets and custom entries.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/dice-roller/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Dice Roller</h3>
+  <p>Roll any combination of d4, d6, d8, d10, d12, d20, and d100. Add modifiers and track full roll history.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/flip-clock/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Flip Clock</h3>
+  <p>A beautiful animated flip clock showing the current time with smooth card-flip transitions and date display.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/life-stats/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Life Stats Calculator</h3>
+  <p>Enter your birthday and see how many heartbeats, breaths, steps, and full moons you&#x27;ve lived through. Updates live.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/magic-8-ball/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Magic 8-Ball</h3>
+  <p>Ask a question, shake the orb, and get a dramatic browser-based answer back.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/morse-code/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Morse Code Translator</h3>
+  <p>Translate text to Morse code and back. Includes audio playback of the signal with adjustable speed.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/random-picker/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Random Picker</h3>
+  <p>Enter choices, animate the pick, and keep a short history of the last ten decisions.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/random-quote/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Random Quote Generator</h3>
+  <p>Get inspired with random quotes from history&#x27;s greatest thinkers. Filter by category — wisdom, tech, creativity, and more.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/star-wars-crawl/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Star Wars Crawl</h3>
+  <p>Create your own Star Wars-style opening crawl. Type your episode and text, hit play, and watch it scroll into space.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/virtual-pop/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Virtual Pop</h3>
+  <p>Reusable browser fidget board with tappable bubbles, size presets, and instant reset.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/word-clock/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Word Clock</h3>
+  <p>A live clock that displays the current time spelled out in words on an illuminated letter grid. Fullscreen mode included.</p>
+</a>
+<a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/zalgo-text/">
+  <div class="card-meta">Fun &amp; Games</div>
+  <h3>Zalgo Text Generator</h3>
+  <p>Generate creepy glitchy corrupted text with adjustable chaos level. Mild to full chaos mode. Copy and share instantly.</p>
+</a>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap footer-links">
+      <div class="meta-note">Practical browser tools built by Tucker Chastain.</div>
+      <nav>
+        <a href="https://southforkapps.com/about/">About</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+        <a href="https://southforkapps.com/contact/">Contact</a>
+        <a href="https://southforkapps.com/">App Library</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
