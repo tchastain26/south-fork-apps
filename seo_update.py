@@ -160,6 +160,9 @@ APP_META = {
     "css-clamp-generator":    ("CSS Clamp Generator",          "Generate fluid CSS clamp() values from min and max sizes and viewport widths. Includes live preview and ready-to-copy CSS. Free online clamp calculator."),
     "svg-to-data-url":        ("SVG to Data URL Converter",    "Paste raw SVG markup and get a URL-encoded data URL plus ready-to-copy CSS background-image syntax. Free online SVG data URL converter."),
     "no-list":                ("No List",                       "Build your personal No List (a running record of commitments you've chosen to decline). Say no with intention and stick to it. Free online tool."),
+    "hype-machine":           ("The Hype Machine",              "Type anything mundane and watch it become legendary. Free online hype generator that transforms boring text into epic marketing copy."),
+    "meeting-email":          ("Could've Been an Email",        "Answer 7 quick questions and get a blunt verdict on whether your meeting should have been an email. Free online meeting analyzer."),
+    "nap-calculator":         ("Nap Calculator",                "Wake up refreshed every time. Calculate the perfect nap length or bedtime based on 90-minute sleep cycles. Free online sleep calculator."),
 }
 
 def update_app(app_name, title, description):

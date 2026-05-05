@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nap Calculator | South Fork Apps</title>
+  <meta name="description" content="Wake up refreshed every time. Calculate the perfect nap length or bedtime based on 90-minute sleep cycles. Free online sleep calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav-back{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav-back:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 3rem;display:grid;gap:1rem;}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.75rem;}
+    h1{margin:0 0 .3rem;font-size:clamp(1.9rem,6vw,3rem);line-height:1;letter-spacing:-.02em;}
+    .tagline{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;font-size:.95rem;}
+
+    /* Mode Tabs */
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:1.5rem;background:var(--surface-2);padding:.35rem;border-radius:10px;border:1px solid var(--border);}
+    .tab{padding:.6rem .5rem;border:none;border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-align:center;line-height:1.3;transition:all .2s;}
+    .tab:hover{color:var(--text);}
+    .tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.35);}
+
+    /* Time input */
+    .time-row{display:flex;align-items:flex-end;gap:.75rem;margin-bottom:1.5rem;}
+    .time-field{flex:1;}
+    .time-field label{display:block;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
+    input[type="time"]{width:100%;padding:.8rem 1rem;background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:1.1rem;font-weight:700;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none;}
+    input[type="time"]:focus{border-color:rgba(125,219,132,.5);}
+    input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(.5);}
+    .now-btn{padding:.8rem 1.1rem;background:none;border:1.5px solid var(--border);border-radius:10px;color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
+    .now-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+    /* Cards grid */
+    .cards{display:grid;gap:.75rem;}
+    .nap-card{border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1.35rem;background:var(--surface-2);transition:border-color .2s;}
+    .nap-card.recommended{border-color:var(--accent);background:rgba(125,219,132,.04);}
+    .nap-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.85rem;}
+    .nap-duration-wrap{}
+    .nap-duration{font-size:1.75rem;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.02em;}
+    .nap-type{font-size:.78rem;font-weight:700;color:var(--muted);margin-top:.2rem;text-transform:uppercase;letter-spacing:.07em;}
+    .rec-badge{flex-shrink:0;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0d1f0f;background:var(--accent);padding:.25rem .6rem;border-radius:99px;white-space:nowrap;margin-top:.2rem;}
+    .nap-time-display{font-size:1.5rem;font-weight:800;color:var(--accent);letter-spacing:-.02em;}
+    .nap-time-label{font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.07em;}
+    .nap-card-mid{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+    .quality-row{display:flex;align-items:center;gap:.4rem;}
+    .quality-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:.3rem;}
+    .qdot{width:9px;height:9px;border-radius:50%;background:var(--border);}
+    .qdot.on{background:var(--accent);}
+    .nap-desc{font-size:.875rem;color:var(--muted);line-height:1.6;}
+    .midnight-note{display:inline-block;font-size:.72rem;font-weight:700;color:rgba(200,150,80,.9);margin-top:.4rem;}
+    .empty-state{padding:2rem;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;}
+    .empty-state strong{display:block;color:var(--text);margin-bottom:.25rem;}
+
+    /* Sleep science note */
+    .science-note{margin-top:1rem;padding:1rem 1.1rem;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--muted);line-height:1.65;}
+    .science-note strong{color:var(--text);}
+
+    footer{margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem;}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Nap Calculator</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>Nap Calculator</h1>
+    <p class="tagline">Wake up refreshed, not wrecked. Hit the right sleep cycle every time.</p>
+
+    <div class="tabs">
+      <button class="tab active" id="tab0" onclick="setMode(0)">Nap Now</button>
+      <button class="tab" id="tab1" onclick="setMode(1)">Wake Up At...</button>
+      <button class="tab" id="tab2" onclick="setMode(2)">Bedtime</button>
+    </div>
+
+    <div class="time-row">
+      <div class="time-field">
+        <label id="timeLabel">You are falling asleep at</label>
+        <input type="time" id="timeInput" oninput="calculate()">
+      </div>
+      <button class="now-btn" onclick="setNow()">Now</button>
+    </div>
+
+    <div class="cards" id="cards">
+      <div class="empty-state"><strong>Enter a time above to see your options.</strong></div>
+    </div>
+
+    <div class="science-note">
+      <strong>How this works:</strong> Sleep runs in roughly 90-minute cycles. Waking at the end of a cycle means you surface from light sleep, feeling alert. Waking mid-cycle pulls you out of deep or REM sleep, producing grogginess. These times are estimates (it takes ~15 minutes to fall asleep on average).
+    </div>
+
+    <footer>v1.0</footer>
+  </section>
+</main>
+<script>
+  let mode = 0;
+
+  const MODES = [
+    {
+      label: 'You are falling asleep at',
+      options: [
+        { mins:20,  type:'Power Nap',      quality:2, maxQ:5, desc:'Quick energy reset. Stays in light sleep so you wake up sharp, not groggy.', timeLabel:'Wake up at', op:'+' },
+        { mins:90,  type:'One Full Cycle',  quality:4, maxQ:5, desc:'One complete sleep cycle. Light sleep exit means a clean, alert wake-up.', timeLabel:'Wake up at', op:'+' },
+        { mins:180, type:'Two Full Cycles', quality:5, maxQ:5, desc:'Two complete cycles. Best for serious rest or making up for lost sleep.', timeLabel:'Wake up at', op:'+' },
+      ],
+      rec: 1,
+    },
+    {
+      label: 'You need to wake up at',
+      options: [
+        { mins:20,  type:'Power Nap',      quality:2, maxQ:5, desc:'Quick boost. Start 20 minutes before your alarm and stay in light sleep.', timeLabel:'Start nap at', op:'-' },
+        { mins:90,  type:'One Full Cycle',  quality:4, maxQ:5, desc:'One full cycle before you need to be up. Light sleep exit on the alarm.', timeLabel:'Start nap at', op:'-' },
+        { mins:180, type:'Two Full Cycles', quality:5, maxQ:5, desc:'Two full cycles before your wake time. Maximum refresh for the time available.', timeLabel:'Start nap at', op:'-' },
+      ],
+      rec: 1,
+    },
+    {
+      label: 'You need to wake up at',
+      options: [
+        { mins:360,  type:'4 Sleep Cycles',  quality:3, maxQ:5, label:'6 hrs',   desc:'Functional but not ideal long-term. Reserve for busy nights.', timeLabel:'Go to sleep at', op:'-' },
+        { mins:450,  type:'5 Sleep Cycles',  quality:5, maxQ:5, label:'7.5 hrs', desc:'The sweet spot for most people. Alert, rested, ready.', timeLabel:'Go to sleep at', op:'-' },
+        { mins:540,  type:'6 Sleep Cycles',  quality:5, maxQ:5, label:'9 hrs',   desc:'Full recovery. Great after sleep deprivation or hard training.', timeLabel:'Go to sleep at', op:'-' },
+      ],
+      rec: 1,
+    },
+  ];
+
+  function setMode(m) {
+    mode = m;
+    [0,1,2].forEach(i => document.getElementById('tab'+i).classList.toggle('active', i === m));
+    document.getElementById('timeLabel').textContent = MODES[m].label;
+    calculate();
+  }
+
+  function getNow() {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function setNow() {
+    document.getElementById('timeInput').value = getNow();
+    calculate();
+  }
+
+  function addMins(t, mins) {
+    const [h, m] = t.split(':').map(Number);
+    const total = (h * 60 + m + mins + 1440) % 1440;
+    return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;
+  }
+
+  function subMins(t, mins) {
+    const [h, m] = t.split(':').map(Number);
+    const total = (h * 60 + m - mins + 1440) % 1440;
+    return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;
+  }
+
+  function fmt12(t) {
+    const [h, m] = t.split(':').map(Number);
+    const ampm = h >= 12 ? 'pm' : 'am';
+    return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
+  function crossesMidnight(from, to) {
+    const toMins = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+    const fMin = toMins(from), tMin = toMins(to);
+    return (from !== to) && (tMin < fMin);
+  }
+
+  function dots(n, max) {
+    return Array.from({length:max}, (_,i) =>
+      `<span class="qdot ${i < n ? 'on' : ''}"></span>`
+    ).join('');
+  }
+
+  function durLabel(mins) {
+    if (mins < 60) return `${mins} min`;
+    const h = Math.floor(mins / 60), m = mins % 60;
+    return m ? `${h} hr ${m} min` : `${h} hr`;
+  }
+
+  function calculate() {
+    const timeVal = document.getElementById('timeInput').value;
+    const wrap = document.getElementById('cards');
+    if (!timeVal) {
+      wrap.innerHTML = '<div class="empty-state"><strong>Enter a time above to see your options.</strong></div>';
+      return;
+    }
+    const cfg = MODES[mode];
+    wrap.innerHTML = cfg.options.map((opt, i) => {
+      const isRec = i === cfg.rec;
+      const resultTime = opt.op === '+' ? addMins(timeVal, opt.mins) : subMins(timeVal, opt.mins);
+      const midnight = opt.op === '+' ? crossesMidnight(timeVal, resultTime) : crossesMidnight(resultTime, timeVal);
+      const midnightNote = midnight ? '<span class="midnight-note">Crosses midnight</span>' : '';
+      const durDisplay = opt.label || durLabel(opt.mins);
+      return `
+        <div class="nap-card ${isRec ? 'recommended' : ''}">
+          <div class="nap-card-top">
+            <div class="nap-duration-wrap">
+              <div class="nap-duration">${durDisplay}</div>
+              <div class="nap-type">${opt.type}</div>
+            </div>
+            <div style="text-align:right;">
+              ${isRec ? '<div class="rec-badge">Recommended</div>' : ''}
+            </div>
+          </div>
+          <div class="nap-card-mid">
+            <div>
+              <div class="nap-time-label">${opt.timeLabel}</div>
+              <div class="nap-time-display">${fmt12(resultTime)}</div>
+              ${midnightNote}
+            </div>
+            <div class="quality-row">
+              <span class="quality-label">Quality</span>
+              ${dots(opt.quality, opt.maxQ)}
+            </div>
+          </div>
+          <div class="nap-desc">${opt.desc}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Init with current time
+  document.getElementById('timeInput').value = getNow();
+  calculate();
+</script>
+</body>
+</html>
