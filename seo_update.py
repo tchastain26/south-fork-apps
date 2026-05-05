@@ -159,6 +159,7 @@ APP_META = {
     "robots-txt-builder":     ("Robots.txt Builder",           "Build a clean robots.txt file with disallow rules, sitemap lines, crawl delay, and optional AI crawler blocking. Free online robots.txt generator."),
     "css-clamp-generator":    ("CSS Clamp Generator",          "Generate fluid CSS clamp() values from min and max sizes and viewport widths. Includes live preview and ready-to-copy CSS. Free online clamp calculator."),
     "svg-to-data-url":        ("SVG to Data URL Converter",    "Paste raw SVG markup and get a URL-encoded data URL plus ready-to-copy CSS background-image syntax. Free online SVG data URL converter."),
+    "no-list":                ("No List",                       "Build your personal No List (a running record of commitments you've chosen to decline). Say no with intention and stick to it. Free online tool."),
 }
 
 def update_app(app_name, title, description):

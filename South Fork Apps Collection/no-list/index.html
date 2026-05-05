@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No List | South Fork Apps</title>
+  <meta name="description" content="Build your personal No List (a running record of commitments you've chosen to decline). Say no with intention and stick to it. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202722;
+      --border: #2a2f2b;
+      --accent: #7ddb84;
+      --text: #e8e8e8;
+      --muted: #aab5ac;
+      --danger: #e06c75;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .75rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-back { color: var(--accent); text-decoration: none; font-size: .875rem; font-weight: 500; }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title { color: var(--text); font-size: .875rem; font-weight: 600; }
+    main {
+      width: min(600px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+      display: grid;
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    h1 { margin: 0 0 .25rem; font-size: clamp(1.75rem, 6vw, 2.75rem); line-height: 1; }
+    .tagline { margin: 0 0 1.5rem; color: var(--muted); line-height: 1.6; }
+
+    /* Add form */
+    .add-row {
+      display: flex;
+      gap: .5rem;
+    }
+    .add-input {
+      flex: 1;
+      padding: .75rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font: inherit;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .add-input::placeholder { color: var(--muted); }
+    .add-input:focus { border-color: var(--accent); }
+    .add-btn {
+      padding: 0 1.25rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #102113;
+      font: inherit;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s;
+    }
+    .add-btn:hover { background: #5ec966; }
+    .add-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* Counter */
+    .count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.25rem 0 .75rem;
+    }
+    .count-label { font-size: .8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .clear-btn {
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .25rem .65rem;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .clear-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.7;
+    }
+    .empty strong { display: block; color: var(--text); font-size: 1.05rem; margin-bottom: .4rem; }
+
+    /* List */
+    .no-list { display: grid; gap: .5rem; }
+    .no-item {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .9rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color .15s;
+      animation: slideIn .2s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .no-item:hover { border-color: #3a3f3b; }
+    .no-badge {
+      flex-shrink: 0;
+      margin-top: .1rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .no-body { flex: 1; min-width: 0; }
+    .no-text {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.45;
+    }
+    .no-date {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .2rem;
+    }
+    .del-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: .2rem .3rem;
+      border-radius: 4px;
+      transition: color .15s, background .15s;
+    }
+    .del-btn:hover { color: var(--danger); background: rgba(224,108,117,.1); }
+
+    /* Attribution */
+    .attribution {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .attribution a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .attribution a:hover { text-decoration: underline; }
+
+    footer { margin-top: .75rem; text-align: center; color: var(--muted); font-size: .8rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">No List</span>
+</nav>
+<main>
+  <section class="panel">
+    <h1>No List</h1>
+    <p class="tagline">A running record of the things you've committed to declining. Say no on purpose. Come back to stay accountable.</p>
+
+    <div class="add-row">
+      <input
+        class="add-input"
+        id="addInput"
+        type="text"
+        placeholder="What are you saying no to?"
+        maxlength="200"
+        autocomplete="off"
+      >
+      <button class="add-btn" id="addBtn" onclick="addItem()">Add</button>
+    </div>
+
+    <div class="count-row">
+      <span class="count-label" id="countLabel">0 items</span>
+      <button class="clear-btn" onclick="clearAll()">Clear all</button>
+    </div>
+
+    <div id="listWrap"></div>
+
+    <div class="attribution">
+      Inspired by <a href="https://macsparky.com" target="_blank" rel="noopener">David Sparks (MacSparky)</a> and
+      <a href="https://apps.apple.com/us/app/the-no-list/id6751258334" target="_blank" rel="noopener">The No List for iOS</a>.
+      Your list is stored locally in this browser (nothing leaves your device).
+    </div>
+
+    <footer>v1.0</footer>
+  </section>
+</main>
+<script>
+  const KEY = 'sf-no-list';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    catch { return []; }
+  }
+
+  function save(items) {
+    localStorage.setItem(KEY, JSON.stringify(items));
+  }
+
+  function fmt(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  }
+
+  function render() {
+    const items = load();
+    const wrap = document.getElementById('listWrap');
+    const label = document.getElementById('countLabel');
+    const n = items.length;
+    label.textContent = n === 1 ? '1 item' : `${n} items`;
+
+    if (n === 0) {
+      wrap.innerHTML = '<div class="empty"><strong>Your No List is empty.</strong>Add the first thing you\'re committing to decline.</div>';
+      return;
+    }
+
+    wrap.innerHTML = '<div class="no-list">' +
+      items.map((item, i) =>
+        `<div class="no-item">
+          <div class="no-badge">${i + 1}</div>
+          <div class="no-body">
+            <div class="no-text">${esc(item.text)}</div>
+            <div class="no-date">Added ${fmt(item.added)}</div>
+          </div>
+          <button class="del-btn" onclick="remove(${i})" title="Remove this item" aria-label="Remove">✕</button>
+        </div>`
+      ).join('') +
+    '</div>';
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function addItem() {
+    const input = document.getElementById('addInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const items = load();
+    items.unshift({ text, added: new Date().toISOString() });
+    save(items);
+    input.value = '';
+    render();
+    input.focus();
+  }
+
+  function remove(index) {
+    const items = load();
+    items.splice(index, 1);
+    save(items);
+    render();
+  }
+
+  function clearAll() {
+    if (load().length === 0) return;
+    if (!confirm('Remove everything from your No List?')) return;
+    save([]);
+    render();
+  }
+
+  document.getElementById('addInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addItem();
+  });
+
+  render();
+</script>
+</body>
+</html>
