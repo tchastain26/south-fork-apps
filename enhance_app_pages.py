@@ -459,7 +459,7 @@ def app_cards_from_homepage() -> list[dict[str, str]]:
     grid = text[start:end]
     pattern = re.compile(
         r'<div data-app-card data-title="([^"]+)" data-description="([^"]+)" '
-        r'data-category="([^"]+)".*?<a href="\./South Fork Apps Collection/([^/]+)/"',
+        r'data-category="([^"]+)".*?<a href="/South%20Fork%20Apps%20Collection/([^/]+)/"',
         re.S,
     )
     apps = []
