@@ -292,6 +292,22 @@ DISCOVERY_CSS = """
   margin:.5rem 0;
   line-height:1.55;
 }
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
 .sfa-example{
   margin-top:1rem;
   padding:.95rem 1rem;
@@ -652,23 +668,37 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
 </section>
 <!-- SFA_FEATURE_END -->"""
     else:
+        title_esc = html.escape(app['title'])
+        desc_esc = html.escape(app['description'])
+        category_esc = html.escape(app['category'])
         block = f"""<!-- SFA_FEATURE_START -->
 <section class="sfa-feature" aria-labelledby="sfa-feature-title">
   <div class="sfa-feature-shell">
     <div class="sfa-feature-copy">
-      <div class="sfa-kicker">Preview</div>
-      <h2 id="sfa-feature-title">{html.escape(app['title'])}</h2>
-      <p>{html.escape(app['description'])}</p>
-      <p>See the interface before you use it, then jump to more tools in the same lane if you need a nearby workflow.</p>
+      <div class="sfa-kicker">About this tool</div>
+      <h2 id="sfa-feature-title">{title_esc}</h2>
+      <p>{desc_esc}</p>
+      <p>{title_esc} is a free browser-based tool from South Fork Apps. There&#x27;s nothing to install, no account to create, and no usage limit. Open the page, do the work, and move on.</p>
+      <h3 class="sfa-subhead">How it works</h3>
+      <ol class="sfa-steps">
+        <li>Open {title_esc} in any modern browser on desktop or mobile.</li>
+        <li>Enter or paste your input into the tool&#x27;s main field.</li>
+        <li>Adjust any options shown on the page to match what you need.</li>
+        <li>Copy or download the result and continue with your work.</li>
+      </ol>
+      <h3 class="sfa-subhead">Why use a browser tool</h3>
+      <p>Browser tools beat installable apps when the job is small. You don&#x27;t have to manage updates, sign in, or wait for a heavy program to load. {title_esc} runs entirely in your browser. Your input never leaves your device, no analytics watch what you type, and the page stops working the moment you close the tab.</p>
+      <h3 class="sfa-subhead">Privacy and data</h3>
+      <p>South Fork Apps tools process everything client-side in JavaScript. No server sees your data. Nothing is stored, logged, or sent anywhere. If you&#x27;re working with sensitive content, you can verify by opening the page once, disconnecting from the internet, and watching {title_esc} keep working.</p>
       <div class="sfa-links">
-        <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>
+        <a href="{category_url(app['category'])}">More {category_esc}</a>
         <a href="{BASE_URL}/about/">About South Fork Apps</a>
         <a href="{BASE_URL}/privacy/">Privacy</a>
       </div>
     </div>
     <figure class="sfa-preview">
       <img src="screenshot.jpg" alt="{html.escape(app['title'], quote=True)} interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Screenshot of the live {html.escape(app['title'])} interface.</figcaption>
+      <figcaption>Screenshot of the live {title_esc} interface.</figcaption>
     </figure>
   </div>
 </section>
