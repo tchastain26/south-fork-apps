@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Theory Tools | South Fork Apps</title>
+  <meta name="description" content="Free online music theory tools, ear trainers, fretboards, chord finders, scale references, beat makers, and more. Browser-based, no install required.">
+  <link rel="canonical" href="https://southforkapps.com/categories/music-tools/">
+  <meta property="og:site_name" content="South Fork Apps">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Music Theory Tools">
+  <meta property="og:description" content="Free online music theory tools — chord finders, fretboards, scale references, ear trainers, beat makers, and more.">
+  <meta property="og:url" content="https://southforkapps.com/categories/music-tools/">
+  <meta property="og:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-fifths/share.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Music Theory Tools">
+  <meta name="twitter:description" content="Free online music theory tools — chord finders, fretboards, scale references, ear trainers, and beat makers.">
+  <meta name="twitter:image" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-fifths/share.jpg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: rgba(29, 32, 30, 0.86);
+      --surface-strong: rgba(17, 20, 18, 0.92);
+      --border: rgba(63, 73, 62, 0.7);
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --text: #e1e3df;
+      --muted: #becaba;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(125, 219, 132, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(170, 204, 218, 0.08), transparent 38%),
+        linear-gradient(180deg, #0f1311 0%, #111412 100%);
+    }
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(11, 18, 14, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(63, 73, 62, 0.45);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; }
+    .brand { font-family: "Epilogue", sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; color: var(--accent); text-decoration: none; }
+    .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.92rem; }
+    .nav-links a:hover { color: var(--accent); }
+    .hero { padding: 4rem 0 2rem; }
+    .eyebrow { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.9rem; }
+    h1 { margin: 0; font-family: "Epilogue", sans-serif; font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 0.98; letter-spacing: -0.05em; }
+    .intro { margin-top: 1rem; max-width: 780px; color: var(--muted); font-size: 1.05rem; line-height: 1.75; }
+    .bullet-box { margin-top: 1.5rem; padding: 1.1rem 1.2rem; border: 1px solid rgba(125, 219, 132, 0.16); border-radius: 18px; background: var(--surface-strong); max-width: 900px; }
+    .bullet-box ul { margin: 0; padding-left: 1.1rem; color: var(--text); }
+    .bullet-box li { margin: 0.45rem 0; line-height: 1.65; }
+    .section { margin-top: 1.75rem; padding: 1.25rem; border: 1px solid rgba(63, 73, 62, 0.58); border-radius: 20px; background: var(--surface); backdrop-filter: blur(14px); }
+    .section h2 { margin: 0 0 0.4rem; font-family: "Epilogue", sans-serif; font-size: 1.45rem; letter-spacing: -0.03em; }
+    .section > p { margin: 0 0 1rem; color: var(--muted); line-height: 1.75; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+    .card { display: block; padding: 1rem; border: 1px solid rgba(63, 73, 62, 0.62); border-radius: 16px; text-decoration: none; background: rgba(17, 20, 18, 0.9); transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(125, 219, 132, 0.44); background: rgba(29, 32, 30, 0.96); }
+    .card-meta { color: var(--accent); font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem; }
+    .card h3 { margin: 0 0 0.55rem; font-size: 1.05rem; line-height: 1.25; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.93rem; line-height: 1.6; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+    .pill { display: inline-flex; align-items: center; min-height: 2.45rem; padding: 0 0.95rem; border-radius: 999px; text-decoration: none; color: var(--accent); border: 1px solid rgba(125, 219, 132, 0.28); font-size: 0.88rem; font-weight: 600; transition: background 0.14s; }
+    .pill:hover { background: var(--accent-soft); }
+    footer { margin: 3rem 0 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="https://southforkapps.com">South Fork Apps</a>
+    <div class="nav-links">
+      <a href="https://southforkapps.com/categories/">Categories</a>
+      <a href="https://southforkapps.com/about/">About</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Category</div>
+    <h1>Music Tools</h1>
+    <p class="intro">Free browser-based music theory tools, ear trainers, fretboard visualizers, chord finders, beat makers, and reference sheets. No install. No login. Just open and play.</p>
+    <div class="bullet-box">
+      <ul>
+        <li>All tools run 100% in your browser using Web Audio API — no server, no account</li>
+        <li>Covers theory reference, interactive instruments, ear training, and composition tools</li>
+        <li>Works on desktop and mobile — touch-friendly layouts throughout</li>
+        <li>36 tools inspired by the muted.io music theory suite</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Theory Reference -->
+  <div class="section">
+    <h2>Theory Reference</h2>
+    <p>Quick-reference tables and visualizations for scales, chords, intervals, keys, and notation.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/music-theory-cheat-sheet/"><div class="card-meta">Reference</div><h3>Music Theory Cheat Sheet</h3><p>All core concepts on one page — intervals, scales, chords, modes, key signatures, and ear training anchors.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/key-signatures/"><div class="card-meta">Reference</div><h3>Key Signatures</h3><p>Filterable table of all 30 major and minor key signatures with sharps, flats, and relative keys.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/music-intervals/"><div class="card-meta">Reference</div><h3>Music Intervals</h3><p>All intervals from unison to major 13th with abbreviations, half steps, and consonance classification.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-formulas/"><div class="card-meta">Reference</div><h3>Chord Formulas</h3><p>Interval structures for triads, seventh chords, extended chords, and suspended chords.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/scale-formulas/"><div class="card-meta">Reference</div><h3>Scale Formulas</h3><p>W/H step patterns for major, minor, all modes, pentatonic, blues, and harmonic scales.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/diatonic-scale/"><div class="card-meta">Reference</div><h3>Diatonic Scale</h3><p>Full key reference — scale notes, diatonic triads, seventh chords, and all 7 modal rotations.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/clef-reference/"><div class="card-meta">Reference</div><h3>Clef Reference</h3><p>Treble and bass clef note positions with mnemonics and ledger line reference.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/time-signatures/"><div class="card-meta">Reference</div><h3>Time Signatures</h3><p>7 common meters with beat groupings, feel descriptions, and count-in playback.</p></a>
+    </div>
+  </div>
+
+  <!-- Circle Tools -->
+  <div class="section">
+    <h2>Circle Tools &amp; Key Relationships</h2>
+    <p>Visual diagrams showing how keys, scales, and chords relate to each other.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-fifths/"><div class="card-meta">Visualizer</div><h3>Circle of Fifths</h3><p>Interactive SVG circle — click any key to see signature, relative minor, and all diatonic chords.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-thirds/"><div class="card-meta">Visualizer</div><h3>Circle of Thirds</h3><p>Explore chromatic mediant relationships — notes arranged by major and minor third distance.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chords-in-keys/"><div class="card-meta">Interactive</div><h3>Chords in Keys</h3><p>All 7 diatonic chords for any key and mode, with Roman numerals and harmonic function.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/common-chord-progressions/"><div class="card-meta">Interactive</div><h3>Chord Progressions</h3><p>20 classic progressions across 6 genres — transposable to any key with audio playback.</p></a>
+    </div>
+  </div>
+
+  <!-- Scale Tools -->
+  <div class="section">
+    <h2>Scale Tools</h2>
+    <p>Find, explore, and visualize any scale across instruments.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/scale-finder/"><div class="card-meta">Interactive</div><h3>Scale Finder</h3><p>15 scale types — see notes, intervals, and keyboard diagram. Playable via Web Audio.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chromatic-scale/"><div class="card-meta">Interactive</div><h3>Chromatic Scale</h3><p>All 12 chromatic notes — click to hear, see frequency, and explore enharmonic equivalents.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/pentatonic-scale/"><div class="card-meta">Interactive</div><h3>Pentatonic Scale</h3><p>Major and minor pentatonic for any root — piano keyboard, guitar box patterns, and intervals.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/overtone-series/"><div class="card-meta">Visualizer</div><h3>Overtone Series</h3><p>First 16 harmonics above any fundamental — frequencies, note names, and cents deviation.</p></a>
+    </div>
+  </div>
+
+  <!-- Chord Tools -->
+  <div class="section">
+    <h2>Chord Tools</h2>
+    <p>Find chords, transpose them, and see voicings on piano and guitar.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-finder/"><div class="card-meta">Interactive</div><h3>Chord Finder</h3><p>Click piano notes to identify all matching chord names, types, and inversions.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-transposer/"><div class="card-meta">Text Tool</div><h3>Chord Transposer</h3><p>Paste a chord sheet and transpose all chords to any key instantly.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/piano-chords/"><div class="card-meta">Interactive</div><h3>Piano Chords</h3><p>Visual chord voicings for any root and type on a piano keyboard with audio playback.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-chords/"><div class="card-meta">Interactive</div><h3>Guitar Chords</h3><p>SVG chord diagrams for open and barre chords — filterable by root and type.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/ukulele-chords/"><div class="card-meta">Interactive</div><h3>Ukulele Chords</h3><p>Chord diagrams for ukulele in standard GCEA tuning across all roots and types.</p></a>
+    </div>
+  </div>
+
+  <!-- Fretboard Tools -->
+  <div class="section">
+    <h2>Fretboard &amp; Keyboard Tools</h2>
+    <p>Visualize notes, scales, and modes across guitar, bass, ukulele, and piano.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-fretboard/"><div class="card-meta">Interactive</div><h3>Guitar Fretboard</h3><p>All notes across 6 strings and 12 frets with scale and mode highlighting.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-scales/"><div class="card-meta">Interactive</div><h3>Guitar Scales</h3><p>Scale patterns on the guitar fretboard for any root and scale type.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bass-fretboard/"><div class="card-meta">Interactive</div><h3>Bass Fretboard</h3><p>4 strings and 24 frets with scale highlighting. Supports standard, drop D, and 5-string tunings.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/ukulele-fretboard/"><div class="card-meta">Interactive</div><h3>Ukulele Fretboard</h3><p>Ukulele fretboard in GCEA, D tuning, or Low G with scale filtering.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/virtual-piano/"><div class="card-meta">Instrument</div><h3>Virtual Piano</h3><p>Playable two-octave piano keyboard. Click or use keyboard shortcuts. Selectable waveforms.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/piano-notes-on-staff/"><div class="card-meta">Educational</div><h3>Piano Notes on Staff</h3><p>Click a piano key to see it placed on treble and bass clef staves simultaneously.</p></a>
+    </div>
+  </div>
+
+  <!-- Ear Training -->
+  <div class="section">
+    <h2>Ear Training</h2>
+    <p>Build your musical ear through interval recognition, pitch identification, and rhythm exercises.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/relative-pitch/"><div class="card-meta">Ear Training</div><h3>Relative Pitch</h3><p>Hear two notes and identify the interval. Tracks score and accuracy across 12 intervals.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/note-identification/"><div class="card-meta">Ear Training</div><h3>Note Identification</h3><p>Identify notes shown on treble or bass clef staff. Flashcard-style with score tracking.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/rhythm-challenge/"><div class="card-meta">Ear Training</div><h3>Rhythm Challenge</h3><p>Hear a rhythm pattern and tap it back. Scored on timing accuracy in milliseconds.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/solfege/"><div class="card-meta">Interactive</div><h3>Solfege</h3><p>Do Re Mi Fa Sol La Ti — click any syllable to hear it and see its scale degree in any key.</p></a>
+    </div>
+  </div>
+
+  <!-- Instruments & Beat Makers -->
+  <div class="section">
+    <h2>Instruments &amp; Beat Makers</h2>
+    <p>Playable browser instruments and rhythm composition tools.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/lil-beat-maker/"><div class="card-meta">Sequencer</div><h3>Lil Beat Maker</h3><p>8-track step sequencer with 16/32 steps. Build drum patterns with Web Audio synthesis.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/drum-patterns/"><div class="card-meta">Reference</div><h3>Drum Patterns</h3><p>10 common drum patterns across 6 genres with visual grids and playback.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/xylophone/"><div class="card-meta">Instrument</div><h3>Xylophone</h3><p>Colorful playable xylophone — 15 bars across two octaves, keyboard shortcuts included.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/paradiddle/"><div class="card-meta">Drum Rudiment</div><h3>Paradiddle</h3><p>Single, double, triple, and paradiddle-diddle with sticking notation and BPM playback.</p></a>
+    </div>
+  </div>
+
+  <!-- Utility Tools -->
+  <div class="section">
+    <h2>Utility Tools</h2>
+    <p>Practical tools for tuning, tempo, and guitar setup.</p>
+    <div class="grid">
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bpm-counter/"><div class="card-meta">Utility</div><h3>BPM Counter</h3><p>Tap tempo BPM calculator — auto-resets after 3 seconds. Shows Italian tempo names.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-tuning-chart/"><div class="card-meta">Reference</div><h3>Guitar Tuning Chart</h3><p>Standard and 17 alternate guitar tunings with string-by-string note reference.</p></a>
+      <a class="card" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/metronome/"><div class="card-meta">Utility</div><h3>Metronome</h3><p>Online metronome with BPM slider, tap tempo, visual beat, and audio click.</p></a>
+    </div>
+    <div class="pill-row">
+      <a class="pill" href="https://southforkapps.com/categories/">← All Categories</a>
+      <a class="pill" href="https://southforkapps.com/">Browse All Apps</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>All tools are free and run in your browser. No account, no tracking, no install.<br>
+    Built by <a href="https://southforkapps.com/about/">South Fork Apps</a> · <a href="https://southforkapps.com/privacy/">Privacy</a></p>
+  </footer>
+</div>
+</body>
+</html>

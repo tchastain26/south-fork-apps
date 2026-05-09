@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bass Fretboard | South Fork Apps</title>
+  <meta name="description" content="Interactive bass guitar fretboard showing note names across 4 strings and 24 frets. Highlight scales, modes, and root positions in standard EADG tuning.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bass-fretboard/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Bass Fretboard">
+<meta property="og:description" content="Interactive bass guitar fretboard — all notes across 4 strings and 24 frets with scale highlighting.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/bass-fretboard/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bass Fretboard">
+<meta name="twitter:description" content="Interactive bass fretboard with note names and scale highlighting in standard EADG tuning.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(1050px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.25rem;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .fretboard-wrap{overflow-x:auto;padding-bottom:.5rem;}
+  table.fb{border-collapse:collapse;min-width:800px;width:100%;}
+  .fb th,.fb td{padding:0;text-align:center;}
+  .fb .str-label{font-size:.8rem;font-weight:700;color:var(--muted);padding:.3rem .6rem;white-space:nowrap;}
+  .fb .fret-num{font-size:.68rem;color:var(--muted);padding:.25rem 0;border-bottom:1px solid var(--border);}
+  .note-dot{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:.72rem;font-weight:700;border:2px solid transparent;}
+  .note-dot.off{color:var(--border);}
+  .note-dot.in-scale{background:var(--surface2);border-color:rgba(125,219,132,.3);color:var(--text);}
+  .note-dot.is-root{background:var(--accent);border-color:var(--accent);color:#0a1a0c;}
+  .fret-cell{width:100%;padding:4px 2px;}
+  .fret-col-0{border-right:3px solid #3a4a3b;}
+  .fret-marker{height:6px;display:flex;justify-content:center;gap:4px;}
+  .fret-dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Bass Fretboard</span></nav>
+<main>
+  <h1>Bass Fretboard</h1>
+  <p class="sub">All note names across 4 bass strings and 24 frets. Filter by root and scale to highlight positions. Standard EADG tuning.</p>
+  <div class="controls">
+    <div class="ctrl">
+      <label>Root Note</label>
+      <select id="root"><option value="-1">None (show all)</option></select>
+    </div>
+    <div class="ctrl">
+      <label>Scale</label>
+      <select id="scale">
+        <option value="chromatic">Chromatic (all notes)</option>
+        <option value="major">Major</option>
+        <option value="minor">Natural Minor</option>
+        <option value="pentatonic_major">Major Pentatonic</option>
+        <option value="pentatonic_minor">Minor Pentatonic</option>
+        <option value="blues">Blues</option>
+        <option value="dorian">Dorian</option>
+        <option value="mixolydian">Mixolydian</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Tuning</label>
+      <select id="tuning">
+        <option value="standard">Standard (EADG)</option>
+        <option value="drop_d">Drop D (DADG)</option>
+        <option value="half_down">E♭ Standard</option>
+        <option value="five_string">5-String (BEADG)</option>
+      </select>
+    </div>
+  </div>
+  <div class="fretboard-wrap">
+    <table class="fb" id="fb"></table>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const FLAT_ROOTS=[5,10,3,8,1,6];
+const SCALE_STEPS={
+  chromatic:[0,1,2,3,4,5,6,7,8,9,10,11],
+  major:[0,2,4,5,7,9,11],minor:[0,2,3,5,7,8,10],
+  pentatonic_major:[0,2,4,7,9],pentatonic_minor:[0,3,5,7,10],
+  blues:[0,3,5,6,7,10],dorian:[0,2,3,5,7,9,10],mixolydian:[0,2,4,5,7,9,10],
+};
+// MIDI: E1=28, A1=33, D2=38, G2=43
+const TUNING_MIDI={
+  standard:[28,33,38,43],
+  drop_d:[26,33,38,43],
+  half_down:[27,32,37,42],
+  five_string:[23,28,33,38,43],
+};
+const TUNING_NAMES={
+  standard:['E','A','D','G'],
+  drop_d:['D','A','D','G'],
+  half_down:['E♭','A♭','D♭','G♭'],
+  five_string:['B','E','A','D','G'],
+};
+const FRET_MARKERS=[3,5,7,9,12,15,17,19,21,24];
+const DOUBLE_DOT=[12,24];
+
+function build(){
+  const rootIdx=parseInt(document.getElementById('root').value);
+  const scaleKey=document.getElementById('scale').value;
+  const tuning=document.getElementById('tuning').value;
+  const steps=SCALE_STEPS[scaleKey];
+  const scaleSet=rootIdx===-1?null:new Set(steps.map(s=>((rootIdx+s)%12+12)%12));
+  const openMidi=TUNING_MIDI[tuning];
+  const strNames=TUNING_NAMES[tuning];
+  const nFrets=24;
+  const nStrings=openMidi.length;
+
+  let html='<thead><tr><th class="str-label">String</th><th class="fret-num fret-col-0">Open</th>';
+  for(let f=1;f<=nFrets;f++) html+=`<th class="fret-num">${f}</th>`;
+  html+='</tr></thead><tbody>';
+
+  for(let s=nStrings-1;s>=0;s--){
+    html+=`<tr><td class="str-label">${strNames[s]}</td>`;
+    for(let f=0;f<=nFrets;f++){
+      const midi=openMidi[s]+f;
+      const noteIdx=((midi%12)+12)%12;
+      const isRoot=rootIdx!==-1&&noteIdx===rootIdx;
+      const inScale=scaleSet?scaleSet.has(noteIdx):true;
+      const pf=rootIdx!==-1&&FLAT_ROOTS.includes(rootIdx);
+      const noteName=(pf?NOTES_F:NOTES_S)[noteIdx];
+      let cls='note-dot';
+      if(isRoot)cls+=' is-root';
+      else if(inScale)cls+=' in-scale';
+      else cls+=' off';
+      html+=`<td class="fret-cell${f===0?' fret-col-0':''}"><span class="${cls}">${inScale||!scaleSet?noteName:''}</span></td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</tbody><tfoot><tr><td></td>';
+  for(let f=0;f<=nFrets;f++){
+    const m=FRET_MARKERS.includes(f);
+    const d=DOUBLE_DOT.includes(f);
+    html+=`<td><div class="fret-marker">${m?(d?'<div class="fret-dot"></div><div class="fret-dot"></div>':'<div class="fret-dot"></div>'):'&nbsp;'}</div></td>`;
+  }
+  html+='</tr></tfoot>';
+  document.getElementById('fb').innerHTML=html;
+}
+
+const rSel=document.getElementById('root');
+NOTES_S.forEach((n,i)=>rSel.innerHTML+=`<option value="${i}">${n}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`);
+['root','scale','tuning'].forEach(id=>document.getElementById(id).addEventListener('change',build));
+build();
+</script>
+</body>
+</html>

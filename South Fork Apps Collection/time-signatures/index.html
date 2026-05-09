@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Signatures | South Fork Apps</title>
+  <meta name="description" content="Time signature reference and beat visualizer. Covers 4/4, 3/4, 6/8, 12/8, and more. Shows beat groupings, feel, and a clickable count-in.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/time-signatures/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Time Signatures">
+<meta property="og:description" content="Time signature reference and beat visualizer. Covers 4/4, 3/4, 6/8, 12/8 and more with count-in playback.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/time-signatures/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Time Signatures">
+<meta name="twitter:description" content="Time signature reference with beat groupings, feel descriptions, and count-in playback.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(860px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .sig-grid{display:grid;gap:1rem;margin-bottom:2rem;}
+  .sig-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;transition:border-color .15s;}
+  .sig-card:hover{border-color:rgba(125,219,132,.3);}
+  .sig-top{display:flex;gap:1.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+  .sig-symbol{font-size:2.5rem;font-weight:900;color:var(--accent);line-height:1;font-family:serif;min-width:2rem;text-align:center;}
+  .sig-info{flex:1;}
+  .sig-name{font-size:1rem;font-weight:700;margin-bottom:.25rem;}
+  .sig-desc{font-size:.82rem;color:var(--muted);}
+  .beats-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;}
+  .beat{display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:.78rem;font-weight:700;border:2px solid var(--border);transition:all .1s;}
+  .beat.strong{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+  .beat.medium{border-color:rgba(125,219,132,.35);color:rgba(125,219,132,.7);}
+  .beat.weak{color:var(--muted);}
+  .beat.active{background:var(--accent)!important;color:#0a1a0c!important;border-color:var(--accent)!important;}
+  .play-sig-btn{padding:.35rem .9rem;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
+  .play-sig-btn:hover{background:rgba(125,219,132,.1);}
+  .play-sig-btn.playing{background:rgba(125,219,132,.15);}
+  .feel-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem;}
+  .feel-tag{padding:.1rem .45rem;border-radius:3px;font-size:.68rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+  .note-values{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1.5rem;}
+  .nv-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.85rem;}
+  .nv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem;}
+  .nv-card{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.6rem;text-align:center;}
+  .nv-name{font-size:.82rem;font-weight:700;color:var(--text);}
+  .nv-val{font-size:.72rem;color:var(--muted);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Time Signatures</span></nav>
+<main>
+  <h1>Time Signatures</h1>
+  <p class="sub">Time signatures define how beats are grouped in a measure. The top number = beats per measure, the bottom number = which note value equals one beat.</p>
+
+  <div class="note-values">
+    <div class="nv-title">Note Values Reference</div>
+    <div class="nv-grid">
+      <div class="nv-card"><div class="nv-name">Whole Note</div><div class="nv-val">4 beats</div></div>
+      <div class="nv-card"><div class="nv-name">Half Note</div><div class="nv-val">2 beats</div></div>
+      <div class="nv-card"><div class="nv-name">Quarter Note</div><div class="nv-val">1 beat</div></div>
+      <div class="nv-card"><div class="nv-name">Eighth Note</div><div class="nv-val">½ beat</div></div>
+      <div class="nv-card"><div class="nv-name">Sixteenth</div><div class="nv-val">¼ beat</div></div>
+      <div class="nv-card"><div class="nv-name">Dotted Quarter</div><div class="nv-val">1.5 beats</div></div>
+    </div>
+  </div>
+
+  <div class="sig-grid" id="sigGrid"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const SIGS=[
+  {sig:'4/4',name:'Common Time',top:4,bot:4,
+   beats:[{label:'1',type:'strong',size:52},{label:'2',type:'weak',size:52},{label:'3',type:'medium',size:52},{label:'4',type:'weak',size:52}],
+   desc:'Four quarter-note beats per measure. The most common time signature in popular music.',
+   feel:['Rock','Pop','Jazz','Blues','Classical'],
+   grouping:'4 equal beats. Beat 1 = strong, Beat 3 = medium, Beats 2&4 = weak (backbeat).'},
+  {sig:'3/4',name:'Waltz Time',top:3,bot:4,
+   beats:[{label:'1',type:'strong',size:52},{label:'2',type:'weak',size:52},{label:'3',type:'weak',size:52}],
+   desc:'Three quarter-note beats per measure. Creates a characteristic waltz or 1-2-3 swing feel.',
+   feel:['Waltz','Folk','Classical','Country'],
+   grouping:'3 beats with strong downbeat. ONE-two-three, ONE-two-three.'},
+  {sig:'6/8',name:'Compound Duple',top:6,bot:8,
+   beats:[{label:'1',type:'strong',size:36},{label:'2',type:'weak',size:36},{label:'3',type:'weak',size:36},{label:'4',type:'medium',size:36},{label:'5',type:'weak',size:36},{label:'6',type:'weak',size:36}],
+   desc:'Six eighth-note beats per measure, felt in 2 groups of 3. Creates a lilting, compound feel.',
+   feel:['Irish Jig','Compound','March','Pop Ballad'],
+   grouping:'2 main beats, each divided into 3 eighths. ONE-and-a TWO-and-a.'},
+  {sig:'12/8',name:'Compound Quadruple',top:12,bot:8,
+   beats:[{label:'1',type:'strong',size:28},{label:'',type:'weak',size:28},{label:'',type:'weak',size:28},{label:'2',type:'medium',size:28},{label:'',type:'weak',size:28},{label:'',type:'weak',size:28},{label:'3',type:'medium',size:28},{label:'',type:'weak',size:28},{label:'',type:'weak',size:28},{label:'4',type:'medium',size:28},{label:'',type:'weak',size:28},{label:'',type:'weak',size:28}],
+   desc:'Twelve eighth-note beats, felt in 4 groups of 3. Classic blues shuffle and slow ballad feel.',
+   feel:['Blues Shuffle','Soul','Ballad','Gospel'],
+   grouping:'4 main beats, each divided into 3 eighths. Triplet feel throughout.'},
+  {sig:'2/4',name:'March Time',top:2,bot:4,
+   beats:[{label:'1',type:'strong',size:56},{label:'2',type:'weak',size:56}],
+   desc:'Two quarter-note beats per measure. Crisp, driving feel — marches, polkas, quick dance music.',
+   feel:['March','Polka','Quickstep'],
+   grouping:'Strong downbeat, weak upbeat. ONE-two, ONE-two.'},
+  {sig:'5/4',name:'Quintuple',top:5,bot:4,
+   beats:[{label:'1',type:'strong',size:46},{label:'2',type:'weak',size:46},{label:'3',type:'weak',size:46},{label:'4',type:'medium',size:46},{label:'5',type:'weak',size:46}],
+   desc:'Five quarter-note beats. Asymmetrical feel. Often grouped 3+2 or 2+3.',
+   feel:['Progressive','Jazz','Film Score','Take Five'],
+   grouping:'Usually felt as 3+2 (ONE-two-three FOUR-five) or 2+3.'},
+  {sig:'7/8',name:'Septuple (compound)',top:7,bot:8,
+   beats:[{label:'1',type:'strong',size:40},{label:'',type:'weak',size:40},{label:'2',type:'medium',size:40},{label:'',type:'weak',size:40},{label:'3',type:'medium',size:40},{label:'',type:'weak',size:40},{label:'',type:'weak',size:40}],
+   desc:'Seven eighth notes per measure. Irregular grouping (2+2+3, 2+3+2, or 3+2+2).',
+   feel:['Balkan','Progressive Rock','Folk'],
+   grouping:'Asymmetric grouping creates a distinctive "limping" or urgent feel.'},
+];
+
+let audioCtx=null,playTimers={};
+
+function click(when,accent){
+  if(!audioCtx)return;
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type='sine';osc.frequency.value=accent?1100:700;
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(accent?.4:.2,when);
+  gain.gain.exponentialRampToValueAtTime(0.001,when+0.06);
+  osc.start(when);osc.stop(when+0.06);
+}
+
+function playSig(idx,btn){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const sigIdx=parseInt(idx);
+  if(playTimers[sigIdx]){
+    playTimers[sigIdx].forEach(t=>clearTimeout(t));
+    delete playTimers[sigIdx];
+    btn.textContent='▶ Count In';btn.classList.remove('playing');
+    document.querySelectorAll(`#sig-${sigIdx} .beat`).forEach(b=>b.classList.remove('active'));
+    return;
+  }
+  const sig=SIGS[sigIdx];
+  const bpm=100,beatDur=60000/bpm;
+  btn.textContent='■ Stop';btn.classList.add('playing');
+  const beats=sig.beats;
+  const bars=2;
+  const timers=[];
+  for(let bar=0;bar<bars;bar++){
+    beats.forEach((beat,bi)=>{
+      const delay=bar*beats.length*beatDur+bi*beatDur;
+      const when=audioCtx.currentTime+delay/1000+0.01;
+      const t1=setTimeout(()=>{
+        click(when,beat.type==='strong');
+        const beatEls=document.querySelectorAll(`#sig-${sigIdx} .beat`);
+        beatEls.forEach((b,i)=>b.classList.toggle('active',i===bi));
+      },delay);
+      timers.push(t1);
+    });
+  }
+  const endTimer=setTimeout(()=>{
+    btn.textContent='▶ Count In';btn.classList.remove('playing');
+    document.querySelectorAll(`#sig-${sigIdx} .beat`).forEach(b=>b.classList.remove('active'));
+    delete playTimers[sigIdx];
+  },bars*beats.length*beatDur+200);
+  timers.push(endTimer);
+  playTimers[sigIdx]=timers;
+}
+
+document.getElementById('sigGrid').innerHTML=SIGS.map((s,i)=>{
+  const beatsHtml=s.beats.map(b=>`<div class="beat ${b.type}" style="width:${b.size}px;height:${b.size}px">${b.label}</div>`).join('');
+  const tagsHtml=s.feel.map(f=>`<span class="feel-tag">${f}</span>`).join('');
+  return`<div class="sig-card" id="sig-${i}">
+    <div class="sig-top">
+      <div class="sig-symbol">${s.sig}</div>
+      <div class="sig-info">
+        <div class="sig-name">${s.name}</div>
+        <div class="sig-desc">${s.desc}</div>
+      </div>
+      <button class="play-sig-btn" onclick="playSig(${i},this)">▶ Count In</button>
+    </div>
+    <div class="beats-row">${beatsHtml}</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">${s.grouping}</div>
+    <div class="feel-tags">${tagsHtml}</div>
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>

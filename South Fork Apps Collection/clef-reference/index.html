@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clef Reference | South Fork Apps</title>
+  <meta name="description" content="Treble and bass clef note position reference. Shows every note on both staves from the bottom of the bass clef to the top of the treble clef with ledger lines.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/clef-reference/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Clef Reference">
+<meta property="og:description" content="Complete treble and bass clef note reference — every note from bottom of bass to top of treble with ledger lines.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/clef-reference/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Clef Reference">
+<meta name="twitter:description" content="Treble and bass clef note position reference with all note names and positions.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .staves-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+  @media(max-width:580px){.staves-wrap{grid-template-columns:1fr;}}
+  .staff-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;}
+  .staff-title{font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:1rem;}
+  svg.big-staff{width:100%;height:auto;}
+  .mnemonics{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+  .mnem-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;}
+  .mnem-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem;}
+  .mnem-item{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;font-size:.85rem;}
+  .mnem-note{width:2rem;height:2rem;border-radius:50%;background:rgba(125,219,132,.1);border:1px solid rgba(125,219,132,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:var(--accent);flex-shrink:0;}
+  .mnem-text{color:var(--muted);}
+  .mnem-text strong{color:var(--text);}
+  .ledger-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+  .ledger-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.75rem;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:.5rem .85rem;text-align:left;border-bottom:1px solid var(--border);}
+  tbody td{padding:.5rem .85rem;border-bottom:1px solid var(--border);}
+  tbody tr:hover td{background:var(--surface2);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Clef Reference</span></nav>
+<main>
+  <h1>Clef Reference</h1>
+  <p class="sub">Complete note position reference for treble and bass clef staves. Each note shown with its position on lines and spaces.</p>
+
+  <div class="staves-wrap">
+    <div class="staff-card">
+      <div class="staff-title">Treble Clef (G Clef)</div>
+      <svg class="big-staff" viewBox="0 0 280 300" id="trebleSvg"></svg>
+    </div>
+    <div class="staff-card">
+      <div class="staff-title">Bass Clef (F Clef)</div>
+      <svg class="big-staff" viewBox="0 0 280 300" id="bassSvg"></svg>
+    </div>
+  </div>
+
+  <div class="mnemonics">
+    <div class="mnem-card">
+      <div class="mnem-title">Treble Clef Lines (bottom → top)</div>
+      <div class="mnem-item"><div class="mnem-note">E</div><div class="mnem-text"><strong>E</strong>very</div></div>
+      <div class="mnem-item"><div class="mnem-note">G</div><div class="mnem-text"><strong>G</strong>ood</div></div>
+      <div class="mnem-item"><div class="mnem-note">B</div><div class="mnem-text"><strong>B</strong>oy</div></div>
+      <div class="mnem-item"><div class="mnem-note">D</div><div class="mnem-text"><strong>D</strong>oes</div></div>
+      <div class="mnem-item"><div class="mnem-note">F</div><div class="mnem-text"><strong>F</strong>ine</div></div>
+    </div>
+    <div class="mnem-card">
+      <div class="mnem-title">Treble Clef Spaces (bottom → top)</div>
+      <div class="mnem-item"><div class="mnem-note">F</div><div class="mnem-text"><strong>F</strong>ACE</div></div>
+      <div class="mnem-item"><div class="mnem-note">A</div><div class="mnem-text">F<strong>A</strong>CE</div></div>
+      <div class="mnem-item"><div class="mnem-note">C</div><div class="mnem-text">FA<strong>C</strong>E</div></div>
+      <div class="mnem-item"><div class="mnem-note">E</div><div class="mnem-text">FAC<strong>E</strong></div></div>
+    </div>
+    <div class="mnem-card">
+      <div class="mnem-title">Bass Clef Lines (bottom → top)</div>
+      <div class="mnem-item"><div class="mnem-note">G</div><div class="mnem-text"><strong>G</strong>ood</div></div>
+      <div class="mnem-item"><div class="mnem-note">B</div><div class="mnem-text"><strong>B</strong>oys</div></div>
+      <div class="mnem-item"><div class="mnem-note">D</div><div class="mnem-text"><strong>D</strong>o</div></div>
+      <div class="mnem-item"><div class="mnem-note">F</div><div class="mnem-text"><strong>F</strong>ine</div></div>
+      <div class="mnem-item"><div class="mnem-note">A</div><div class="mnem-text"><strong>A</strong>lways</div></div>
+    </div>
+    <div class="mnem-card">
+      <div class="mnem-title">Bass Clef Spaces (bottom → top)</div>
+      <div class="mnem-item"><div class="mnem-note">A</div><div class="mnem-text"><strong>A</strong>ll</div></div>
+      <div class="mnem-item"><div class="mnem-note">C</div><div class="mnem-text"><strong>C</strong>ows</div></div>
+      <div class="mnem-item"><div class="mnem-note">E</div><div class="mnem-text"><strong>E</strong>at</div></div>
+      <div class="mnem-item"><div class="mnem-note">G</div><div class="mnem-text"><strong>G</strong>rass</div></div>
+    </div>
+  </div>
+
+  <div class="ledger-section">
+    <div class="ledger-title">Common Ledger Line Notes</div>
+    <table>
+      <thead><tr><th>Note</th><th>Clef</th><th>Position</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--accent)">Middle C (C4)</td><td>Both</td><td>1 ledger below treble / 1 ledger above bass</td><td>The note that connects both staves</td></tr>
+        <tr><td style="font-weight:700">C3</td><td>Bass</td><td>1 ledger below bass</td><td>Low C on piano</td></tr>
+        <tr><td style="font-weight:700">C5</td><td>Treble</td><td>3rd space (no ledger)</td><td>Just above the staff</td></tr>
+        <tr><td style="font-weight:700">A5</td><td>Treble</td><td>1 ledger above treble</td><td>Violin open E string neighbor</td></tr>
+        <tr><td style="font-weight:700">G2</td><td>Bass</td><td>2 ledger lines below bass</td><td>Low G on bass guitar</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+function drawStaff(svgId,clef){
+  const W=280,lineY=[50,70,90,110,130],noteX=180;
+  let html='';
+  lineY.forEach(y=>html+=`<line x1="50" y1="${y}" x2="${W-20}" y2="${y}" stroke="#3a4a3b" stroke-width="1.5"/>`);
+  if(clef==='treble'){
+    html+=`<text x="52" y="145" font-size="90" fill="#aab5ac" font-family="serif">𝄞</text>`;
+  } else {
+    html+=`<text x="52" y="115" font-size="60" fill="#aab5ac" font-family="serif">𝄢</text>`;
+  }
+  // Notes to draw
+  const trebleNotes=[
+    {pos:-2,name:'C4',ledger:true},{pos:-1,name:'D4'},{pos:0,name:'E4'},{pos:1,name:'F4'},
+    {pos:2,name:'G4'},{pos:3,name:'A4'},{pos:4,name:'B4'},{pos:5,name:'C5'},
+    {pos:6,name:'D5'},{pos:7,name:'E5'},{pos:8,name:'F5'},{pos:9,name:'G5'},
+    {pos:10,name:'A5'},{pos:11,name:'B5'},{pos:12,name:'C6',ledger:true},
+  ];
+  const bassNotes=[
+    {pos:-2,name:'E2',ledger:true},{pos:-1,name:'F2'},{pos:0,name:'G2'},
+    {pos:1,name:'A2'},{pos:2,name:'B2'},{pos:3,name:'C3'},{pos:4,name:'D3'},
+    {pos:5,name:'E3'},{pos:6,name:'F3'},{pos:7,name:'G3'},{pos:8,name:'A3'},
+    {pos:9,name:'B3'},{pos:10,name:'C4',ledger:true},{pos:11,name:'D4'},{pos:12,name:'E4',ledger:true},
+  ];
+  const notes=clef==='treble'?trebleNotes:bassNotes;
+  const step=10,nx=noteX;
+  notes.forEach((n,i)=>{
+    const x=60+i*13.5;
+    const y=lineY[4]-n.pos*step;
+    if(n.ledger||n.pos<0||n.pos>8){
+      if(n.pos<=0)for(let p=n.pos;p<=0;p+=2){const ly=lineY[4]-p*step;html+=`<line x1="${x-8}" y1="${ly}" x2="${x+8}" y2="${ly}" stroke="#3a4a3b" stroke-width="1.2"/>`;}
+      if(n.pos>=8)for(let p=8;p<=n.pos;p+=2){const ly=lineY[4]-p*step;html+=`<line x1="${x-8}" y1="${ly}" x2="${x+8}" y2="${ly}" stroke="#3a4a3b" stroke-width="1.2"/>`;}
+    }
+    html+=`<ellipse cx="${x}" cy="${y}" rx="6" ry="4.5" fill="${n.name.includes('C4')&&clef==='treble'?'#ffd764':'#7ddb84'}" transform="rotate(-15,${x},${y})"/>`;
+    html+=`<text x="${x}" y="${y+18}" text-anchor="middle" font-size="8" fill="#aab5ac" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">${n.name}</text>`;
+  });
+  document.getElementById(svgId).innerHTML=html;
+}
+drawStaff('trebleSvg','treble');
+drawStaff('bassSvg','bass');
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paradiddle | South Fork Apps</title>
+  <meta name="description" content="Drum rudiment trainer for paradiddle patterns. See R/L sticking notation, hear the pattern at any BPM, and practice all four paradiddle variations.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/paradiddle/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Paradiddle">
+<meta property="og:description" content="Drum rudiment trainer for paradiddle patterns — R/L sticking notation, BPM playback, and all four variations.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/paradiddle/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Paradiddle">
+<meta name="twitter:description" content="Paradiddle drum rudiment trainer with sticking notation and BPM playback.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .transport{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.5rem;}
+  .play-btn{padding:.5rem 1.5rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;}
+  .play-btn.playing{background:#ff7a6a;color:#fff;}
+  .bpm-ctrl{display:flex;align-items:center;gap:.5rem;margin-left:auto;}
+  .bpm-ctrl label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  input[type=range]{width:90px;accent-color:var(--accent);}
+  .bpm-val{font-weight:800;color:var(--accent);min-width:3ch;}
+  .rudiment-grid{display:grid;gap:1rem;}
+  .rudiment-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color .15s;}
+  .rudiment-card.active{border-color:var(--accent);}
+  .rud-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem;flex-wrap:gap:.5rem;}
+  .rud-name{font-size:1rem;font-weight:700;}
+  .rud-desc{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+  .select-btn{padding:.3rem .8rem;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;}
+  .select-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08);}
+  .sticking-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem;}
+  .stick{display:flex;flex-direction:column;align-items:center;gap:.25rem;}
+  .stick-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;border:2px solid var(--border);transition:all .12s;}
+  .stick-dot.R{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+  .stick-dot.L{border-color:#aaccda;background:rgba(170,204,218,.1);color:#aaccda;}
+  .stick-dot.active-beat{border-width:3px;transform:scale(1.15);}
+  .stick-dot.R.active-beat{background:var(--accent);color:#0a1a0c;}
+  .stick-dot.L.active-beat{background:#aaccda;color:#111;}
+  .stick-label{font-size:.55rem;font-weight:700;color:var(--muted);}
+  .accent-mark{font-size:.65rem;color:var(--accent);margin-bottom:-.2rem;}
+  .tips-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;margin-top:1.5rem;}
+  .tips-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.75rem;}
+  .tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+  .tip{background:var(--surface2);border-radius:7px;padding:.7rem .85rem;font-size:.82rem;color:var(--muted);line-height:1.5;}
+  .tip strong{color:var(--text);display:block;margin-bottom:.2rem;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Paradiddle</span></nav>
+<main>
+  <h1>Paradiddle</h1>
+  <p class="sub">The paradiddle is a fundamental drum rudiment. Master all four variations — single, double, triple, and paradiddle-diddle. R = right hand, L = left hand.</p>
+  <div class="transport">
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">▶ Play</button>
+    <div class="bpm-ctrl">
+      <label>BPM</label>
+      <input type="range" id="bpmSlider" min="40" max="200" value="80" oninput="document.getElementById('bpmVal').textContent=this.value">
+      <span class="bpm-val" id="bpmVal">80</span>
+    </div>
+  </div>
+
+  <div class="rudiment-grid" id="rudGrid"></div>
+
+  <div class="tips-section">
+    <div class="tips-title">Practice Tips</div>
+    <div class="tips-grid">
+      <div class="tip"><strong>Start Slow</strong>Begin at 40–60 BPM. Muscle memory beats speed every time.</div>
+      <div class="tip"><strong>Accent the First Beat</strong>The accented first note defines the paradiddle's character and sound.</div>
+      <div class="tip"><strong>Even Strokes</strong>All non-accented notes should be equal in volume. Listen for consistency.</div>
+      <div class="tip"><strong>Alternate Starts</strong>Practice starting with both R and L to develop independence.</div>
+      <div class="tip"><strong>Metronome</strong>Use the BPM slider. Increase by 5 BPM only when both hands feel comfortable.</div>
+      <div class="tip"><strong>Apply to Kit</strong>Play snare strokes on snare, try moving accents to toms for fills.</div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const RUDIMENTS=[
+  {
+    name:'Single Paradiddle',
+    desc:'The foundational rudiment. 8 notes per repetition.',
+    pattern:['R','L','R','R','L','R','L','L'],
+    accents:[0,4],
+    beats_per_note:1
+  },
+  {
+    name:'Double Paradiddle',
+    desc:'Extends the single with two additional alternating strokes.',
+    pattern:['R','L','R','L','R','R','L','R','L','R','L','L'],
+    accents:[0,6],
+    beats_per_note:1
+  },
+  {
+    name:'Triple Paradiddle',
+    desc:'Three extra alternating strokes for a longer phrase.',
+    pattern:['R','L','R','L','R','L','R','R','L','R','L','R','L','R','L','L'],
+    accents:[0,8],
+    beats_per_note:1
+  },
+  {
+    name:'Paradiddle-Diddle',
+    desc:'Single paradiddle with a diddle (double stroke) at the end.',
+    pattern:['R','L','R','R','L','L'],
+    accents:[0,3],
+    beats_per_note:1
+  },
+];
+
+let playing=false,currentRudiment=0,currentBeat=0,ticker=null,audioCtx=null;
+
+function click(when,accent){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type='square';osc.frequency.value=accent?1100:800;
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(accent?.35:.18,when);
+  gain.gain.exponentialRampToValueAtTime(0.001,when+0.05);
+  osc.start(when);osc.stop(when+0.05);
+}
+
+function buildRudiments(){
+  const grid=document.getElementById('rudGrid');
+  grid.innerHTML=RUDIMENTS.map((r,ri)=>{
+    const sticking=r.pattern.map((hand,i)=>`
+      <div class="stick">
+        ${r.accents.includes(i)?'<div class="accent-mark">></div>':'<div style="height:.9rem"></div>'}
+        <div class="stick-dot ${hand}" id="sd-${ri}-${i}">${hand}</div>
+        <div class="stick-label">${i+1}</div>
+      </div>`).join('');
+    return`<div class="rudiment-card ${ri===0?'active':''}" id="rc-${ri}">
+      <div class="rud-header">
+        <div>
+          <div class="rud-name">${r.name}</div>
+          <div class="rud-desc">${r.desc}</div>
+        </div>
+        <button class="select-btn ${ri===0?'active':''}" id="sb-${ri}" onclick="selectRudiment(${ri})">Select</button>
+      </div>
+      <div class="sticking-row">${sticking}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectRudiment(ri){
+  currentRudiment=ri;
+  currentBeat=0;
+  document.querySelectorAll('.rudiment-card').forEach((c,i)=>c.classList.toggle('active',i===ri));
+  document.querySelectorAll('.select-btn').forEach((b,i)=>b.classList.toggle('active',i===ri));
+  clearHighlights();
+}
+
+function clearHighlights(){
+  RUDIMENTS.forEach((r,ri)=>r.pattern.forEach((_,i)=>{
+    const el=document.getElementById(`sd-${ri}-${i}`);
+    if(el)el.classList.remove('active-beat');
+  }));
+}
+
+function togglePlay(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  playing=!playing;
+  const btn=document.getElementById('playBtn');
+  if(playing){btn.textContent='■ Stop';btn.classList.add('playing');tick();}
+  else{btn.textContent='▶ Play';btn.classList.remove('playing');if(ticker)clearTimeout(ticker);clearHighlights();}
+}
+
+function tick(){
+  if(!playing)return;
+  const bpm=parseInt(document.getElementById('bpmSlider').value);
+  const r=RUDIMENTS[currentRudiment];
+  const noteDur=60000/(bpm*2); // eighth note at given BPM
+  const isAccent=r.accents.includes(currentBeat);
+  const when=audioCtx.currentTime+0.01;
+  click(when,isAccent);
+  clearHighlights();
+  const el=document.getElementById(`sd-${currentRudiment}-${currentBeat}`);
+  if(el)el.classList.add('active-beat');
+  currentBeat=(currentBeat+1)%r.pattern.length;
+  ticker=setTimeout(tick,noteDur);
+}
+
+buildRudiments();
+</script>
+</body>
+</html>
