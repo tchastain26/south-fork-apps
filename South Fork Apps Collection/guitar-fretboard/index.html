@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guitar Fretboard | South Fork Apps</title>
+  <meta name="description" content="Interactive guitar fretboard showing note names across all 6 strings and 12 frets. Highlight scales, highlight a root note, or explore in standard or alternate tunings.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-fretboard/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Guitar Fretboard">
+<meta property="og:description" content="Interactive guitar fretboard — all notes across 6 strings and 12 frets with scale highlighting.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-fretboard/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Guitar Fretboard">
+<meta name="twitter:description" content="Interactive guitar fretboard with note names and scale highlighting.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(1000px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.25rem;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .fretboard-wrap{overflow-x:auto;padding-bottom:.5rem;}
+  table.fretboard{border-collapse:collapse;min-width:700px;width:100%;}
+  .fretboard th,.fretboard td{padding:0;text-align:center;}
+  .fretboard .str-label{font-size:.75rem;font-weight:700;color:var(--muted);padding:.3rem .5rem;white-space:nowrap;}
+  .fretboard .fret-num{font-size:.7rem;color:var(--muted);padding:.25rem 0;border-bottom:1px solid var(--border);}
+  .fret-cell{width:100%;padding:4px 2px;}
+  .note-dot{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .12s;border:2px solid transparent;}
+  .note-dot.off{color:var(--border);border-color:transparent;background:transparent;}
+  .note-dot.in-scale{background:var(--surface2);border-color:rgba(125,219,132,.3);color:var(--text);}
+  .note-dot.is-root{background:var(--accent);border-color:var(--accent);color:#0a1a0c;}
+  .note-dot.highlighted{background:rgba(125,219,132,.2);border-color:var(--accent);color:var(--accent);}
+  .fret-marker{height:6px;display:flex;justify-content:center;gap:6px;}
+  .fret-dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  .fret-col-0{border-right:3px solid #3a4a3b;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Guitar Fretboard</span></nav>
+<main>
+  <h1>Guitar Fretboard</h1>
+  <p class="sub">All note names across 6 strings and 12 frets. Filter by root and scale to highlight positions.</p>
+  <div class="controls">
+    <div class="ctrl">
+      <label>Root Note</label>
+      <select id="root"><option value="-1">None (show all)</option></select>
+    </div>
+    <div class="ctrl">
+      <label>Scale / Mode</label>
+      <select id="scale">
+        <option value="chromatic">Chromatic (all notes)</option>
+        <option value="major">Major</option>
+        <option value="minor">Natural Minor</option>
+        <option value="pentatonic_major">Major Pentatonic</option>
+        <option value="pentatonic_minor">Minor Pentatonic</option>
+        <option value="blues">Blues (Minor)</option>
+        <option value="dorian">Dorian</option>
+        <option value="mixolydian">Mixolydian</option>
+        <option value="harmonic_minor">Harmonic Minor</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Tuning</label>
+      <select id="tuning">
+        <option value="standard">Standard (EADGBE)</option>
+        <option value="drop_d">Drop D (DADGBE)</option>
+        <option value="open_g">Open G (DGDGBD)</option>
+        <option value="dadgad">DADGAD</option>
+        <option value="half_down">Eb Standard</option>
+      </select>
+    </div>
+  </div>
+  <div class="fretboard-wrap">
+    <table class="fretboard" id="fretboard"></table>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+
+const SCALE_STEPS={
+  chromatic:[0,1,2,3,4,5,6,7,8,9,10,11],
+  major:[0,2,4,5,7,9,11],
+  minor:[0,2,3,5,7,8,10],
+  pentatonic_major:[0,2,4,7,9],
+  pentatonic_minor:[0,3,5,7,10],
+  blues:[0,3,5,6,7,10],
+  dorian:[0,2,3,5,7,9,10],
+  mixolydian:[0,2,4,5,7,9,10],
+  harmonic_minor:[0,2,3,5,7,8,11],
+};
+
+const TUNINGS={
+  standard:[4,9,14,19,23,28], // semitones from C0: E2=28,A2=33... let's use simpler
+  drop_d:[2,9,14,19,23,28],
+  open_g:[2,7,14,19,23,26],
+  dadgad:[2,9,14,19,21,26],
+  half_down:[3,8,13,18,22,27],
+};
+// Using absolute semitones (E2=40, A2=45, D3=50, G3=55, B3=59, E4=64 from midi 0=C-1)
+const TUNING_MIDI={
+  standard:[40,45,50,55,59,64],
+  drop_d:[38,45,50,55,59,64],
+  open_g:[38,43,50,55,59,62],
+  dadgad:[38,45,50,55,57,62],
+  half_down:[39,44,49,54,58,63],
+};
+const TUNING_NAMES={
+  standard:['E','A','D','G','B','E'],
+  drop_d:['D','A','D','G','B','E'],
+  open_g:['D','G','D','G','B','D'],
+  dadgad:['D','A','D','G','A','D'],
+  half_down:['E♭','A♭','D♭','G♭','B♭','E♭'],
+};
+
+const FRET_MARKERS=[3,5,7,9,12];
+const DOUBLE_DOT=[12];
+
+function getNote(midi){
+  return NOTES_S[midi%12];
+}
+
+function build(){
+  const rootIdx=parseInt(document.getElementById('root').value);
+  const scaleKey=document.getElementById('scale').value;
+  const tuningKey=document.getElementById('tuning').value;
+  const steps=SCALE_STEPS[scaleKey];
+  const scaleSet=rootIdx===-1?new Set():new Set(steps.map(s=>((rootIdx+s)%12+12)%12));
+  const openMidi=TUNING_MIDI[tuningKey];
+  const strNames=TUNING_NAMES[tuningKey];
+  const nFrets=12;
+
+  let html='<thead><tr><th class="str-label">String</th>';
+  html+='<th class="fret-num fret-col-0">Open</th>';
+  for(let f=1;f<=nFrets;f++) html+=`<th class="fret-num">${f}</th>`;
+  html+='</tr></thead><tbody>';
+
+  for(let s=5;s>=0;s--){
+    html+=`<tr><td class="str-label">${strNames[s]}<br><span style="font-size:.6rem;color:var(--muted)">${s===5?'1st':s===4?'2nd':s===3?'3rd':s===2?'4th':s===1?'5th':'6th'}</span></td>`;
+    for(let f=0;f<=nFrets;f++){
+      const midi=openMidi[s]+f;
+      const noteIdx=midi%12;
+      const noteName=NOTES_S[noteIdx];
+      const isRoot=rootIdx!==-1&&noteIdx===rootIdx;
+      const inScale=rootIdx===-1?true:scaleSet.has(noteIdx);
+      let cls='note-dot';
+      if(isRoot) cls+=' is-root';
+      else if(inScale) cls+=' in-scale';
+      else cls+=' off';
+      html+=`<td class="fret-cell${f===0?' fret-col-0':''}"><span class="${cls}">${inScale||rootIdx===-1?noteName:''}</span></td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</tbody>';
+
+  // fret marker row
+  html+='<tfoot><tr><td></td>';
+  for(let f=0;f<=nFrets;f++){
+    const hasMark=FRET_MARKERS.includes(f);
+    const isDouble=DOUBLE_DOT.includes(f);
+    html+=`<td><div class="fret-marker">${hasMark?(isDouble?'<div class="fret-dot"></div><div class="fret-dot"></div>':'<div class="fret-dot"></div>'):'&nbsp;'}</div></td>`;
+  }
+  html+='</tr></tfoot>';
+
+  document.getElementById('fretboard').innerHTML=html;
+}
+
+// Build root select
+const rootSel=document.getElementById('root');
+NOTES_S.forEach((n,i)=>rootSel.innerHTML+=`<option value="${i}">${n}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`);
+
+['root','scale','tuning'].forEach(id=>document.getElementById(id).addEventListener('change',build));
+build();
+</script>
+</body>
+</html>
