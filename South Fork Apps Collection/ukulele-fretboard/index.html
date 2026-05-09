@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ukulele Fretboard | South Fork Apps</title>
+  <meta name="description" content="Interactive ukulele fretboard showing all note names across 4 strings and 12 frets. Highlight scales and modes in standard GCEA tuning.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/ukulele-fretboard/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Ukulele Fretboard">
+<meta property="og:description" content="Interactive ukulele fretboard — all notes across 4 strings and 12 frets with scale highlighting.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/ukulele-fretboard/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ukulele Fretboard">
+<meta name="twitter:description" content="Interactive ukulele fretboard with note names and scale highlighting.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.25rem;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .fretboard-wrap{overflow-x:auto;padding-bottom:.5rem;}
+  table.fb{border-collapse:collapse;min-width:600px;width:100%;}
+  .fb th,.fb td{padding:0;text-align:center;}
+  .fb .str-label{font-size:.8rem;font-weight:700;color:var(--muted);padding:.3rem .6rem;white-space:nowrap;}
+  .fb .fret-num{font-size:.7rem;color:var(--muted);padding:.25rem 0;border-bottom:1px solid var(--border);}
+  .note-dot{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-size:.74rem;font-weight:700;border:2px solid transparent;}
+  .note-dot.off{color:var(--border);}
+  .note-dot.in-scale{background:var(--surface2);border-color:rgba(125,219,132,.3);color:var(--text);}
+  .note-dot.is-root{background:var(--accent);border-color:var(--accent);color:#0a1a0c;}
+  .fret-cell{width:100%;padding:4px 2px;}
+  .fret-col-0{border-right:3px solid #3a4a3b;}
+  .fret-marker{height:6px;display:flex;justify-content:center;gap:4px;}
+  .fret-dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Ukulele Fretboard</span></nav>
+<main>
+  <h1>Ukulele Fretboard</h1>
+  <p class="sub">All note names across 4 strings and 12 frets. Standard GCEA tuning. Filter by root and scale to highlight positions.</p>
+  <div class="controls">
+    <div class="ctrl">
+      <label>Root Note</label>
+      <select id="root"><option value="-1">None (show all)</option></select>
+    </div>
+    <div class="ctrl">
+      <label>Scale</label>
+      <select id="scale">
+        <option value="chromatic">Chromatic (all)</option>
+        <option value="major">Major</option>
+        <option value="minor">Natural Minor</option>
+        <option value="pentatonic_major">Major Pentatonic</option>
+        <option value="pentatonic_minor">Minor Pentatonic</option>
+        <option value="blues">Blues</option>
+        <option value="dorian">Dorian</option>
+        <option value="mixolydian">Mixolydian</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Tuning</label>
+      <select id="tuning">
+        <option value="standard">Standard (GCEA)</option>
+        <option value="d_tuning">D Tuning (ADF♯B)</option>
+        <option value="low_g">Low G (GCEA low)</option>
+      </select>
+    </div>
+  </div>
+  <div class="fretboard-wrap">
+    <table class="fb" id="fb"></table>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const FLAT_ROOTS=[5,10,3,8,1,6];
+
+const SCALE_STEPS={
+  chromatic:[0,1,2,3,4,5,6,7,8,9,10,11],
+  major:[0,2,4,5,7,9,11],
+  minor:[0,2,3,5,7,8,10],
+  pentatonic_major:[0,2,4,7,9],
+  pentatonic_minor:[0,3,5,7,10],
+  blues:[0,3,5,6,7,10],
+  dorian:[0,2,3,5,7,9,10],
+  mixolydian:[0,2,4,5,7,9,10],
+};
+
+// MIDI: G4=67, C4=60, E4=64, A4=69
+const TUNING_MIDI={
+  standard:[67,60,64,69],
+  d_tuning:[69,62,66,71],
+  low_g:[55,60,64,69],
+};
+const TUNING_NAMES={
+  standard:['G','C','E','A'],
+  d_tuning:['A','D','F♯','B'],
+  low_g:['G(low)','C','E','A'],
+};
+
+const FRET_MARKERS=[3,5,7,10,12];
+
+function build(){
+  const rootIdx=parseInt(document.getElementById('root').value);
+  const scaleKey=document.getElementById('scale').value;
+  const tuning=document.getElementById('tuning').value;
+  const steps=SCALE_STEPS[scaleKey];
+  const scaleSet=rootIdx===-1?null:new Set(steps.map(s=>((rootIdx+s)%12+12)%12));
+  const openMidi=TUNING_MIDI[tuning];
+  const strNames=TUNING_NAMES[tuning];
+  const nFrets=12;
+
+  let html='<thead><tr><th class="str-label">String</th><th class="fret-num fret-col-0">Open</th>';
+  for(let f=1;f<=nFrets;f++) html+=`<th class="fret-num">${f}</th>`;
+  html+='</tr></thead><tbody>';
+
+  for(let s=3;s>=0;s--){
+    html+=`<tr><td class="str-label">${strNames[s]}<br><span style="font-size:.6rem;color:var(--muted)">${s===3?'1st':s===2?'2nd':s===1?'3rd':'4th'}</span></td>`;
+    for(let f=0;f<=nFrets;f++){
+      const midi=openMidi[s]+f;
+      const noteIdx=((midi%12)+12)%12;
+      const isRoot=rootIdx!==-1&&noteIdx===rootIdx;
+      const inScale=scaleSet?scaleSet.has(noteIdx):true;
+      const pf=rootIdx!==-1&&FLAT_ROOTS.includes(rootIdx);
+      const noteName=(pf?NOTES_F:NOTES_S)[noteIdx];
+      let cls='note-dot';
+      if(isRoot)cls+=' is-root';
+      else if(inScale)cls+=' in-scale';
+      else cls+=' off';
+      html+=`<td class="fret-cell${f===0?' fret-col-0':''}"><span class="${cls}">${inScale||!scaleSet?noteName:''}</span></td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</tbody><tfoot><tr><td></td>';
+  for(let f=0;f<=nFrets;f++){
+    const m=FRET_MARKERS.includes(f);
+    const d=f===12;
+    html+=`<td><div class="fret-marker">${m?(d?'<div class="fret-dot"></div><div class="fret-dot"></div>':'<div class="fret-dot"></div>'):'&nbsp;'}</div></td>`;
+  }
+  html+='</tr></tfoot>';
+  document.getElementById('fb').innerHTML=html;
+}
+
+const rSel=document.getElementById('root');
+NOTES_S.forEach((n,i)=>rSel.innerHTML+=`<option value="${i}">${n}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`);
+['root','scale','tuning'].forEach(id=>document.getElementById(id).addEventListener('change',build));
+build();
+</script>
+</body>
+</html>

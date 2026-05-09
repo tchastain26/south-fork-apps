@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythm Challenge | South Fork Apps</title>
+  <meta name="description" content="Rhythm tapping challenge. See a rhythm pattern, hear it played, then tap it back. Scores your timing accuracy in milliseconds.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/rhythm-challenge/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Rhythm Challenge">
+<meta property="og:description" content="Rhythm tapping challenge — hear a rhythm pattern and tap it back. Scored on timing accuracy.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/rhythm-challenge/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rhythm Challenge">
+<meta name="twitter:description" content="Hear a rhythm and tap it back. Scored on timing accuracy.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(620px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1rem;color:var(--muted);line-height:1.6;}
+  .config-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .cfg{display:flex;flex-direction:column;gap:.3rem;text-align:left;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.25rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem;}
+  .stat-val{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:.15rem;}
+  .pattern-display{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;}
+  .pattern-name{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;}
+  .beats-row{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:.85rem;}
+  .beat{width:40px;height:40px;border-radius:8px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--muted);transition:all .1s;}
+  .beat.hit{border-color:var(--accent);background:rgba(125,219,132,.15);color:var(--accent);}
+  .beat.active{border-color:var(--accent);background:var(--accent);color:#0a1a0c;}
+  .beat.rest{border-style:dashed;opacity:.5;}
+  .beat.tapped{background:rgba(125,219,132,.3);}
+  .state-label{font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:.75rem;min-height:1.4rem;}
+  .big-tap-btn{width:100%;padding:1.5rem;border:3px solid var(--accent);border-radius:14px;background:rgba(125,219,132,.05);color:var(--accent);font:inherit;font-size:1.2rem;font-weight:800;cursor:pointer;transition:all .1s;letter-spacing:.05em;margin-bottom:.85rem;user-select:none;-webkit-tap-highlight-color:transparent;}
+  .big-tap-btn:active,.big-tap-btn.flash{background:rgba(125,219,132,.2);transform:scale(.97);}
+  .big-tap-btn:disabled{opacity:.4;cursor:default;}
+  .action-row{display:flex;gap:.75rem;justify-content:center;margin-bottom:.75rem;}
+  .btn{padding:.5rem 1.25rem;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;}
+  .btn:hover{border-color:var(--text);color:var(--text);}
+  .btn.primary{border:none;background:var(--accent);color:#0a1a0c;font-weight:700;}
+  .btn.primary:hover{filter:brightness(1.1);}
+  .score-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin:.75rem 0;}
+  .score-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .5s;}
+  .result-text{font-size:.9rem;color:var(--muted);}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Rhythm Challenge</span></nav>
+<main>
+  <h1>Rhythm Challenge</h1>
+  <p class="sub">Listen to the rhythm pattern, then tap it back. Your timing accuracy is scored on each tap.</p>
+  <div class="config-row">
+    <div class="cfg">
+      <label>Difficulty</label>
+      <select id="diff">
+        <option value="easy">Easy (quarter notes)</option>
+        <option value="medium" selected>Medium (quarter + eighth)</option>
+        <option value="hard">Hard (eighth + sixteenth)</option>
+      </select>
+    </div>
+    <div class="cfg">
+      <label>BPM</label>
+      <select id="bpm">
+        <option value="60">60 BPM</option>
+        <option value="80" selected>80 BPM</option>
+        <option value="100">100 BPM</option>
+        <option value="120">120 BPM</option>
+      </select>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="roundScore">—</div><div class="stat-label">Last Score</div></div>
+    <div class="stat"><div class="stat-val" id="bestScore">—</div><div class="stat-label">Best</div></div>
+    <div class="stat"><div class="stat-val" id="roundNum">0</div><div class="stat-label">Rounds</div></div>
+  </div>
+  <div class="pattern-display">
+    <div class="pattern-name" id="patName">Ready to start</div>
+    <div class="beats-row" id="beatsRow"></div>
+    <div class="state-label" id="stateLabel">Press "New Pattern" to begin</div>
+  </div>
+  <button class="big-tap-btn" id="tapBtn" onclick="handleTap()" disabled>TAP</button>
+  <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+  <div class="result-text" id="resultText"></div>
+  <div class="action-row">
+    <button class="btn primary" onclick="newRound()">New Pattern</button>
+    <button class="btn" onclick="playback()">▶ Replay</button>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const PATTERNS={
+  easy:[
+    {name:'4 Quarter Notes',beats:[1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0]},
+    {name:'Strong Weak',beats:[1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0]},
+    {name:'Downbeats',beats:[1,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0]},
+  ],
+  medium:[
+    {name:'Quarter + Eighths',beats:[1,0,0,0, 1,0,1,0, 1,0,0,0, 1,0,1,0]},
+    {name:'Syncopated',beats:[1,0,1,0, 0,0,1,0, 1,0,0,0, 1,0,1,0]},
+    {name:'Offbeat',beats:[0,0,1,0, 1,0,0,0, 0,0,1,0, 1,0,1,0]},
+    {name:'Latin Feel',beats:[1,0,0,0, 1,0,1,0, 0,0,1,0, 1,0,0,0]},
+  ],
+  hard:[
+    {name:'Sixteenth Groove',beats:[1,0,1,0, 1,1,0,0, 1,0,0,1, 0,1,1,0]},
+    {name:'Polyrhythm',beats:[1,0,0,1, 0,0,1,0, 1,0,0,0, 1,1,0,0]},
+    {name:'Funk Sixteenth',beats:[1,1,0,1, 0,0,1,0, 1,0,1,1, 0,0,1,0]},
+  ],
+};
+
+let state='idle'; // idle | playing | listening
+let currentPattern=null,tapExpected=[],tapTimes=[],playStartTime=0;
+let rounds=0,bestScore=null;
+let audioCtx=null;
+
+function getStepDur(){
+  const bpm=parseInt(document.getElementById('bpm').value);
+  return 60000/(bpm*4); // 16th note duration in ms
+}
+
+function click(when,accent=false){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='square';
+  osc.frequency.value=accent?1200:800;
+  gain.gain.setValueAtTime(accent?.3:.15,when);
+  gain.gain.exponentialRampToValueAtTime(0.001,when+0.04);
+  osc.start(when);osc.stop(when+0.04);
+}
+
+function newRound(){
+  if(state==='playing')return;
+  state='idle';
+  const diff=document.getElementById('diff').value;
+  const pool=PATTERNS[diff];
+  currentPattern=pool[Math.floor(Math.random()*pool.length)];
+  tapExpected=currentPattern.beats.reduce((a,b,i)=>{if(b)a.push(i);return a;},[]);
+  tapTimes=[];
+  document.getElementById('patName').textContent=currentPattern.name;
+  document.getElementById('stateLabel').textContent='Listen to the pattern…';
+  document.getElementById('resultText').textContent='';
+  document.getElementById('scoreFill').style.width='0%';
+  renderBeats(-1);
+  document.getElementById('tapBtn').disabled=true;
+  playback(true);
+}
+
+function renderBeats(activeStep,tapped=[]){
+  const beats=currentPattern?currentPattern.beats:new Array(16).fill(0);
+  document.getElementById('beatsRow').innerHTML=beats.map((b,i)=>{
+    let cls='beat';
+    if(i===activeStep)cls+=' active';
+    else if(b)cls+=' hit';
+    else cls+=' rest';
+    if(tapped.includes(i))cls+=' tapped';
+    const label=i%4===0?`${Math.floor(i/4)+1}`:'';
+    return`<div class="${cls}">${label}</div>`;
+  }).join('');
+}
+
+function playback(thenListen=false){
+  if(!currentPattern)return;
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  state='playing';
+  const stepDur=getStepDur();
+  const beats=currentPattern.beats;
+  let step=0;
+  const interval=setInterval(()=>{
+    if(step>=16){
+      clearInterval(interval);
+      if(thenListen){
+        setTimeout(()=>{
+          state='listening';
+          tapTimes=[];
+          playStartTime=performance.now();
+          document.getElementById('stateLabel').textContent='Now tap the rhythm!';
+          document.getElementById('tapBtn').disabled=false;
+          renderBeats(-1);
+          // auto-end after 2 bars
+          setTimeout(()=>{if(state==='listening')endRound();},stepDur*16+1000);
+        },400);
+      } else {
+        state='idle';
+        document.getElementById('stateLabel').textContent='Tap the rhythm!';
+      }
+      return;
+    }
+    if(beats[step]){
+      const when=audioCtx.currentTime+0.01;
+      click(when,step%4===0);
+    }
+    renderBeats(step);
+    step++;
+  },stepDur);
+}
+
+function handleTap(){
+  if(state!=='listening')return;
+  const now=performance.now()-playStartTime;
+  tapTimes.push(now);
+  const btn=document.getElementById('tapBtn');
+  btn.classList.add('flash');
+  setTimeout(()=>btn.classList.remove('flash'),80);
+  // visual feedback
+  const stepDur=getStepDur();
+  const closestStep=Math.round(now/stepDur);
+  if(closestStep<16)renderBeats(-1,tapTimes.map(t=>Math.round(t/stepDur)).filter(s=>s<16));
+}
+
+function endRound(){
+  state='idle';
+  document.getElementById('tapBtn').disabled=true;
+  document.getElementById('stateLabel').textContent='Result:';
+  const stepDur=getStepDur();
+  const expectedTimes=tapExpected.map(s=>s*stepDur);
+  if(!tapTimes.length){document.getElementById('resultText').textContent='No taps recorded.';return;}
+  // Score: match each expected tap to closest actual tap, compute avg error
+  let totalErr=0,matched=0;
+  const usedTaps=new Set();
+  expectedTimes.forEach(et=>{
+    let bestErr=Infinity,bestIdx=-1;
+    tapTimes.forEach((tt,i)=>{
+      if(usedTaps.has(i))return;
+      const err=Math.abs(tt-et);
+      if(err<bestErr){bestErr=err;bestIdx=i;}
+    });
+    if(bestIdx!==-1&&bestErr<stepDur*1.5){
+      totalErr+=bestErr;matched++;usedTaps.add(bestIdx);
+    }
+  });
+  const precision=matched/expectedTimes.length;
+  const avgErr=matched?totalErr/matched:stepDur;
+  const timingScore=Math.max(0,1-avgErr/(stepDur*0.7));
+  const finalScore=Math.round((precision*.6+timingScore*.4)*100);
+  rounds++;
+  if(!bestScore||finalScore>bestScore)bestScore=finalScore;
+  document.getElementById('roundScore').textContent=finalScore+'%';
+  document.getElementById('bestScore').textContent=bestScore+'%';
+  document.getElementById('roundNum').textContent=rounds;
+  document.getElementById('scoreFill').style.width=finalScore+'%';
+  const grade=finalScore>=90?'Perfect!'  :finalScore>=75?'Great!'  :finalScore>=60?'Good'    :finalScore>=40?'Keep practicing':'Try again';
+  document.getElementById('resultText').textContent=`${grade} — ${matched}/${expectedTimes.length} beats matched, avg offset ${avgErr.toFixed(0)}ms`;
+}
+
+document.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(state==='listening')handleTap();}});
+</script>
+</body>
+</html>

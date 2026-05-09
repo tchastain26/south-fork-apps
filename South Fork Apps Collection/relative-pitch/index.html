@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relative Pitch | South Fork Apps</title>
+  <meta name="description" content="Interval ear training. Hear two notes and identify the musical interval between them. Tracks score, streak, and accuracy across all 12 intervals.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/relative-pitch/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Relative Pitch">
+<meta property="og:description" content="Interval ear training — hear two notes and identify the interval. Tracks score, streak, and accuracy.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/relative-pitch/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Relative Pitch">
+<meta name="twitter:description" content="Interval ear training — identify the interval between two notes.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(620px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1rem;color:var(--muted);line-height:1.6;}
+  .config-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .cfg{display:flex;flex-direction:column;gap:.3rem;text-align:left;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.25rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.6rem;}
+  .stat-val{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:.15rem;}
+  .play-area{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;}
+  .note-display{display:flex;gap:1.5rem;justify-content:center;align-items:center;margin-bottom:1.25rem;}
+  .note-bubble{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;border:2px solid var(--border);background:var(--surface2);color:var(--muted);}
+  .note-bubble.played{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08);}
+  .arrow{font-size:1.5rem;color:var(--border);}
+  .play-btn{padding:.6rem 1.75rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:filter .15s;}
+  .play-btn:hover{filter:brightness(1.1);}
+  .play-btn:disabled{opacity:.5;cursor:default;}
+  .feedback{font-size:1.05rem;font-weight:700;min-height:1.6rem;margin-bottom:.85rem;}
+  .feedback.correct{color:var(--accent);}
+  .feedback.wrong{color:#ff7a6a;}
+  .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+  @media(max-width:400px){.choices{grid-template-columns:repeat(2,1fr);}}
+  .choice-btn{padding:.55rem .3rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .12s;line-height:1.3;}
+  .choice-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .choice-btn.correct{border-color:var(--accent);background:rgba(125,219,132,.15);color:var(--accent);}
+  .choice-btn.wrong{border-color:#ff7a6a;background:rgba(255,122,106,.1);color:#ff7a6a;}
+  .choice-btn:disabled{cursor:default;}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Relative Pitch</span></nav>
+<main>
+  <h1>Relative Pitch</h1>
+  <p class="sub">Listen to two notes and identify the interval between them. Builds your ear for harmonic relationships.</p>
+  <div class="config-row">
+    <div class="cfg">
+      <label>Mode</label>
+      <select id="mode">
+        <option value="ascending">Ascending</option>
+        <option value="descending">Descending</option>
+        <option value="harmonic">Harmonic (together)</option>
+        <option value="random">Random</option>
+      </select>
+    </div>
+    <div class="cfg">
+      <label>Difficulty</label>
+      <select id="diff">
+        <option value="easy">Easy (P1 P4 P5 P8)</option>
+        <option value="medium" selected>Medium (all perfect + major/minor 3rd, 6th)</option>
+        <option value="hard">Hard (all 12 intervals)</option>
+      </select>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="score">0</div><div class="stat-label">Score</div></div>
+    <div class="stat"><div class="stat-val" id="streak">0</div><div class="stat-label">Streak</div></div>
+    <div class="stat"><div class="stat-val" id="acc">—</div><div class="stat-label">Accuracy</div></div>
+  </div>
+  <div class="play-area">
+    <div class="note-display">
+      <div class="note-bubble" id="note1">?</div>
+      <div class="arrow">→</div>
+      <div class="note-bubble" id="note2">?</div>
+    </div>
+    <button class="play-btn" id="playBtn" onclick="playInterval()">▶ Play Interval</button>
+  </div>
+  <div class="feedback" id="feedback">&nbsp;</div>
+  <div class="choices" id="choices"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const INTERVALS=[
+  {semi:0, name:'Unison',    abbr:'P1'},
+  {semi:1, name:'Min 2nd',   abbr:'m2'},
+  {semi:2, name:'Maj 2nd',   abbr:'M2'},
+  {semi:3, name:'Min 3rd',   abbr:'m3'},
+  {semi:4, name:'Maj 3rd',   abbr:'M3'},
+  {semi:5, name:'Perf 4th',  abbr:'P4'},
+  {semi:6, name:'Tritone',   abbr:'TT'},
+  {semi:7, name:'Perf 5th',  abbr:'P5'},
+  {semi:8, name:'Min 6th',   abbr:'m6'},
+  {semi:9, name:'Maj 6th',   abbr:'M6'},
+  {semi:10,name:'Min 7th',   abbr:'m7'},
+  {semi:11,name:'Maj 7th',   abbr:'M7'},
+  {semi:12,name:'Octave',    abbr:'P8'},
+];
+const DIFF_POOLS={
+  easy:[0,5,7,12],
+  medium:[0,3,4,5,7,8,9,12],
+  hard:[0,1,2,3,4,5,6,7,8,9,10,11,12],
+};
+const NOTES=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+
+let current=null,score=0,total=0,streak=0,answered=false,audioCtx=null;
+
+function getFreq(midi){return 440*Math.pow(2,(midi-69)/12);}
+
+function playTone(freq,when,dur,vol=0.35){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';osc.frequency.value=freq;
+  gain.gain.setValueAtTime(vol,when);
+  gain.gain.exponentialRampToValueAtTime(0.001,when+dur);
+  osc.start(when);osc.stop(when+dur);
+}
+
+function playInterval(){
+  if(!current)return;
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const mode=document.getElementById('mode').value;
+  const m=mode==='random'?['ascending','descending','harmonic'][Math.floor(Math.random()*3)]:mode;
+  const f1=getFreq(current.midi1),f2=getFreq(current.midi2);
+  const now=audioCtx.currentTime+0.05;
+  if(m==='ascending'){playTone(f1,now,0.7);playTone(f2,now+0.5,0.9);}
+  else if(m==='descending'){playTone(f2,now,0.7);playTone(f1,now+0.5,0.9);}
+  else {playTone(f1,now,1.0);playTone(f2,now,1.0);}
+  document.getElementById('note1').classList.add('played');
+  setTimeout(()=>document.getElementById('note2').classList.add('played'),m==='ascending'?400:0);
+}
+
+function buildChoices(correctSemi){
+  const diff=document.getElementById('diff').value;
+  const pool=DIFF_POOLS[diff];
+  const others=pool.filter(s=>s!==correctSemi);
+  const wrong=others.sort(()=>Math.random()-.5).slice(0,5);
+  return[correctSemi,...wrong].sort(()=>Math.random()-.5);
+}
+
+function nextQuestion(){
+  answered=false;
+  document.getElementById('feedback').textContent=' ';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('note1').classList.remove('played');
+  document.getElementById('note2').classList.remove('played');
+  const diff=document.getElementById('diff').value;
+  const pool=DIFF_POOLS[diff];
+  const semi=pool[Math.floor(Math.random()*pool.length)];
+  const rootMidi=57+Math.floor(Math.random()*13); // A3–A4
+  current={semi,midi1:rootMidi,midi2:rootMidi+semi,interval:INTERVALS.find(i=>i.semi===semi)};
+  document.getElementById('note1').textContent=NOTES[rootMidi%12];
+  document.getElementById('note2').textContent=NOTES[(rootMidi+semi)%12];
+  const choices=buildChoices(semi);
+  document.getElementById('choices').innerHTML=choices.map(c=>{
+    const iv=INTERVALS.find(i=>i.semi===c);
+    return`<button class="choice-btn" onclick="answer(${c})">${iv.name}<br><span style="font-size:.7rem;opacity:.6">${iv.abbr} · ${c}st</span></button>`;
+  }).join('');
+  setTimeout(()=>playInterval(),300);
+}
+
+function answer(chosen){
+  if(answered)return;
+  answered=true;total++;
+  const btns=document.querySelectorAll('.choice-btn');
+  btns.forEach(b=>{
+    b.disabled=true;
+    const bSemi=parseInt(b.getAttribute('onclick').match(/\d+/)[0]);
+    if(bSemi===current.semi)b.classList.add('correct');
+    else if(bSemi===chosen&&chosen!==current.semi)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  if(chosen===current.semi){score++;streak++;fb.textContent=`✓ ${current.interval.name} (${current.semi} semitones)`;fb.className='feedback correct';}
+  else{streak=0;fb.textContent=`✗ That was a ${current.interval.name}`;fb.className='feedback wrong';}
+  document.getElementById('score').textContent=score;
+  document.getElementById('streak').textContent=streak;
+  document.getElementById('acc').textContent=Math.round(score/total*100)+'%';
+  setTimeout(nextQuestion,1400);
+}
+
+['mode','diff'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{score=0;total=0;streak=0;document.getElementById('score').textContent=0;document.getElementById('streak').textContent=0;document.getElementById('acc').textContent='—';nextQuestion();}));
+nextQuestion();
+</script>
+</body>
+</html>

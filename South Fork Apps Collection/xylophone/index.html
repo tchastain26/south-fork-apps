@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xylophone | South Fork Apps</title>
+  <meta name="description" content="Playable virtual xylophone in your browser. Click colorful bars to play notes across two octaves. Use your keyboard for fast playing.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/xylophone/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Xylophone">
+<meta property="og:description" content="Playable virtual xylophone — click colorful bars to play notes across two octaves.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/xylophone/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Xylophone">
+<meta name="twitter:description" content="Playable virtual xylophone in your browser. Click bars to play notes.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .xylophone{display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1.5rem;overflow-x:auto;}
+  .bar{border-radius:6px 6px 10px 10px;cursor:pointer;transition:filter .08s,transform .08s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
+  .bar:hover{filter:brightness(1.15);}
+  .bar:active,.bar.playing{filter:brightness(1.4);transform:scale(.96);}
+  .bar-note{font-size:.72rem;font-weight:800;color:rgba(0,0,0,0.5);writing-mode:vertical-rl;text-orientation:mixed;}
+  .bar-key{font-size:.6rem;font-weight:700;color:rgba(0,0,0,0.35);position:absolute;top:6px;}
+  .display{font-size:1.8rem;font-weight:800;color:var(--accent);min-height:2.5rem;margin-bottom:.75rem;}
+  .controls{display:flex;gap:1rem;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
+  .ctrl-group{display:flex;align-items:center;gap:.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.4rem .85rem;font-size:.85rem;}
+  .ctrl-group label{color:var(--muted);font-weight:600;}
+  select,input[type=range]{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.25rem .5rem;border-radius:5px;font:inherit;font-size:.82rem;cursor:pointer;}
+  input[type=range]{width:80px;accent-color:var(--accent);padding:0;}
+  .hint{font-size:.75rem;color:var(--muted);}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Xylophone</span></nav>
+<main>
+  <h1>Xylophone</h1>
+  <p class="sub">Click the bars or use your keyboard to play notes across two octaves.</p>
+  <div class="display" id="display">—</div>
+  <div class="controls">
+    <div class="ctrl-group">
+      <label>Wave</label>
+      <select id="wave">
+        <option value="triangle" selected>Triangle</option>
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <label>Volume</label>
+      <input type="range" id="vol" min="0.1" max="0.6" step="0.05" value="0.4">
+    </div>
+  </div>
+  <div class="xylophone" id="xylophone"></div>
+  <p class="hint">Keys: A S D F G H J K L (low→high) then Q W E R T Y U I</p>
+  <footer>v1.0</footer>
+</main>
+<script>
+const BARS=[
+  {note:'C4', label:'C', key:'a', color:'#e74c3c', semi:60},
+  {note:'D4', label:'D', key:'s', color:'#e67e22', semi:62},
+  {note:'E4', label:'E', key:'d', color:'#f1c40f', semi:64},
+  {note:'F4', label:'F', key:'f', color:'#2ecc71', semi:65},
+  {note:'G4', label:'G', key:'g', color:'#1abc9c', semi:67},
+  {note:'A4', label:'A', key:'h', color:'#3498db', semi:69},
+  {note:'B4', label:'B', key:'j', color:'#9b59b6', semi:71},
+  {note:'C5', label:'C\'', key:'k', color:'#e74c3c', semi:72},
+  {note:'D5', label:'D\'', key:'l', color:'#e67e22', semi:74},
+  {note:'E5', label:'E\'', key:'q', color:'#f1c40f', semi:76},
+  {note:'F5', label:'F\'', key:'w', color:'#2ecc71', semi:77},
+  {note:'G5', label:'G\'', key:'e', color:'#1abc9c', semi:79},
+  {note:'A5', label:'A\'', key:'r', color:'#3498db', semi:81},
+  {note:'B5', label:'B\'', key:'t', color:'#9b59b6', semi:83},
+  {note:'C6', label:'C\"', key:'y', color:'#e74c3c', semi:84},
+];
+
+const MAX_H=200,MIN_H=80;
+let audioCtx=null;
+
+function getFreq(semi){
+  return 440*Math.pow(2,(semi-69)/12);
+}
+
+function playBar(semi,note,el){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const freq=getFreq(semi);
+  const wave=document.getElementById('wave').value;
+  const vol=parseFloat(document.getElementById('vol').value);
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type=wave;osc.frequency.value=freq;
+  gain.gain.setValueAtTime(vol,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.2);
+  osc.start();osc.stop(audioCtx.currentTime+1.2);
+  document.getElementById('display').textContent=note;
+  if(el){
+    el.classList.add('playing');
+    setTimeout(()=>el.classList.remove('playing'),120);
+  }
+}
+
+function buildXylophone(){
+  const wrap=document.getElementById('xylophone');
+  const n=BARS.length;
+  wrap.innerHTML=BARS.map((b,i)=>{
+    const h=MAX_H-((MAX_H-MIN_H)/n)*i;
+    const w=46;
+    return`<div class="bar" id="bar-${i}" style="width:${w}px;height:${h}px;background:${b.color}" onmousedown="playBar(${b.semi},'${b.note}',this)">
+      <span class="bar-key">${b.key.toUpperCase()}</span>
+      <span class="bar-note">${b.label}</span>
+    </div>`;
+  }).join('');
+}
+
+const KB_MAP={};
+BARS.forEach((b,i)=>KB_MAP[b.key]=i);
+
+document.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  if(KB_MAP[k]!==undefined){
+    const b=BARS[KB_MAP[k]];
+    const el=document.getElementById(`bar-${KB_MAP[k]}`);
+    playBar(b.semi,b.note,el);
+  }
+});
+
+buildXylophone();
+</script>
+</body>
+</html>
