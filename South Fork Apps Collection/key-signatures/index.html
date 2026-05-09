@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key Signatures | South Fork Apps</title>
+  <meta name="description" content="Complete reference for all 30 major and minor key signatures. Shows sharps, flats, and relative key relationships.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/key-signatures/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Key Signatures">
+<meta property="og:description" content="Complete reference for all 30 major and minor key signatures. Shows sharps, flats, and relative key relationships.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/key-signatures/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Key Signatures">
+<meta name="twitter:description" content="Complete reference for all 30 major and minor key signatures. Shows sharps, flats, and relative key relationships.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .filter-row{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+  .filter-btn{padding:.4rem .9rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
+  .filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2);}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.6rem .9rem;text-align:left;border-bottom:2px solid var(--border);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody td{padding:.65rem .9rem;vertical-align:middle;}
+  .key-name{font-weight:700;color:var(--text);}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:700;}
+  .tag-major{background:rgba(125,219,132,.12);color:var(--accent);border:1px solid rgba(125,219,132,.25);}
+  .tag-minor{background:rgba(170,204,218,.1);color:#aaccda;border:1px solid rgba(170,204,218,.2);}
+  .note-pills{display:flex;gap:.3rem;flex-wrap:wrap;}
+  .pill{padding:.15rem .45rem;border-radius:4px;font-size:.78rem;font-weight:600;}
+  .pill-sharp{background:rgba(125,219,132,.1);color:var(--accent);}
+  .pill-flat{background:rgba(170,181,172,.1);color:var(--muted);}
+  .count{font-weight:700;color:var(--accent);min-width:1.5ch;display:inline-block;}
+  .rel{color:var(--muted);font-size:.82rem;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:600px){thead th:nth-child(4){display:none;}tbody td:nth-child(4){display:none;}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Key Signatures</span></nav>
+<main>
+  <h1>Key Signatures</h1>
+  <p class="sub">All major and minor key signatures — sharps, flats, and relative key relationships.</p>
+  <div class="filter-row">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="major">Major</button>
+    <button class="filter-btn" data-filter="minor">Minor</button>
+    <button class="filter-btn" data-filter="sharps">Sharps</button>
+    <button class="filter-btn" data-filter="flats">Flats</button>
+    <button class="filter-btn" data-filter="none">No Accidentals</button>
+  </div>
+  <table id="table">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Type</th>
+        <th>Accidentals</th>
+        <th>Notes</th>
+        <th>Relative</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <footer>v1.0</footer>
+</main>
+<script>
+const KEYS=[
+  {key:"C",type:"major",acc:0,kind:"none",notes:[],rel:"A minor"},
+  {key:"G",type:"major",acc:1,kind:"sharps",notes:["F♯"],rel:"E minor"},
+  {key:"D",type:"major",acc:2,kind:"sharps",notes:["F♯","C♯"],rel:"B minor"},
+  {key:"A",type:"major",acc:3,kind:"sharps",notes:["F♯","C♯","G♯"],rel:"F♯ minor"},
+  {key:"E",type:"major",acc:4,kind:"sharps",notes:["F♯","C♯","G♯","D♯"],rel:"C♯ minor"},
+  {key:"B",type:"major",acc:5,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯"],rel:"G♯ minor"},
+  {key:"F♯",type:"major",acc:6,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯","E♯"],rel:"D♯ minor"},
+  {key:"C♯",type:"major",acc:7,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯","E♯","B♯"],rel:"A♯ minor"},
+  {key:"F",type:"major",acc:1,kind:"flats",notes:["B♭"],rel:"D minor"},
+  {key:"B♭",type:"major",acc:2,kind:"flats",notes:["B♭","E♭"],rel:"G minor"},
+  {key:"E♭",type:"major",acc:3,kind:"flats",notes:["B♭","E♭","A♭"],rel:"C minor"},
+  {key:"A♭",type:"major",acc:4,kind:"flats",notes:["B♭","E♭","A♭","D♭"],rel:"F minor"},
+  {key:"D♭",type:"major",acc:5,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭"],rel:"B♭ minor"},
+  {key:"G♭",type:"major",acc:6,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭","C♭"],rel:"E♭ minor"},
+  {key:"C♭",type:"major",acc:7,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭","C♭","F♭"],rel:"A♭ minor"},
+  {key:"A",type:"minor",acc:0,kind:"none",notes:[],rel:"C major"},
+  {key:"E",type:"minor",acc:1,kind:"sharps",notes:["F♯"],rel:"G major"},
+  {key:"B",type:"minor",acc:2,kind:"sharps",notes:["F♯","C♯"],rel:"D major"},
+  {key:"F♯",type:"minor",acc:3,kind:"sharps",notes:["F♯","C♯","G♯"],rel:"A major"},
+  {key:"C♯",type:"minor",acc:4,kind:"sharps",notes:["F♯","C♯","G♯","D♯"],rel:"E major"},
+  {key:"G♯",type:"minor",acc:5,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯"],rel:"B major"},
+  {key:"D♯",type:"minor",acc:6,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯","E♯"],rel:"F♯ major"},
+  {key:"A♯",type:"minor",acc:7,kind:"sharps",notes:["F♯","C♯","G♯","D♯","A♯","E♯","B♯"],rel:"C♯ major"},
+  {key:"D",type:"minor",acc:1,kind:"flats",notes:["B♭"],rel:"F major"},
+  {key:"G",type:"minor",acc:2,kind:"flats",notes:["B♭","E♭"],rel:"B♭ major"},
+  {key:"C",type:"minor",acc:3,kind:"flats",notes:["B♭","E♭","A♭"],rel:"E♭ major"},
+  {key:"F",type:"minor",acc:4,kind:"flats",notes:["B♭","E♭","A♭","D♭"],rel:"A♭ major"},
+  {key:"B♭",type:"minor",acc:5,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭"],rel:"D♭ major"},
+  {key:"E♭",type:"minor",acc:6,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭","C♭"],rel:"G♭ major"},
+  {key:"A♭",type:"minor",acc:7,kind:"flats",notes:["B♭","E♭","A♭","D♭","G♭","C♭","F♭"],rel:"C♭ major"},
+];
+
+let activeFilter="all";
+
+function render(filter){
+  const tbody=document.getElementById("tbody");
+  const rows=KEYS.filter(k=>{
+    if(filter==="all")return true;
+    if(filter==="major")return k.type==="major";
+    if(filter==="minor")return k.type==="minor";
+    if(filter==="sharps")return k.kind==="sharps";
+    if(filter==="flats")return k.kind==="flats";
+    if(filter==="none")return k.kind==="none";
+    return true;
+  });
+  tbody.innerHTML=rows.map(k=>`
+    <tr>
+      <td class="key-name">${k.key}</td>
+      <td><span class="tag tag-${k.type}">${k.type}</span></td>
+      <td>${k.acc===0?'<span style="color:var(--muted)">None</span>':'<span class="count">'+k.acc+'</span> <span style="color:var(--muted);font-size:.8rem">'+(k.kind==="sharps"?"sharp"+(k.acc!==1?"s":""):"flat"+(k.acc!==1?"s":""))+"</span>"}</td>
+      <td><div class="note-pills">${k.notes.map(n=>`<span class="pill pill-${k.kind}">${n}</span>`).join("")||'<span style="color:var(--muted);font-size:.82rem">—</span>'}</div></td>
+      <td class="rel">${k.rel}</td>
+    </tr>`).join("");
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.filter);
+  });
+});
+
+render("all");
+</script>
+</body>
+</html>

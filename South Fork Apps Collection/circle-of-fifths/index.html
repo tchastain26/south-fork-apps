@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle of Fifths | South Fork Apps</title>
+  <meta name="description" content="Interactive Circle of Fifths showing all 12 major and relative minor keys. Click any key to see its signature, chords, and relatives.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-fifths/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Circle of Fifths">
+<meta property="og:description" content="Interactive Circle of Fifths. Click any key to see its key signature, diatonic chords, and relative minor.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-fifths/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Circle of Fifths">
+<meta name="twitter:description" content="Interactive Circle of Fifths showing all 12 major and relative minor keys.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);text-align:center;}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;text-align:center;}
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+  .svg-wrap{width:100%;max-width:420px;margin:0 auto;}
+  svg{width:100%;height:auto;cursor:pointer;}
+  .info-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+  .info-key{font-size:2.2rem;font-weight:800;color:var(--accent);margin-bottom:.75rem;}
+  .info-section{margin-bottom:1rem;}
+  .info-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+  .info-val{font-size:.95rem;font-weight:600;color:var(--text);}
+  .chord-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;margin-top:.35rem;}
+  .chord-cell{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.3rem .2rem;text-align:center;font-size:.72rem;font-weight:700;}
+  .chord-cell.roman{font-size:.65rem;color:var(--muted);border:none;background:none;padding-top:0;}
+  .deg1{color:var(--accent);}
+  .deg4,.deg5{color:#aaccda;}
+  .acc-pill{display:inline-block;padding:.1rem .4rem;border-radius:3px;margin:.15rem;font-size:.78rem;font-weight:700;}
+  .acc-sharp{background:rgba(125,219,132,.1);color:var(--accent);}
+  .acc-flat{background:rgba(170,181,172,.1);color:var(--muted);}
+  .hint{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.5rem;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:640px){.layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Circle of Fifths</span></nav>
+<main>
+  <h1>Circle of Fifths</h1>
+  <p class="sub">Click any key to see its signature, relative minor, and diatonic chords.</p>
+  <div class="layout">
+    <div class="svg-wrap">
+      <svg id="cof" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="hint">Outer ring = major keys · Inner ring = relative minors</p>
+    </div>
+    <div class="info-panel" id="info">
+      <p style="color:var(--muted);font-size:.9rem;text-align:center;">Click a key on the circle</p>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const KEYS=[
+  {major:'C', minor:'Am', acc:0, kind:'none', notes:[], chords:['C','Dm','Em','F','G','Am','Bdim']},
+  {major:'G', minor:'Em', acc:1, kind:'sharps', notes:['F♯'], chords:['G','Am','Bm','C','D','Em','F♯dim']},
+  {major:'D', minor:'Bm', acc:2, kind:'sharps', notes:['F♯','C♯'], chords:['D','Em','F♯m','G','A','Bm','C♯dim']},
+  {major:'A', minor:'F♯m', acc:3, kind:'sharps', notes:['F♯','C♯','G♯'], chords:['A','Bm','C♯m','D','E','F♯m','G♯dim']},
+  {major:'E', minor:'C♯m', acc:4, kind:'sharps', notes:['F♯','C♯','G♯','D♯'], chords:['E','F♯m','G♯m','A','B','C♯m','D♯dim']},
+  {major:'B', minor:'G♯m', acc:5, kind:'sharps', notes:['F♯','C♯','G♯','D♯','A♯'], chords:['B','C♯m','D♯m','E','F♯','G♯m','A♯dim']},
+  {major:'F♯/G♭', minor:'D♯m/E♭m', acc:6, kind:'sharps', notes:['F♯','C♯','G♯','D♯','A♯','E♯'], chords:['F♯','G♯m','A♯m','B','C♯','D♯m','E♯dim']},
+  {major:'D♭', minor:'B♭m', acc:5, kind:'flats', notes:['B♭','E♭','A♭','D♭','G♭'], chords:['D♭','E♭m','Fm','G♭','A♭','B♭m','Cdim']},
+  {major:'A♭', minor:'Fm', acc:4, kind:'flats', notes:['B♭','E♭','A♭','D♭'], chords:['A♭','B♭m','Cm','D♭','E♭','Fm','Gdim']},
+  {major:'E♭', minor:'Cm', acc:3, kind:'flats', notes:['B♭','E♭','A♭'], chords:['E♭','Fm','Gm','A♭','B♭','Cm','Ddim']},
+  {major:'B♭', minor:'Gm', acc:2, kind:'flats', notes:['B♭','E♭'], chords:['B♭','Cm','Dm','E♭','F','Gm','Adim']},
+  {major:'F', minor:'Dm', acc:1, kind:'flats', notes:['B♭'], chords:['F','Gm','Am','B♭','C','Dm','Edim']},
+];
+
+const cx=200,cy=200,R=190,rMajOuter=190,rMajInner=130,rMinOuter=125,rMinInner=75;
+const svg=document.getElementById('cof');
+const TAU=Math.PI*2;
+
+function sector(cx,cy,r1,r2,startA,endA,fill,stroke,extra=''){
+  const m1=polar(cx,cy,r2,startA),m2=polar(cx,cy,r1,startA);
+  const m3=polar(cx,cy,r1,endA),m4=polar(cx,cy,r2,endA);
+  const large=endA-startA>Math.PI?1:0;
+  return`<path d="M${m1.x},${m1.y} A${r2},${r2} 0 ${large} 1 ${m4.x},${m4.y} L${m3.x},${m3.y} A${r1},${r1} 0 ${large} 0 ${m2.x},${m2.y} Z" fill="${fill}" stroke="${stroke}" stroke-width="1.5" ${extra}/>`;
+}
+
+function polar(cx,cy,r,a){
+  return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};
+}
+
+function textOnArc(cx,cy,r,a,text,cls,fontSize){
+  const p=polar(cx,cy,r,a);
+  const deg=a*180/Math.PI+90;
+  return`<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central" transform="rotate(${deg},${p.x},${p.y})" font-size="${fontSize}" class="${cls}" fill="" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">${text}</text>`;
+}
+
+let selectedIdx=null;
+
+function buildCircle(sel){
+  let html='';
+  const n=KEYS.length;
+  const slice=TAU/n;
+  const offset=-Math.PI/2-slice/2;
+
+  for(let i=0;i<n;i++){
+    const startA=offset+i*slice;
+    const endA=startA+slice;
+    const midA=startA+slice/2;
+    const isSelected=i===sel;
+    const majFill=isSelected?'rgba(125,219,132,0.22)':'rgba(29,32,30,0.9)';
+    const majStroke=isSelected?'#7ddb84':'#2a2f2b';
+    const minFill=isSelected?'rgba(125,219,132,0.1)':'rgba(20,26,22,0.9)';
+    html+=sector(cx,cy,rMajInner,rMajOuter,startA,endA,majFill,majStroke,`data-idx="${i}" class="maj-seg" style="cursor:pointer"`);
+    html+=sector(cx,cy,rMinInner,rMinOuter,startA,endA,minFill,'#2a2f2b',`data-idx="${i}" class="min-seg" style="cursor:pointer"`);
+    const k=KEYS[i];
+    const majorLabel=k.major.includes('/')? k.major.split('/')[0]+'/':k.major;
+    html+=`<text x="${polar(cx,cy,(rMajInner+rMajOuter)/2,midA).x}" y="${polar(cx,cy,(rMajInner+rMajOuter)/2,midA).y}" text-anchor="middle" dominant-baseline="central" font-size="${k.major.includes('/')?'11':'14'}" font-family="Plus Jakarta Sans,sans-serif" font-weight="700" fill="${isSelected?'#7ddb84':'#e8e8e8'}" style="pointer-events:none">${k.major}</text>`;
+    const minorLabel=k.minor.includes('/')? k.minor.split('/')[0]:k.minor;
+    html+=`<text x="${polar(cx,cy,(rMinInner+rMinOuter)/2,midA).x}" y="${polar(cx,cy,(rMinInner+rMinOuter)/2,midA).y}" text-anchor="middle" dominant-baseline="central" font-size="10" font-family="Plus Jakarta Sans,sans-serif" font-weight="600" fill="${isSelected?'#aaccda':'#aab5ac'}" style="pointer-events:none">${minorLabel}</text>`;
+  }
+  html+=`<circle cx="${cx}" cy="${cy}" r="${rMinInner-4}" fill="#111412" stroke="#2a2f2b" stroke-width="1.5"/>`;
+  html+=`<text x="${cx}" y="${cy-8}" text-anchor="middle" font-size="13" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" fill="#7ddb84">Circle of</text>`;
+  html+=`<text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="13" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" fill="#7ddb84">Fifths</text>`;
+  svg.innerHTML=html;
+  svg.querySelectorAll('.maj-seg,.min-seg').forEach(el=>{
+    el.addEventListener('click',()=>{
+      selectedIdx=parseInt(el.dataset.idx);
+      buildCircle(selectedIdx);
+      showInfo(selectedIdx);
+    });
+  });
+}
+
+function showInfo(idx){
+  const k=KEYS[idx];
+  const accHtml=k.acc===0
+    ?'<span style="color:var(--muted)">None (C major / A minor)</span>'
+    :k.notes.map(n=>`<span class="acc-pill acc-${k.kind==='sharps'?'sharp':'flat'}">${n}</span>`).join('');
+  const chordRomans=['I','ii','iii','IV','V','vi','vii°'];
+  const chordHtml=k.chords.map((c,i)=>`<div class="chord-cell ${i===0?'deg1':i===3||i===4?'deg4':''}">${c}</div>`).join('');
+  const romanHtml=chordRomans.map(r=>`<div class="chord-cell roman">${r}</div>`).join('');
+  document.getElementById('info').innerHTML=`
+    <div class="info-key">${k.major}</div>
+    <div class="info-section">
+      <div class="info-label">Relative Minor</div>
+      <div class="info-val">${k.minor}</div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Key Signature — ${k.acc} ${k.kind==='none'?'accidental'+(k.acc!==1?'s':''):k.kind.slice(0,-1)+(k.acc!==1?'s':'')}</div>
+      <div style="margin-top:.35rem">${accHtml}</div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Diatonic Chords</div>
+      <div class="chord-grid">${romanHtml}${chordHtml}</div>
+    </div>`;
+}
+
+buildCircle(null);
+</script>
+</body>
+</html>

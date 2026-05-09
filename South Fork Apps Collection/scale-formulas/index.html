@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scale Formulas | South Fork Apps</title>
+  <meta name="description" content="Reference chart for musical scale formulas. Shows whole/half step patterns for major, minor, modes, pentatonic, blues, and more.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/scale-formulas/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Scale Formulas">
+<meta property="og:description" content="Reference chart for musical scale formulas. Shows whole/half step patterns for major, minor, modes, pentatonic, blues, and more.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/scale-formulas/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scale Formulas">
+<meta name="twitter:description" content="Reference chart for musical scale formulas. W/H step patterns for major, minor, modes, pentatonic, blues, and more.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(860px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 .5rem;color:var(--muted);line-height:1.6;}
+  .legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:.82rem;}
+  .legend-item{display:flex;align-items:center;gap:.4rem;}
+  .step-box{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;border-radius:4px;font-weight:800;font-size:.82rem;}
+  .step-W{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid rgba(125,219,132,.3);}
+  .step-H{background:rgba(170,204,218,.12);color:#aaccda;border:1px solid rgba(170,204,218,.25);}
+  .step-WH{background:rgba(225,193,164,.1);color:#e1c1a4;border:1px solid rgba(225,193,164,.2);}
+  .step-S{background:rgba(200,162,255,.1);color:#c8a2ff;border:1px solid rgba(200,162,255,.2);}
+  .section-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:1.5rem 0 .5rem;padding-top:.5rem;border-top:1px solid var(--border);}
+  .section-label:first-of-type{border-top:none;margin-top:0;}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:.5rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.55rem .8rem;text-align:left;border-bottom:2px solid var(--border);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody td{padding:.6rem .8rem;vertical-align:middle;}
+  .scale-name{font-weight:700;}
+  .notes-count{font-size:.78rem;padding:.1rem .4rem;border-radius:3px;background:var(--surface2);color:var(--muted);font-weight:600;}
+  .pattern{display:flex;gap:.25rem;flex-wrap:wrap;}
+  .example{font-size:.82rem;color:var(--muted);}
+  .degrees{font-size:.78rem;color:var(--muted);font-family:monospace;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:600px){.example{display:none;}thead th:last-child{display:none;}tbody td:last-child{display:none;}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Scale Formulas</span></nav>
+<main>
+  <h1>Scale Formulas</h1>
+  <p class="sub">Whole/half step patterns for all common scales. W = whole step (2 semitones), H = half step (1 semitone).</p>
+  <div class="legend">
+    <div class="legend-item"><span class="step-box step-W">W</span> Whole step (2 semitones)</div>
+    <div class="legend-item"><span class="step-box step-H">H</span> Half step (1 semitone)</div>
+    <div class="legend-item"><span class="step-box step-WH">WH</span> Whole+Half (3 semitones)</div>
+    <div class="legend-item"><span class="step-box step-S">S</span> Skip (used in pentatonic)</div>
+  </div>
+
+  <div class="section-label">Major &amp; Natural Minor</div>
+  <table>
+    <thead><tr><th>Scale</th><th>Notes</th><th>Pattern</th><th>Degrees</th><th>Example (C)</th></tr></thead>
+    <tbody id="major-minor"></tbody>
+  </table>
+
+  <div class="section-label">Church Modes</div>
+  <table>
+    <thead><tr><th>Mode</th><th>Notes</th><th>Pattern</th><th>Character</th><th>Example (C)</th></tr></thead>
+    <tbody id="modes"></tbody>
+  </table>
+
+  <div class="section-label">Pentatonic &amp; Blues</div>
+  <table>
+    <thead><tr><th>Scale</th><th>Notes</th><th>Pattern</th><th>Degrees</th><th>Example (C)</th></tr></thead>
+    <tbody id="penta"></tbody>
+  </table>
+
+  <div class="section-label">Harmonic &amp; Melodic Minor</div>
+  <table>
+    <thead><tr><th>Scale</th><th>Notes</th><th>Pattern</th><th>Note</th><th>Example (C)</th></tr></thead>
+    <tbody id="harm"></tbody>
+  </table>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+function pat(steps){
+  const map={W:'step-W',H:'step-H','WH':'step-WH','1½':'step-WH',S:'step-S'};
+  return`<div class="pattern">${steps.map(s=>`<span class="step-box ${map[s]||'step-W'}">${s}</span>`).join('')}</div>`;
+}
+
+const data={
+  'major-minor':[
+    {name:'Major (Ionian)',n:7,steps:['W','W','H','W','W','W','H'],deg:'1 2 3 4 5 6 7',ex:'C D E F G A B'},
+    {name:'Natural Minor (Aeolian)',n:7,steps:['W','H','W','W','H','W','W'],deg:'1 2 b3 4 5 b6 b7',ex:'C D E♭ F G A♭ B♭'},
+  ],
+  modes:[
+    {name:'Ionian',n:7,steps:['W','W','H','W','W','W','H'],deg:'Major scale',ex:'C D E F G A B'},
+    {name:'Dorian',n:7,steps:['W','H','W','W','W','H','W'],deg:'Minor + raised 6th',ex:'C D E♭ F G A B♭'},
+    {name:'Phrygian',n:7,steps:['H','W','W','W','H','W','W'],deg:'Minor + flat 2nd',ex:'C D♭ E♭ F G A♭ B♭'},
+    {name:'Lydian',n:7,steps:['W','W','W','H','W','W','H'],deg:'Major + raised 4th',ex:'C D E F♯ G A B'},
+    {name:'Mixolydian',n:7,steps:['W','W','H','W','W','H','W'],deg:'Major + flat 7th',ex:'C D E F G A B♭'},
+    {name:'Aeolian',n:7,steps:['W','H','W','W','H','W','W'],deg:'Natural minor',ex:'C D E♭ F G A♭ B♭'},
+    {name:'Locrian',n:7,steps:['H','W','W','H','W','W','W'],deg:'Diminished character',ex:'C D♭ E♭ F G♭ A♭ B♭'},
+  ],
+  penta:[
+    {name:'Major Pentatonic',n:5,steps:['W','W','WH','W','WH'],deg:'1 2 3 5 6',ex:'C D E G A'},
+    {name:'Minor Pentatonic',n:5,steps:['WH','W','W','WH','W'],deg:'1 b3 4 5 b7',ex:'C E♭ F G B♭'},
+    {name:'Major Blues',n:6,steps:['W','H','H','WH','W','WH'],deg:'1 2 b3 3 5 6',ex:'C D E♭ E G A'},
+    {name:'Minor Blues',n:6,steps:['WH','W','H','H','WH','W'],deg:'1 b3 4 b5 5 b7',ex:'C E♭ F G♭ G B♭'},
+  ],
+  harm:[
+    {name:'Harmonic Minor',n:7,steps:['W','H','W','W','H','WH','H'],deg:'Natural minor + raised 7th',ex:'C D E♭ F G A♭ B'},
+    {name:'Melodic Minor (asc.)',n:7,steps:['W','H','W','W','W','W','H'],deg:'Minor + raised 6th & 7th',ex:'C D E♭ F G A B'},
+    {name:'Harmonic Major',n:7,steps:['W','W','H','W','H','WH','H'],deg:'Major + flat 6th',ex:'C D E F G A♭ B'},
+    {name:'Double Harmonic Major',n:7,steps:['H','WH','H','W','H','WH','H'],deg:'Byzantine scale',ex:'C D♭ E F G A♭ B'},
+  ]
+};
+
+Object.entries(data).forEach(([id,rows])=>{
+  const tbody=document.getElementById(id);
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="scale-name">${r.name}</td>
+    <td><span class="notes-count">${r.n} notes</span></td>
+    <td>${pat(r.steps)}</td>
+    <td class="degrees">${r.deg}</td>
+    <td class="example">${r.ex}</td>
+  </tr>`).join('');
+});
+</script>
+</body>
+</html>

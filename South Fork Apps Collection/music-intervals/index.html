@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Intervals | South Fork Apps</title>
+  <meta name="description" content="Reference chart for all musical intervals — names, abbreviations, half steps, and examples from C. Includes unison through two octaves.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/music-intervals/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Music Intervals">
+<meta property="og:description" content="Reference chart for all musical intervals — names, abbreviations, half steps, and examples from C.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/music-intervals/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Music Intervals">
+<meta name="twitter:description" content="Reference chart for all musical intervals — names, abbreviations, half steps, and examples from C.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .section-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:1.5rem 0 .5rem;}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:.5rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.6rem .9rem;text-align:left;border-bottom:2px solid var(--border);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody td{padding:.6rem .9rem;vertical-align:middle;}
+  .name{font-weight:700;}
+  .abbr{font-size:.8rem;color:var(--muted);font-family:monospace;background:var(--surface2);padding:.1rem .35rem;border-radius:3px;}
+  .steps{font-weight:700;color:var(--accent);}
+  .quality-P{color:#7ddb84;}
+  .quality-M{color:#aaccda;}
+  .quality-m{color:#e1c1a4;}
+  .quality-d{color:#ff9980;}
+  .quality-A{color:#c8a2ff;}
+  .example{font-size:.85rem;color:var(--muted);}
+  .consonance{font-size:.75rem;padding:.1rem .4rem;border-radius:3px;font-weight:600;}
+  .con-perfect{background:rgba(125,219,132,.12);color:var(--accent);}
+  .con-imperfect{background:rgba(170,204,218,.1);color:#aaccda;}
+  .con-dissonant{background:rgba(170,181,172,.08);color:var(--muted);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:580px){.consonance{display:none;}thead th:last-child{display:none;}tbody td:last-child{display:none;}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Music Intervals</span></nav>
+<main>
+  <h1>Music Intervals</h1>
+  <p class="sub">All standard intervals from unison to octave, with quality, half steps, and examples starting from C.</p>
+
+  <div class="section-label">Perfect &amp; Major/Minor Intervals</div>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Abbr</th><th>Quality</th><th>Half Steps</th><th>Example (from C)</th><th>Consonance</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="name">Unison</td><td><span class="abbr">P1</span></td><td class="quality-P">Perfect</td><td class="steps">0</td><td class="example">C → C</td><td><span class="consonance con-perfect">Perfect</span></td></tr>
+      <tr><td class="name">Minor 2nd</td><td><span class="abbr">m2</span></td><td class="quality-m">Minor</td><td class="steps">1</td><td class="example">C → D♭</td><td><span class="consonance con-dissonant">Dissonant</span></td></tr>
+      <tr><td class="name">Major 2nd</td><td><span class="abbr">M2</span></td><td class="quality-M">Major</td><td class="steps">2</td><td class="example">C → D</td><td><span class="consonance con-dissonant">Dissonant</span></td></tr>
+      <tr><td class="name">Minor 3rd</td><td><span class="abbr">m3</span></td><td class="quality-m">Minor</td><td class="steps">3</td><td class="example">C → E♭</td><td><span class="consonance con-imperfect">Imperfect</span></td></tr>
+      <tr><td class="name">Major 3rd</td><td><span class="abbr">M3</span></td><td class="quality-M">Major</td><td class="steps">4</td><td class="example">C → E</td><td><span class="consonance con-imperfect">Imperfect</span></td></tr>
+      <tr><td class="name">Perfect 4th</td><td><span class="abbr">P4</span></td><td class="quality-P">Perfect</td><td class="steps">5</td><td class="example">C → F</td><td><span class="consonance con-perfect">Perfect</span></td></tr>
+      <tr><td class="name">Tritone</td><td><span class="abbr">TT</span></td><td class="quality-d">Dim/Aug</td><td class="steps">6</td><td class="example">C → F♯/G♭</td><td><span class="consonance con-dissonant">Dissonant</span></td></tr>
+      <tr><td class="name">Perfect 5th</td><td><span class="abbr">P5</span></td><td class="quality-P">Perfect</td><td class="steps">7</td><td class="example">C → G</td><td><span class="consonance con-perfect">Perfect</span></td></tr>
+      <tr><td class="name">Minor 6th</td><td><span class="abbr">m6</span></td><td class="quality-m">Minor</td><td class="steps">8</td><td class="example">C → A♭</td><td><span class="consonance con-imperfect">Imperfect</span></td></tr>
+      <tr><td class="name">Major 6th</td><td><span class="abbr">M6</span></td><td class="quality-M">Major</td><td class="steps">9</td><td class="example">C → A</td><td><span class="consonance con-imperfect">Imperfect</span></td></tr>
+      <tr><td class="name">Minor 7th</td><td><span class="abbr">m7</span></td><td class="quality-m">Minor</td><td class="steps">10</td><td class="example">C → B♭</td><td><span class="consonance con-dissonant">Dissonant</span></td></tr>
+      <tr><td class="name">Major 7th</td><td><span class="abbr">M7</span></td><td class="quality-M">Major</td><td class="steps">11</td><td class="example">C → B</td><td><span class="consonance con-dissonant">Dissonant</span></td></tr>
+      <tr><td class="name">Octave</td><td><span class="abbr">P8</span></td><td class="quality-P">Perfect</td><td class="steps">12</td><td class="example">C → C'</td><td><span class="consonance con-perfect">Perfect</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">Compound Intervals (beyond the octave)</div>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Abbr</th><th>Also Called</th><th>Half Steps</th><th>Example (from C)</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="name">Minor 9th</td><td><span class="abbr">m9</span></td><td class="example">Minor 2nd + octave</td><td class="steps">13</td><td class="example">C → D♭'</td><td></td></tr>
+      <tr><td class="name">Major 9th</td><td><span class="abbr">M9</span></td><td class="example">Major 2nd + octave</td><td class="steps">14</td><td class="example">C → D'</td><td></td></tr>
+      <tr><td class="name">Minor 10th</td><td><span class="abbr">m10</span></td><td class="example">Minor 3rd + octave</td><td class="steps">15</td><td class="example">C → E♭'</td><td></td></tr>
+      <tr><td class="name">Major 10th</td><td><span class="abbr">M10</span></td><td class="example">Major 3rd + octave</td><td class="steps">16</td><td class="example">C → E'</td><td></td></tr>
+      <tr><td class="name">Perfect 11th</td><td><span class="abbr">P11</span></td><td class="example">Perfect 4th + octave</td><td class="steps">17</td><td class="example">C → F'</td><td></td></tr>
+      <tr><td class="name">Perfect 12th</td><td><span class="abbr">P12</span></td><td class="example">Perfect 5th + octave</td><td class="steps">19</td><td class="example">C → G'</td><td></td></tr>
+      <tr><td class="name">Major 13th</td><td><span class="abbr">M13</span></td><td class="example">Major 6th + octave</td><td class="steps">21</td><td class="example">C → A'</td><td></td></tr>
+    </tbody>
+  </table>
+  <footer>v1.0</footer>
+</main>
+</body>
+</html>

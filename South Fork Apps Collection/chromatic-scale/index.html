@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chromatic Scale | South Fork Apps</title>
+  <meta name="description" content="Interactive chromatic scale tool. Click any of the 12 notes to hear it, see enharmonic equivalents, and explore its position in the octave.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chromatic-scale/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chromatic Scale">
+<meta property="og:description" content="Interactive chromatic scale. Click any note to hear it and see its enharmonic equivalents.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/chromatic-scale/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chromatic Scale">
+<meta name="twitter:description" content="Interactive chromatic scale. Click any note to hear it and see its enharmonic equivalents.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 2rem;color:var(--muted);line-height:1.6;}
+  .octave-select{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1.5rem;}
+  .octave-select label{color:var(--muted);font-size:.85rem;}
+  select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.35rem .7rem;border-radius:6px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .note-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem;margin-bottom:2rem;}
+  .note-btn{padding:1.1rem .5rem;border:2px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:.3rem;}
+  .note-btn:hover{border-color:var(--accent);background:var(--surface2);}
+  .note-btn.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+  .note-btn.natural{border-color:#3a4a3b;}
+  .note-btn.accidental{border-color:#2a3a3b;background:#151c1d;}
+  .note-num{font-size:.65rem;font-weight:600;color:var(--muted);}
+  .info-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;}
+  .info-note{font-size:2.5rem;font-weight:800;color:var(--accent);}
+  .info-row{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;}
+  .info-item{text-align:center;}
+  .info-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  .info-val{font-size:.95rem;font-weight:600;color:var(--text);}
+  .enh-pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;}
+  .enh-pill{padding:.2rem .6rem;border-radius:5px;background:var(--surface2);border:1px solid var(--border);font-size:.82rem;color:var(--muted);}
+  .play-hint{font-size:.78rem;color:var(--muted);margin-top:.5rem;}
+  .semitone-bar{display:flex;gap:4px;margin-bottom:.75rem;justify-content:center;}
+  .semitone-tick{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  .semitone-tick.on{background:var(--accent);}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:480px){.note-grid{grid-template-columns:repeat(4,1fr);}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Chromatic Scale</span></nav>
+<main>
+  <h1>Chromatic Scale</h1>
+  <p class="sub">All 12 notes of the chromatic scale. Click any note to hear it and explore enharmonic equivalents.</p>
+
+  <div class="octave-select">
+    <label for="octave">Octave:</label>
+    <select id="octave">
+      <option value="3">3 (low)</option>
+      <option value="4" selected>4 (middle)</option>
+      <option value="5">5 (high)</option>
+    </select>
+  </div>
+
+  <div class="note-grid" id="noteGrid"></div>
+
+  <div class="info-panel" id="infoPanel">
+    <p style="color:var(--muted);font-size:.9rem;">Select a note above to see details</p>
+  </div>
+
+  <div class="play-hint">Click any note to play it · Uses Web Audio API</div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES=[
+  {name:'C',semitone:0,type:'natural',enharmonic:[],freq_offset:0},
+  {name:'C♯',semitone:1,type:'accidental',enharmonic:['D♭'],freq_offset:1},
+  {name:'D',semitone:2,type:'natural',enharmonic:[],freq_offset:2},
+  {name:'D♯',semitone:3,type:'accidental',enharmonic:['E♭'],freq_offset:3},
+  {name:'E',semitone:4,type:'natural',enharmonic:['F♭'],freq_offset:4},
+  {name:'F',semitone:5,type:'natural',enharmonic:['E♯'],freq_offset:5},
+  {name:'F♯',semitone:6,type:'accidental',enharmonic:['G♭'],freq_offset:6},
+  {name:'G',semitone:7,type:'natural',enharmonic:[],freq_offset:7},
+  {name:'G♯',semitone:8,type:'accidental',enharmonic:['A♭'],freq_offset:8},
+  {name:'A',semitone:9,type:'natural',enharmonic:[],freq_offset:9},
+  {name:'A♯',semitone:10,type:'accidental',enharmonic:['B♭'],freq_offset:10},
+  {name:'B',semitone:11,type:'natural',enharmonic:['C♭'],freq_offset:11},
+];
+
+let audioCtx=null;
+let selected=null;
+
+function getFreq(semitone,octave){
+  const a4=440;
+  const semiFromA4=(octave-4)*12+(semitone-9);
+  return a4*Math.pow(2,semiFromA4/12);
+}
+
+function playNote(semitone){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const oct=parseInt(document.getElementById('octave').value);
+  const freq=getFreq(semitone,oct);
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type='sine';
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.4,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.2);
+  osc.start();
+  osc.stop(audioCtx.currentTime+1.2);
+}
+
+function buildGrid(){
+  const grid=document.getElementById('noteGrid');
+  grid.innerHTML=NOTES.map((n,i)=>`
+    <button class="note-btn ${n.type}" data-idx="${i}" onclick="selectNote(${i})">
+      <span>${n.name}</span>
+      <span class="note-num">${n.semitone}</span>
+    </button>`).join('');
+}
+
+function updateSemitoneBar(semitone){
+  // No bar in this design — handled via active state
+}
+
+function selectNote(idx){
+  selected=idx;
+  const n=NOTES[idx];
+  const oct=parseInt(document.getElementById('octave').value);
+  const freq=getFreq(n.semitone,oct);
+  playNote(n.semitone);
+  document.querySelectorAll('.note-btn').forEach((b,i)=>{
+    b.classList.toggle('active',i===idx);
+  });
+  const enhHtml=n.enharmonic.length
+    ?n.enharmonic.map(e=>`<span class="enh-pill">${e}</span>`).join('')
+    :'<span class="enh-pill">None</span>';
+  document.getElementById('infoPanel').innerHTML=`
+    <div class="info-note">${n.name}</div>
+    <div class="info-row">
+      <div class="info-item"><div class="info-label">Semitone</div><div class="info-val">${n.semitone}</div></div>
+      <div class="info-item"><div class="info-label">Octave</div><div class="info-val">${oct}</div></div>
+      <div class="info-item"><div class="info-label">Frequency</div><div class="info-val">${freq.toFixed(2)} Hz</div></div>
+      <div class="info-item"><div class="info-label">Type</div><div class="info-val">${n.type==='natural'?'Natural':'Accidental'}</div></div>
+    </div>
+    <div>
+      <div class="info-label" style="margin-bottom:.35rem">Enharmonic Equivalents</div>
+      <div class="enh-pills">${enhHtml}</div>
+    </div>`;
+}
+
+buildGrid();
+document.getElementById('octave').addEventListener('change',()=>{
+  if(selected!==null)selectNote(selected);
+});
+</script>
+</body>
+</html>
