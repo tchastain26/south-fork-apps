@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle of Thirds | South Fork Apps</title>
+  <meta name="description" content="The Circle of Thirds shows harmonic relationships between chords a major or minor third apart. Explore chromatic mediant and secondary dominant relationships.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-thirds/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Circle of Thirds">
+<meta property="og:description" content="The Circle of Thirds shows harmonic relationships between chords a major or minor third apart.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/circle-of-thirds/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Circle of Thirds">
+<meta name="twitter:description" content="Explore chromatic mediant chord relationships with the Circle of Thirds.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+  @media(max-width:640px){.layout{grid-template-columns:1fr;}}
+  .svg-wrap{width:100%;max-width:400px;margin:0 auto;}
+  svg{width:100%;height:auto;cursor:pointer;}
+  .info-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+  .info-title{font-size:1.4rem;font-weight:800;color:var(--accent);margin-bottom:.75rem;}
+  .info-section{margin-bottom:.85rem;}
+  .info-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+  .thirds-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.35rem;}
+  .third-pill{padding:.2rem .55rem;border-radius:5px;font-size:.82rem;font-weight:700;}
+  .pill-maj3{background:rgba(125,219,132,.12);color:var(--accent);border:1px solid rgba(125,219,132,.25);}
+  .pill-min3{background:rgba(170,204,218,.1);color:#aaccda;border:1px solid rgba(170,204,218,.2);}
+  .explanation{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;margin-top:1.25rem;font-size:.82rem;color:var(--muted);line-height:1.6;}
+  .hint{font-size:.75rem;color:var(--muted);text-align:center;margin-top:.5rem;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Circle of Thirds</span></nav>
+<main>
+  <h1>Circle of Thirds</h1>
+  <p class="sub">The Circle of Thirds organizes the 12 chromatic notes by major and minor third relationships — the building blocks of chord construction and chromatic mediant motion.</p>
+  <div class="layout">
+    <div>
+      <div class="svg-wrap">
+        <svg id="cot" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <p class="hint">Outer ring = major thirds (4 semitones) · Inner = minor thirds (3 semitones)</p>
+    </div>
+    <div>
+      <div class="info-panel" id="infoPanel">
+        <p style="color:var(--muted);font-size:.9rem">Click any note on the circle to explore its third relationships.</p>
+      </div>
+      <div class="explanation">
+        <strong style="color:var(--text)">What is the Circle of Thirds?</strong><br><br>
+        While the Circle of Fifths shows key relationships, the Circle of Thirds groups notes that are a major third (4 semitones) or minor third (3 semitones) apart. These are the intervals that build triads — a root, a third, and a fifth. Chromatic mediants (chords related by thirds) create lush, unexpected harmonic color in film scores and jazz.
+      </div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+// Major thirds cycle: C → E → G♯/A♭ → C (3 groups of 4)
+// Minor thirds cycle: C → E♭ → G♭ → A → C (3 groups)
+// We'll show chromatic notes arranged in a circle grouped by thirds
+
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+// Arrange circle: cycle by minor thirds to create a coherent visual
+// Order: C Eb F# A (minor 3rd chain) then D F Ab B, then E G Bb Db
+const CIRCLE_ORDER=[0,3,6,9,2,5,8,11,4,7,10,1];
+
+const cx=200,cy=200,R_OUTER=175,R_INNER=120,R_MID=148;
+const TAU=Math.PI*2;
+let selected=null;
+
+function getLabel(idx){
+  const b=[1,3,6,8,10];
+  return b.includes(idx)?NOTES_F[idx]:NOTES_S[idx];
+}
+
+function polar(r,a){return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
+
+function build(sel){
+  const n=12,slice=TAU/n,offset=-Math.PI/2-slice/2;
+  let html='';
+  // Connection lines (major thirds = 4 apart in chromatic)
+  for(let i=0;i<n;i++){
+    const noteIdx=CIRCLE_ORDER[i];
+    const maj3Pos=CIRCLE_ORDER.indexOf((noteIdx+4)%12);
+    const a1=offset+i*slice+slice/2;
+    const a2=offset+maj3Pos*slice+slice/2;
+    const p1=polar(R_MID,a1),p2=polar(R_MID,a2);
+    html+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="rgba(125,219,132,0.08)" stroke-width="1"/>`;
+  }
+  for(let i=0;i<n;i++){
+    const noteIdx=CIRCLE_ORDER[i];
+    const startA=offset+i*slice,endA=startA+slice,midA=startA+slice/2;
+    const isSel=i===sel;
+    const isMaj3=sel!==null&&(CIRCLE_ORDER[sel]+4)%12===noteIdx;
+    const isMin3=sel!==null&&(CIRCLE_ORDER[sel]+3)%12===noteIdx;
+    const isMaj3Down=sel!==null&&(CIRCLE_ORDER[sel]-4+12)%12===noteIdx;
+    const isMin3Down=sel!==null&&(CIRCLE_ORDER[sel]-3+12)%12===noteIdx;
+    let fill='rgba(29,32,30,0.9)';
+    if(isSel)fill='rgba(125,219,132,0.2)';
+    else if(isMaj3||isMaj3Down)fill='rgba(125,219,132,0.1)';
+    else if(isMin3||isMin3Down)fill='rgba(170,204,218,0.08)';
+    // Draw sector
+    const r1=R_INNER,r2=R_OUTER;
+    const p1=polar(r2,startA),p2=polar(r2,endA),p3=polar(r1,endA),p4=polar(r1,startA);
+    html+=`<path d="M${p1.x},${p1.y} A${r2},${r2} 0 0 1 ${p2.x},${p2.y} L${p3.x},${p3.y} A${r1},${r1} 0 0 0 ${p4.x},${p4.y} Z" fill="${fill}" stroke="#2a2f2b" stroke-width="1.5" data-idx="${i}" style="cursor:pointer"/>`;
+    // Label
+    const lp=polar((R_INNER+R_OUTER)/2,midA);
+    html+=`<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="15" font-family="Plus Jakarta Sans,sans-serif" font-weight="700" fill="${isSel?'#7ddb84':isMaj3||isMaj3Down?'#aaccda':isMin3||isMin3Down?'#aab5ac':'#e8e8e8'}" style="pointer-events:none">${getLabel(noteIdx)}</text>`;
+  }
+  html+=`<circle cx="${cx}" cy="${cy}" r="${R_INNER-8}" fill="#111412" stroke="#2a2f2b" stroke-width="1.5"/>`;
+  html+=`<text x="${cx}" y="${cy-8}" text-anchor="middle" font-size="12" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" fill="#7ddb84">Circle of</text>`;
+  html+=`<text x="${cx}" y="${cy+10}" text-anchor="middle" font-size="12" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" fill="#7ddb84">Thirds</text>`;
+  const svg=document.getElementById('cot');
+  svg.innerHTML=html;
+  svg.querySelectorAll('path[data-idx]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      selected=parseInt(el.dataset.idx);
+      build(selected);
+      showInfo(selected);
+    });
+  });
+}
+
+function showInfo(i){
+  const noteIdx=CIRCLE_ORDER[i];
+  const note=getLabel(noteIdx);
+  const maj3Idx=(noteIdx+4)%12,min3Idx=(noteIdx+3)%12;
+  const maj3DnIdx=(noteIdx-4+12)%12,min3DnIdx=(noteIdx-3+12)%12;
+  document.getElementById('infoPanel').innerHTML=`
+    <div class="info-title">${note}</div>
+    <div class="info-section">
+      <div class="info-label">Major Third Up (+4 semitones)</div>
+      <div class="thirds-row"><span class="third-pill pill-maj3">${getLabel(maj3Idx)}</span> <span style="color:var(--muted);font-size:.8rem">→ ${getLabel(maj3Idx)} Major chord member</span></div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Minor Third Up (+3 semitones)</div>
+      <div class="thirds-row"><span class="third-pill pill-min3">${getLabel(min3Idx)}</span> <span style="color:var(--muted);font-size:.8rem">→ ${getLabel(min3Idx)} Minor chord member</span></div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Chromatic Mediants (third away)</div>
+      <div class="thirds-row">
+        <span class="third-pill pill-maj3">${getLabel(maj3Idx)}</span>
+        <span class="third-pill pill-min3">${getLabel(min3Idx)}</span>
+        <span class="third-pill pill-maj3">${getLabel(maj3DnIdx)}</span>
+        <span class="third-pill pill-min3">${getLabel(min3DnIdx)}</span>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Forms Triads With</div>
+      <div style="font-size:.88rem;color:var(--text);margin-top:.3rem">
+        ${note} Major: ${note} – ${getLabel(maj3Idx)} – ${getLabel((noteIdx+7)%12)}<br>
+        ${note} Minor: ${note} – ${getLabel(min3Idx)} – ${getLabel((noteIdx+7)%12)}
+      </div>
+    </div>`;
+}
+
+build(null);
+</script>
+</body>
+</html>

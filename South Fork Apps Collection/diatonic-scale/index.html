@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diatonic Scale | South Fork Apps</title>
+  <meta name="description" content="Comprehensive diatonic scale reference. Select any major key to see all 7 scale notes, diatonic triads, seventh chords, and all 7 modal rotations.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/diatonic-scale/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Diatonic Scale">
+<meta property="og:description" content="Comprehensive diatonic scale reference — scale notes, triads, seventh chords, and all 7 modes for any major key.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/diatonic-scale/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Diatonic Scale">
+<meta name="twitter:description" content="All diatonic scale notes, triads, seventh chords, and modes for any major key.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .key-selector{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.5rem;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.95rem;cursor:pointer;}
+  .key-header{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;}
+  .key-name{font-size:1.6rem;font-weight:800;color:var(--accent);}
+  .key-sig-info{font-size:.85rem;color:var(--muted);}
+  .notes-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .note-card{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.6rem .75rem;text-align:center;min-width:56px;transition:border-color .15s;}
+  .note-card.root{border-color:var(--accent);background:rgba(125,219,132,.07);}
+  .nc-note{font-size:1.05rem;font-weight:800;color:var(--text);}
+  .note-card.root .nc-note{color:var(--accent);}
+  .nc-deg{font-size:.65rem;color:var(--muted);font-weight:700;}
+  .section-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:1.25rem 0 .6rem;padding-top:.75rem;border-top:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:.5rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.5rem .85rem;text-align:left;border-bottom:2px solid var(--border);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody td{padding:.55rem .85rem;vertical-align:middle;}
+  .chord-name{font-weight:700;}
+  .roman{color:var(--muted);font-size:.8rem;}
+  .quality-badge{padding:.1rem .4rem;border-radius:3px;font-size:.7rem;font-weight:700;}
+  .q-maj{background:rgba(125,219,132,.1);color:var(--accent);}
+  .q-min{background:rgba(170,204,218,.1);color:#aaccda;}
+  .q-dim{background:rgba(255,153,128,.1);color:#ff9980;}
+  .q-aug{background:rgba(200,162,255,.1);color:#c8a2ff;}
+  .mode-name{font-weight:700;color:var(--text);}
+  .mode-notes{font-size:.8rem;color:var(--muted);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Diatonic Scale</span></nav>
+<main>
+  <h1>Diatonic Scale</h1>
+  <p class="sub">The seven-note diatonic scale is the foundation of Western harmony. Select a major key to see all scale notes, triads, seventh chords, and modal rotations.</p>
+  <div class="key-selector">
+    <div class="ctrl">
+      <label>Key</label>
+      <select id="keySel"></select>
+    </div>
+  </div>
+  <div class="key-header" id="keyHeader"></div>
+  <div class="notes-row" id="notesRow"></div>
+
+  <div class="section-label">Diatonic Triads</div>
+  <table>
+    <thead><tr><th>Degree</th><th>Chord</th><th>Type</th><th>Notes</th><th>Function</th></tr></thead>
+    <tbody id="triadsBody"></tbody>
+  </table>
+
+  <div class="section-label">Diatonic Seventh Chords</div>
+  <table>
+    <thead><tr><th>Degree</th><th>Chord</th><th>Type</th><th>Notes</th></tr></thead>
+    <tbody id="seventhsBody"></tbody>
+  </table>
+
+  <div class="section-label">Modal Rotations</div>
+  <table>
+    <thead><tr><th>Mode</th><th>Starting Note</th><th>Roman</th><th>Scale Notes</th><th>Character</th></tr></thead>
+    <tbody id="modesBody"></tbody>
+  </table>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const FLAT_ROOTS=[5,10,3,8,1,6];
+const MAJOR_STEPS=[0,2,4,5,7,9,11];
+const TRIAD_Q=['maj','min','min','maj','maj','min','dim'];
+const SEVENTH_Q=['maj7','7','min7','maj7','7','min7','ø7'];
+const ROMANS_MAJ=['I','ii','iii','IV','V','vi','vii°'];
+const FUNCTIONS=['Tonic','Supertonic','Mediant','Subdominant','Dominant','Submediant','Leading Tone'];
+const MODE_NAMES=['Ionian','Dorian','Phrygian','Lydian','Mixolydian','Aeolian','Locrian'];
+const MODE_CHARS=['Happy/Bright','Jazzy/Soulful','Dark/Spanish','Bright/Ethereal','Bluesy/Country','Melancholic','Tense/Unstable'];
+const TRIAD_INTERVALS={maj:[0,4,7],min:[0,3,7],dim:[0,3,6]};
+const SEVENTH_INTERVALS={maj7:[0,4,7,11],'7':[0,4,7,10],min7:[0,3,7,10],'ø7':[0,3,6,10]};
+
+function getNote(rootIdx,offset,pf){
+  return(pf?NOTES_F:NOTES_S)[((rootIdx+offset)%12+12)%12];
+}
+
+function build(){
+  const rootIdx=parseInt(document.getElementById('keySel').value);
+  const pf=FLAT_ROOTS.includes(rootIdx);
+  const notes=pf?NOTES_F:NOTES_S;
+  const rootName=notes[rootIdx];
+  const scaleNotes=MAJOR_STEPS.map(s=>getNote(rootIdx,s,pf));
+
+  // Key header
+  const accCount=[0,2,4,1,3,5,7,6,4,2,7,5,3,1,6][rootIdx]||0;
+  document.getElementById('keyHeader').innerHTML=`
+    <div class="key-name">${rootName} Major</div>
+    <div class="key-sig-info">
+      <div>Relative Minor: <strong>${getNote(rootIdx,9,pf)} minor</strong></div>
+      <div>W–W–H–W–W–W–H step pattern</div>
+    </div>`;
+
+  document.getElementById('notesRow').innerHTML=scaleNotes.map((n,i)=>`
+    <div class="note-card ${i===0?'root':''}">
+      <div class="nc-note">${n}</div>
+      <div class="nc-deg">${i+1}${i===0?'(I)':''}</div>
+    </div>`).join('');
+
+  // Triads
+  const QUALITY_LABELS={maj:'Major',min:'Minor',dim:'Diminished',aug:'Augmented'};
+  document.getElementById('triadsBody').innerHTML=MAJOR_STEPS.map((s,i)=>{
+    const q=TRIAD_Q[i];
+    const chordRoot=getNote(rootIdx,s,pf);
+    const suffix=q==='maj'?'':(q==='min'?'m':(q==='dim'?'dim':''));
+    const noteNames=TRIAD_INTERVALS[q].map(iv=>getNote(rootIdx,s+iv,pf));
+    return`<tr>
+      <td><span class="roman">${ROMANS_MAJ[i]}</span></td>
+      <td class="chord-name">${chordRoot}${suffix}</td>
+      <td><span class="quality-badge q-${q}">${QUALITY_LABELS[q]}</span></td>
+      <td style="font-size:.82rem;color:var(--muted)">${noteNames.join(' – ')}</td>
+      <td style="font-size:.8rem;color:var(--muted)">${FUNCTIONS[i]}</td>
+    </tr>`;
+  }).join('');
+
+  // Sevenths
+  const SEVENTH_LABELS={maj7:'Major 7th','7':'Dominant 7th',min7:'Minor 7th','ø7':'Half-Dim 7th'};
+  document.getElementById('seventhsBody').innerHTML=MAJOR_STEPS.map((s,i)=>{
+    const q=SEVENTH_Q[i];
+    const chordRoot=getNote(rootIdx,s,pf);
+    const suffix={maj7:'maj7','7':'7',min7:'m7','ø7':'m7♭5'}[q];
+    const noteNames=SEVENTH_INTERVALS[q].map(iv=>getNote(rootIdx,s+iv,pf));
+    return`<tr>
+      <td><span class="roman">${ROMANS_MAJ[i]}</span></td>
+      <td class="chord-name">${chordRoot}${suffix}</td>
+      <td style="font-size:.8rem;color:var(--muted)">${SEVENTH_LABELS[q]}</td>
+      <td style="font-size:.82rem;color:var(--muted)">${noteNames.join(' – ')}</td>
+    </tr>`;
+  }).join('');
+
+  // Modes
+  document.getElementById('modesBody').innerHTML=MAJOR_STEPS.map((s,i)=>{
+    const modeRoot=getNote(rootIdx,s,pf);
+    const modeNotes=MAJOR_STEPS.map(ms=>getNote(rootIdx,s+ms,pf));
+    return`<tr>
+      <td class="mode-name">${MODE_NAMES[i]}</td>
+      <td style="font-weight:700;color:var(--accent)">${modeRoot}</td>
+      <td class="roman">${ROMANS_MAJ[i]}</td>
+      <td class="mode-notes">${modeNotes.join(' – ')}</td>
+      <td style="font-size:.8rem;color:var(--muted)">${MODE_CHARS[i]}</td>
+    </tr>`;
+  }).join('');
+}
+
+const kSel=document.getElementById('keySel');
+NOTES_S.forEach((n,i)=>kSel.innerHTML+=`<option value="${i}">${n}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`);
+document.getElementById('keySel').addEventListener('change',build);
+build();
+</script>
+</body>
+</html>

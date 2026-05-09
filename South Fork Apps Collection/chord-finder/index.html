@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chord Finder | South Fork Apps</title>
+  <meta name="description" content="Click notes on a piano keyboard to identify the chord. Shows all matching chord names, root, type, and inversion instantly.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-finder/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Chord Finder">
+<meta property="og:description" content="Click notes on a piano to identify the chord. Shows matching chord names, root, type, and inversion.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-finder/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chord Finder">
+<meta name="twitter:description" content="Click notes on a piano keyboard to identify the chord name instantly.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(800px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .selected-notes{min-height:2.5rem;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:1rem;}
+  .note-pill{padding:.25rem .7rem;border-radius:20px;background:rgba(125,219,132,.12);border:1px solid rgba(125,219,132,.3);font-size:.88rem;font-weight:700;color:var(--accent);}
+  .clear-btn{padding:.25rem .7rem;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;cursor:pointer;}
+  .clear-btn:hover{color:var(--text);}
+  .piano-wrap{overflow-x:auto;padding-bottom:.75rem;margin-bottom:1.25rem;}
+  .piano{display:inline-flex;position:relative;height:130px;user-select:none;}
+  .wk{width:36px;height:110px;background:#e8ece9;border:1.5px solid #555;border-radius:0 0 5px 5px;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;margin-right:1px;flex-shrink:0;cursor:pointer;transition:background .08s;}
+  .wk:hover{background:#d0eed2;}
+  .wk.selected{background:#7ddb84;}
+  .wk .nl{font-size:.58rem;font-weight:700;color:#333;pointer-events:none;}
+  .bk{width:24px;height:70px;background:#1a1a1a;border:1.5px solid #000;border-radius:0 0 4px 4px;position:relative;margin-left:-12px;margin-right:-12px;z-index:2;flex-shrink:0;cursor:pointer;transition:background .08s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;}
+  .bk:hover{background:#2a2a2a;}
+  .bk.selected{background:#2d7a30;}
+  .bk .nl{font-size:.5rem;font-weight:700;color:#aaa;pointer-events:none;}
+  .results{margin-bottom:1.5rem;min-height:80px;}
+  .no-result{color:var(--muted);font-size:.9rem;padding:1.5rem;}
+  .chord-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;}
+  .chord-result{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;text-align:left;transition:border-color .15s;}
+  .chord-result:hover{border-color:rgba(125,219,132,.35);}
+  .cr-name{font-size:1.1rem;font-weight:800;color:var(--accent);margin-bottom:.3rem;}
+  .cr-meta{font-size:.75rem;color:var(--muted);}
+  .cr-intervals{font-size:.72rem;color:var(--muted);margin-top:.3rem;font-family:monospace;}
+  .hint{font-size:.78rem;color:var(--muted);}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Chord Finder</span></nav>
+<main>
+  <h1>Chord Finder</h1>
+  <p class="sub">Click notes on the piano to build a chord. The app identifies all matching chord names.</p>
+  <div class="selected-notes" id="selectedNotes">
+    <span style="color:var(--muted);font-size:.85rem">Click notes below…</span>
+  </div>
+  <div class="piano-wrap"><div class="piano" id="piano"></div></div>
+  <div class="results" id="results"><div class="no-result">Select 2 or more notes to identify a chord</div></div>
+  <p class="hint">Click the same key again to deselect it</p>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const IS_BLACK=[false,true,false,true,false,false,true,false,true,false,true,false];
+
+const CHORD_DEFS=[
+  {name:'Major',       sym:'',     intervals:[0,4,7]},
+  {name:'Minor',       sym:'m',    intervals:[0,3,7]},
+  {name:'Diminished',  sym:'dim',  intervals:[0,3,6]},
+  {name:'Augmented',   sym:'aug',  intervals:[0,4,8]},
+  {name:'Sus 2',       sym:'sus2', intervals:[0,2,7]},
+  {name:'Sus 4',       sym:'sus4', intervals:[0,5,7]},
+  {name:'Major 7',     sym:'maj7', intervals:[0,4,7,11]},
+  {name:'Dominant 7',  sym:'7',    intervals:[0,4,7,10]},
+  {name:'Minor 7',     sym:'m7',   intervals:[0,3,7,10]},
+  {name:'Half Dim 7',  sym:'ø7',   intervals:[0,3,6,10]},
+  {name:'Dim 7',       sym:'°7',   intervals:[0,3,6,9]},
+  {name:'Major 6',     sym:'6',    intervals:[0,4,7,9]},
+  {name:'Minor 6',     sym:'m6',   intervals:[0,3,7,9]},
+  {name:'Minor Maj 7', sym:'mM7',  intervals:[0,3,7,11]},
+  {name:'Dominant 9',  sym:'9',    intervals:[0,4,7,10,2]},
+  {name:'Major 9',     sym:'maj9', intervals:[0,4,7,11,2]},
+  {name:'Minor 9',     sym:'m9',   intervals:[0,3,7,10,2]},
+  {name:'Add 9',       sym:'add9', intervals:[0,4,7,2]},
+  {name:'Minor Add 9', sym:'madd9',intervals:[0,3,7,2]},
+  {name:'Power (5th)', sym:'5',    intervals:[0,7]},
+  {name:'Unison',      sym:'',     intervals:[0]},
+];
+
+const INVERSIONS=['Root Position','1st Inversion','2nd Inversion','3rd Inversion'];
+
+let selected=new Set();
+let audioCtx=null;
+
+function playNote(semi){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const freq=440*Math.pow(2,(semi+48-69)/12);
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='triangle';osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.8);
+  osc.start();osc.stop(audioCtx.currentTime+0.8);
+}
+
+function buildPiano(){
+  const piano=document.getElementById('piano');
+  let html='';
+  for(let ni=0;ni<24;ni++){
+    const semi=ni%12;
+    const noteName=NOTES_S[semi];
+    const isBlack=IS_BLACK[semi];
+    const sel=selected.has(semi);
+    if(isBlack){
+      html+=`<div class="bk ${sel?'selected':''}" data-semi="${semi}" onclick="toggleNote(${semi},this)"><span class="nl">${noteName}</span></div>`;
+    } else {
+      html+=`<div class="wk ${sel?'selected':''}" data-semi="${semi}" onclick="toggleNote(${semi},this)"><span class="nl">${noteName}</span></div>`;
+      // Check if next is black
+      const nextSemi=(semi+1)%12;
+      if(ni<23&&IS_BLACK[nextSemi]){
+        // Will be added as next iteration
+      }
+    }
+  }
+  piano.innerHTML=html;
+}
+
+function toggleNote(semi,el){
+  if(selected.has(semi)){selected.delete(semi);el.classList.remove('selected');}
+  else{selected.add(semi);el.classList.add('selected');playNote(semi);}
+  updateSelectedDisplay();
+  identifyChord();
+}
+
+function updateSelectedDisplay(){
+  const div=document.getElementById('selectedNotes');
+  if(!selected.size){div.innerHTML='<span style="color:var(--muted);font-size:.85rem">Click notes below…</span>';return;}
+  const sortedSemis=[...selected].sort((a,b)=>a-b);
+  div.innerHTML=sortedSemis.map(s=>`<span class="note-pill">${NOTES_S[s]}</span>`).join('')+
+    `<button class="clear-btn" onclick="clearAll()">Clear</button>`;
+}
+
+function clearAll(){
+  selected.clear();
+  document.querySelectorAll('.wk.selected,.bk.selected').forEach(el=>el.classList.remove('selected'));
+  updateSelectedDisplay();
+  identifyChord();
+}
+
+function identifyChord(){
+  const results=document.getElementById('results');
+  if(selected.size<2){results.innerHTML='<div class="no-result">Select 2 or more notes to identify a chord</div>';return;}
+  const semis=[...selected].sort((a,b)=>a-b);
+  const matches=[];
+  // Try each note as potential root
+  for(let ri=0;ri<semis.length;ri++){
+    const root=semis[ri];
+    const intervals=semis.map(s=>((s-root)+12)%12).sort((a,b)=>a-b);
+    for(const def of CHORD_DEFS){
+      const defSorted=[...def.intervals].map(i=>i%12).sort((a,b)=>a-b);
+      if(JSON.stringify(intervals)===JSON.stringify(defSorted)){
+        const inv=ri; // inversion = which note is bass
+        const pf=[5,10,3,8,1,6].includes(root);
+        const rootName=(pf?NOTES_F:NOTES_S)[root];
+        matches.push({name:rootName+(def.sym||''),type:def.name,root:rootName,inv,intervals:def.intervals.join(' – ')});
+      }
+    }
+  }
+  if(!matches.length){results.innerHTML='<div class="no-result">No matching chord found. Try a different combination.</div>';return;}
+  results.innerHTML=`<div class="chord-results">${matches.map(m=>`
+    <div class="chord-result">
+      <div class="cr-name">${m.name}</div>
+      <div class="cr-meta">${m.type} · ${INVERSIONS[m.inv]||'Inversion'}</div>
+      <div class="cr-intervals">Intervals: ${m.intervals}</div>
+    </div>`).join('')}</div>`;
+}
+
+buildPiano();
+</script>
+</body>
+</html>

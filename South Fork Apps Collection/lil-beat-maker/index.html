@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lil Beat Maker | South Fork Apps</title>
+  <meta name="description" content="Browser-based step sequencer and beat maker. Build drum patterns with 8 tracks and 16 steps, adjust BPM, and play back with Web Audio synthesis.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/lil-beat-maker/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Lil Beat Maker">
+<meta property="og:description" content="Browser-based step sequencer — build drum patterns with 8 tracks and 16 steps, adjust BPM, play back with Web Audio.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/lil-beat-maker/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lil Beat Maker">
+<meta name="twitter:description" content="Build drum patterns with 8 tracks and 16 steps. Step sequencer in your browser.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(1000px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .transport{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.25rem;}
+  .play-btn{padding:.5rem 1.5rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;min-width:80px;}
+  .play-btn:hover{filter:brightness(1.1);}
+  .play-btn.playing{background:#ff7a6a;color:#fff;}
+  .btn-sm{padding:.4rem .9rem;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;}
+  .btn-sm:hover{color:var(--text);border-color:var(--text);}
+  .bpm-ctrl{display:flex;align-items:center;gap:.6rem;margin-left:auto;}
+  .bpm-ctrl label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  input[type=range]{width:90px;accent-color:var(--accent);}
+  .bpm-val{font-weight:800;color:var(--accent);min-width:3ch;}
+  .step-count{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);}
+  select.sm{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.3rem .5rem;border-radius:5px;font:inherit;font-size:.82rem;cursor:pointer;}
+  .sequencer{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .seq-header{display:grid;align-items:center;padding:.5rem .75rem;background:var(--surface2);border-bottom:1px solid var(--border);}
+  .track-row{display:flex;align-items:center;border-bottom:1px solid var(--border);}
+  .track-row:last-child{border-bottom:none;}
+  .track-label{width:90px;flex-shrink:0;padding:.5rem .75rem;font-size:.78rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.4rem;}
+  .track-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .steps{display:flex;flex:1;overflow-x:auto;}
+  .step-btn{flex-shrink:0;width:calc(100%/16);min-width:28px;aspect-ratio:1;border:none;border-right:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:background .08s;position:relative;}
+  .step-btn:last-child{border-right:none;}
+  .step-btn.on{background:var(--track-color);}
+  .step-btn.current{outline:2px solid rgba(255,255,255,.5);outline-offset:-2px;}
+  .step-btn:nth-child(4n+1){border-left:2px solid rgba(125,219,132,.15);}
+  .track-vol{width:50px;flex-shrink:0;padding:0 .4rem;}
+  input[type=range].vol{width:100%;accent-color:var(--accent);}
+  .beat-nums{display:flex;margin-left:90px;padding:.2rem 0;}
+  .beat-num{flex:1;min-width:28px;text-align:center;font-size:.58rem;color:var(--muted);font-weight:700;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Lil Beat Maker</span></nav>
+<main>
+  <h1>Lil Beat Maker</h1>
+  <p class="sub">Build drum patterns with 8 tracks and up to 32 steps. Toggle cells to program beats, then hit play.</p>
+  <div class="transport">
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">▶ Play</button>
+    <button class="btn-sm" onclick="clearAll()">Clear</button>
+    <button class="btn-sm" onclick="randomize()">Randomize</button>
+    <button class="btn-sm" onclick="loadPreset()">Load Groove</button>
+    <div class="step-count">
+      <label>Steps:</label>
+      <select class="sm" id="stepCount" onchange="setSteps(this.value)">
+        <option value="16" selected>16</option>
+        <option value="32">32</option>
+      </select>
+    </div>
+    <div class="bpm-ctrl">
+      <label>BPM</label>
+      <input type="range" id="bpmSlider" min="60" max="200" value="120" oninput="updateBpm(this.value)">
+      <span class="bpm-val" id="bpmVal">120</span>
+    </div>
+  </div>
+
+  <div class="beat-nums" id="beatNums"></div>
+  <div class="sequencer" id="sequencer"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const TRACKS=[
+  {label:'Kick',   color:'#e74c3c', sound:{type:'kick'}},
+  {label:'Snare',  color:'#e67e22', sound:{type:'snare'}},
+  {label:'HH Cls', color:'#f1c40f', sound:{type:'hh_closed'}},
+  {label:'HH Open',color:'#2ecc71', sound:{type:'hh_open'}},
+  {label:'Tom Hi', color:'#1abc9c', sound:{type:'tom',freq:200}},
+  {label:'Tom Lo', color:'#3498db', sound:{type:'tom',freq:120}},
+  {label:'Clap',   color:'#9b59b6', sound:{type:'clap'}},
+  {label:'Cowbell',color:'#e1c1a4', sound:{type:'cowbell'}},
+];
+
+const PRESET={
+  0:[1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+  1:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+  2:[1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
+  3:[0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+  4:[0,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,0,0],
+  5:[0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+  6:[0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+  7:[0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
+};
+
+let nSteps=16;
+let grid=TRACKS.map(()=>new Array(32).fill(0));
+let vols=TRACKS.map(()=>0.8);
+let playing=false,currentStep=0,ticker=null;
+let audioCtx=null;
+
+function makeSoundKick(when,vol){
+  if(!audioCtx)return;
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.frequency.setValueAtTime(150,when);
+  osc.frequency.exponentialRampToValueAtTime(40,when+0.15);
+  gain.gain.setValueAtTime(vol,when);
+  gain.gain.exponentialRampToValueAtTime(0.001,when+0.3);
+  osc.start(when);osc.stop(when+0.3);
+}
+function makeSoundSnare(when,vol){
+  const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*.2,audioCtx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.5);
+  const src=audioCtx.createBufferSource(),gain=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+  f.type='bandpass';f.frequency.value=2500;f.Q.value=0.5;
+  src.buffer=buf;src.connect(f);f.connect(gain);gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(vol,when);gain.gain.exponentialRampToValueAtTime(0.001,when+0.15);
+  src.start(when);src.stop(when+0.2);
+  const osc=audioCtx.createOscillator(),g2=audioCtx.createGain();
+  osc.connect(g2);g2.connect(audioCtx.destination);osc.frequency.value=180;
+  g2.gain.setValueAtTime(vol*.4,when);g2.gain.exponentialRampToValueAtTime(0.001,when+0.08);
+  osc.start(when);osc.stop(when+0.08);
+}
+function makeSoundHH(when,vol,open=false){
+  const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*(open?.3:.05),audioCtx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,open?1:3);
+  const src=audioCtx.createBufferSource(),gain=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+  f.type='highpass';f.frequency.value=8000;
+  src.buffer=buf;src.connect(f);f.connect(gain);gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(vol*.5,when);gain.gain.exponentialRampToValueAtTime(0.001,when+(open?.3:.05));
+  src.start(when);
+}
+function makeSoundTom(when,vol,freq=150){
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.frequency.setValueAtTime(freq,when);
+  osc.frequency.exponentialRampToValueAtTime(freq*.5,when+0.15);
+  gain.gain.setValueAtTime(vol*.7,when);gain.gain.exponentialRampToValueAtTime(0.001,when+0.2);
+  osc.start(when);osc.stop(when+0.2);
+}
+function makeSoundClap(when,vol){
+  [0,0.01,0.02].forEach(delay=>{
+    const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*.08,audioCtx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const src=audioCtx.createBufferSource(),gain=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+    f.type='bandpass';f.frequency.value=1200;
+    src.buffer=buf;src.connect(f);f.connect(gain);gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(vol*.4,when+delay);gain.gain.exponentialRampToValueAtTime(0.001,when+delay+0.08);
+    src.start(when+delay);
+  });
+}
+function makeSoundCowbell(when,vol){
+  [560,845].forEach(freq=>{
+    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    osc.type='square';osc.connect(gain);gain.connect(audioCtx.destination);osc.frequency.value=freq;
+    gain.gain.setValueAtTime(vol*.15,when);gain.gain.exponentialRampToValueAtTime(0.001,when+0.4);
+    osc.start(when);osc.stop(when+0.4);
+  });
+}
+
+function playSound(trackIdx,when){
+  if(!audioCtx)return;
+  const t=TRACKS[trackIdx],vol=vols[trackIdx];
+  const s=t.sound;
+  if(s.type==='kick')makeSoundKick(when,vol);
+  else if(s.type==='snare')makeSoundSnare(when,vol);
+  else if(s.type==='hh_closed')makeSoundHH(when,vol,false);
+  else if(s.type==='hh_open')makeSoundHH(when,vol,true);
+  else if(s.type==='tom')makeSoundTom(when,vol,s.freq);
+  else if(s.type==='clap')makeSoundClap(when,vol);
+  else if(s.type==='cowbell')makeSoundCowbell(when,vol);
+}
+
+function togglePlay(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  playing=!playing;
+  const btn=document.getElementById('playBtn');
+  if(playing){
+    btn.textContent='■ Stop';btn.classList.add('playing');
+    currentStep=0;scheduleTick();
+  } else {
+    btn.textContent='▶ Play';btn.classList.remove('playing');
+    if(ticker)clearTimeout(ticker);
+    ticker=null;
+    updateStepHighlight(-1);
+  }
+}
+
+function scheduleTick(){
+  if(!playing)return;
+  const bpm=parseInt(document.getElementById('bpmSlider').value);
+  const stepDur=60000/(bpm*4);
+  const when=audioCtx.currentTime+0.01;
+  TRACKS.forEach((_,ti)=>{
+    if(grid[ti][currentStep])playSound(ti,when);
+  });
+  updateStepHighlight(currentStep);
+  currentStep=(currentStep+1)%nSteps;
+  ticker=setTimeout(scheduleTick,stepDur);
+}
+
+function updateStepHighlight(step){
+  document.querySelectorAll('.step-btn').forEach(btn=>{
+    const s=parseInt(btn.dataset.step);
+    btn.classList.toggle('current',s===step);
+  });
+}
+
+function buildSequencer(){
+  const seq=document.getElementById('sequencer');
+  const nums=document.getElementById('beatNums');
+  nums.innerHTML='<div style="width:90px;flex-shrink:0"></div>'+
+    Array.from({length:nSteps},(_,i)=>`<div class="beat-num">${i%4===0?Math.floor(i/4)+1:''}</div>`).join('');
+  seq.innerHTML=TRACKS.map((t,ti)=>`
+    <div class="track-row">
+      <div class="track-label"><span class="track-dot" style="background:${t.color}"></span>${t.label}</div>
+      <div class="steps">${Array.from({length:nSteps},(_,si)=>`
+        <button class="step-btn ${grid[ti][si]?'on':''}" data-track="${ti}" data-step="${si}"
+          style="--track-color:${t.color}" onclick="toggleStep(${ti},${si},this)"></button>`).join('')}
+      </div>
+      <div class="track-vol"><input type="range" class="vol" min="0" max="1" step=".05" value="${vols[ti]}" data-track="${ti}" oninput="vols[this.dataset.track]=parseFloat(this.value)"></div>
+    </div>`).join('');
+}
+
+function toggleStep(ti,si,el){
+  grid[ti][si]=grid[ti][si]?0:1;
+  el.classList.toggle('on',!!grid[ti][si]);
+}
+
+function clearAll(){
+  grid=TRACKS.map(()=>new Array(32).fill(0));
+  buildSequencer();
+}
+
+function randomize(){
+  grid=TRACKS.map((_,ti)=>Array.from({length:32},(_,si)=>Math.random()<(ti===0||ti===1?.3:ti===2?.5:.15)?1:0));
+  buildSequencer();
+}
+
+function loadPreset(){
+  grid=TRACKS.map((_,ti)=>[...PRESET[ti],...new Array(16).fill(0)]);
+  buildSequencer();
+}
+
+function setSteps(n){
+  nSteps=parseInt(n);
+  currentStep=0;
+  buildSequencer();
+}
+
+function updateBpm(v){
+  document.getElementById('bpmVal').textContent=v;
+}
+
+buildSequencer();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtone Series | South Fork Apps</title>
+  <meta name="description" content="Visual overtone series explorer. Select a fundamental note and see the first 16 harmonics with frequencies, note names, and cents deviation from equal temperament.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/overtone-series/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:title" content="Overtone Series">
+<meta property="og:description" content="Visual overtone series — see harmonics with frequencies, note names, and cents deviation from equal temperament.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/overtone-series/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Overtone Series">
+<meta name="twitter:description" content="Explore the harmonic overtone series above any fundamental note.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+  .controls{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.5rem;padding:.85rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
+  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.88rem;cursor:pointer;}
+  .play-all-btn{padding:.45rem 1.1rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;align-self:flex-end;}
+  .play-all-btn:hover{filter:brightness(1.1);}
+  .visual-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.25rem;overflow-x:auto;}
+  .wave-display{height:80px;position:relative;display:flex;align-items:flex-end;gap:4px;padding:.5rem;}
+  .partial-bar{border-radius:4px 4px 0 0;cursor:pointer;transition:opacity .15s;flex-shrink:0;}
+  .partial-bar:hover{opacity:.8;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  thead th{background:var(--surface2);color:var(--muted);font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.55rem .85rem;text-align:left;border-bottom:2px solid var(--border);}
+  tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody tr.fundamental{background:rgba(125,219,132,.05);}
+  tbody td{padding:.55rem .85rem;vertical-align:middle;}
+  .harm-num{font-weight:800;color:var(--accent);}
+  .freq-val{font-family:monospace;color:var(--text);}
+  .note-name{font-weight:700;}
+  .cents-bar{display:flex;align-items:center;gap:.4rem;}
+  .cents-val{font-size:.78rem;font-family:monospace;min-width:5ch;}
+  .cents-dot{width:8px;height:8px;border-radius:50%;}
+  .in-tune{color:var(--accent);}
+  .out-tune{color:#ff9980;}
+  .play-btn-sm{padding:.2rem .55rem;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);font:inherit;font-size:.72rem;cursor:pointer;}
+  .play-btn-sm:hover{color:var(--accent);border-color:var(--accent);}
+  .ratio{font-size:.8rem;color:var(--muted);}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Overtone Series</span></nav>
+<main>
+  <h1>Overtone Series</h1>
+  <p class="sub">The overtone series shows the natural harmonics above a fundamental frequency. Each partial is a whole-number multiple of the fundamental.</p>
+  <div class="controls">
+    <div class="ctrl">
+      <label>Fundamental Note</label>
+      <select id="fundamental"></select>
+    </div>
+    <div class="ctrl">
+      <label>Octave</label>
+      <select id="octave">
+        <option value="1">1 (very low)</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Partials</label>
+      <select id="numPartials">
+        <option value="8">8</option>
+        <option value="12">12</option>
+        <option value="16" selected>16</option>
+      </select>
+    </div>
+    <button class="play-all-btn" onclick="playAll()">▶ Play Series</button>
+  </div>
+  <div class="visual-wrap">
+    <div class="wave-display" id="waveDisplay"></div>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Ratio</th><th>Frequency</th><th>Nearest Note</th><th>Cents Off</th><th>Interval</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const FLAT_ROOTS=[5,10,3,8,1,6];
+let audioCtx=null;
+
+function getFreqFromMidi(midi){return 440*Math.pow(2,(midi-69)/12);}
+function freqToMidi(freq){return 69+12*Math.log2(freq/440);}
+function freqToNoteName(freq){
+  const midi=freqToMidi(freq);
+  const roundedMidi=Math.round(midi);
+  const noteIdx=((roundedMidi%12)+12)%12;
+  const octave=Math.floor(roundedMidi/12)-1;
+  return{name:NOTES_S[noteIdx]+octave,cents:Math.round((midi-roundedMidi)*100)};
+}
+
+const INTERVAL_NAMES={
+  1:'Unison',2:'Octave',3:'Perfect 5th (+ octave)',4:'2 Octaves',
+  5:'Major 3rd (+ 2 oct)',6:'Perfect 5th (+ 2 oct)',7:'Minor 7th*',
+  8:'3 Octaves',9:'Major 2nd (+ 3 oct)',10:'Major 3rd (+ 3 oct)',
+  11:'Tritone*',12:'Perfect 5th (+ 3 oct)',13:'Minor 6th*',14:'Minor 7th*',
+  15:'Major 7th*',16:'4 Octaves',
+};
+const BAR_COLORS=['#7ddb84','#aaccda','#e1c1a4','#c8a2ff','#ff9980','#ffd764','#7ddb84','#aaccda','#e1c1a4','#c8a2ff','#ff9980','#ffd764','#7ddb84','#aaccda','#e1c1a4','#c8a2ff'];
+
+function getFundamentalMidi(){
+  const noteIdx=parseInt(document.getElementById('fundamental').value);
+  const oct=parseInt(document.getElementById('octave').value);
+  return noteIdx+(oct+1)*12;
+}
+
+function playPartial(freq,dur=0.8){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';osc.frequency.value=Math.min(freq,18000);
+  gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+  osc.start();osc.stop(audioCtx.currentTime+dur);
+}
+
+function playAll(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const funMidi=getFundamentalMidi();
+  const funFreq=getFreqFromMidi(funMidi);
+  const n=parseInt(document.getElementById('numPartials').value);
+  for(let i=1;i<=n;i++){
+    const freq=funFreq*i;
+    const vol=0.4/Math.sqrt(i);
+    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.type='sine';osc.frequency.value=Math.min(freq,18000);
+    gain.gain.setValueAtTime(vol,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+2.0);
+    osc.start();osc.stop(audioCtx.currentTime+2.0);
+  }
+}
+
+function build(){
+  const funMidi=getFundamentalMidi();
+  const funFreq=getFreqFromMidi(funMidi);
+  const n=parseInt(document.getElementById('numPartials').value);
+  const tbody=document.getElementById('tbody');
+  const wave=document.getElementById('waveDisplay');
+  const maxAmplitude=120;
+
+  wave.innerHTML=Array.from({length:n},(_,i)=>{
+    const h=Math.min(maxAmplitude,maxAmplitude/Math.sqrt(i+1));
+    return`<div class="partial-bar" style="width:${Math.max(20,80/n*3)}px;height:${h}px;background:${BAR_COLORS[i]};opacity:${0.5+0.5/(i+1)}" title="Partial ${i+1}" onclick="playPartial(${funFreq*(i+1)})"></div>`;
+  }).join('');
+
+  tbody.innerHTML=Array.from({length:n},(_,i)=>{
+    const partial=i+1;
+    const freq=funFreq*partial;
+    const {name,cents}=freqToNoteName(freq);
+    const inTune=Math.abs(cents)<=10;
+    const isFun=partial===1;
+    return`<tr class="${isFun?'fundamental':''}" onclick="playPartial(${freq})">
+      <td class="harm-num">${partial}</td>
+      <td class="ratio">${partial}/1</td>
+      <td class="freq-val">${freq.toFixed(2)} Hz</td>
+      <td class="note-name">${name}</td>
+      <td><div class="cents-bar">
+        <span class="cents-val ${inTune?'in-tune':'out-tune'}">${cents>0?'+':''}${cents}¢</span>
+        <div class="cents-dot" style="background:${inTune?'var(--accent)':'#ff9980'}"></div>
+      </div></td>
+      <td style="font-size:.8rem;color:var(--muted)">${INTERVAL_NAMES[partial]||'—'}</td>
+      <td><button class="play-btn-sm" onclick="event.stopPropagation();playPartial(${freq})">▶</button></td>
+    </tr>`;
+  }).join('');
+}
+
+const fSel=document.getElementById('fundamental');
+NOTES_S.forEach((n,i)=>fSel.innerHTML+=`<option value="${i}">${n}</option>`);
+['fundamental','octave','numPartials'].forEach(id=>document.getElementById(id).addEventListener('change',build));
+build();
+</script>
+</body>
+</html>
