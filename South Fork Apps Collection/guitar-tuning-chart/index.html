@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guitar Tuning Chart | South Fork Apps</title>
+  <meta name="description" content="Reference chart for standard and alternate guitar tunings. Shows string-by-string notes for open, drop, and modal tunings.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-tuning-chart/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Guitar Tuning Chart">
+<meta property="og:description" content="Reference chart for standard and alternate guitar tunings. String-by-string notes for open, drop, and modal tunings.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/guitar-tuning-chart/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Guitar Tuning Chart">
+<meta name="twitter:description" content="Standard and alternate guitar tunings — string-by-string note reference.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(860px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 .5rem;color:var(--muted);line-height:1.6;}
+  .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .filter-btn{padding:.35rem .85rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;}
+  .filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2);}
+  .section-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:1.25rem 0 .5rem;padding-top:.5rem;border-top:1px solid var(--border);}
+  .section-label:first-of-type{border-top:none;margin-top:0;}
+  .tuning-grid{display:grid;gap:.6rem;}
+  .tuning-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:center;transition:border-color .15s;}
+  .tuning-card:hover{border-color:rgba(125,219,132,.35);}
+  .tuning-name{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+  .tuning-desc{font-size:.78rem;color:var(--muted);}
+  .string-row{display:flex;gap:.35rem;align-items:center;}
+  .string-num{font-size:.68rem;color:var(--muted);width:1.4rem;text-align:right;flex-shrink:0;}
+  .string-note{display:inline-flex;align-items:center;justify-content:center;width:2.2rem;height:2.2rem;border-radius:6px;font-size:.82rem;font-weight:700;border:1px solid var(--border);background:var(--surface2);}
+  .string-note.changed{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08);}
+  .tag{display:inline-block;padding:.1rem .45rem;border-radius:3px;font-size:.68rem;font-weight:700;margin-left:.4rem;}
+  .tag-standard{background:rgba(125,219,132,.12);color:var(--accent);}
+  .tag-drop{background:rgba(170,204,218,.1);color:#aaccda;}
+  .tag-open{background:rgba(225,193,164,.1);color:#e1c1a4;}
+  .tag-modal{background:rgba(200,162,255,.1);color:#c8a2ff;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Guitar Tuning Chart</span></nav>
+<main>
+  <h1>Guitar Tuning Chart</h1>
+  <p class="sub">String-by-string reference for standard and alternate guitar tunings. Strings listed low to high (6→1). <span style="color:var(--accent)">Green</span> = changed from standard.</p>
+  <div class="filter-row" id="filterRow">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="standard">Standard</button>
+    <button class="filter-btn" data-cat="drop">Drop</button>
+    <button class="filter-btn" data-cat="open">Open</button>
+    <button class="filter-btn" data-cat="modal">Modal / Other</button>
+  </div>
+  <div id="tuningList"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const STD=['E2','A2','D3','G3','B3','E4'];
+const TUNINGS=[
+  {name:'Standard (EADGBE)',cat:'standard',strings:['E2','A2','D3','G3','B3','E4'],desc:'The default tuning for 6-string guitar.'},
+  {name:'Standard ½ Step Down (Eb)',cat:'standard',strings:['Eb2','Ab2','Db3','Gb3','Bb3','Eb4'],desc:'Everything down one half step. Common in rock and metal.'},
+  {name:'Standard 1 Step Down (D)',cat:'standard',strings:['D2','G2','C3','F3','A3','D4'],desc:'All strings down one whole step. Used by many alternative artists.'},
+  {name:'Drop D',cat:'drop',strings:['D2','A2','D3','G3','B3','E4'],desc:'Lowest string dropped to D. Allows power chords with one finger.'},
+  {name:'Drop C',cat:'drop',strings:['C2','G2','C3','F3','A3','D4'],desc:'Whole step down + drop. Popular in heavy metal.'},
+  {name:'Drop B',cat:'drop',strings:['B1','F#2','B2','E3','G#3','C#4'],desc:'Step-and-a-half down + drop. Used in extreme metal.'},
+  {name:'Double Drop D',cat:'drop',strings:['D2','A2','D3','G3','B3','D4'],desc:'Both E strings dropped to D for open D drone.'},
+  {name:'Open D',cat:'open',strings:['D2','A2','D3','F#3','A3','D4'],desc:'Open strings form a D major chord. Popular in blues slide.'},
+  {name:'Open G',cat:'open',strings:['D2','G2','D3','G3','B3','D4'],desc:'Open strings form a G major chord. Used by Rolling Stones.'},
+  {name:'Open E',cat:'open',strings:['E2','B2','E3','G#3','B3','E4'],desc:'Open strings form an E major chord. Common in blues.'},
+  {name:'Open A',cat:'open',strings:['E2','A2','E3','A3','C#4','E4'],desc:'Open strings form an A major chord.'},
+  {name:'Open C',cat:'open',strings:['C2','G2','C3','G3','C4','E4'],desc:'Open strings form a C major chord.'},
+  {name:'Open Em',cat:'open',strings:['E2','B2','E3','G3','B3','E4'],desc:'Open strings form an E minor chord.'},
+  {name:'Open Dm',cat:'open',strings:['D2','A2','D3','F3','A3','D4'],desc:'Open strings form a D minor chord.'},
+  {name:'DADGAD',cat:'modal',strings:['D2','A2','D3','G3','A3','D4'],desc:'Celtic/folk tuning. Open Dsus4 chord. Used by Jimmy Page.'},
+  {name:'CGDGAD',cat:'modal',strings:['C2','G2','D3','G3','A3','D4'],desc:'Nashville-style variant. Lush open voicing.'},
+  {name:'All Fourths (EADGCF)',cat:'modal',strings:['E2','A2','D3','G3','C4','F4'],desc:'All strings a perfect fourth apart. Simpler scale patterns.'},
+  {name:'New Standard (CGDAEG)',cat:'modal',strings:['C2','G2','D3','A3','E4','G4'],desc:'Proposed by Robert Fripp. Emphasizes fifths.'},
+];
+
+function buildCard(t){
+  const stdNotes=['E2','A2','D3','G3','B3','E4'];
+  const noteHtml=t.strings.map((n,i)=>{
+    const changed=n!==stdNotes[i];
+    return`<div class="string-note ${changed?'changed':''}">${n.replace(/[0-9]/g,'')}</div>`;
+  }).join('');
+  const tagMap={standard:'standard',drop:'drop',open:'open',modal:'modal'};
+  return`<div class="tuning-card" data-cat="${t.cat}">
+    <div>
+      <div class="tuning-name">${t.name}<span class="tag tag-${tagMap[t.cat]}">${t.cat}</span></div>
+      <div class="tuning-desc">${t.desc}</div>
+    </div>
+    <div class="string-row">${noteHtml}</div>
+  </div>`;
+}
+
+function render(cat){
+  const list=document.getElementById('tuningList');
+  const filtered=cat==='all'?TUNINGS:TUNINGS.filter(t=>t.cat===cat);
+  list.innerHTML=filtered.map(buildCard).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.cat);
+  });
+});
+
+render('all');
+</script>
+</body>
+</html>

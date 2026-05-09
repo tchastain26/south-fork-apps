@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solfege | South Fork Apps</title>
+  <meta name="description" content="Interactive solfege reference. Click Do Re Mi Fa Sol La Ti to hear each syllable's pitch and see its scale degree, interval, and note name.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/solfege/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Solfege">
+<meta property="og:description" content="Interactive solfege reference. Click Do Re Mi Fa Sol La Ti to hear each syllable and see its scale degree and interval.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/solfege/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Solfege">
+<meta name="twitter:description" content="Click Do Re Mi Fa Sol La Ti to hear each pitch and see its scale degree.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 .75rem;color:var(--muted);line-height:1.6;}
+  .key-row{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1.75rem;font-size:.85rem;}
+  .key-row label{color:var(--muted);font-weight:600;}
+  select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.35rem .65rem;border-radius:6px;font:inherit;font-size:.85rem;cursor:pointer;}
+  .solfege-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.65rem;margin-bottom:1.75rem;}
+  @media(max-width:500px){.solfege-grid{grid-template-columns:repeat(4,1fr);}}
+  .sol-btn{padding:1.1rem .4rem .9rem;border:2px solid var(--border);border-radius:12px;background:var(--surface);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:.35rem;font:inherit;}
+  .sol-btn:hover{border-color:rgba(125,219,132,.5);background:var(--surface2);}
+  .sol-btn.active{border-color:var(--accent);background:rgba(125,219,132,.1);}
+  .sol-syl{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .sol-note{font-size:.75rem;color:var(--muted);font-weight:600;}
+  .sol-deg{font-size:.65rem;color:var(--muted);}
+  .info-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;min-height:100px;text-align:left;}
+  .info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+  @media(max-width:480px){.info-grid{grid-template-columns:repeat(2,1fr);}}
+  .info-item .lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
+  .info-item .val{font-size:1rem;font-weight:700;color:var(--text);}
+  .scale-bar{display:flex;gap:3px;justify-content:center;margin-bottom:1rem;}
+  .scale-step{flex:1;height:6px;border-radius:3px;background:var(--border);}
+  .scale-step.w{flex:2;}
+  .scale-step.on{background:var(--accent);}
+  .chromatic-map{display:flex;gap:4px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .chr-note{width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:.75rem;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);}
+  .chr-note.in-scale{border-color:rgba(125,219,132,.3);color:var(--text);}
+  .chr-note.active{border-color:var(--accent);background:rgba(125,219,132,.15);color:var(--accent);}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Solfege</span></nav>
+<main>
+  <h1>Solfege</h1>
+  <p class="sub">The movable-do system maps syllables to scale degrees. Click any syllable to hear it and see its interval and note name in the selected key.</p>
+  <div class="key-row">
+    <label for="keySelect">Key of:</label>
+    <select id="keySelect"></select>
+  </div>
+
+  <div class="solfege-grid" id="solfegeGrid"></div>
+
+  <div class="info-panel" id="infoPanel">
+    <p style="color:var(--muted);font-size:.88rem;">Click a syllable above to see details</p>
+  </div>
+
+  <div style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;">Chromatic position in key</div>
+  <div class="chromatic-map" id="chrMap"></div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const SYLLABLES=[
+  {syl:'Do', deg:1, semi:0, interval:'Unison (P1)', role:'Tonic — home base of the scale', movable:true},
+  {syl:'Re', deg:2, semi:2, interval:'Major 2nd (M2)', role:'Supertonic — tension above tonic', movable:true},
+  {syl:'Mi', deg:3, semi:4, interval:'Major 3rd (M3)', role:'Mediant — defines major quality', movable:true},
+  {syl:'Fa', deg:4, semi:5, interval:'Perfect 4th (P4)', role:'Subdominant — gentle pull down', movable:true},
+  {syl:'Sol',deg:5, semi:7, interval:'Perfect 5th (P5)', role:'Dominant — strong pull to tonic', movable:true},
+  {syl:'La', deg:6, semi:9, interval:'Major 6th (M6)', role:'Submediant — relative minor root', movable:true},
+  {syl:'Ti', deg:7, semi:11, interval:'Major 7th (M7)', role:'Leading tone — strongest pull to Do', movable:true},
+];
+
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const FLAT_ROOTS=[0,5,10,3,8,1,6];
+let audioCtx=null,selected=null;
+
+function getNoteName(rootIdx,semitoneOffset){
+  const semi=(rootIdx+semitoneOffset)%12;
+  const pf=FLAT_ROOTS.includes(rootIdx)&&rootIdx!==0;
+  return(pf?NOTES_F:NOTES_S)[semi];
+}
+
+function playNote(semi,rootIdx){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const a4=440,semiFromA4=(4-4)*12+(((rootIdx+semi)%12)-9);
+  const freq=a4*Math.pow(2,semiFromA4/12)*2;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.type='sine';
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.35,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+1.0);
+  osc.start();osc.stop(audioCtx.currentTime+1.0);
+}
+
+function buildSelect(){
+  const sel=document.getElementById('keySelect');
+  sel.innerHTML=NOTES_S.map((n,i)=>`<option value="${i}">${n}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`).join('');
+}
+
+function buildGrid(){
+  const rootIdx=parseInt(document.getElementById('keySelect').value);
+  const grid=document.getElementById('solfegeGrid');
+  grid.innerHTML=SYLLABLES.map((s,i)=>`
+    <button class="sol-btn ${selected===i?'active':''}" onclick="selectSyl(${i})">
+      <span class="sol-syl">${s.syl}</span>
+      <span class="sol-note">${getNoteName(rootIdx,s.semi)}</span>
+      <span class="sol-deg">${s.deg}</span>
+    </button>`).join('');
+  buildChrMap(rootIdx);
+  if(selected!==null)showInfo(selected,rootIdx);
+}
+
+function buildChrMap(rootIdx){
+  const scaleSemis=new Set(SYLLABLES.map(s=>(rootIdx+s.semi)%12));
+  const map=document.getElementById('chrMap');
+  map.innerHTML=NOTES_S.map((n,i)=>{
+    const isActive=selected!==null&&(rootIdx+SYLLABLES[selected].semi)%12===i;
+    const inScale=scaleSemis.has(i);
+    return`<div class="chr-note ${isActive?'active':inScale?'in-scale':''}">${n}</div>`;
+  }).join('');
+}
+
+function selectSyl(idx){
+  selected=idx;
+  const rootIdx=parseInt(document.getElementById('keySelect').value);
+  playNote(SYLLABLES[idx].semi,rootIdx);
+  buildGrid();
+  showInfo(idx,rootIdx);
+}
+
+function showInfo(idx,rootIdx){
+  const s=SYLLABLES[idx];
+  const note=getNoteName(rootIdx,s.semi);
+  document.getElementById('infoPanel').innerHTML=`
+    <div class="info-grid">
+      <div class="info-item"><div class="lbl">Syllable</div><div class="val" style="font-size:1.6rem;color:var(--accent)">${s.syl}</div></div>
+      <div class="info-item"><div class="lbl">Scale Degree</div><div class="val">${s.deg} of 7</div></div>
+      <div class="info-item"><div class="lbl">Note (${NOTES_S[rootIdx]} Major)</div><div class="val">${note}</div></div>
+      <div class="info-item"><div class="lbl">Interval</div><div class="val" style="font-size:.88rem">${s.interval}</div></div>
+    </div>
+    <div style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">${s.role}</div>`;
+}
+
+document.getElementById('keySelect').addEventListener('change',()=>buildGrid());
+buildSelect();
+buildGrid();
+</script>
+</body>
+</html>

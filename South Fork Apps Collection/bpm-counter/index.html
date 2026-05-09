@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPM Counter | South Fork Apps</title>
+  <meta name="description" content="Tap tempo BPM counter. Tap any key or the button to calculate your beats per minute in real time. Resets automatically after 3 seconds of silence.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/bpm-counter/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BPM Counter">
+<meta property="og:description" content="Tap tempo BPM counter. Tap to calculate beats per minute in real time.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/bpm-counter/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BPM Counter">
+<meta name="twitter:description" content="Tap tempo BPM counter. Tap to calculate beats per minute in real time.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(500px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;text-align:center;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+  .sub{margin:0 0 2rem;color:var(--muted);line-height:1.6;}
+  .bpm-display{font-size:clamp(5rem,20vw,8rem);font-weight:800;color:var(--accent);line-height:1;margin-bottom:.25rem;transition:transform .08s;}
+  .bpm-display.pulse{transform:scale(1.06);}
+  .bpm-label{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:1.5rem;}
+  .tap-btn{width:100%;padding:2.5rem 1rem;border:3px solid var(--accent);border-radius:16px;background:rgba(125,219,132,.05);color:var(--accent);font:inherit;font-size:1.4rem;font-weight:800;cursor:pointer;transition:all .1s;letter-spacing:.05em;user-select:none;-webkit-tap-highlight-color:transparent;}
+  .tap-btn:active,.tap-btn.flash{background:rgba(125,219,132,.18);transform:scale(.97);}
+  .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin:1.25rem 0;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem .5rem;}
+  .stat-val{font-size:1.3rem;font-weight:800;color:var(--text);}
+  .stat-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:.2rem;}
+  .tempo-label{margin:1rem 0 .5rem;padding:.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:.95rem;font-weight:600;color:var(--accent);}
+  .controls{display:flex;gap:.75rem;justify-content:center;margin-top:1rem;}
+  .reset-btn{padding:.6rem 1.5rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;}
+  .reset-btn:hover{color:var(--text);border-color:var(--text);}
+  .hint{font-size:.78rem;color:var(--muted);margin-top:.75rem;}
+  footer{margin-top:1.5rem;color:var(--muted);font-size:.8rem;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">BPM Counter</span></nav>
+<main>
+  <h1>BPM Counter</h1>
+  <p class="sub">Tap the button (or any key) to the beat. BPM calculates from your tap intervals.</p>
+  <div class="bpm-display" id="bpmDisplay">—</div>
+  <div class="bpm-label">Beats Per Minute</div>
+  <button class="tap-btn" id="tapBtn" onclick="tap()">TAP</button>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="tapCount">0</div><div class="stat-label">Taps</div></div>
+    <div class="stat"><div class="stat-val" id="minBpm">—</div><div class="stat-label">Min BPM</div></div>
+    <div class="stat"><div class="stat-val" id="maxBpm">—</div><div class="stat-label">Max BPM</div></div>
+  </div>
+  <div class="tempo-label" id="tempoLabel">Tap to start</div>
+  <div class="controls">
+    <button class="reset-btn" onclick="reset()">Reset</button>
+  </div>
+  <p class="hint">Auto-resets after 3 seconds of silence · Press any key to tap</p>
+  <footer>v1.0</footer>
+</main>
+<script>
+const TEMPOS=[
+  [0,'—'],[40,'Grave'],[60,'Largo'],[66,'Larghetto'],[76,'Adagio'],
+  [108,'Andante'],[120,'Moderato'],[156,'Allegro'],[176,'Vivace'],
+  [200,'Presto'],[220,'Prestissimo']
+];
+
+let taps=[],resetTimer=null,minB=Infinity,maxB=-Infinity,count=0;
+
+function getTempoName(bpm){
+  let name='—';
+  for(const [t,n] of TEMPOS){if(bpm>=t)name=n;}
+  return name;
+}
+
+function tap(){
+  const now=Date.now();
+  if(resetTimer)clearTimeout(resetTimer);
+  resetTimer=setTimeout(reset,3000);
+  taps.push(now);
+  count++;
+  document.getElementById('tapCount').textContent=count;
+  if(taps.length>1){
+    const intervals=[];
+    for(let i=1;i<taps.length;i++)intervals.push(taps[i]-taps[i-1]);
+    const avg=intervals.reduce((a,b)=>a+b,0)/intervals.length;
+    const bpm=Math.round(60000/avg);
+    if(bpm>20&&bpm<300){
+      document.getElementById('bpmDisplay').textContent=bpm;
+      if(bpm<minB)minB=bpm;
+      if(bpm>maxB)maxB=bpm;
+      document.getElementById('minBpm').textContent=minB===Infinity?'—':minB;
+      document.getElementById('maxBpm').textContent=maxB===-Infinity?'—':maxB;
+      document.getElementById('tempoLabel').textContent=getTempoName(bpm);
+    }
+  } else {
+    document.getElementById('tempoLabel').textContent='Keep tapping…';
+  }
+  const btn=document.getElementById('tapBtn');
+  btn.classList.add('flash');
+  const disp=document.getElementById('bpmDisplay');
+  disp.classList.add('pulse');
+  setTimeout(()=>{btn.classList.remove('flash');disp.classList.remove('pulse');},100);
+  if(taps.length>16)taps=taps.slice(-8);
+}
+
+function reset(){
+  taps=[];count=0;minB=Infinity;maxB=-Infinity;
+  if(resetTimer)clearTimeout(resetTimer);
+  document.getElementById('bpmDisplay').textContent='—';
+  document.getElementById('tapCount').textContent='0';
+  document.getElementById('minBpm').textContent='—';
+  document.getElementById('maxBpm').textContent='—';
+  document.getElementById('tempoLabel').textContent='Tap to start';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key===' '||e.key==='Enter'){e.preventDefault();tap();}
+});
+</script>
+</body>
+</html>

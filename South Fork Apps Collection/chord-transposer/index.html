@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chord Transposer | South Fork Apps</title>
+  <meta name="description" content="Transpose guitar or piano chords to any key. Paste chord sheets, select original and target key, get transposed output instantly.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-transposer/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chord Transposer">
+<meta property="og:description" content="Transpose guitar or piano chords to any key. Paste chord sheets and get transposed output instantly.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/chord-transposer/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chord Transposer">
+<meta name="twitter:description" content="Transpose chords to any key instantly.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .controls{display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.25rem;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl-group{display:flex;flex-direction:column;gap:.35rem;}
+  label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.45rem .75rem;border-radius:7px;font:inherit;font-size:.9rem;cursor:pointer;min-width:120px;}
+  .semitones-badge{padding:.4rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:7px;font-size:.9rem;font-weight:700;color:var(--accent);white-space:nowrap;align-self:flex-end;}
+  .transpose-btn{padding:.5rem 1.25rem;border:none;border-radius:7px;background:var(--accent);color:#102113;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;align-self:flex-end;transition:filter .15s;}
+  .transpose-btn:hover{filter:brightness(1.1);}
+  .editors{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .editor-wrap{display:flex;flex-direction:column;gap:.4rem;}
+  .editor-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+  textarea{width:100%;height:220px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:monospace;font-size:.9rem;padding:.85rem;resize:vertical;line-height:1.7;}
+  textarea:focus{outline:none;border-color:var(--accent);}
+  .copy-btn{padding:.2rem .6rem;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font:inherit;font-size:.75rem;font-weight:600;cursor:pointer;}
+  .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
+  .example-btn{padding:.25rem .7rem;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font:inherit;font-size:.75rem;cursor:pointer;}
+  .example-btn:hover{color:var(--text);}
+  .pref-row{display:flex;gap:.75rem;align-items:center;margin-top:.75rem;font-size:.82rem;color:var(--muted);}
+  .pref-row label{text-transform:none;letter-spacing:0;font-weight:500;cursor:pointer;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  @media(max-width:580px){.editors{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Chord Transposer</span></nav>
+<main>
+  <h1>Chord Transposer</h1>
+  <p class="sub">Paste a chord sheet, select the original key and target key, and get transposed chords instantly.</p>
+  <div class="controls">
+    <div class="ctrl-group">
+      <label for="fromKey">Original Key</label>
+      <select id="fromKey"></select>
+    </div>
+    <div class="ctrl-group">
+      <label for="toKey">Target Key</label>
+      <select id="toKey"></select>
+    </div>
+    <div class="semitones-badge" id="semitoneBadge">0 semitones</div>
+    <div class="ctrl-group" style="margin-left:auto">
+      <label>Notation</label>
+      <select id="notePref">
+        <option value="sharps">Prefer Sharps (♯)</option>
+        <option value="flats">Prefer Flats (♭)</option>
+      </select>
+    </div>
+  </div>
+  <div style="margin-bottom:.75rem;">
+    <button class="example-btn" onclick="loadExample()">Load example</button>
+  </div>
+  <div class="editors">
+    <div class="editor-wrap">
+      <div class="editor-label">Input <span style="color:var(--muted);font-size:.72rem;text-transform:none;letter-spacing:0">Paste your chords here</span></div>
+      <textarea id="inputArea" placeholder="G  D  Em  C&#10;Am  F  C  G&#10;Capo 3: G  C  D" oninput="transpose()"></textarea>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-label">Output <button class="copy-btn" onclick="copyOut()">Copy</button></div>
+      <textarea id="outputArea" readonly placeholder="Transposed chords appear here…"></textarea>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const CHROMATIC_SHARPS=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const CHROMATIC_FLATS= ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const DISPLAY_SHARPS=  ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const DISPLAY_FLATS=   ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+
+const KEY_OPTIONS=['C','C♯/D♭','D','D♯/E♭','E','F','F♯/G♭','G','G♯/A♭','A','A♯/B♭','B'];
+const KEY_SEMI=    [0,   1,      2,   3,       4,  5,   6,      7,   8,       9,   10,    11];
+
+function buildSelects(){
+  const opts=KEY_OPTIONS.map((k,i)=>`<option value="${i}">${k}</option>`).join('');
+  document.getElementById('fromKey').innerHTML=opts;
+  document.getElementById('toKey').innerHTML=opts;
+  document.getElementById('fromKey').value='0';
+  document.getElementById('toKey').value='0';
+}
+
+function toSemi(note){
+  const n=note.replace(/♯/g,'#').replace(/♭/g,'b');
+  let idx=CHROMATIC_SHARPS.indexOf(n);
+  if(idx===-1)idx=CHROMATIC_FLATS.indexOf(n);
+  return idx;
+}
+
+function fromSemi(semi,preferFlats){
+  const scale=preferFlats?DISPLAY_FLATS:DISPLAY_SHARPS;
+  return scale[((semi%12)+12)%12];
+}
+
+function transposeNote(note,shift,preferFlats){
+  const semi=toSemi(note);
+  if(semi===-1)return note;
+  return fromSemi(semi+shift,preferFlats);
+}
+
+const NOTE_RE=/\b([A-G](?:#|b|♯|♭)?)(?=[^a-z]|$)/g;
+
+function transposeText(text,shift,preferFlats){
+  return text.replace(NOTE_RE,(match,note)=>{
+    return transposeNote(note,shift,preferFlats);
+  });
+}
+
+function getSemitoneShift(){
+  const from=parseInt(document.getElementById('fromKey').value);
+  const to=parseInt(document.getElementById('toKey').value);
+  return((to-from)+12)%12;
+}
+
+function transpose(){
+  const shift=getSemitoneShift();
+  const preferFlats=document.getElementById('notePref').value==='flats';
+  const input=document.getElementById('inputArea').value;
+  document.getElementById('outputArea').value=transposeText(input,shift,preferFlats);
+  const s=shift===0?0:shift<=6?shift:shift-12;
+  document.getElementById('semitoneBadge').textContent=(s>0?'+':'')+s+' semitone'+(Math.abs(s)!==1?'s':'');
+}
+
+function copyOut(){
+  const val=document.getElementById('outputArea').value;
+  if(!val)return;
+  navigator.clipboard.writeText(val).catch(()=>{});
+}
+
+function loadExample(){
+  document.getElementById('inputArea').value=`[Verse]
+G  D  Em  C
+G  D  C
+
+[Chorus]
+Am  F  C  G
+Am  F  G`;
+  transpose();
+}
+
+document.getElementById('fromKey').addEventListener('change',transpose);
+document.getElementById('toKey').addEventListener('change',transpose);
+document.getElementById('notePref').addEventListener('change',transpose);
+
+buildSelects();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chords in Keys | South Fork Apps</title>
+  <meta name="description" content="See all diatonic chords for any major or minor key. Select a root and mode to get all 7 chords with Roman numeral analysis and chord types.">
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/South%20Fork%20Apps%20Collection/chords-in-keys/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chords in Keys">
+<meta property="og:description" content="See all diatonic chords for any major or minor key with Roman numeral analysis.">
+<meta property="og:url" content="https://southforkapps.com/South%20Fork%20Apps%20Collection/chords-in-keys/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chords in Keys">
+<meta name="twitter:description" content="Diatonic chords for any major or minor key, with Roman numeral analysis.">
+<!-- SFA_SOCIAL_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+  .nav a:hover{text-decoration:underline;}
+  .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+  main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
+  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
+  .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+  .selector{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .ctrl{display:flex;flex-direction:column;gap:.35rem;}
+  label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.45rem .75rem;border-radius:7px;font:inherit;font-size:.95rem;cursor:pointer;}
+  .key-title{font-size:1.5rem;font-weight:800;color:var(--accent);margin-bottom:.25rem;}
+  .key-sig{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;}
+  .chord-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.75rem;margin-bottom:1.5rem;}
+  @media(max-width:560px){.chord-grid{grid-template-columns:repeat(4,1fr);}}
+  @media(max-width:380px){.chord-grid{grid-template-columns:repeat(3,1fr);}}
+  .chord-card{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:.85rem .5rem;text-align:center;transition:border-color .15s;}
+  .chord-card:hover{border-color:var(--accent);}
+  .chord-card.tonic{border-color:rgba(125,219,132,.4);background:rgba(125,219,132,.05);}
+  .chord-card.subdom{border-color:rgba(170,204,218,.25);}
+  .chord-card.dom{border-color:rgba(225,193,164,.2);}
+  .roman{font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:.35rem;letter-spacing:.04em;}
+  .chord-name{font-size:1.1rem;font-weight:800;color:var(--text);}
+  .chord-type{font-size:.68rem;color:var(--muted);margin-top:.3rem;font-weight:600;}
+  .function-tag{display:inline-block;padding:.1rem .4rem;border-radius:3px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+  .fn-tonic{background:rgba(125,219,132,.12);color:var(--accent);}
+  .fn-subdominant{background:rgba(170,204,218,.1);color:#aaccda;}
+  .fn-dominant{background:rgba(225,193,164,.1);color:#e1c1a4;}
+  .fn-diminished{background:rgba(255,153,128,.1);color:#ff9980;}
+  .all-keys-section{margin-top:2rem;}
+  .all-keys-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem;}
+  .all-keys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;}
+  .ak-row{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.5rem .75rem;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;}
+  .ak-key{font-weight:700;color:var(--accent);}
+  .ak-chords{color:var(--muted);font-size:.75rem;}
+  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Chords in Keys</span></nav>
+<main>
+  <h1>Chords in Keys</h1>
+  <p class="sub">Select a root note and mode to see all 7 diatonic chords with Roman numeral analysis and harmonic function.</p>
+  <div class="selector">
+    <div class="ctrl">
+      <label for="root">Root Note</label>
+      <select id="root"></select>
+    </div>
+    <div class="ctrl">
+      <label for="mode">Mode</label>
+      <select id="mode">
+        <option value="major">Major (Ionian)</option>
+        <option value="minor">Natural Minor (Aeolian)</option>
+        <option value="dorian">Dorian</option>
+        <option value="phrygian">Phrygian</option>
+        <option value="lydian">Lydian</option>
+        <option value="mixolydian">Mixolydian</option>
+        <option value="locrian">Locrian</option>
+      </select>
+    </div>
+  </div>
+  <div class="key-title" id="keyTitle"></div>
+  <div class="key-sig" id="keySig"></div>
+  <div class="chord-grid" id="chordGrid"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const NOTES_S=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const NOTES_F=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+
+const MODES={
+  major:   {steps:[2,2,1,2,2,2,1],qualities:['maj','min','min','maj','maj','min','dim'],romans:['I','ii','iii','IV','V','vi','vii°'],fns:['tonic','subdominant','tonic','subdominant','dominant','tonic','diminished']},
+  minor:   {steps:[2,1,2,2,1,2,2],qualities:['min','dim','maj','min','min','maj','maj'],romans:['i','ii°','III','iv','v','VI','VII'],fns:['tonic','diminished','tonic','subdominant','dominant','subdominant','subdominant']},
+  dorian:  {steps:[2,1,2,2,2,1,2],qualities:['min','min','maj','maj','min','dim','maj'],romans:['i','ii','III','IV','v','vi°','VII'],fns:['tonic','subdominant','tonic','subdominant','dominant','diminished','subdominant']},
+  phrygian:{steps:[1,2,2,2,1,2,2],qualities:['min','maj','maj','min','dim','maj','min'],romans:['i','II','III','iv','v°','VI','vii'],fns:['tonic','subdominant','tonic','subdominant','diminished','subdominant','dominant']},
+  lydian:  {steps:[2,2,2,1,2,2,1],qualities:['maj','maj','min','dim','maj','min','min'],romans:['I','II','iii','iv°','V','vi','vii'],fns:['tonic','subdominant','tonic','diminished','dominant','tonic','dominant']},
+  mixolydian:{steps:[2,2,1,2,2,1,2],qualities:['maj','min','dim','maj','min','min','maj'],romans:['I','ii','iii°','IV','v','vi','VII'],fns:['tonic','subdominant','diminished','subdominant','dominant','tonic','subdominant']},
+  locrian: {steps:[1,2,2,1,2,2,2],qualities:['dim','maj','min','min','maj','maj','min'],romans:['i°','II','iii','iv','V','VI','vii'],fns:['diminished','subdominant','tonic','subdominant','dominant','subdominant','tonic']},
+};
+
+const FLAT_KEYS=[0,5,10,3,8,1,6]; // keys that prefer flats (C,F,Bb,Eb,Ab,Db,Gb)
+const SHARP_KEYS=[0,7,2,9,4,11,6];
+
+const TYPE_LABELS={maj:'Major',min:'Minor',dim:'Diminished','aug':'Augmented'};
+
+function buildRoot(){
+  const sel=document.getElementById('root');
+  sel.innerHTML=NOTES_S.map((n,i)=>`<option value="${i}">${NOTES_S[i]}${NOTES_S[i]!==NOTES_F[i]?' / '+NOTES_F[i]:''}</option>`).join('');
+  sel.value='0';
+}
+
+function preferFlats(rootIdx){
+  return[0,5,10,3,8,1,6].includes(rootIdx)&&rootIdx!==0;
+}
+
+function getNote(semi,rootIdx){
+  const pf=preferFlats(rootIdx)||[5,10,3,8,1].includes(rootIdx);
+  const notes=pf?NOTES_F:NOTES_S;
+  return notes[((semi%12)+12)%12];
+}
+
+function buildChords(){
+  const rootIdx=parseInt(document.getElementById('root').value);
+  const modeKey=document.getElementById('mode').value;
+  const mode=MODES[modeKey];
+  const modeName={major:'Major',minor:'Natural Minor',dorian:'Dorian',phrygian:'Phrygian',lydian:'Lydian',mixolydian:'Mixolydian',locrian:'Locrian'}[modeKey];
+  const pf=preferFlats(rootIdx);
+  const notes=pf?NOTES_F:NOTES_S;
+  const rootName=notes[rootIdx];
+  document.getElementById('keyTitle').textContent=`${rootName} ${modeName}`;
+  const scaleNotes=[];
+  let semi=rootIdx;
+  scaleNotes.push(semi);
+  for(const s of mode.steps.slice(0,-1)){semi=(semi+s)%12;scaleNotes.push(semi);}
+  document.getElementById('keySig').textContent=`Scale: ${scaleNotes.map(s=>getNote(s,rootIdx)).join(' – ')}`;
+  const grid=document.getElementById('chordGrid');
+  grid.innerHTML=scaleNotes.map((s,i)=>{
+    const q=mode.qualities[i];
+    const fn=mode.fns[i];
+    const chordRoot=getNote(s,rootIdx);
+    const suffix=q==='maj'?'':(q==='min'?'m':(q==='dim'?'dim':''));
+    return`<div class="chord-card ${fn==='tonic'?'tonic':fn==='subdominant'?'subdom':fn==='dominant'?'dom':''}">
+      <div class="roman">${mode.romans[i]}</div>
+      <div class="chord-name">${chordRoot}${suffix}</div>
+      <div class="chord-type">${TYPE_LABELS[q]||q}</div>
+      <div style="margin-top:.4rem"><span class="function-tag fn-${fn}">${fn}</span></div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('root').addEventListener('change',buildChords);
+document.getElementById('mode').addEventListener('change',buildChords);
+buildRoot();
+buildChords();
+</script>
+</body>
+</html>
