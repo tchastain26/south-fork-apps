@@ -15,264 +15,329 @@
 <meta name="twitter:title" content="Drum Patterns">
 <meta name="twitter:description" content="Visual drum patterns with Web Audio playback — rock, funk, jazz, reggae, and more.">
 <!-- SFA_SOCIAL_END -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
-  *{box-sizing:border-box;}
-  body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+  :root{
+    --bg:#111412;--surface:#1a1f1b;--surface2:#202722;--surface3:#252d26;
+    --border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+
+  /* Nav */
   .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
   .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
   .nav a:hover{text-decoration:underline;}
   .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
-  main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;}
-  h1{margin:0 0 .4rem;font-size:clamp(1.5rem,3.5vw,2rem);}
-  .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
-  .controls{display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.25rem;}
-  .ctrl{display:flex;flex-direction:column;gap:.3rem;}
-  label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
-  select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.4rem .7rem;border-radius:7px;font:inherit;font-size:.88rem;cursor:pointer;}
-  input[type=range]{accent-color:var(--accent);width:100px;}
-  .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
-  .filter-btn{padding:.35rem .85rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;}
-  .filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2);}
-  .patterns-list{display:grid;gap:1rem;}
-  .pat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;transition:border-color .15s;}
-  .pat-card:hover{border-color:rgba(125,219,132,.3);}
-  .pat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;}
-  .pat-name{font-weight:700;font-size:.95rem;}
-  .pat-genre{padding:.1rem .45rem;border-radius:3px;font-size:.7rem;font-weight:700;}
-  .g-rock{background:rgba(170,204,218,.1);color:#aaccda;}
-  .g-funk{background:rgba(225,193,164,.1);color:#e1c1a4;}
-  .g-jazz{background:rgba(200,162,255,.1);color:#c8a2ff;}
-  .g-reggae{background:rgba(125,219,132,.1);color:var(--accent);}
-  .g-hiphop{background:rgba(255,153,128,.1);color:#ff9980;}
-  .g-latin{background:rgba(255,220,100,.1);color:#ffd764;}
-  .play-pat-btn{padding:.3rem .85rem;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
-  .play-pat-btn.playing{background:rgba(125,219,132,.15);}
-  .play-pat-btn:hover{background:rgba(125,219,132,.1);}
-  .grid-wrap{overflow-x:auto;}
-  .drum-grid{width:100%;border-collapse:collapse;}
-  .drum-grid td,.drum-grid th{padding:2px;}
-  .drum-label{font-size:.72rem;font-weight:700;color:var(--muted);text-align:right;padding-right:.6rem;white-space:nowrap;min-width:70px;}
-  .beat-cell{width:100%;}
-  .beat-btn{width:100%;aspect-ratio:1;border-radius:4px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .1s;min-width:20px;display:block;}
-  .beat-btn.on{background:var(--accent);border-color:var(--accent);}
-  .beat-btn.on.accent{background:#4ac453;}
-  .beat-btn.current{outline:2px solid rgba(255,255,255,.4);}
-  .beat-num{font-size:.6rem;color:var(--muted);text-align:center;padding-top:2px;}
-  .bar-sep{border-left:2px solid rgba(125,219,132,.2);}
-  footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+
+  /* Layout */
+  main{width:min(960px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 3rem;}
+  h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;margin-bottom:.3rem;}
+  .sub{color:var(--muted);line-height:1.6;margin-bottom:1.75rem;font-size:.95rem;}
+
+  /* Toolbar */
+  .toolbar{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .bpm-group{display:flex;align-items:center;gap:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .85rem;}
+  .bpm-group label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+  input[type=range]{width:100px;accent-color:var(--accent);}
+  .bpm-val{font-size:1rem;font-weight:800;color:var(--accent);min-width:2.5ch;text-align:right;}
+
+  /* Genre filters */
+  .genres{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .g-btn{padding:.35rem .85rem;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;}
+  .g-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .g-btn.active{background:var(--accent);border-color:var(--accent);color:#0a1a0c;}
+
+  /* Pattern cards */
+  .patterns-list{display:grid;gap:1.25rem;}
+  .pat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .15s;}
+  .pat-card.is-playing{border-color:var(--accent);}
+
+  /* Card header */
+  .pat-header{display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);}
+  .pat-name{font-size:1rem;font-weight:800;flex:1;}
+  .pat-meta{display:flex;align-items:center;gap:.5rem;}
+  .genre-badge{padding:.18rem .6rem;border-radius:20px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+  .bpm-badge{font-size:.72rem;font-weight:700;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.15rem .5rem;}
+  .play-btn{display:flex;align-items:center;gap:.4rem;padding:.4rem 1rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.82rem;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .play-btn:hover{filter:brightness(1.1);}
+  .play-btn.playing{background:#ff7a6a;color:#fff;}
+
+  /* Genre colors */
+  .badge-rock{background:rgba(170,204,218,.15);color:#aaccda;}
+  .badge-funk{background:rgba(225,193,164,.15);color:#e1c1a4;}
+  .badge-jazz{background:rgba(200,162,255,.15);color:#c8a2ff;}
+  .badge-reggae{background:rgba(125,219,132,.15);color:var(--accent);}
+  .badge-hiphop{background:rgba(255,153,128,.15);color:#ff9980;}
+  .badge-latin{background:rgba(255,220,100,.15);color:#ffd764;}
+
+  /* Grid */
+  .pat-grid{padding:.85rem 1.1rem 1rem;}
+  .beat-numbers{display:grid;margin-left:88px;margin-bottom:.3rem;}
+  .beat-num-row{display:flex;}
+  .beat-num{flex:1;text-align:center;font-size:.62rem;font-weight:800;color:var(--muted);letter-spacing:.02em;}
+  .beat-num.downbeat{color:var(--accent);}
+
+  .track-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.45rem;}
+  .track-row:last-child{margin-bottom:0;}
+  .track-info{display:flex;align-items:center;gap:.5rem;width:82px;flex-shrink:0;}
+  .track-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .track-name{font-size:.7rem;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .steps-row{display:flex;flex:1;gap:3px;}
+  .beat-group{display:flex;gap:3px;}
+  .beat-group+.beat-group{margin-left:5px;}
+
+  .step{flex:1;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);cursor:default;transition:background .08s,border-color .08s;position:relative;min-width:16px;}
+  .step.on{border-color:transparent;}
+  .step.playhead::after{content:'';position:absolute;inset:-2px;border-radius:6px;border:2px solid rgba(255,255,255,.55);pointer-events:none;}
+
+  footer{margin-top:2.5rem;color:var(--muted);font-size:.8rem;text-align:center;}
 </style>
 </head>
 <body>
 <nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Drum Patterns</span></nav>
 <main>
   <h1>Drum Patterns</h1>
-  <p class="sub">Common drum patterns across genres. Each row is a drum voice, each column is a 16th note step. Click ▶ to hear it.</p>
-  <div class="controls">
-    <div class="ctrl">
+  <p class="sub">Common drum patterns across genres. Each row is a drum voice, each block is a 16th-note step.</p>
+
+  <div class="toolbar">
+    <div class="bpm-group">
       <label>BPM</label>
-      <div style="display:flex;gap:.5rem;align-items:center">
-        <input type="range" id="bpmSlider" min="60" max="200" value="100">
-        <span id="bpmVal" style="font-weight:700;color:var(--accent);min-width:3ch">100</span>
-      </div>
+      <input type="range" id="bpmSlider" min="50" max="200" value="100">
+      <span class="bpm-val" id="bpmVal">100</span>
+    </div>
+    <div class="genres" id="genres">
+      <button class="g-btn active" data-g="all">All</button>
+      <button class="g-btn" data-g="rock">Rock</button>
+      <button class="g-btn" data-g="funk">Funk</button>
+      <button class="g-btn" data-g="jazz">Jazz</button>
+      <button class="g-btn" data-g="reggae">Reggae</button>
+      <button class="g-btn" data-g="hiphop">Hip-Hop</button>
+      <button class="g-btn" data-g="latin">Latin</button>
     </div>
   </div>
-  <div class="filter-row" id="filterRow">
-    <button class="filter-btn active" data-g="all">All</button>
-    <button class="filter-btn" data-g="rock">Rock</button>
-    <button class="filter-btn" data-g="funk">Funk</button>
-    <button class="filter-btn" data-g="jazz">Jazz</button>
-    <button class="filter-btn" data-g="reggae">Reggae</button>
-    <button class="filter-btn" data-g="hiphop">Hip-Hop</button>
-    <button class="filter-btn" data-g="latin">Latin</button>
-  </div>
+
   <div class="patterns-list" id="patList"></div>
   <footer>v1.0</footer>
 </main>
 <script>
-// 16 steps per pattern, rows: [HH, Snare, Kick, Open HH / Tom]
 const PATTERNS=[
   {name:'Basic Rock Beat',genre:'rock',bpm:120,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'Kick',   color:'#e1c1a4', steps:[1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]},
   ]},
   {name:'Rock Shuffle',genre:'rock',bpm:110,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'Kick',   color:'#e1c1a4', steps:[1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0]},
   ]},
   {name:'Classic Funk',genre:'funk',bpm:100,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1]},
-    {label:'Open HH',color:'#c8a2ff',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0]},
+    {label:'Kick',   color:'#e1c1a4', steps:[1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1]},
+    {label:'Open HH',color:'#c8a2ff', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
   ]},
   {name:'Funky Drummer',genre:'funk',bpm:97,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0]},
+    {label:'Kick',   color:'#e1c1a4', steps:[1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0]},
   ]},
   {name:'Jazz Ride',genre:'jazz',bpm:140,rows:[
-    {label:'Ride',color:'#c8a2ff',steps:[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
-    {label:'Hi-Hat foot',color:'#7ddb84',steps:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]},
+    {label:'Ride',      color:'#c8a2ff', steps:[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0]},
+    {label:'Snare',     color:'#aaccda', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'HH Foot',   color:'#7ddb84', steps:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0]},
+    {label:'Kick',      color:'#e1c1a4', steps:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]},
   ]},
   {name:'Reggae One Drop',genre:'reggae',bpm:85,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1]},
-    {label:'Kick',color:'#e1c1a4',steps:[0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1]},
+    {label:'Kick',   color:'#e1c1a4', steps:[0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0]},
   ]},
   {name:'Hip-Hop Boom Bap',genre:'hiphop',bpm:90,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0]},
-    {label:'Snare',color:'#aaccda',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0]},
+    {label:'Hi-Hat', color:'#7ddb84', steps:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0]},
+    {label:'Snare',  color:'#aaccda', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'Kick',   color:'#e1c1a4', steps:[1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0]},
   ]},
   {name:'Trap Hi-Hat',genre:'hiphop',bpm:140,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1]},
-    {label:'Snare/Clap',color:'#aaccda',steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0]},
+    {label:'Hi-Hat',    color:'#7ddb84', steps:[1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1]},
+    {label:'Snare/Clap',color:'#aaccda', steps:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]},
+    {label:'Kick',      color:'#e1c1a4', steps:[1,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0]},
   ]},
   {name:'Bossa Nova',genre:'latin',bpm:130,rows:[
-    {label:'Hi-Hat',color:'#7ddb84',steps:[1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0]},
-    {label:'Rim Shot',color:'#aaccda',steps:[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0]},
-    {label:'Kick',color:'#e1c1a4',steps:[1,0,0,0,1,0,0,1,0,0,1,0,0,0,1,0]},
+    {label:'Hi-Hat',  color:'#7ddb84', steps:[1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0]},
+    {label:'Rim Shot',color:'#aaccda', steps:[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0]},
+    {label:'Kick',    color:'#e1c1a4', steps:[1,0,0,0,1,0,0,1,0,0,1,0,0,0,1,0]},
   ]},
   {name:'Clave (3-2 Son)',genre:'latin',bpm:120,rows:[
-    {label:'Clave',color:'#ffd764',steps:[1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0]},
-    {label:'Cowbell',color:'#e1c1a4',steps:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0]},
-    {label:'Kick',color:'#c8a2ff',steps:[1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},
+    {label:'Clave',   color:'#ffd764', steps:[1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0]},
+    {label:'Cowbell', color:'#e1c1a4', steps:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0]},
+    {label:'Kick',    color:'#c8a2ff', steps:[1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},
   ]},
 ];
 
-let audioCtx=null,playIntervals={};
-let activeGenre='all';
+const GENRE_LABELS={rock:'Rock',funk:'Funk',jazz:'Jazz',reggae:'Reggae',hiphop:'Hip-Hop',latin:'Latin'};
+let audioCtx=null, playTimers={}, activeGenre='all';
 
-function makeDrumSound(type,when){
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const SOUNDS={
-    '#7ddb84':{type:'noise',freq:8000,decay:0.05,vol:0.3}, // hi-hat
-    '#aaccda':{type:'noise',freq:3000,decay:0.15,vol:0.5}, // snare
-    '#e1c1a4':{type:'sine',freq:60,decay:0.3,vol:0.7},    // kick
-    '#c8a2ff':{type:'noise',freq:5000,decay:0.2,vol:0.4},  // open hh
-    '#ffd764':{type:'sine',freq:800,decay:0.1,vol:0.4},    // clave
+/* ── Audio ── */
+function makeSound(color, when){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const MAP={
+    '#7ddb84':{noise:true, freq:9000, decay:.055, vol:.28},
+    '#aaccda':{noise:true, freq:2500, decay:.18,  vol:.5},
+    '#e1c1a4':{noise:false,freq:62,   decay:.28,  vol:.75},
+    '#c8a2ff':{noise:true, freq:5000, decay:.22,  vol:.38},
+    '#ffd764':{noise:false,freq:820,  decay:.12,  vol:.4},
   };
-  const s=SOUNDS[type]||SOUNDS['#7ddb84'];
-  if(s.type==='noise'){
-    const buf=audioCtx.createBuffer(1,audioCtx.sampleRate*s.decay,audioCtx.sampleRate);
+  const s=MAP[color]||MAP['#7ddb84'];
+  if(s.noise){
+    const len=Math.ceil(audioCtx.sampleRate*s.decay);
+    const buf=audioCtx.createBuffer(1,len,audioCtx.sampleRate);
     const d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8);
     const src=audioCtx.createBufferSource();
+    const flt=audioCtx.createBiquadFilter();
     const gain=audioCtx.createGain();
-    const filter=audioCtx.createBiquadFilter();
-    filter.type='highpass';filter.frequency.value=s.freq;
+    flt.type='highpass'; flt.frequency.value=s.freq;
     src.buffer=buf;
-    src.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);
+    src.connect(flt); flt.connect(gain); gain.connect(audioCtx.destination);
     gain.gain.setValueAtTime(s.vol,when);
     gain.gain.exponentialRampToValueAtTime(0.001,when+s.decay);
-    src.start(when);src.stop(when+s.decay);
+    src.start(when); src.stop(when+s.decay);
   } else {
     const osc=audioCtx.createOscillator();
     const gain=audioCtx.createGain();
-    osc.connect(gain);gain.connect(audioCtx.destination);
-    osc.type=s.type;
+    osc.connect(gain); gain.connect(audioCtx.destination);
     osc.frequency.setValueAtTime(s.freq,when);
-    osc.frequency.exponentialRampToValueAtTime(s.freq*0.3,when+s.decay);
+    osc.frequency.exponentialRampToValueAtTime(s.freq*.3,when+s.decay);
     gain.gain.setValueAtTime(s.vol,when);
     gain.gain.exponentialRampToValueAtTime(0.001,when+s.decay);
-    osc.start(when);osc.stop(when+s.decay);
+    osc.start(when); osc.stop(when+s.decay);
   }
 }
 
-function playPattern(patIdx,btnEl){
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(playIntervals[patIdx]){
-    clearInterval(playIntervals[patIdx]);
-    delete playIntervals[patIdx];
-    btnEl.textContent='▶ Play';
-    btnEl.classList.remove('playing');
+/* ── Play / Stop ── */
+function togglePlay(idx, btn){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(playTimers[idx]){
+    clearInterval(playTimers[idx]);
+    delete playTimers[idx];
+    btn.textContent='▶ Play';
+    btn.classList.remove('playing');
+    document.getElementById(`card-${idx}`)?.classList.remove('is-playing');
+    clearPlayhead(idx);
     return;
   }
-  const pat=PATTERNS[patIdx];
+  const pat=PATTERNS[idx];
   const bpm=parseInt(document.getElementById('bpmSlider').value);
-  const stepDur=60/(bpm*4);
+  const stepMs=60000/(bpm*4);
   let step=0;
-  btnEl.textContent='■ Stop';
-  btnEl.classList.add('playing');
-  const cells=document.querySelectorAll(`#pat-${patIdx} .beat-btn`);
+  btn.textContent='■ Stop';
+  btn.classList.add('playing');
+  document.getElementById(`card-${idx}`)?.classList.add('is-playing');
+
   function tick(){
     const when=audioCtx.currentTime+0.01;
-    pat.rows.forEach((row,ri)=>{
-      if(row.steps[step]){
-        makeDrumSound(row.color,when);
-      }
-    });
-    // highlight current column
-    const nRows=pat.rows.length;
-    cells.forEach((c,ci)=>{
-      const cStep=ci%16;
-      c.classList.toggle('current',cStep===step);
-    });
+    pat.rows.forEach(row=>{ if(row.steps[step]) makeSound(row.color,when); });
+    setPlayhead(idx, step);
     step=(step+1)%16;
   }
   tick();
-  playIntervals[patIdx]=setInterval(tick,stepDur*1000);
+  playTimers[idx]=setInterval(tick,stepMs);
 }
 
-function buildGrid(pat,idx){
-  const nSteps=16;
-  let html=`<div class="grid-wrap"><table class="drum-grid" id="pat-${idx}"><tbody>`;
-  pat.rows.forEach((row,ri)=>{
-    html+=`<tr><td class="drum-label">${row.label}</td>`;
-    for(let s=0;s<nSteps;s++){
-      const barSep=s%4===0&&s>0?'bar-sep':'';
-      html+=`<td class="beat-cell ${barSep}"><button class="beat-btn ${row.steps[s]?'on':''}" style="${row.steps[s]?'background:'+row.color+';border-color:'+row.color:''}" data-pat="${idx}" data-row="${ri}" data-step="${s}"></button></td>`;
-    }
-    html+='</tr>';
+function setPlayhead(idx,step){
+  document.querySelectorAll(`#grid-${idx} .step`).forEach(el=>{
+    el.classList.toggle('playhead', parseInt(el.dataset.step)===step);
   });
-  html+='<tr><td></td>';
-  for(let s=0;s<nSteps;s++){
-    html+=`<td><div class="beat-num">${s%4===0?Math.floor(s/4)+1:''}</div></td>`;
-  }
-  html+='</tr>';
-  html+='</tbody></table></div>';
-  return html;
+}
+function clearPlayhead(idx){
+  document.querySelectorAll(`#grid-${idx} .step`).forEach(el=>el.classList.remove('playhead'));
+}
+
+/* ── Render ── */
+function buildCard(p, idx){
+  const genreLabel=GENRE_LABELS[p.genre]||p.genre;
+  const rows=p.rows.map(row=>{
+    const groups=[0,4,8,12].map(g=>{
+      const cells=row.steps.slice(g,g+4).map((on,i)=>{
+        const s=g+i;
+        const style=on?`background:${row.color};box-shadow:0 0 8px ${row.color}44;`:'';
+        return`<div class="step${on?' on':''}" data-step="${s}" style="${style}"></div>`;
+      }).join('');
+      return`<div class="beat-group">${cells}</div>`;
+    }).join('');
+    return`<div class="track-row">
+      <div class="track-info">
+        <div class="track-pip" style="background:${row.color}"></div>
+        <div class="track-name">${row.label}</div>
+      </div>
+      <div class="steps-row">${groups}</div>
+    </div>`;
+  }).join('');
+
+  const beatNums=[1,2,3,4].map(b=>`
+    <div class="beat-group" style="flex:1">
+      <div class="beat-num downbeat">${b}</div>
+      <div class="beat-num">·</div>
+      <div class="beat-num">·</div>
+      <div class="beat-num">·</div>
+    </div>`).join('');
+
+  return`<div class="pat-card" id="card-${idx}">
+    <div class="pat-header">
+      <span class="pat-name">${p.name}</span>
+      <div class="pat-meta">
+        <span class="genre-badge badge-${p.genre}">${genreLabel}</span>
+        <span class="bpm-badge">${p.bpm} BPM</span>
+        <button class="play-btn" onclick="togglePlay(${idx},this)">▶ Play</button>
+      </div>
+    </div>
+    <div class="pat-grid" id="grid-${idx}">
+      <div class="beat-numbers">
+        <div class="beat-num-row" style="margin-left:88px;display:flex;gap:3px">
+          ${[0,1,2,3].map(b=>`<div class="beat-group" style="display:flex;flex:1;gap:3px">
+            <div class="beat-num downbeat" style="flex:1">${b+1}</div>
+            <div class="beat-num" style="flex:1">e</div>
+            <div class="beat-num" style="flex:1">+</div>
+            <div class="beat-num" style="flex:1">a</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      ${rows}
+    </div>
+  </div>`;
 }
 
 function render(){
   const filtered=activeGenre==='all'?PATTERNS:PATTERNS.filter(p=>p.genre===activeGenre);
-  const list=document.getElementById('patList');
-  list.innerHTML=filtered.map((p,fi)=>{
-    const realIdx=PATTERNS.indexOf(p);
-    return`<div class="pat-card">
-      <div class="pat-header">
-        <div><span class="pat-name">${p.name}</span> <span class="pat-genre g-${p.genre}">${p.genre}</span></div>
-        <button class="play-pat-btn" onclick="playPattern(${realIdx},this)">▶ Play</button>
-      </div>
-      ${buildGrid(p,realIdx)}
-    </div>`;
-  }).join('');
+  Object.keys(playTimers).forEach(idx=>{
+    clearInterval(playTimers[idx]); delete playTimers[idx];
+  });
+  document.getElementById('patList').innerHTML=filtered.map((p)=>buildCard(p,PATTERNS.indexOf(p))).join('');
 }
 
 document.getElementById('bpmSlider').addEventListener('input',function(){
   document.getElementById('bpmVal').textContent=this.value;
-  // restart any playing patterns at new tempo
-  Object.keys(playIntervals).forEach(idx=>{
-    const btn=document.querySelector(`[onclick="playPattern(${idx},this)"]`);
-    if(btn){clearInterval(playIntervals[idx]);delete playIntervals[idx];btn.textContent='▶ Play';btn.classList.remove('playing');}
+  Object.keys(playTimers).forEach(idx=>{
+    clearInterval(playTimers[idx]); delete playTimers[idx];
+    const btn=document.querySelector(`#card-${idx} .play-btn`);
+    if(btn){btn.textContent='▶ Play';btn.classList.remove('playing');}
+    document.getElementById(`card-${idx}`)?.classList.remove('is-playing');
+    clearPlayhead(idx);
   });
 });
-document.querySelectorAll('.filter-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    Object.keys(playIntervals).forEach(idx=>{clearInterval(playIntervals[idx]);delete playIntervals[idx];});
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    activeGenre=btn.dataset.g;
-    render();
-  });
+
+document.getElementById('genres').addEventListener('click',e=>{
+  const btn=e.target.closest('.g-btn');
+  if(!btn) return;
+  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeGenre=btn.dataset.g;
+  render();
 });
+
 render();
 </script>
 </body>
