@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplication Table | South Fork Apps</title>
+  <meta name="description" content="Generate a customizable multiplication table up to any size. Highlight rows and columns on hover. Color-coded by value. Free online times table generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;margin-bottom:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem;}
+    label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
+    input[type=number],select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.5rem .7rem;font:inherit;font-size:.88rem;outline:none;}
+    input[type=number]{width:80px;}
+    input[type=number]:focus,select:focus{border-color:var(--accent);}
+    .table-wrap{overflow-x:auto;}
+    table{border-collapse:collapse;font-size:.82rem;font-variant-numeric:tabular-nums;}
+    th,td{padding:.4rem .55rem;text-align:right;min-width:2.4rem;border:1px solid var(--border);}
+    th{background:var(--surface2);font-weight:800;color:var(--accent);position:sticky;top:0;}
+    th:first-child{position:sticky;left:0;z-index:2;background:var(--surface2);}
+    td:first-child{background:var(--surface2);font-weight:800;color:var(--accent);position:sticky;left:0;}
+    td.hi-row,td.hi-col{background:rgba(125,219,132,.08);}
+    td.hi-both{background:rgba(125,219,132,.22);color:var(--accent);font-weight:800;}
+    .legend{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem;font-size:.72rem;color:var(--muted);}
+    .legend-item{display:flex;align-items:center;gap:.3rem;}
+    .legend-swatch{width:12px;height:12px;border-radius:2px;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Multiplication Table</span></nav>
+<main>
+  <h1>Multiplication Table</h1>
+  <p class="sub">Generate a times table up to any size. Hover to highlight a row and column.</p>
+
+  <div class="controls">
+    <div><label>Start</label><input type="number" id="start" value="1" min="0" max="100" oninput="generate()"></div>
+    <div><label>End</label><input type="number" id="end" value="12" min="1" max="100" oninput="generate()"></div>
+    <div><label>Color coding</label>
+      <select id="colorMode" onchange="generate()">
+        <option value="none">None</option>
+        <option value="heat" selected>Heat (low→high)</option>
+        <option value="even">Even / Odd</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrap" id="tableWrap"></div>
+
+  <footer>v1.0 · Hover any cell to highlight its row and column</footer>
+</main>
+<script>
+function generate() {
+  const start = Math.max(0, parseInt(document.getElementById('start').value)||1);
+  const end   = Math.min(100, Math.max(start+1, parseInt(document.getElementById('end').value)||12));
+  const mode  = document.getElementById('colorMode').value;
+  const nums  = [];
+  for (let i = start; i <= end; i++) nums.push(i);
+  const maxVal = end * end;
+
+  function cellColor(val) {
+    if (mode === 'none') return '';
+    if (mode === 'even') return val % 2 === 0 ? 'background:rgba(125,219,132,.07)' : '';
+    // heat
+    const pct = val / maxVal;
+    const r = Math.round(pct * 120);
+    const g = Math.round(50 + pct * 100);
+    return `background:rgba(${r},${g},80,${0.05+pct*0.18})`;
+  }
+
+  const thead = `<thead><tr><th>×</th>${nums.map(n=>`<th>${n}</th>`).join('')}</tr></thead>`;
+  const tbody = nums.map(row => {
+    const cells = nums.map(col => {
+      const val = row * col;
+      const style = cellColor(val);
+      return `<td data-row="${row}" data-col="${col}" style="${style}">${val}</td>`;
+    }).join('');
+    return `<tr><td data-row="${row}" data-col="0">${row}</td>${cells}</tr>`;
+  }).join('');
+
+  document.getElementById('tableWrap').innerHTML = `<table id="mtable"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+
+  document.getElementById('mtable').addEventListener('mouseover', e => {
+    const cell = e.target.closest('td,th');
+    if (!cell) return;
+    const row = cell.dataset.row, col = cell.dataset.col;
+    document.querySelectorAll('#mtable td,#mtable th').forEach(c => {
+      c.classList.remove('hi-row','hi-col','hi-both');
+      if (c.dataset.row === row && c.dataset.col === col) c.classList.add('hi-both');
+      else if (c.dataset.row === row) c.classList.add('hi-row');
+      else if (c.dataset.col === col) c.classList.add('hi-col');
+    });
+  });
+  document.getElementById('mtable').addEventListener('mouseleave', () => {
+    document.querySelectorAll('#mtable .hi-row,.hi-col,.hi-both').forEach(c=>c.classList.remove('hi-row','hi-col','hi-both'));
+  });
+}
+
+generate();
+</script>
+</body>
+</html>

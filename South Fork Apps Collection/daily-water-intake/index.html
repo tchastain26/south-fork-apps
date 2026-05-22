@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Water Intake Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate your recommended daily water intake based on weight, activity level, and climate. Track glasses consumed today. Free online hydration calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--water:#4da8da;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(600px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    input,select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;font:inherit;font-size:.92rem;outline:none;}
+    input:focus,select:focus{border-color:var(--accent);}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .unit-toggle{display:flex;gap:.4rem;margin-bottom:.85rem;}
+    .unit-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
+    .unit-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .result-banner{background:rgba(77,168,218,.08);border:1px solid rgba(77,168,218,.25);border-radius:10px;padding:1rem;text-align:center;margin-bottom:1rem;}
+    .result-num{font-size:2.8rem;font-weight:800;color:var(--water);line-height:1;}
+    .result-label{font-size:.8rem;color:var(--muted);margin-top:.3rem;font-weight:700;}
+    .track-section{margin-top:.5rem;}
+    .glasses-grid{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:.75rem 0;}
+    .glass{font-size:1.8rem;cursor:pointer;opacity:.3;transition:opacity .15s,transform .1s;user-select:none;}
+    .glass.filled{opacity:1;}
+    .glass:hover{transform:scale(1.15);}
+    .track-stats{text-align:center;font-size:.82rem;color:var(--muted);margin-bottom:.5rem;}
+    .track-stats strong{color:var(--accent);}
+    .progress-bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+    .progress-fill{height:100%;background:var(--water);border-radius:4px;transition:width .3s;}
+    .reset-btn{width:100%;padding:.45rem;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;cursor:pointer;margin-top:.6rem;}
+    .reset-btn:hover{color:var(--text);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Water Intake</span></nav>
+<main>
+  <h1>Daily Water Intake Calculator</h1>
+  <p class="sub">Get your recommended daily hydration target, then track glasses consumed.</p>
+
+  <div class="card">
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="btnLbs" onclick="setUnit('lbs')">lbs / oz</button>
+      <button class="unit-btn" id="btnKg" onclick="setUnit('kg')">kg / ml</button>
+    </div>
+    <div class="two-col">
+      <div class="field"><label id="wLabel">Weight (lbs)</label><input type="number" id="weight" value="170" min="1" oninput="calc()"></div>
+      <div class="field"><label>Activity level</label>
+        <select id="activity" onchange="calc()">
+          <option value="1.0">Sedentary (office job)</option>
+          <option value="1.2" selected>Lightly active</option>
+          <option value="1.4">Moderately active</option>
+          <option value="1.6">Very active</option>
+          <option value="1.8">Athlete / intense training</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Climate</label>
+      <select id="climate" onchange="calc()">
+        <option value="1.0">Temperate / normal</option>
+        <option value="1.1">Hot or humid</option>
+        <option value="0.95">Cool / cold climate</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="result-banner" id="resultBanner"></div>
+
+  <div class="card" id="trackCard">
+    <strong style="font-size:.85rem;font-weight:800">Track today's intake</strong>
+    <p style="font-size:.78rem;color:var(--muted);margin:.2rem 0 0">Click glasses to mark them as consumed. Each 💧 = 8 oz (240ml).</p>
+    <div class="glasses-grid" id="glassesGrid"></div>
+    <div class="track-stats" id="trackStats"></div>
+    <div class="progress-bar"><div class="progress-fill" id="trackBar" style="width:0%"></div></div>
+    <button class="reset-btn" onclick="resetTrack()">Reset today's count</button>
+  </div>
+
+  <footer>v1.0 · Based on 0.5 oz per lb body weight formula</footer>
+</main>
+<script>
+let unit = 'lbs', consumed = 0, targetOz = 64;
+
+function setUnit(u) {
+  unit = u;
+  document.getElementById('btnLbs').classList.toggle('active', u==='lbs');
+  document.getElementById('btnKg').classList.toggle('active', u==='kg');
+  document.getElementById('wLabel').textContent = u==='lbs' ? 'Weight (lbs)' : 'Weight (kg)';
+  calc();
+}
+
+function calc() {
+  let w = parseFloat(document.getElementById('weight').value)||0;
+  const act = parseFloat(document.getElementById('activity').value)||1.2;
+  const cli = parseFloat(document.getElementById('climate').value)||1.0;
+  const lbs = unit === 'kg' ? w * 2.20462 : w;
+  const baseOz = lbs * 0.5;
+  targetOz = Math.round(baseOz * act * cli);
+  const glasses = Math.round(targetOz / 8);
+  const ml = Math.round(targetOz * 29.5735);
+  const liters = (ml / 1000).toFixed(2);
+
+  const display = unit === 'lbs' ? `${targetOz} oz` : `${ml} ml`;
+  document.getElementById('resultBanner').innerHTML = `
+    <div class="result-num">${display}</div>
+    <div class="result-label">per day · ${liters} L · ~${glasses} glasses (8 oz each)</div>`;
+
+  renderGlasses(glasses);
+}
+
+function renderGlasses(count) {
+  const grid = document.getElementById('glassesGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < Math.min(count, 20); i++) {
+    const g = document.createElement('span');
+    g.textContent = '💧';
+    g.className = 'glass' + (i < consumed ? ' filled' : '');
+    g.dataset.idx = i;
+    g.addEventListener('click', () => toggleGlass(i));
+    grid.appendChild(g);
+  }
+  updateStats(count);
+}
+
+function toggleGlass(idx) {
+  consumed = idx < consumed ? idx : idx + 1;
+  renderGlasses(Math.round(targetOz / 8));
+}
+
+function updateStats(total) {
+  const pct = total > 0 ? Math.min(100, (consumed/total)*100) : 0;
+  const oz = consumed * 8;
+  document.getElementById('trackStats').innerHTML = `<strong>${consumed}</strong> of <strong>${total}</strong> glasses (${oz} oz · ${Math.round(oz*29.57)} ml)`;
+  document.getElementById('trackBar').style.width = pct + '%';
+}
+
+function resetTrack() { consumed = 0; calc(); }
+
+calc();
+</script>
+</body>
+</html>

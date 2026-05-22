@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Goal Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate how many pages or books you need to read per day, week, or month to hit your annual reading goal. Free online reading goal tracker and calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    input{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;font:inherit;font-size:.95rem;outline:none;}
+    input:focus{border-color:var(--accent);}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin-bottom:.75rem;}
+    .result-card{background:var(--surface2);border-radius:8px;padding:.8rem;text-align:center;}
+    .result-val{font-size:1.4rem;font-weight:800;color:var(--accent);}
+    .result-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .progress-wrap{margin-top:.5rem;}
+    .progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:.3rem;}
+    .progress-bar{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+    .progress-fill{height:100%;border-radius:5px;background:var(--accent);transition:width .3s;}
+    .on-track{color:var(--accent);}
+    .behind{color:#f28b82;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Reading Goal Calculator</span></nav>
+<main>
+  <h1>Reading Goal Calculator</h1>
+  <p class="sub">See exactly how many books or pages you need to read each day to hit your annual goal.</p>
+
+  <div class="card">
+    <div class="two-col">
+      <div class="field"><label>Goal (books this year)</label><input type="number" id="goal" value="24" min="1" oninput="calc()"></div>
+      <div class="field"><label>Avg pages per book</label><input type="number" id="pagesPerBook" value="280" min="1" oninput="calc()"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Books read so far</label><input type="number" id="done" value="8" min="0" oninput="calc()"></div>
+      <div class="field"><label>Reading speed (pages/hr)</label><input type="number" id="speed" value="40" min="1" oninput="calc()"></div>
+    </div>
+    <div class="field"><label>Today's date (auto-filled)</label>
+      <input type="date" id="today" oninput="calc()">
+    </div>
+  </div>
+
+  <div id="resultsArea" style="display:none">
+    <div class="results-grid" id="resultsGrid"></div>
+    <div class="progress-wrap" id="progressWrap"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+function calc() {
+  const goal = parseInt(document.getElementById('goal').value)||24;
+  const ppb  = parseInt(document.getElementById('pagesPerBook').value)||280;
+  const done = parseInt(document.getElementById('done').value)||0;
+  const speed = parseInt(document.getElementById('speed').value)||40;
+  const todayVal = document.getElementById('today').value;
+  const today = todayVal ? new Date(todayVal+'T00:00:00') : new Date();
+  today.setHours(0,0,0,0);
+
+  const yearStart = new Date(today.getFullYear(),0,1);
+  const yearEnd = new Date(today.getFullYear(),11,31);
+  const totalDays = Math.round((yearEnd-yearStart)/864e5)+1;
+  const daysPassed = Math.round((today-yearStart)/864e5)+1;
+  const daysLeft = totalDays - daysPassed + 1;
+
+  const booksLeft = Math.max(0, goal - done);
+  const pagesLeft = booksLeft * ppb;
+  const pagesPerDay = daysLeft > 0 ? pagesLeft/daysLeft : pagesLeft;
+  const booksPerWeek = daysLeft > 0 ? (booksLeft/(daysLeft/7)) : 0;
+  const hrsPerDay = pagesPerDay/speed;
+
+  // Expected by now
+  const expectedByNow = (daysPassed/totalDays)*goal;
+  const onTrack = done >= expectedByNow;
+  const pct = goal > 0 ? Math.min(100,(done/goal)*100) : 0;
+
+  document.getElementById('resultsArea').style.display = '';
+  document.getElementById('resultsGrid').innerHTML = [
+    { label:'Books left', val:booksLeft },
+    { label:'Pages/day needed', val:pagesPerDay.toFixed(1) },
+    { label:'Hours/day needed', val:hrsPerDay.toFixed(2) },
+    { label:'Books/week needed', val:booksPerWeek.toFixed(2) },
+    { label:'Days left in year', val:daysLeft },
+  ].map(it=>`<div class="result-card"><div class="result-val">${it.val}</div><div class="result-label">${it.label}</div></div>`).join('');
+
+  document.getElementById('progressWrap').innerHTML = `
+    <div class="progress-label">
+      <span>${done} of ${goal} books (${pct.toFixed(1)}%)</span>
+      <span class="${onTrack?'on-track':'behind'}">${onTrack?'✓ On track':'⚠ Behind pace'}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:.35rem">Expected by today: ${expectedByNow.toFixed(1)} books · You have read: ${done}</div>`;
+}
+
+document.getElementById('today').valueAsDate = new Date();
+calc();
+</script>
+</body>
+</html>

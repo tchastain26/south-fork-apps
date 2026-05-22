@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tally Counter | South Fork Apps</title>
+  <meta name="description" content="Simple tally counter with multiple named counters, keyboard shortcuts, and history log. Free online tally counter — no install needed.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(600px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .counters{display:grid;gap:1rem;margin-bottom:1rem;}
+    .counter-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;position:relative;}
+    .counter-card.active-card{border-color:rgba(125,219,132,.4);}
+    .counter-name{background:transparent;border:none;color:var(--text);font:inherit;font-size:.95rem;font-weight:700;width:100%;outline:none;border-bottom:1px solid transparent;padding:.1rem 0;margin-bottom:.75rem;}
+    .counter-name:focus{border-bottom-color:var(--accent);}
+    .count-display{font-size:5rem;font-weight:800;text-align:center;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;margin:.25rem 0;}
+    .btn-row{display:flex;gap:.6rem;justify-content:center;margin-top:.75rem;}
+    .inc-btn{width:70px;height:70px;border-radius:50%;border:none;background:var(--accent);color:#0a1a0c;font:inherit;font-size:2rem;font-weight:800;cursor:pointer;transition:transform .08s,filter .08s;}
+    .inc-btn:active{transform:scale(.93);filter:brightness(.9);}
+    .dec-btn,.reset-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:1.2rem;font-weight:800;cursor:pointer;align-self:center;}
+    .dec-btn:hover,.reset-btn:hover{filter:brightness(1.1);}
+    .del-counter{position:absolute;top:.6rem;right:.75rem;background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem;}
+    .del-counter:hover{color:var(--danger);}
+    .shortcut-hint{font-size:.7rem;color:var(--muted);text-align:center;margin-top:.35rem;}
+    .add-btn{width:100%;padding:.6rem;border:1px dashed var(--border);border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;margin-bottom:1rem;}
+    .add-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .history{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem;max-height:180px;overflow-y:auto;}
+    .history-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;}
+    .history-entry{font-size:.82rem;padding:.25rem 0;border-bottom:1px solid rgba(42,47,43,.4);display:flex;justify-content:space-between;}
+    .history-entry:last-child{border-bottom:none;}
+    .h-time{color:var(--muted);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Tally Counter</span></nav>
+<main>
+  <h1>Tally Counter</h1>
+  <p class="sub">Count anything. Multiple counters, keyboard shortcuts, and an action log.</p>
+
+  <div id="counters" class="counters"></div>
+  <button class="add-btn" onclick="addCounter()">+ Add counter</button>
+
+  <div class="history" id="history" style="display:none">
+    <div class="history-title">Recent actions</div>
+    <div id="historyList"></div>
+  </div>
+
+  <footer>v1.0 · Space/+ to increment · − to decrement · R to reset active counter</footer>
+</main>
+<script>
+const KEY = 'sfa-tally';
+let counters = [];
+let activeIdx = 0;
+let histLog = [];
+
+function load() {
+  try { const s = localStorage.getItem(KEY); if (s) { const d = JSON.parse(s); counters = d.counters||[]; histLog = d.hist||[]; } } catch(e){}
+  if (!counters.length) counters = [{ name:'Counter 1', val:0 }];
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify({ counters, hist: histLog.slice(0,50) })); }
+
+function addCounter() {
+  counters.push({ name:`Counter ${counters.length+1}`, val:0 });
+  activeIdx = counters.length - 1;
+  save(); render();
+}
+
+function removeCounter(i) {
+  if (counters.length === 1) return;
+  counters.splice(i,1);
+  if (activeIdx >= counters.length) activeIdx = counters.length-1;
+  save(); render();
+}
+
+function increment(i, delta) {
+  counters[i].val += delta;
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  histLog.unshift({ time:now, label:`${counters[i].name}: ${delta>0?'+':''}${delta} → ${counters[i].val}` });
+  save(); render();
+}
+
+function resetCounter(i) {
+  const now = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  histLog.unshift({ time:now, label:`${counters[i].name}: reset (was ${counters[i].val})` });
+  counters[i].val = 0;
+  save(); render();
+}
+
+function setActive(i) { activeIdx = i; render(); }
+
+function updateName(i, v) { counters[i].name = v; save(); }
+
+function render() {
+  const el = document.getElementById('counters');
+  el.innerHTML = counters.map((c,i) => `
+    <div class="counter-card ${i===activeIdx?'active-card':''}" onclick="setActive(${i})">
+      ${counters.length>1 ? `<button class="del-counter" onclick="event.stopPropagation();removeCounter(${i})" title="Remove">×</button>` : ''}
+      <input class="counter-name" value="${esc(c.name)}" onchange="updateName(${i},this.value)" onclick="event.stopPropagation()" placeholder="Counter name">
+      <div class="count-display">${c.val.toLocaleString()}</div>
+      <div class="btn-row">
+        <button class="dec-btn" onclick="event.stopPropagation();increment(${i},-1)" title="−1">−</button>
+        <button class="inc-btn" onclick="event.stopPropagation();increment(${i},1)" title="+1">+</button>
+        <button class="reset-btn" onclick="event.stopPropagation();resetCounter(${i})" title="Reset">↺</button>
+      </div>
+      ${i===activeIdx ? '<div class="shortcut-hint">Active · Space or + to count · − to decrement · R to reset</div>' : ''}
+    </div>`).join('');
+
+  const hist = document.getElementById('history');
+  const list = document.getElementById('historyList');
+  if (histLog.length) {
+    hist.style.display = '';
+    list.innerHTML = histLog.slice(0,10).map(e => `<div class="history-entry"><span>${esc(e.label)}</span><span class="h-time">${e.time}</span></div>`).join('');
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key === ' ' || e.key === '+') { e.preventDefault(); increment(activeIdx, 1); }
+  else if (e.key === '-') increment(activeIdx, -1);
+  else if (e.key === 'r' || e.key === 'R') resetCounter(activeIdx);
+  else if (e.key === 'ArrowRight' || e.key === 'Tab') { e.preventDefault(); activeIdx = (activeIdx+1)%counters.length; render(); }
+  else if (e.key === 'ArrowLeft') { activeIdx = (activeIdx-1+counters.length)%counters.length; render(); }
+});
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+load(); render();
+</script>
+</body>
+</html>

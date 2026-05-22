@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Pressure Checker | South Fork Apps</title>
+  <meta name="description" content="Check your blood pressure reading against AHA categories. Enter systolic and diastolic values to see your BP category and what it means. Free online blood pressure tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(620px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .bp-row{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1.25rem;}
+    .bp-input-wrap{text-align:center;}
+    .bp-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem;}
+    .bp-input{width:90px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:.75rem .5rem;font:inherit;font-size:1.8rem;font-weight:800;text-align:center;outline:none;}
+    .bp-input:focus{border-color:var(--accent);}
+    .bp-slash{font-size:2.5rem;font-weight:800;color:var(--muted);line-height:1;}
+    .bp-unit{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+    .result-box{border-radius:12px;padding:1.1rem;text-align:center;margin-bottom:.75rem;transition:background .3s,border-color .3s;}
+    .result-cat{font-size:1.4rem;font-weight:800;margin-bottom:.35rem;}
+    .result-range{font-size:.82rem;font-weight:600;opacity:.8;}
+    .result-note{font-size:.82rem;margin-top:.5rem;color:var(--muted);line-height:1.55;}
+    .chart{display:grid;gap:.35rem;margin-top:.5rem;}
+    .chart-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:.5rem;align-items:center;font-size:.78rem;padding:.4rem .6rem;border-radius:7px;}
+    .chart-row.current{outline:2px solid rgba(255,255,255,.3);}
+    .cat-name{font-weight:700;white-space:nowrap;}
+    .cat-range{color:var(--muted);}
+    .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .disclaimer{font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;line-height:1.55;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Blood Pressure Checker</span></nav>
+<main>
+  <h1>Blood Pressure Checker</h1>
+  <p class="sub">Enter your systolic and diastolic values to see your AHA blood pressure category.</p>
+
+  <div class="card">
+    <div class="bp-row">
+      <div class="bp-input-wrap">
+        <div class="bp-label">Systolic</div>
+        <input class="bp-input" type="number" id="sys" value="118" min="40" max="300" oninput="check()">
+        <div class="bp-unit">mm Hg</div>
+      </div>
+      <div class="bp-slash">/</div>
+      <div class="bp-input-wrap">
+        <div class="bp-label">Diastolic</div>
+        <input class="bp-input" type="number" id="dia" value="76" min="20" max="200" oninput="check()">
+        <div class="bp-unit">mm Hg</div>
+      </div>
+    </div>
+
+    <div id="resultBox" class="result-box"></div>
+
+    <div class="chart" id="chart"></div>
+
+    <div class="disclaimer">⚕️ This tool is for informational purposes only. It does not constitute medical advice. Consult your healthcare provider about your blood pressure.</div>
+  </div>
+
+  <footer>v1.0 · Based on AHA 2017 guidelines</footer>
+</main>
+<script>
+const CATS = [
+  { name:'Normal',             color:'#7ddb84', bg:'rgba(125,219,132,.1)',  sys:[0,120],   dia:[0,80],   note:'Your blood pressure is in a healthy range. Maintain a heart-healthy lifestyle.' },
+  { name:'Elevated',           color:'#f7c876', bg:'rgba(247,200,118,.1)',  sys:[120,130], dia:[0,80],   note:'Higher than normal. Lifestyle changes (diet, exercise, sodium reduction) are recommended.' },
+  { name:'High Blood Pressure Stage 1', color:'#f7a876', bg:'rgba(247,168,118,.1)', sys:[130,140], dia:[80,90], note:'Consult your doctor. Lifestyle changes and possibly medication may be recommended.' },
+  { name:'High Blood Pressure Stage 2', color:'#f28b82', bg:'rgba(242,139,130,.12)', sys:[140,300], dia:[90,200], note:'Consult your doctor promptly. Medication and lifestyle changes are typically required.' },
+  { name:'Hypertensive Crisis', color:'#c586c0', bg:'rgba(197,134,192,.12)', sys:[180,300], dia:[120,200], note:'Seek emergency care immediately if accompanied by chest pain, shortness of breath, or vision changes.' },
+  { name:'Low (Hypotension)',  color:'#aaccda', bg:'rgba(170,204,218,.1)',  sys:[0,90],    dia:[0,60],   note:'Below normal. Can cause dizziness and fainting. Consult your doctor if symptomatic.' },
+];
+
+function categorize(sys, dia) {
+  if (sys < 90 || dia < 60) return CATS[5];
+  if (sys >= 180 || dia >= 120) return CATS[4];
+  if (sys >= 140 || dia >= 90) return CATS[3];
+  if (sys >= 130 || dia >= 80) return CATS[2];
+  if (sys >= 120 && dia < 80)  return CATS[1];
+  return CATS[0];
+}
+
+function check() {
+  const sys = parseInt(document.getElementById('sys').value)||0;
+  const dia = parseInt(document.getElementById('dia').value)||0;
+  if (!sys || !dia) return;
+  const cat = categorize(sys, dia);
+
+  document.getElementById('resultBox').innerHTML = `
+    <div class="result-cat" style="color:${cat.color}">${cat.name}</div>
+    <div class="result-range">${sys}/${dia} mm Hg</div>
+    <div class="result-note">${cat.note}</div>`;
+  document.getElementById('resultBox').style.background = cat.bg;
+  document.getElementById('resultBox').style.border = `1px solid ${cat.color}40`;
+
+  const chartRows = [
+    { name:'Normal',      range:'< 120 / < 80',   color:'#7ddb84' },
+    { name:'Elevated',    range:'120–129 / < 80',  color:'#f7c876' },
+    { name:'Stage 1 High',range:'130–139 / 80–89', color:'#f7a876' },
+    { name:'Stage 2 High',range:'≥ 140 / ≥ 90',   color:'#f28b82' },
+    { name:'Crisis',      range:'≥ 180 / ≥ 120',  color:'#c586c0' },
+    { name:'Low',         range:'< 90 / < 60',     color:'#aaccda' },
+  ];
+
+  document.getElementById('chart').innerHTML = chartRows.map((r,i) => {
+    const isCurrent = CATS[i] === cat;
+    return `<div class="chart-row${isCurrent?' current':''}" style="${isCurrent?`background:${CATS[i].bg}`:''}">
+      <span class="dot" style="background:${r.color}"></span>
+      <span class="cat-name" style="color:${r.color}">${r.name}</span>
+      <span class="cat-range">${r.range}</span>
+    </div>`;
+  }).join('');
+}
+
+check();
+</script>
+</body>
+</html>

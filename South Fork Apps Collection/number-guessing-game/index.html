@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game | South Fork Apps</title>
+  <meta name="description" content="Guess the secret number with hot/cold hints. Adjustable range and difficulty. Track your guesses and score. Free browser-based number guessing game.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--hot:#f28b82;--warm:#f7c876;--cold:#aaccda;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(520px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;text-align:center;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .settings{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1.25rem;text-align:left;}
+    .settings-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;}
+    label{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
+    input[type=number]{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.5rem .65rem;font:inherit;font-size:.9rem;outline:none;text-align:center;}
+    input[type=number]:focus{border-color:var(--accent);}
+    .new-game-btn{width:100%;padding:.6rem;border:none;border-radius:8px;background:var(--surface2);color:var(--muted);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:.6rem;}
+    .new-game-btn:hover{filter:brightness(1.1);}
+    .hint-box{min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem;border-radius:14px;padding:1.2rem;margin:1rem 0;transition:background .3s;}
+    .hint-text{font-size:1.5rem;font-weight:800;}
+    .hint-sub{font-size:.85rem;font-weight:600;opacity:.8;}
+    .guess-row{display:flex;gap:.6rem;margin-bottom:1rem;}
+    .guess-input{flex:1;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.75rem;font:inherit;font-size:1.2rem;font-weight:800;outline:none;text-align:center;}
+    .guess-input:focus{border-color:var(--accent);}
+    .guess-btn{padding:.75rem 1.5rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;}
+    .guess-btn:hover{filter:brightness(1.07);}
+    .stats-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:.75rem;}
+    .stat{background:var(--surface2);border-radius:8px;padding:.5rem .9rem;font-size:.82rem;}
+    .stat strong{color:var(--accent);}
+    .history-pills{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;min-height:28px;}
+    .guess-pill{padding:.25rem .7rem;border-radius:20px;font-size:.8rem;font-weight:800;}
+    .pill-high{background:rgba(170,204,218,.15);color:var(--cold);}
+    .pill-low{background:rgba(247,200,118,.12);color:var(--warm);}
+    .pill-win{background:rgba(125,219,132,.2);color:var(--accent);}
+    .win-banner{font-size:2.5rem;font-weight:800;color:var(--accent);margin:.5rem 0;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Number Guessing Game</span></nav>
+<main>
+  <h1>Number Guessing Game</h1>
+  <p class="sub">Guess the secret number. Hot/cold hints guide you in.</p>
+
+  <div class="settings">
+    <div class="settings-grid">
+      <div><label>Min</label><input type="number" id="minVal" value="1"></div>
+      <div><label>Max</label><input type="number" id="maxVal" value="100"></div>
+      <div><label>Max guesses</label><input type="number" id="maxGuesses" value="10" min="1"></div>
+    </div>
+    <button class="new-game-btn" onclick="newGame()">New Game</button>
+  </div>
+
+  <div id="gameArea" style="display:none">
+    <div class="stats-row">
+      <div class="stat">Guesses: <strong id="guessCount">0</strong> / <strong id="maxG">10</strong></div>
+      <div class="stat">Range: <strong id="rangeLabel">1–100</strong></div>
+      <div class="stat">Wins: <strong id="winCount">0</strong></div>
+    </div>
+
+    <div class="hint-box" id="hintBox" style="background:var(--surface)">
+      <div class="hint-text" id="hintText">Make your first guess!</div>
+      <div class="hint-sub" id="hintSub"></div>
+    </div>
+
+    <div class="history-pills" id="historyPills"></div>
+
+    <div class="guess-row" style="margin-top:.75rem">
+      <input type="number" id="guessInput" class="guess-input" placeholder="?" oninput="" onkeydown="if(event.key==='Enter')guess()">
+      <button class="guess-btn" onclick="guess()" id="guessBtn">Guess</button>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let secret, guesses, maxGuesses, minVal, maxVal, wins = 0, gameOver = false;
+
+function newGame() {
+  minVal = parseInt(document.getElementById('minVal').value)||1;
+  maxVal = parseInt(document.getElementById('maxVal').value)||100;
+  maxGuesses = parseInt(document.getElementById('maxGuesses').value)||10;
+  if (minVal >= maxVal) { maxVal = minVal + 99; document.getElementById('maxVal').value = maxVal; }
+  secret = Math.floor(Math.random()*(maxVal-minVal+1))+minVal;
+  guesses = [];
+  gameOver = false;
+  document.getElementById('gameArea').style.display = '';
+  document.getElementById('guessCount').textContent = '0';
+  document.getElementById('maxG').textContent = maxGuesses;
+  document.getElementById('rangeLabel').textContent = `${minVal}–${maxVal}`;
+  document.getElementById('winCount').textContent = wins;
+  document.getElementById('historyPills').innerHTML = '';
+  document.getElementById('guessInput').value = '';
+  document.getElementById('guessInput').disabled = false;
+  document.getElementById('guessBtn').disabled = false;
+  setHint('Make your first guess!','','var(--surface)');
+  document.getElementById('guessInput').focus();
+}
+
+function guess() {
+  if (gameOver) return;
+  const g = parseInt(document.getElementById('guessInput').value);
+  if (isNaN(g) || g < minVal || g > maxVal) { setHint(`Enter a number between ${minVal} and ${maxVal}`,'','var(--surface)'); return; }
+  if (guesses.includes(g)) { setHint('Already guessed that one!','','var(--surface)'); return; }
+
+  guesses.push(g);
+  document.getElementById('guessCount').textContent = guesses.length;
+  document.getElementById('guessInput').value = '';
+
+  const diff = Math.abs(g - secret);
+  const range = maxVal - minVal;
+  let bg, text, sub, cls;
+
+  if (g === secret) {
+    bg = 'rgba(125,219,132,.12)'; text = `🎉 ${secret}! Correct!`; sub = `Got it in ${guesses.length} guess${guesses.length===1?'':'es'}!`;
+    addPill(g,'pill-win'); wins++; document.getElementById('winCount').textContent = wins;
+    document.getElementById('guessInput').disabled = true; document.getElementById('guessBtn').disabled = true;
+    gameOver = true;
+  } else if (guesses.length >= maxGuesses) {
+    bg = 'rgba(242,139,130,.1)'; text = `Game over!`; sub = `The number was ${secret}.`;
+    addPill(g, g > secret ? 'pill-high':'pill-low');
+    document.getElementById('guessInput').disabled = true; document.getElementById('guessBtn').disabled = true;
+    gameOver = true;
+  } else {
+    const pct = diff / range;
+    if (pct > .4) { bg='rgba(170,204,218,.08)'; text='🧊 Ice cold'; sub=g>secret?'Way too high':'Way too low'; cls='pill-high'; }
+    else if (pct > .25) { bg='rgba(170,204,218,.08)'; text='❄️ Cold'; sub=g>secret?'Too high':'Too low'; cls='pill-high'; }
+    else if (pct > .12) { bg='rgba(247,200,118,.08)'; text='🌡 Warm'; sub=g>secret?'A bit high':'A bit low'; cls='pill-low'; }
+    else if (pct > .05) { bg='rgba(242,139,130,.1)'; text='🔥 Hot!'; sub=g>secret?'Just a touch high':'Just a touch low'; cls='pill-low'; }
+    else { bg='rgba(242,139,130,.15)'; text='🔥🔥 Burning!'; sub=g>secret?'Barely too high':'Barely too low'; cls='pill-win'; }
+    addPill(g, cls);
+    sub += ` · ${maxGuesses-guesses.length} guess${maxGuesses-guesses.length===1?'':'es'} left`;
+  }
+  setHint(text, sub, bg);
+}
+
+function addPill(g, cls) {
+  const el = document.createElement('span');
+  el.className = 'guess-pill ' + cls;
+  el.textContent = g;
+  document.getElementById('historyPills').appendChild(el);
+}
+
+function setHint(t, s, bg) {
+  document.getElementById('hintText').textContent = t;
+  document.getElementById('hintSub').textContent = s;
+  document.getElementById('hintBox').style.background = bg;
+}
+
+newGame();
+</script>
+</body>
+</html>

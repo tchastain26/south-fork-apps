@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placeholder Text Generator | South Fork Apps</title>
+  <meta name="description" content="Generate placeholder text in multiple styles: lorem ipsum, random English, hipster ipsum, office speak, and more. Free online placeholder text generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(760px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .controls{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;}
+    label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.28rem;}
+    select,input[type=number]{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.5rem .75rem;font:inherit;font-size:.88rem;outline:none;}
+    select:focus,input[type=number]:focus{border-color:var(--accent);}
+    input[type=number]{width:80px;}
+    button.primary{padding:.55rem 1.25rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.88rem;font-weight:800;cursor:pointer;align-self:flex-end;}
+    button.primary:hover{filter:brightness(1.07);}
+    .output-area{position:relative;}
+    .output{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;min-height:160px;font-size:.9rem;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+    .copy-btn{position:absolute;top:.6rem;right:.6rem;padding:.35rem .8rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--muted);font:inherit;font-size:.75rem;font-weight:700;cursor:pointer;}
+    .copy-btn:hover{color:var(--accent);border-color:var(--accent);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Placeholder Text</span></nav>
+<main>
+  <h1>Placeholder Text Generator</h1>
+  <p class="sub">Generate placeholder text in multiple flavors for mockups and wireframes.</p>
+
+  <div class="controls">
+    <div><label>Style</label>
+      <select id="style" onchange="generate()">
+        <option value="lorem">Lorem Ipsum</option>
+        <option value="english">Random English</option>
+        <option value="hipster">Hipster Ipsum</option>
+        <option value="office">Office Speak</option>
+        <option value="nature">Nature & Science</option>
+      </select>
+    </div>
+    <div><label>Paragraphs</label><input type="number" id="paras" value="3" min="1" max="20" oninput="generate()"></div>
+    <div><label>Sentences each</label><input type="number" id="sents" value="4" min="1" max="10" oninput="generate()"></div>
+    <button class="primary" onclick="generate()">Regenerate</button>
+  </div>
+
+  <div class="output-area">
+    <div id="output" class="output"></div>
+    <button class="copy-btn" onclick="copyText()">Copy</button>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const POOLS = {
+  lorem: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.','Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.','Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.','Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.','Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.','Praesent commodo cursus magna vel scelerisque nisl consectetur et.','Nullam id dolor id nibh ultricies vehicula ut id elit.','Cras mattis consectetur purus sit amet fermentum.','Aenean lacinia bibendum nulla sed consectetur.','Donec sed odio dui vestibulum id ligula porta felis euismod.','Fusce dapibus tellus ac cursus commodo, tortor mauris condimentum nibh.','Integer posuere erat a ante venenatis dapibus posuere velit aliquet.','Morbi leo risus porta ac consectetur ac vestibulum at eros.','Nulla vitae elit libero a pharetra augue mollis interdum.','Cum sociis natoque penatibus et magnis dis parturient montes.'],
+  english: ['The project requires careful consideration of all stakeholder perspectives.','We need to align our quarterly objectives with the broader strategic vision.','Building great products starts with deeply understanding your users.','Every line of code is a decision that shapes the product.','Clear documentation saves more time than it takes to write.','The best interfaces feel invisible to the people using them.','Design is how it works, not just how it looks.','Feedback loops accelerate learning faster than planning alone.','Ship early and often to discover what actually matters.','Good defaults respect users who don\'t read instructions.','Iteration beats perfection when time is the constraint.','The simplest solution is usually the right one.','Users remember how something made them feel long after they forget what it did.','Constraints often produce more creative solutions than open briefs.'],
+  hipster: ['Craft beer artisan selvage raw denim readymade four dollar toast.','Williamsburg kale chips normcore fixie authentic kombucha.','Poke chicharrones vegan letterpress tote bag chia seeds.','Farm-to-table tumeric paleo mixtape sustainable fashion week.','Cold-pressed adaptogen af glossier master cleanse shoreditch.','Sriracha skateboard tousled celiac typewriter bespoke.','Hashtag gochujang hot chicken taiyaki cardigan gastropub.','Pitchfork actually flannel distillery bicycle rights.','Man braid cornhole disrupt intelligentsia tattooed ramps.','Normcore enamel pin tofu trust fund succulents.','Thundercats pop-up pickled marfa listicle occupy mixtape.'],
+  office: ['We need to circle back and synergize our core competencies.','Let\'s leverage best practices to move the needle on deliverables.','Going forward we should ideate solutions and boil the ocean.','This is a paradigm shift that requires blue-sky thinking.','We should take this offline and deep-dive into the data.','The bandwidth isn\'t there to action this before EOD.','Let\'s table that and revisit with fresh eyes next sprint.','We need to right-size our approach and think outside the box.','The stakeholders want us to pivot and double-click on this.','Touch base with the team to ensure full alignment on objectives.','We\'re in a good place to socialize this concept upward.','The ROI on this initiative needs more buy-in from leadership.'],
+  nature: ['Photosynthesis converts carbon dioxide and water into glucose using sunlight.','Tectonic plates move at roughly the same rate that fingernails grow.','The Amazon rainforest produces about 20% of the world\'s oxygen.','Bioluminescent creatures produce light through chemical reactions in their cells.','Mycelium networks beneath forests allow trees to communicate nutrients.','Ocean currents regulate global temperatures and distribute heat from the equator.','Coral reefs support approximately 25% of all marine species.','The water cycle continuously moves water through oceans, atmosphere, and land.','Migration patterns in birds are guided by magnetic fields and star positions.','Deep ocean pressure at the Mariana Trench equals 8 tons per square inch.'],
+};
+
+function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+function generate() {
+  const style = document.getElementById('style').value;
+  const paras = Math.min(20, Math.max(1, parseInt(document.getElementById('paras').value)||3));
+  const sents = Math.min(10, Math.max(1, parseInt(document.getElementById('sents').value)||4));
+  const pool = POOLS[style];
+  const result = [];
+  for (let p = 0; p < paras; p++) {
+    const para = [];
+    for (let s = 0; s < sents; s++) para.push(pick(pool));
+    result.push(para.join(' '));
+  }
+  document.getElementById('output').textContent = result.join('\n\n');
+}
+
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById('output').textContent).catch(()=>{});
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(()=>btn.textContent='Copy',1500);
+}
+
+generate();
+</script>
+</body>
+</html>

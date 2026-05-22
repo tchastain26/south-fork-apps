@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard Maker | South Fork Apps</title>
+  <meta name="description" content="Create and study flashcards in your browser. Add front and back text, shuffle, and flip to study. No signup. Data saved locally. Free online flashcard tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(800px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .tabs{display:flex;gap:.4rem;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;}
+    .tab{padding:.35rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .tab.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+    /* EDIT MODE */
+    .add-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1rem;}
+    label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    textarea{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.6rem .75rem;font:inherit;font-size:.9rem;resize:vertical;min-height:60px;outline:none;}
+    textarea:focus{border-color:var(--accent);}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.6rem;}
+    .add-btn{width:100%;padding:.6rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.88rem;font-weight:800;cursor:pointer;}
+    .card-list{display:grid;gap:.5rem;}
+    .card-row{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:grid;grid-template-columns:1fr 1fr auto;gap:.5rem;align-items:start;font-size:.85rem;}
+    .card-front{font-weight:700;}
+    .card-back{color:var(--muted);}
+    .card-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:.1rem;}
+    .card-del:hover{color:var(--danger);}
+    /* STUDY MODE */
+    .study-area{text-align:center;}
+    .progress-bar{height:5px;background:var(--surface2);border-radius:3px;margin-bottom:1.5rem;}
+    .progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;}
+    .flip-card{perspective:1000px;height:220px;cursor:pointer;margin:0 auto 1.25rem;max-width:500px;}
+    .flip-inner{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d;}
+    .flip-inner.flipped{transform:rotateY(180deg);}
+    .flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-size:1.2rem;font-weight:700;line-height:1.5;}
+    .flip-front{background:var(--surface);border:2px solid var(--border);}
+    .flip-back{background:var(--surface2);border:2px solid rgba(125,219,132,.3);color:var(--accent);transform:rotateY(180deg);}
+    .card-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;opacity:.5;margin-bottom:.5rem;display:block;}
+    .study-controls{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+    .ctrl-btn{padding:.55rem 1.2rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;}
+    .ctrl-btn:hover{filter:brightness(1.1);}
+    .ctrl-btn.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .study-meta{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;}
+    .empty-state{text-align:center;padding:3rem;color:var(--muted);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Flashcard Maker</span></nav>
+<main>
+  <h1>Flashcard Maker</h1>
+  <p class="sub">Create flashcards and study them in your browser. Data saved locally.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('edit',this)">Edit Cards</button>
+    <button class="tab" onclick="setTab('study',this)">Study</button>
+  </div>
+
+  <div id="editPane">
+    <div class="add-form">
+      <div class="form-grid">
+        <div><label>Front (question / term)</label><textarea id="front" placeholder="What is the capital of France?"></textarea></div>
+        <div><label>Back (answer / definition)</label><textarea id="back" placeholder="Paris"></textarea></div>
+      </div>
+      <button class="add-btn" onclick="addCard()">Add Card</button>
+    </div>
+    <div id="cardList" class="card-list"></div>
+  </div>
+
+  <div id="studyPane" style="display:none">
+    <div class="study-area" id="studyArea"></div>
+  </div>
+
+  <footer>v1.0 · Click card to flip · Keyboard: Space = flip, → = next, ← = prev</footer>
+</main>
+<script>
+const KEY = 'sfa-flashcards';
+let cards = [], studyDeck = [], studyIdx = 0, isFlipped = false;
+
+function load() {
+  try { const s = localStorage.getItem(KEY); if (s) cards = JSON.parse(s); } catch(e){}
+  if (!cards.length) cards = [
+    {front:'What does HTML stand for?', back:'HyperText Markup Language'},
+    {front:'What is the speed of light?', back:'~299,792,458 m/s (in vacuum)'},
+    {front:'Who wrote Hamlet?', back:'William Shakespeare'},
+  ];
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(cards)); }
+
+function addCard() {
+  const f = document.getElementById('front').value.trim();
+  const b = document.getElementById('back').value.trim();
+  if (!f || !b) return;
+  cards.push({front:f, back:b});
+  save(); renderEdit();
+  document.getElementById('front').value = '';
+  document.getElementById('back').value = '';
+  document.getElementById('front').focus();
+}
+
+function removeCard(i) { cards.splice(i,1); save(); renderEdit(); }
+
+function renderEdit() {
+  const list = document.getElementById('cardList');
+  if (!cards.length) { list.innerHTML = '<div class="empty-state">No cards yet. Add one above.</div>'; return; }
+  list.innerHTML = cards.map((c,i) => `
+    <div class="card-row">
+      <div class="card-front">${esc(c.front)}</div>
+      <div class="card-back">${esc(c.back)}</div>
+      <button class="card-del" onclick="removeCard(${i})">×</button>
+    </div>`).join('');
+}
+
+function setTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('editPane').style.display = tab==='edit' ? '' : 'none';
+  document.getElementById('studyPane').style.display = tab==='study' ? '' : 'none';
+  if (tab === 'study') initStudy();
+}
+
+function initStudy() {
+  studyDeck = [...cards].sort(()=>Math.random()-.5);
+  studyIdx = 0; isFlipped = false;
+  renderStudy();
+}
+
+function renderStudy() {
+  const area = document.getElementById('studyArea');
+  if (!studyDeck.length) { area.innerHTML = '<div class="empty-state">No cards to study. Add some in Edit mode.</div>'; return; }
+  const card = studyDeck[studyIdx];
+  const pct = ((studyIdx+1)/studyDeck.length*100).toFixed(0);
+  area.innerHTML = `
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="study-meta">Card ${studyIdx+1} of ${studyDeck.length} · Click to flip</div>
+    <div class="flip-card" onclick="flipCard()">
+      <div class="flip-inner${isFlipped?' flipped':''}" id="flipInner">
+        <div class="flip-front"><div><span class="card-label">Front</span>${esc(card.front)}</div></div>
+        <div class="flip-back"><div><span class="card-label">Back</span>${esc(card.back)}</div></div>
+      </div>
+    </div>
+    <div class="study-controls">
+      <button class="ctrl-btn" onclick="prevCard()">← Prev</button>
+      <button class="ctrl-btn primary" onclick="flipCard()">Flip</button>
+      <button class="ctrl-btn" onclick="nextCard()">Next →</button>
+      <button class="ctrl-btn" onclick="initStudy()">Shuffle</button>
+    </div>`;
+}
+
+function flipCard() { isFlipped = !isFlipped; renderStudy(); }
+function nextCard() { studyIdx = (studyIdx+1)%studyDeck.length; isFlipped=false; renderStudy(); }
+function prevCard() { studyIdx = (studyIdx-1+studyDeck.length)%studyDeck.length; isFlipped=false; renderStudy(); }
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (e.key===' ') { e.preventDefault(); flipCard(); }
+  else if (e.key==='ArrowRight') nextCard();
+  else if (e.key==='ArrowLeft') prevCard();
+});
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+load(); renderEdit();
+</script>
+</body>
+</html>

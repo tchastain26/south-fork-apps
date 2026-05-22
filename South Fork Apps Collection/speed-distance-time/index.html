@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speed Distance Time Calculator | South Fork Apps</title>
+  <meta name="description" content="Solve for speed, distance, or time — enter any two values and get the third instantly. Supports multiple units. Free online speed distance time calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(620px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;}
+    .input-row input{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;font:inherit;font-size:.95rem;outline:none;width:100%;}
+    .input-row input:focus{border-color:var(--accent);}
+    .input-row input.solved{border-color:rgba(125,219,132,.4);background:rgba(125,219,132,.05);color:var(--accent);}
+    .input-row select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.62rem .65rem;font:inherit;font-size:.85rem;outline:none;white-space:nowrap;}
+    .input-row select:focus{border-color:var(--accent);}
+    .hint{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+    .solve-btn{width:100%;padding:.7rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    .solve-btn:hover{filter:brightness(1.07);}
+    .clear-btn{width:100%;padding:.45rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;margin-top:.35rem;}
+    .formula-card{background:var(--surface2);border-radius:10px;padding:.9rem;text-align:center;font-size:1.1rem;font-weight:800;letter-spacing:.05em;color:var(--accent);margin-bottom:.75rem;}
+    .error{color:#f28b82;font-size:.82rem;margin-top:.4rem;text-align:center;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Speed Distance Time</span></nav>
+<main>
+  <h1>Speed Distance Time Calculator</h1>
+  <p class="sub">Enter any two values to solve for the third. Mix units freely.</p>
+
+  <div class="formula-card">Speed = Distance ÷ Time &nbsp;|&nbsp; D = S × T &nbsp;|&nbsp; T = D ÷ S</div>
+
+  <div class="card">
+    <div class="field">
+      <label>Speed</label>
+      <div class="input-row">
+        <input type="number" id="speed" placeholder="—" min="0" oninput="autoSolve('speed')">
+        <select id="speedUnit" onchange="autoSolve('')">
+          <option value="mph">mph</option>
+          <option value="kph">km/h</option>
+          <option value="mps">m/s</option>
+          <option value="fps">ft/s</option>
+          <option value="knots">knots</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Distance</label>
+      <div class="input-row">
+        <input type="number" id="distance" placeholder="—" min="0" oninput="autoSolve('distance')">
+        <select id="distUnit" onchange="autoSolve('')">
+          <option value="mi">miles</option>
+          <option value="km">km</option>
+          <option value="m">meters</option>
+          <option value="ft">feet</option>
+          <option value="nmi">nautical mi</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Time</label>
+      <div class="input-row">
+        <input type="number" id="time" placeholder="—" min="0" oninput="autoSolve('time')">
+        <select id="timeUnit" onchange="autoSolve('')">
+          <option value="s">seconds</option>
+          <option value="min" selected>minutes</option>
+          <option value="hr">hours</option>
+          <option value="day">days</option>
+        </select>
+      </div>
+    </div>
+    <div class="error" id="errMsg"></div>
+    <button class="clear-btn" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+// All conversions to SI: meters/second for speed, meters for distance, seconds for time
+const TO_MPS   = {mph:0.44704,kph:0.27778,mps:1,fps:0.3048,knots:0.51444};
+const TO_M     = {mi:1609.34,km:1000,m:1,ft:0.3048,nmi:1852};
+const TO_S     = {s:1,min:60,hr:3600,day:86400};
+const FROM_MPS = {mph:2.23694,kph:3.6,mps:1,fps:3.28084,knots:1.94384};
+const FROM_M   = {mi:0.000621371,km:0.001,m:1,ft:3.28084,nmi:0.000539957};
+const FROM_S   = {s:1,min:1/60,hr:1/3600,day:1/86400};
+
+let lastChanged = '';
+
+function getVal(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) || v < 0 ? null : v;
+}
+
+function setVal(id, v, solved) {
+  const el = document.getElementById(id);
+  if (v !== null && el.value === '') {
+    el.value = +v.toPrecision(7);
+    if (solved) el.classList.add('solved');
+  } else if (!solved) el.classList.remove('solved');
+}
+
+function clearSolved() {
+  ['speed','distance','time'].forEach(id=>document.getElementById(id).classList.remove('solved'));
+}
+
+function autoSolve(changed) {
+  if (changed) lastChanged = changed;
+  clearSolved();
+  document.getElementById('errMsg').textContent = '';
+
+  const S = getVal('speed'), D = getVal('distance'), T = getVal('time');
+  const su = document.getElementById('speedUnit').value;
+  const du = document.getElementById('distUnit').value;
+  const tu = document.getElementById('timeUnit').value;
+
+  // Convert to SI
+  const Ssi = S !== null ? S * TO_MPS[su] : null;
+  const Dsi = D !== null ? D * TO_M[du] : null;
+  const Tsi = T !== null ? T * TO_S[tu] : null;
+
+  const known = [S,D,T].filter(v=>v!==null).length;
+  if (known < 2) return;
+
+  let rSsi=Ssi, rDsi=Dsi, rTsi=Tsi;
+  if (rSsi!==null && rDsi!==null && rTsi===null) rTsi = rDsi/rSsi;
+  else if (rSsi!==null && rTsi!==null && rDsi===null) rDsi = rSsi*rTsi;
+  else if (rDsi!==null && rTsi!==null && rSsi===null) rSsi = rDsi/rTsi;
+
+  if (rSsi !== null && rSsi <= 0) { document.getElementById('errMsg').textContent = 'Speed must be positive.'; return; }
+
+  if (S === null && rSsi !== null) setVal('speed', rSsi * FROM_MPS[su], true);
+  if (D === null && rDsi !== null) setVal('distance', rDsi * FROM_M[du], true);
+  if (T === null && rTsi !== null) setVal('time', rTsi * FROM_S[tu], true);
+}
+
+function clearAll() {
+  ['speed','distance','time'].forEach(id=>{document.getElementById(id).value='';document.getElementById(id).classList.remove('solved');});
+  document.getElementById('errMsg').textContent='';
+}
+</script>
+</body>
+</html>
