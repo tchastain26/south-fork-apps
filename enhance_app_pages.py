@@ -19,6 +19,7 @@ CATEGORY_SCHEMA = {
     "Design & Media": {"type": "SoftwareApplication", "applicationCategory": "DesignApplication"},
     "Productivity & Planning": {"type": "SoftwareApplication", "applicationCategory": "ProductivityApplication"},
     "Fun & Games": {"type": "GameApplication", "applicationCategory": "GameApplication"},
+    "Music & Audio": {"type": "SoftwareApplication", "applicationCategory": "EntertainmentApplication"},
 }
 
 CATEGORY_SLUGS = {
@@ -28,6 +29,7 @@ CATEGORY_SLUGS = {
     "Design & Media": "design-media",
     "Productivity & Planning": "productivity-planning",
     "Fun & Games": "fun-games",
+    "Music & Audio": "music-tools",
 }
 
 TOPIC_TITLES = {
@@ -37,6 +39,7 @@ TOPIC_TITLES = {
     "css-color-tools": "CSS & Color Tools",
     "generators": "Generators",
     "time-tools": "Time Tools",
+    "music-tools": "Music Tools",
 }
 
 HERO_CONTENT = {

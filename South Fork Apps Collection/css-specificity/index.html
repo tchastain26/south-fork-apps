@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Specificity Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate the (A, B, C) specificity score of any CSS selector. Compare multiple selectors side by side with visual ranking. Free online CSS specificity tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .input-row{display:flex;gap:.6rem;margin-bottom:.75rem;}
+    input[type=text]{flex:1;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;font:inherit;font-size:.95rem;font-family:monospace;outline:none;}
+    input[type=text]:focus{border-color:var(--accent);}
+    button{padding:.6rem 1.1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:filter .12s;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .results{display:grid;gap:.6rem;margin-top:.5rem;}
+    .result-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:grid;grid-template-columns:1fr auto;gap:.5rem 1rem;align-items:center;}
+    .result-card.winner{border-color:rgba(125,219,132,.45);}
+    .selector-text{font-family:monospace;font-size:.92rem;font-weight:700;overflow-wrap:anywhere;}
+    .score-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+    .abc{display:flex;gap:.4rem;}
+    .abc-part{text-align:center;min-width:2.2rem;}
+    .abc-val{font-size:1.2rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;}
+    .abc-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:.1rem;}
+    .abc-part.a .abc-val{color:#c586c0;}
+    .abc-part.b .abc-val{color:#7ddb84;}
+    .abc-part.c .abc-val{color:#aaccda;}
+    .rank-badge{font-size:.72rem;font-weight:800;padding:.25rem .6rem;border-radius:20px;white-space:nowrap;}
+    .rank-inline{background:rgba(125,219,132,.1);color:var(--accent);border:1px solid rgba(125,219,132,.25);}
+    .rank-id{background:rgba(197,134,192,.1);color:#c586c0;border:1px solid rgba(197,134,192,.25);}
+    .rank-element{background:rgba(170,204,218,.1);color:#aaccda;border:1px solid rgba(170,204,218,.25);}
+    .rank-zero{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+    .delete-btn{background:transparent;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem;border-radius:4px;line-height:1;}
+    .delete-btn:hover{color:var(--danger);filter:none;}
+    .empty{color:var(--muted);text-align:center;padding:2rem;font-size:.9rem;}
+    .compare-bar{margin-top:.35rem;height:5px;border-radius:3px;background:var(--accent);transition:width .25s;}
+    .hint{font-size:.78rem;color:var(--muted);margin-top:.5rem;line-height:1.55;}
+    .hint code{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;font-family:monospace;font-size:.78rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+    .section-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.1rem 0 .6rem;}
+    .examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;}
+    .example-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-family:monospace;font-size:.78rem;cursor:pointer;}
+    .example-btn:hover{border-color:var(--accent);color:var(--accent);}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">CSS Specificity Calculator</span></nav>
+<main>
+  <h1>CSS Specificity Calculator</h1>
+  <p class="sub">Enter any CSS selector to see its (A, B, C) specificity score. Add multiple selectors to compare them.</p>
+
+  <div class="input-row">
+    <input type="text" id="selectorInput" placeholder=".nav > a:hover, #logo, h1.title" autocomplete="off" spellcheck="false">
+    <button class="primary" onclick="addSelectors()">Calculate</button>
+  </div>
+  <div class="hint">
+    Separate multiple selectors with commas or newlines. Supports all standard selectors.
+    Examples: <code>#id</code> <code>.class</code> <code>div > p</code> <code>a:hover</code> <code>[type="text"]</code>
+  </div>
+
+  <div class="section-label" style="margin-top:1.25rem">Quick examples</div>
+  <div class="examples">
+    <button class="example-btn" onclick="insertExample('*')">*</button>
+    <button class="example-btn" onclick="insertExample('p')">p</button>
+    <button class="example-btn" onclick="insertExample('.class')">class</button>
+    <button class="example-btn" onclick="insertExample('[type]')">[type]</button>
+    <button class="example-btn" onclick="insertExample('p.class')">p.class</button>
+    <button class="example-btn" onclick="insertExample('#id')">#id</button>
+    <button class="example-btn" onclick="insertExample('ul li > a')">ul li &gt; a</button>
+    <button class="example-btn" onclick="insertExample('a:hover')">a:hover</button>
+    <button class="example-btn" onclick="insertExample('::before')">::before</button>
+    <button class="example-btn" onclick="insertExample('#nav .item:first-child')">#nav .item:first-child</button>
+    <button class="example-btn" onclick="insertExample('body #main > div.wrap p span')">body #main &gt; div.wrap p span</button>
+  </div>
+
+  <div id="results" class="results">
+    <div class="empty" id="emptyMsg">Enter a CSS selector above to see its specificity score.</div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let rows = [];
+
+function insertExample(sel) {
+  document.getElementById('selectorInput').value = sel;
+  document.getElementById('selectorInput').focus();
+  addSelectors();
+}
+
+function addSelectors() {
+  const raw = document.getElementById('selectorInput').value;
+  const parts = raw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean);
+  parts.forEach(sel => {
+    if (!rows.some(r => r.sel === sel)) {
+      rows.push({ sel, ...calcSpecificity(sel) });
+    }
+  });
+  document.getElementById('selectorInput').value = '';
+  render();
+}
+
+function calcSpecificity(sel) {
+  let a = 0, b = 0, c = 0;
+  let s = sel;
+
+  // Remove pseudo-elements (::before etc.) — count as c
+  s = s.replace(/::[\w-]+(\([^)]*\))?/g, () => { c++; return ''; });
+
+  // Count IDs
+  s = s.replace(/#[\w-]+/g, () => { a++; return ''; });
+
+  // Count :not() but count its CONTENT, not :not itself
+  s = s.replace(/:not\(([^)]*)\)/g, (_, inner) => {
+    const r = calcSpecificity(inner);
+    a += r.a; b += r.b; c += r.c;
+    return '';
+  });
+
+  // Count :is()/:where()/:has() — :where() contributes 0, :is() and :has() count their most specific argument
+  s = s.replace(/:(?:is|has)\(([^)]*)\)/g, (_, inner) => {
+    const parts = inner.split(',');
+    const scores = parts.map(p => calcSpecificity(p.trim()));
+    const max = scores.reduce((m, sc) => toNum(sc) > toNum(m) ? sc : m, {a:0,b:0,c:0});
+    a += max.a; b += max.b; c += max.c;
+    return '';
+  });
+  s = s.replace(/:where\([^)]*\)/g, '');
+
+  // Count class selectors (.foo), attribute selectors ([attr]), and pseudo-classes (:hover)
+  s = s.replace(/\.[\w-]+/g, () => { b++; return ''; });
+  s = s.replace(/\[([^\]]*)\]/g, () => { b++; return ''; });
+  s = s.replace(/:[\w-]+(\([^)]*\))?/g, () => { b++; return ''; });
+
+  // Count type selectors (element names) — exclude *, combinators, whitespace
+  const types = s.match(/[a-zA-Z][\w-]*/g) || [];
+  c += types.length;
+
+  return { a, b, c };
+}
+
+function toNum({ a, b, c }) {
+  return a * 10000 + b * 100 + c;
+}
+
+function rankLabel(a, b, c) {
+  if (a + b + c === 0) return { label: 'Zero', cls: 'rank-zero' };
+  if (a > 0) return { label: 'ID-level', cls: 'rank-id' };
+  if (b > 0) return { label: 'Class-level', cls: 'rank-inline' };
+  return { label: 'Element-level', cls: 'rank-element' };
+}
+
+function render() {
+  const out = document.getElementById('results');
+  const empty = document.getElementById('emptyMsg');
+  if (!rows.length) { empty.style.display = 'block'; out.querySelectorAll('.result-card').forEach(e=>e.remove()); return; }
+  empty.style.display = 'none';
+
+  out.querySelectorAll('.result-card').forEach(e => e.remove());
+
+  const maxScore = Math.max(...rows.map(r => toNum(r)));
+
+  rows.forEach((row, idx) => {
+    const score = toNum(row);
+    const rank = rankLabel(row.a, row.b, row.c);
+    const isWinner = rows.length > 1 && score === maxScore;
+    const pct = maxScore > 0 ? Math.max(4, Math.round((score / maxScore) * 100)) : 4;
+    const card = document.createElement('div');
+    card.className = 'result-card' + (isWinner ? ' winner' : '');
+    card.innerHTML = `
+      <div>
+        <div class="selector-text">${esc(row.sel)}</div>
+        <div style="margin-top:.5rem" class="score-row">
+          <div class="abc">
+            <div class="abc-part a"><div class="abc-val">${row.a}</div><div class="abc-label">A (IDs)</div></div>
+            <div class="abc-part b"><div class="abc-val">${row.b}</div><div class="abc-label">B (Class)</div></div>
+            <div class="abc-part c"><div class="abc-val">${row.c}</div><div class="abc-label">C (Type)</div></div>
+          </div>
+          <span class="rank-badge ${rank.cls}">${rank.label}</span>
+          ${isWinner ? '<span class="rank-badge rank-inline">Highest</span>' : ''}
+        </div>
+        ${rows.length > 1 ? `<div class="compare-bar" style="width:${pct}%"></div>` : ''}
+      </div>
+      <button class="delete-btn" title="Remove" onclick="removeRow(${idx})">×</button>
+    `;
+    out.appendChild(card);
+  });
+}
+
+function removeRow(idx) {
+  rows.splice(idx, 1);
+  render();
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+document.getElementById('selectorInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addSelectors();
+});
+</script>
+</body>
+</html>

@@ -83,6 +83,18 @@ CATEGORY_INFO = {
         ],
         "related_topics": ["generators", "time-tools"],
     },
+    "Music & Audio": {
+        "slug": "music-tools",
+        "title": "Music and Audio Tools",
+        "description": "Free online music theory tools, fretboard explorers, chord finders, ear trainers, beat makers, and audio utilities for musicians.",
+        "intro": "This category collects the music tools built for practice, reference, and creative work — from interactive fretboards and chord diagrams to ear trainers, beat sequencers, and theory references.",
+        "bullets": [
+            "Covers guitar, bass, ukulele, piano, and general music theory.",
+            "Useful for beginners learning chords and experienced musicians needing quick references.",
+            "Interactive tools run entirely in the browser — no app download needed.",
+        ],
+        "related_topics": ["calculators", "generators"],
+    },
 }
 
 TOPIC_INFO = {
@@ -125,7 +137,7 @@ TOPIC_INFO = {
             "html-preview",
             "robots-txt-builder",
             "json-yaml-converter",
-            "csv-json-converter",
+            "http-status-codes",
             "jwt-decoder",
             "chmod-calculator",
         ],
@@ -164,12 +176,12 @@ TOPIC_INFO = {
         "apps": [
             "css-gradient-generator",
             "css-clamp-generator",
+            "css-specificity",
             "color-palette",
             "color-contrast-checker",
             "box-shadow-generator",
             "css-filter-generator",
             "css-unit-converter",
-            "color-name-finder",
             "svg-to-data-url",
             "hex-code-color-generator",
         ],
@@ -216,6 +228,28 @@ TOPIC_INFO = {
             "pace-calculator",
             "millisecond-converter",
             "sleep-cycle-calculator",
+        ],
+    },
+    "music-tools": {
+        "title": "Free Online Music Theory Tools",
+        "description": "Online chord finders, fretboard explorers, scale references, ear trainers, beat makers, and music theory tools for guitarists, pianists, and musicians.",
+        "intro": "This hub brings together the music tools that make practice, study, and songwriting faster: chord reference, fretboard diagrams, scale breakdowns, ear training, and interactive instruments — all in the browser.",
+        "bullets": [
+            "Covers guitar, bass, ukulele, piano, and general music theory in one place.",
+            "Useful whether you're learning your first chords or building chord charts for a session.",
+            "Everything runs locally — no signup, no install, no audio latency from the cloud.",
+        ],
+        "apps": [
+            "chord-finder",
+            "scale-finder",
+            "guitar-fretboard",
+            "circle-of-fifths",
+            "chords-in-keys",
+            "chord-transposer",
+            "lil-beat-maker",
+            "piano-chords",
+            "relative-pitch",
+            "bpm-counter",
         ],
     },
 }

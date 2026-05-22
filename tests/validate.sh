@@ -1,7 +1,7 @@
 #!/bin/bash
 # Usage: ./tests/validate.sh [app-folder-name]
 # Example: ./tests/validate.sh tip-calculator
-# Run with no argument to validate all apps in todo.md
+# Run with no argument to validate all apps in the collection directory
 
 COLLECTION="South Fork Apps Collection"
 PASS=0
@@ -65,22 +65,9 @@ if [ -n "$1" ]; then
   exit 0
 fi
 
-# All apps mode
-APPS=(
-  "tip-calculator"
-  "pomodoro-timer"
-  "password-generator"
-  "age-calculator"
-  "word-counter"
-  "debt-snowball"
-  "random-picker"
-  "unit-converter"
-  "habit-tracker"
-  "countdown-timer"
-)
-
-for app in "${APPS[@]}"; do
-  check_app "$app"
+# All apps mode — auto-discover every folder in the collection
+for app in "$COLLECTION"/*/; do
+  check_app "$(basename "$app")"
 done
 
 echo "=============================="

@@ -41,7 +41,7 @@ function parseApps() {
   const start = text.indexOf('<div id="appGrid"');
   const end = text.indexOf('<div id="noResults"');
   const grid = text.slice(start, end);
-  const pattern = /<div data-app-card data-title="([^"]+)" data-description="([^"]+)" data-category="([^"]+)".*?<a href="\.\/South Fork Apps Collection\/([^/]+)\//gs;
+  const pattern = /<div data-app-card data-title="([^"]+)" data-description="([^"]+)" data-category="([^"]+)".*?<a href="\/South%20Fork%20Apps%20Collection\/([^/]+)\//gs;
   const apps = [];
   for (const match of grid.matchAll(pattern)) {
     apps.push({
