@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Animation Generator | South Fork Apps</title>
+  <meta name="description" content="Generate CSS keyframe animations visually. Choose from fade, slide, bounce, spin, pulse, and shake presets. Adjust duration, easing, and delay. Copy ready CSS. Free online CSS animation tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(860px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:640px){.layout{grid-template-columns:1fr;}}
+    .controls{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    label span{color:var(--accent);}
+    input[type=range]{width:100%;accent-color:var(--accent);}
+    select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font:inherit;font-size:.88rem;outline:none;}
+    select:focus{border-color:var(--accent);}
+    .preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.85rem;}
+    .preset-btn{padding:.45rem .5rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;}
+    .preset-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .preview-side{display:flex;flex-direction:column;gap:.75rem;}
+    .preview-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;min-height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .preview-el{width:80px;height:80px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+    pre{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem;font-size:.75rem;font-family:monospace;overflow-x:auto;line-height:1.6;margin:0;max-height:260px;}
+    .copy-btn{width:100%;padding:.5rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.85rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    .copy-btn:hover{filter:brightness(1.07);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">CSS Animation Generator</span></nav>
+<main>
+  <h1>CSS Animation Generator</h1>
+  <p class="sub">Pick an animation preset, tweak the settings, and copy the complete CSS keyframes.</p>
+
+  <div class="layout">
+    <div class="controls">
+      <div class="field">
+        <label>Animation preset</label>
+        <div class="preset-grid" id="presetGrid"></div>
+      </div>
+      <div class="field">
+        <label>Duration <span id="durVal">1s</span></label>
+        <input type="range" id="dur" min="0.1" max="5" step="0.1" value="1" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Delay <span id="delayVal">0s</span></label>
+        <input type="range" id="delay" min="0" max="3" step="0.1" value="0" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Iteration count</label>
+        <select id="iteration" onchange="update()">
+          <option value="1">Once</option>
+          <option value="2">2 times</option>
+          <option value="3">3 times</option>
+          <option value="infinite" selected>Infinite</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Easing</label>
+        <select id="easing" onchange="update()">
+          <option value="ease">ease</option>
+          <option value="ease-in">ease-in</option>
+          <option value="ease-out">ease-out</option>
+          <option value="ease-in-out" selected>ease-in-out</option>
+          <option value="linear">linear</option>
+          <option value="cubic-bezier(0.34,1.56,0.64,1)">spring bounce</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Direction</label>
+        <select id="direction" onchange="update()">
+          <option value="normal">normal</option>
+          <option value="reverse">reverse</option>
+          <option value="alternate" selected>alternate</option>
+          <option value="alternate-reverse">alternate-reverse</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="preview-side">
+      <div class="preview-box">
+        <div class="preview-el" id="previewEl">✦</div>
+      </div>
+      <pre id="cssOut"></pre>
+      <button class="copy-btn" onclick="copyCss()">Copy CSS</button>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<style id="dynStyle"></style>
+<script>
+const PRESETS = {
+  'Fade In':    { kf:'@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}', name:'fadeIn' },
+  'Fade Out':   { kf:'@keyframes fadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}', name:'fadeOut' },
+  'Slide Up':   { kf:'@keyframes slideUp {\n  from { transform: translateY(40px); opacity: 0; }\n  to { transform: translateY(0); opacity: 1; }\n}', name:'slideUp' },
+  'Slide Down': { kf:'@keyframes slideDown {\n  from { transform: translateY(-40px); opacity: 0; }\n  to { transform: translateY(0); opacity: 1; }\n}', name:'slideDown' },
+  'Slide Left': { kf:'@keyframes slideLeft {\n  from { transform: translateX(60px); opacity: 0; }\n  to { transform: translateX(0); opacity: 1; }\n}', name:'slideLeft' },
+  'Bounce':     { kf:'@keyframes bounce {\n  0%, 100% { transform: translateY(0); }\n  50% { transform: translateY(-30px); }\n}', name:'bounce' },
+  'Spin':       { kf:'@keyframes spin {\n  from { transform: rotate(0deg); }\n  to { transform: rotate(360deg); }\n}', name:'spin' },
+  'Pulse':      { kf:'@keyframes pulse {\n  0%, 100% { transform: scale(1); opacity: 1; }\n  50% { transform: scale(1.15); opacity: 0.8; }\n}', name:'pulse' },
+  'Shake':      { kf:'@keyframes shake {\n  0%, 100% { transform: translateX(0); }\n  20%, 60% { transform: translateX(-8px); }\n  40%, 80% { transform: translateX(8px); }\n}', name:'shake' },
+  'Flip X':     { kf:'@keyframes flipX {\n  from { transform: scaleX(-1); opacity: 0; }\n  to { transform: scaleX(1); opacity: 1; }\n}', name:'flipX' },
+  'Zoom In':    { kf:'@keyframes zoomIn {\n  from { transform: scale(0.5); opacity: 0; }\n  to { transform: scale(1); opacity: 1; }\n}', name:'zoomIn' },
+  'Swing':      { kf:'@keyframes swing {\n  0%, 100% { transform: rotate(0deg); }\n  25% { transform: rotate(15deg); }\n  75% { transform: rotate(-15deg); }\n}', name:'swing' },
+};
+
+let current = 'Bounce';
+
+document.getElementById('presetGrid').innerHTML = Object.keys(PRESETS).map(name =>
+  `<button class="preset-btn${name===current?' active':''}" onclick="setPreset('${name}',this)">${name}</button>`
+).join('');
+
+function setPreset(name, btn) {
+  current = name;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  update();
+}
+
+function update() {
+  const dur   = parseFloat(document.getElementById('dur').value).toFixed(1);
+  const delay = parseFloat(document.getElementById('delay').value).toFixed(1);
+  const iter  = document.getElementById('iteration').value;
+  const ease  = document.getElementById('easing').value;
+  const dir   = document.getElementById('direction').value;
+
+  document.getElementById('durVal').textContent = dur+'s';
+  document.getElementById('delayVal').textContent = delay+'s';
+
+  const p = PRESETS[current];
+  const animCSS = `.animated {\n  animation: ${p.name} ${dur}s ${ease} ${delay}s ${iter} ${dir} both;\n}`;
+  const fullCSS = `${p.kf}\n\n${animCSS}`;
+  document.getElementById('cssOut').textContent = fullCSS;
+
+  // Apply to preview
+  const styleEl = document.getElementById('dynStyle');
+  styleEl.textContent = `${p.kf}\n#previewEl { animation: ${p.name} ${dur}s ${ease} ${delay}s ${iter} ${dir} both; }`;
+}
+
+function copyCss() {
+  navigator.clipboard.writeText(document.getElementById('cssOut').textContent).catch(()=>{});
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy CSS',1500);
+}
+
+update();
+</script>
+</body>
+</html>

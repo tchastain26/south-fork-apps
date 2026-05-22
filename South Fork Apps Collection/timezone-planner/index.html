@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Time Zone Planner | South Fork Apps</title>
+  <meta name="description" content="Find the best meeting time across multiple time zones. See overlapping work hours for distributed teams. Free online time zone planner and meeting scheduler.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--work:rgba(125,219,132,.15);--sleep:rgba(42,47,43,.5);}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .add-row{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+    select,input[type=text]{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font:inherit;font-size:.88rem;outline:none;}
+    select:focus,input[type=text]:focus{border-color:var(--accent);}
+    button{padding:.55rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .zones{display:grid;gap:.5rem;margin-bottom:1rem;}
+    .zone-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .9rem;display:flex;align-items:center;gap:.75rem;}
+    .zone-name{font-weight:700;font-size:.9rem;min-width:130px;}
+    .zone-time{font-family:monospace;font-size:.9rem;color:var(--accent);min-width:80px;}
+    .zone-offset{font-size:.78rem;color:var(--muted);}
+    .del-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;margin-left:auto;padding:.2rem .4rem;}
+    .del-btn:hover{color:#f28b82;}
+    .grid-wrap{overflow-x:auto;margin-bottom:1rem;}
+    .hour-grid{display:grid;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .grid-header{display:flex;background:var(--surface2);border-bottom:1px solid var(--border);}
+    .grid-label{min-width:140px;padding:.4rem .6rem;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+    .hour-cell-h{min-width:34px;max-width:34px;text-align:center;padding:.4rem 0;font-size:.65rem;color:var(--muted);font-variant-numeric:tabular-nums;border-left:1px solid var(--border);}
+    .grid-zone-row{display:flex;border-bottom:1px solid var(--border);}
+    .grid-zone-row:last-child{border-bottom:none;}
+    .grid-zone-label{min-width:140px;padding:.45rem .6rem;font-size:.78rem;font-weight:700;display:flex;flex-direction:column;}
+    .gz-name{font-weight:700;}
+    .gz-time{font-size:.7rem;color:var(--accent);font-family:monospace;}
+    .hour-cell{min-width:34px;max-width:34px;height:34px;border-left:1px solid var(--border);}
+    .hour-cell.work{background:var(--work);}
+    .hour-cell.sleep{background:var(--sleep);}
+    .hour-cell.overlap{background:rgba(125,219,132,.45);}
+    .hour-cell.selected{background:rgba(125,219,132,.7);cursor:pointer;}
+    .legend{display:flex;gap:1rem;font-size:.72rem;color:var(--muted);flex-wrap:wrap;}
+    .leg{display:flex;align-items:center;gap:.35rem;}
+    .leg-box{width:14px;height:14px;border-radius:3px;}
+    .base-time-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap;}
+    .base-time-row label{font-size:.75rem;font-weight:700;color:var(--muted);}
+    .base-time-row input[type=time]{width:120px;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Meeting Zone Planner</span></nav>
+<main>
+  <h1>Meeting Time Zone Planner</h1>
+  <p class="sub">Add team locations and see work-hour overlaps across time zones. Green = all teams available.</p>
+
+  <div class="add-row">
+    <select id="tzSelect" style="flex:1;min-width:200px">
+      <option value="America/New_York">New York (ET)</option>
+      <option value="America/Chicago">Chicago (CT)</option>
+      <option value="America/Denver">Denver (MT)</option>
+      <option value="America/Los_Angeles">Los Angeles (PT)</option>
+      <option value="America/Anchorage">Anchorage (AKT)</option>
+      <option value="Pacific/Honolulu">Honolulu (HST)</option>
+      <option value="Europe/London">London (GMT/BST)</option>
+      <option value="Europe/Paris">Paris (CET)</option>
+      <option value="Europe/Berlin">Berlin (CET)</option>
+      <option value="Europe/Helsinki">Helsinki (EET)</option>
+      <option value="Europe/Istanbul">Istanbul (TRT)</option>
+      <option value="Asia/Dubai">Dubai (GST)</option>
+      <option value="Asia/Kolkata">India (IST)</option>
+      <option value="Asia/Dhaka">Bangladesh (BST)</option>
+      <option value="Asia/Bangkok">Bangkok (ICT)</option>
+      <option value="Asia/Singapore">Singapore (SGT)</option>
+      <option value="Asia/Shanghai">China (CST)</option>
+      <option value="Asia/Tokyo">Tokyo (JST)</option>
+      <option value="Asia/Seoul">Seoul (KST)</option>
+      <option value="Australia/Sydney">Sydney (AEST)</option>
+      <option value="Pacific/Auckland">Auckland (NZST)</option>
+    </select>
+    <input type="text" id="tzAlias" placeholder="Label (optional)" style="width:130px">
+    <button class="primary" onclick="addZone()">Add</button>
+  </div>
+
+  <div class="zones" id="zonesList"></div>
+
+  <div class="base-time-row">
+    <label>Reference time (local):</label>
+    <input type="time" id="refTime" value="09:00" onchange="render()">
+    <label>Work hours:</label>
+    <input type="number" id="workStart" value="9" min="0" max="23" style="width:60px" onchange="render()"> to
+    <input type="number" id="workEnd" value="18" min="0" max="24" style="width:60px" onchange="render()">
+  </div>
+
+  <div class="grid-wrap" id="gridWrap"></div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-box" style="background:rgba(125,219,132,.45)"></div>All teams available (overlap)</div>
+    <div class="leg"><div class="leg-box" style="background:var(--work)"></div>Work hours</div>
+    <div class="leg"><div class="leg-box" style="background:var(--sleep)"></div>Outside work hours</div>
+  </div>
+
+  <footer>v1.0 · Times shown in each zone's local time</footer>
+</main>
+<script>
+let zones = [
+  { tz:'America/New_York', label:'New York' },
+  { tz:'Europe/London', label:'London' },
+  { tz:'Asia/Tokyo', label:'Tokyo' },
+];
+
+function addZone() {
+  const tz = document.getElementById('tzSelect').value;
+  const alias = document.getElementById('tzAlias').value.trim();
+  const label = alias || document.getElementById('tzSelect').options[document.getElementById('tzSelect').selectedIndex].text;
+  if (!zones.find(z=>z.tz===tz)) { zones.push({tz, label}); document.getElementById('tzAlias').value=''; render(); }
+}
+
+function removeZone(i) { zones.splice(i,1); render(); }
+
+function getOffset(tz, date) {
+  const tzDate = new Date(date.toLocaleString('en-US',{timeZone:tz}));
+  return Math.round((tzDate - date) / 60000);
+}
+
+function render() {
+  const refTimeVal = document.getElementById('refTime').value || '09:00';
+  const [rh,rm] = refTimeVal.split(':').map(Number);
+  const workStart = parseInt(document.getElementById('workStart').value)||9;
+  const workEnd = parseInt(document.getElementById('workEnd').value)||18;
+
+  const now = new Date();
+  const refDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), rh, rm);
+
+  // Render zones list
+  document.getElementById('zonesList').innerHTML = zones.map((z,i) => {
+    const localStr = refDate.toLocaleTimeString('en-US',{timeZone:z.tz,hour:'2-digit',minute:'2-digit',hour12:true});
+    const offsetMin = getOffset(z.tz, refDate);
+    const offsetH = offsetMin/60;
+    const offsetStr = (offsetH >= 0 ? '+' : '') + offsetH.toFixed(1).replace('.0','');
+    return `<div class="zone-row">
+      <span class="zone-name">${esc(z.label)}</span>
+      <span class="zone-time">${localStr}</span>
+      <span class="zone-offset">UTC${offsetStr}</span>
+      <span class="zone-offset">${z.tz}</span>
+      <button class="del-btn" onclick="removeZone(${i})">×</button>
+    </div>`;
+  }).join('');
+
+  if (!zones.length) { document.getElementById('gridWrap').innerHTML=''; return; }
+
+  // Build 24-hour grid
+  const HOURS = Array.from({length:24},(_,i)=>i);
+
+  // For each hour, check if all zones are in work hours
+  function localHour(tz, utcHour) {
+    const d = new Date(refDate);
+    d.setHours(utcHour, 0, 0, 0);
+    return parseInt(d.toLocaleString('en-US',{timeZone:tz,hour:'2-digit',hour12:false}));
+  }
+
+  const header = `<div class="grid-header"><div class="grid-label">Location</div>${HOURS.map(h=>`<div class="hour-cell-h">${h}</div>`).join('')}</div>`;
+
+  const rows = zones.map(z => {
+    const cells = HOURS.map(h => {
+      const lh = localHour(z.tz, h);
+      const inWork = lh >= workStart && lh < workEnd;
+      return `<div class="hour-cell ${inWork?'work':'sleep'}" title="${lh}:00 ${z.label}"></div>`;
+    }).join('');
+    const localStr = refDate.toLocaleTimeString('en-US',{timeZone:z.tz,hour:'2-digit',minute:'2-digit',hour12:true});
+    return `<div class="grid-zone-row"><div class="grid-zone-label"><span class="gz-name">${esc(z.label)}</span><span class="gz-time">${localStr}</span></div>${cells}</div>`;
+  }).join('');
+
+  // Overlap row
+  const overlapCells = HOURS.map(h => {
+    const allWork = zones.every(z => { const lh = localHour(z.tz, h); return lh >= workStart && lh < workEnd; });
+    return `<div class="hour-cell ${allWork?'overlap':'sleep'}"></div>`;
+  }).join('');
+  const overlapRow = `<div class="grid-zone-row" style="background:var(--surface2)"><div class="grid-zone-label"><span class="gz-name" style="color:var(--accent)">All teams</span><span class="gz-time">overlap</span></div>${overlapCells}</div>`;
+
+  document.getElementById('gridWrap').innerHTML = `<div class="hour-grid">${header}${rows}${overlapRow}</div>`;
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+render();
+</script>
+</body>
+</html>

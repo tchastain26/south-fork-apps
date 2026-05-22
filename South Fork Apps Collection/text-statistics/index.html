@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Statistics | South Fork Apps</title>
+  <meta name="description" content="Deep text analysis — readability scores, vocabulary richness, sentence complexity, paragraph stats, and most/least common words. Free online text statistics tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    textarea{width:100%;min-height:140px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:.85rem;font:inherit;font-size:.92rem;resize:vertical;outline:none;margin-bottom:.75rem;}
+    textarea:focus{border-color:var(--accent);}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin-bottom:1rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem;text-align:center;}
+    .stat-val{font-size:1.3rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;}
+    .stat-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.15rem;}
+    .section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem;margin-bottom:.75rem;}
+    .section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem;}
+    .readability-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid rgba(42,47,43,.4);font-size:.85rem;}
+    .readability-row:last-child{border-bottom:none;}
+    .r-label{color:var(--muted);}
+    .r-val{font-weight:800;color:var(--accent);}
+    .word-cloud{display:flex;flex-wrap:wrap;gap:.35rem;}
+    .word-chip{padding:.2rem .55rem;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:.78rem;font-weight:700;}
+    .word-chip .cnt{font-size:.65rem;color:var(--muted);margin-left:.25rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Text Statistics</span></nav>
+<main>
+  <h1>Text Statistics</h1>
+  <p class="sub">Deep analysis of any text — readability, vocabulary, sentence complexity, and more.</p>
+
+  <textarea id="input" placeholder="Paste your text here to analyze it…" oninput="analyze()"></textarea>
+
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <div id="detailArea" style="display:none">
+    <div class="section">
+      <div class="section-title">Readability scores</div>
+      <div id="readabilityRows"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Top 20 words (excluding common words)</div>
+      <div class="word-cloud" id="topWords"></div>
+    </div>
+  </div>
+
+  <footer>v1.0 · Flesch-Kincaid and Gunning Fog readability formulas</footer>
+</main>
+<script>
+const STOPWORDS = new Set('the a an and or but in on at to for of with is are was were be been being have has had do does did will would could should may might shall can its it this that these those i you he she we they his her our your their my me him us them what which who when where why how all some any each few more most other than then only just also even back after before through into from out over about up down so if by as not no nor yet'.split(' '));
+
+function syllableCount(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (!word) return 0;
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+  const m = word.match(/[aeiouy]{1,2}/g);
+  return m ? m.length : 1;
+}
+
+function analyze() {
+  const text = document.getElementById('input').value.trim();
+  const grid = document.getElementById('statsGrid');
+  const detail = document.getElementById('detailArea');
+
+  if (!text) { grid.innerHTML=''; detail.style.display='none'; return; }
+
+  const words = text.match(/\b[a-zA-Z']+\b/g) || [];
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 2);
+  const paragraphs = text.split(/\n{2,}/).filter(p => p.trim());
+  const chars = text.length;
+  const charsNoSpace = text.replace(/\s/g,'').length;
+  const uniqueWords = new Set(words.map(w=>w.toLowerCase())).size;
+  const avgWordsPerSentence = sentences.length ? (words.length / sentences.length) : 0;
+  const totalSyllables = words.reduce((s,w) => s + syllableCount(w), 0);
+  const avgSyllablesPerWord = words.length ? (totalSyllables / words.length) : 0;
+  const complexWords = words.filter(w => syllableCount(w) >= 3).length;
+  const typeTokenRatio = words.length ? (uniqueWords / words.length) : 0;
+  const avgWordLength = words.length ? (words.reduce((s,w)=>s+w.length,0)/words.length) : 0;
+
+  // Flesch Reading Ease: 206.835 - 1.015*(words/sentences) - 84.6*(syllables/words)
+  const fre = sentences.length && words.length
+    ? Math.round(206.835 - 1.015*(words.length/sentences.length) - 84.6*(totalSyllables/words.length))
+    : null;
+
+  // Flesch-Kincaid Grade Level: 0.39*(words/sentences) + 11.8*(syllables/words) - 15.59
+  const fkgl = sentences.length && words.length
+    ? (0.39*(words.length/sentences.length) + 11.8*(totalSyllables/words.length) - 15.59).toFixed(1)
+    : null;
+
+  // Gunning Fog: 0.4 * ((words/sentences) + 100*(complexWords/words))
+  const fog = sentences.length && words.length
+    ? (0.4 * ((words.length/sentences.length) + 100*(complexWords/words.length))).toFixed(1)
+    : null;
+
+  function freLabel(s) {
+    if (s >= 90) return 'Very Easy'; if (s >= 80) return 'Easy'; if (s >= 70) return 'Fairly Easy';
+    if (s >= 60) return 'Standard'; if (s >= 50) return 'Fairly Difficult';
+    if (s >= 30) return 'Difficult'; return 'Very Confusing';
+  }
+
+  grid.innerHTML = [
+    { label:'Words', val:words.length.toLocaleString() },
+    { label:'Characters', val:chars.toLocaleString() },
+    { label:'Sentences', val:sentences.length.toLocaleString() },
+    { label:'Paragraphs', val:paragraphs.length.toLocaleString() },
+    { label:'Unique words', val:uniqueWords.toLocaleString() },
+    { label:'Avg word length', val:avgWordLength.toFixed(1) },
+    { label:'Avg words/sentence', val:avgWordsPerSentence.toFixed(1) },
+    { label:'Complex words (3+ syl)', val:complexWords.toLocaleString() },
+    { label:'Vocabulary richness', val:(typeTokenRatio*100).toFixed(1)+'%' },
+    { label:'Avg syllables/word', val:avgSyllablesPerWord.toFixed(2) },
+  ].map(s=>`<div class="stat-card"><div class="stat-val">${s.val}</div><div class="stat-label">${s.label}</div></div>`).join('');
+
+  detail.style.display = '';
+
+  document.getElementById('readabilityRows').innerHTML = [
+    { label:'Flesch Reading Ease', val: fre !== null ? `${Math.max(0,Math.min(100,fre))} — ${freLabel(fre)}` : '—' },
+    { label:'Flesch-Kincaid Grade', val: fkgl !== null ? `Grade ${fkgl}` : '—' },
+    { label:'Gunning Fog Index', val: fog !== null ? `${fog} (Grade ${fog})` : '—' },
+    { label:'Estimated reading time', val: Math.max(1,Math.round(words.length/238)) + ' min' },
+    { label:'Estimated speaking time', val: Math.max(1,Math.round(words.length/130)) + ' min' },
+  ].map(r=>`<div class="readability-row"><span class="r-label">${r.label}</span><span class="r-val">${r.val}</span></div>`).join('');
+
+  const freq = {};
+  words.forEach(w => { const lw = w.toLowerCase(); if (!STOPWORDS.has(lw) && lw.length > 2) freq[lw]=(freq[lw]||0)+1; });
+  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  document.getElementById('topWords').innerHTML = top.map(([w,n])=>
+    `<span class="word-chip">${esc(w)}<span class="cnt">${n}</span></span>`).join('');
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
