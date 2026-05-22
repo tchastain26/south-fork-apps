@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Deficit Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate the calorie deficit needed to reach your goal weight by a target date. See daily calorie target, weight loss pace, and a timeline. Free online calorie deficit calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--warn:#f7c876;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(660px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-row{display:flex;align-items:center;gap:.4rem;}
+    .input-row input{flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;font:inherit;font-size:.95rem;outline:none;}
+    .input-row input:focus{border-color:var(--accent);}
+    .unit{font-size:.8rem;color:var(--muted);font-weight:700;white-space:nowrap;}
+    .unit-toggle{display:flex;gap:.4rem;margin-bottom:.85rem;}
+    .unit-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
+    .unit-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin-bottom:.75rem;}
+    .result-card{background:var(--surface2);border-radius:8px;padding:.8rem;text-align:center;}
+    .result-val{font-size:1.3rem;font-weight:800;color:var(--accent);}
+    .result-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.15rem;}
+    .pace-bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin:.35rem 0;}
+    .pace-fill{height:100%;border-radius:4px;transition:width .3s;}
+    .warning{font-size:.78rem;padding:.6rem .8rem;border-radius:7px;margin-top:.35rem;}
+    .warn-yellow{background:rgba(247,200,118,.1);color:var(--warn);border:1px solid rgba(247,200,118,.25);}
+    .warn-red{background:rgba(242,139,130,.1);color:var(--danger);border:1px solid rgba(242,139,130,.25);}
+    .disclaimer{font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);padding-top:.75rem;margin-top:.25rem;line-height:1.55;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Calorie Deficit Calculator</span></nav>
+<main>
+  <h1>Calorie Deficit Calculator</h1>
+  <p class="sub">Calculate your daily calorie target to reach a goal weight by a specific date.</p>
+
+  <div class="card">
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="btnLbs" onclick="setUnit('lbs')">lbs</button>
+      <button class="unit-btn" id="btnKg" onclick="setUnit('kg')">kg</button>
+    </div>
+    <div class="two-col">
+      <div class="field"><label id="cwLabel">Current weight (lbs)</label>
+        <div class="input-row"><input type="number" id="current" value="185" min="1" oninput="calc()"></div>
+      </div>
+      <div class="field"><label id="gwLabel">Goal weight (lbs)</label>
+        <div class="input-row"><input type="number" id="goal" value="170" min="1" oninput="calc()"></div>
+      </div>
+    </div>
+    <div class="field"><label>Target date</label>
+      <input style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;font:inherit;font-size:.95rem;outline:none" type="date" id="targetDate" oninput="calc()">
+    </div>
+    <div class="field"><label>Daily calorie maintenance (TDEE)</label>
+      <div class="input-row"><input type="number" id="tdee" value="2200" min="1000" oninput="calc()"><span class="unit">cal/day</span></div>
+    </div>
+  </div>
+
+  <div id="resultsArea" style="display:none">
+    <div class="results-grid" id="resultsGrid"></div>
+    <div id="warnings"></div>
+    <div class="disclaimer">⚕️ A deficit greater than 1000 cal/day is not recommended without medical supervision. The minimum healthy intake is typically 1200 cal/day for women and 1500 cal/day for men.</div>
+  </div>
+
+  <footer>v1.0 · 1 lb fat ≈ 3500 calories</footer>
+</main>
+<script>
+let unit = 'lbs';
+
+function setUnit(u) {
+  unit = u;
+  document.getElementById('btnLbs').classList.toggle('active', u==='lbs');
+  document.getElementById('btnKg').classList.toggle('active', u==='kg');
+  document.getElementById('cwLabel').textContent = `Current weight (${u})`;
+  document.getElementById('gwLabel').textContent = `Goal weight (${u})`;
+  calc();
+}
+
+function calc() {
+  const cw = parseFloat(document.getElementById('current').value)||0;
+  const gw = parseFloat(document.getElementById('goal').value)||0;
+  const tdee = parseFloat(document.getElementById('tdee').value)||2000;
+  const dateVal = document.getElementById('targetDate').value;
+  const area = document.getElementById('resultsArea');
+
+  if (!cw || !gw || !dateVal) { area.style.display='none'; return; }
+
+  const targetDate = new Date(dateVal+'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((targetDate - today) / 86400000);
+  if (days <= 0) { area.style.display='none'; return; }
+
+  const lbs = unit === 'kg' ? (cw - gw) * 2.20462 : (cw - gw);
+  if (lbs <= 0) { area.style.display='none'; return; }
+
+  const totalCals = lbs * 3500;
+  const dailyDeficit = totalCals / days;
+  const dailyTarget = tdee - dailyDeficit;
+  const weeklyLoss = (dailyDeficit * 7 / 3500).toFixed(2);
+  const pct = Math.min(100, (dailyDeficit/tdee)*100);
+  const color = dailyDeficit > 1000 ? 'var(--danger)' : dailyDeficit > 750 ? 'var(--warn)' : 'var(--accent)';
+
+  area.style.display = '';
+  document.getElementById('resultsGrid').innerHTML = [
+    { label:'Daily calorie target', val: Math.round(dailyTarget).toLocaleString() + ' cal' },
+    { label:'Daily deficit', val: Math.round(dailyDeficit).toLocaleString() + ' cal' },
+    { label:`${unit} to lose`, val: (unit==='kg' ? (lbs/2.20462).toFixed(1) : lbs.toFixed(1)) + ' ' + unit },
+    { label:'Days to goal', val: days.toLocaleString() },
+    { label:`${unit}/week lost`, val: (unit==='kg' ? (weeklyLoss/2.20462).toFixed(2) : weeklyLoss) + ' ' + unit },
+    { label:'Total cal deficit', val: Math.round(totalCals).toLocaleString() },
+  ].map(it=>`<div class="result-card"><div class="result-val" style="color:${it.label.includes('deficit')?color:'var(--accent)'}">${it.val}</div><div class="result-label">${it.label}</div></div>`).join('');
+
+  const warns = [];
+  if (dailyTarget < 1200) warns.push({cls:'warn-red', msg:`⚠️ Daily target of ${Math.round(dailyTarget)} cal is below the minimum recommended intake. Choose a later target date.`});
+  else if (dailyDeficit > 1000) warns.push({cls:'warn-red', msg:`⚠️ A ${Math.round(dailyDeficit)} cal/day deficit is aggressive. Consider extending your timeline.`});
+  else if (dailyDeficit > 700) warns.push({cls:'warn-yellow', msg:`⚠️ A ${Math.round(dailyDeficit)} cal/day deficit is on the higher end. Ensure adequate protein intake.`});
+
+  document.getElementById('warnings').innerHTML = warns.map(w=>`<div class="warning ${w.cls}">${w.msg}</div>`).join('');
+}
+
+const d = new Date(); d.setMonth(d.getMonth()+3);
+document.getElementById('targetDate').value = d.toISOString().slice(0,10);
+calc();
+</script>
+</body>
+</html>

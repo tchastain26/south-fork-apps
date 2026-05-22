@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Answer Timer | South Fork Apps</title>
+  <meta name="description" content="Practice timed interview answers. Set target durations for different question types, get audio and visual cues at key moments. Free online interview prep timer.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--warn:#f7c876;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(600px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;text-align:center;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .presets{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.25rem;}
+    .preset-btn{padding:.4rem .85rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .preset-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .timer-display{background:var(--surface);border:2px solid var(--border);border-radius:20px;padding:2rem;margin-bottom:1.25rem;transition:border-color .3s;}
+    .timer-display.warn{border-color:var(--warn);}
+    .timer-display.over{border-color:var(--danger);}
+    .time-num{font-size:5rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;transition:color .3s;}
+    .time-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.35rem;}
+    .progress-ring-wrap{margin:.75rem auto;width:160px;height:160px;position:relative;}
+    svg{transform:rotate(-90deg);}
+    circle.track{fill:none;stroke:var(--surface2);}
+    circle.fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset .5s,stroke .3s;}
+    .phase-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+    .controls{display:flex;gap:.65rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;}
+    .ctrl-btn{padding:.65rem 1.5rem;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;}
+    .ctrl-btn.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .ctrl-btn:hover{filter:brightness(1.1);}
+    .custom-row{display:flex;align-items:center;gap:.6rem;justify-content:center;font-size:.85rem;color:var(--muted);}
+    .custom-row input{width:70px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.4rem .6rem;font:inherit;font-size:.9rem;text-align:center;outline:none;}
+    .custom-row input:focus{border-color:var(--accent);}
+    .status-msg{min-height:1.5rem;font-size:.85rem;font-weight:700;margin:.35rem 0;}
+    .question-input{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;font:inherit;font-size:.88rem;outline:none;margin-bottom:.85rem;}
+    .question-input:focus{border-color:var(--accent);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Interview Timer</span></nav>
+<main>
+  <h1>Interview Answer Timer</h1>
+  <p class="sub">Practice keeping answers within time. Visual and audio cues at half-time and end.</p>
+
+  <div class="presets" id="presets">
+    <button class="preset-btn active" data-sec="30" onclick="setPreset(this)">30s — Behavioral</button>
+    <button class="preset-btn" data-sec="60" onclick="setPreset(this)">60s — STAR answer</button>
+    <button class="preset-btn" data-sec="90" onclick="setPreset(this)">90s — Technical</button>
+    <button class="preset-btn" data-sec="120" onclick="setPreset(this)">2 min — Pitch</button>
+    <button class="preset-btn" data-sec="180" onclick="setPreset(this)">3 min — Case</button>
+  </div>
+
+  <input class="question-input" type="text" id="questionInput" placeholder="Paste your interview question here (optional)…">
+
+  <div class="timer-display" id="timerDisplay">
+    <div class="progress-ring-wrap">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle class="track" cx="80" cy="80" r="68" stroke-width="10"/>
+        <circle class="fill" id="ringFill" cx="80" cy="80" r="68" stroke-width="10" stroke="#7ddb84"/>
+      </svg>
+      <div class="phase-label" id="phaseLabel"></div>
+    </div>
+    <div class="time-num" id="timeNum">0:30</div>
+    <div class="time-label" id="timeLabel">Ready to start</div>
+  </div>
+
+  <div class="status-msg" id="statusMsg"></div>
+
+  <div class="controls">
+    <button class="ctrl-btn primary" id="startBtn" onclick="startStop()">Start</button>
+    <button class="ctrl-btn" onclick="resetTimer()">Reset</button>
+  </div>
+
+  <div class="custom-row">
+    <span>Custom:</span>
+    <input type="number" id="customMin" value="0" min="0" max="10" placeholder="min">
+    <span>min</span>
+    <input type="number" id="customSec" value="45" min="0" max="59" placeholder="sec">
+    <span>sec</span>
+    <button class="preset-btn" onclick="setCustom()">Set</button>
+  </div>
+
+  <footer>v1.0 · Audio beep at half-time and on completion</footer>
+</main>
+<script>
+let duration = 30, elapsed = 0, timerId = null, running = false;
+const CIRCUM = 2 * Math.PI * 68;
+
+function setPreset(btn) {
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  duration = parseInt(btn.dataset.sec);
+  resetTimer();
+}
+
+function setCustom() {
+  const m = parseInt(document.getElementById('customMin').value)||0;
+  const s = parseInt(document.getElementById('customSec').value)||0;
+  duration = m*60+s;
+  if (!duration) return;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  resetTimer();
+}
+
+function beep(freq, dur) {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+dur);
+  } catch(e){}
+}
+
+function startStop() {
+  if (running) {
+    clearInterval(timerId); running = false;
+    document.getElementById('startBtn').textContent = 'Resume';
+    document.getElementById('timeLabel').textContent = 'Paused';
+  } else {
+    if (elapsed >= duration) resetTimer();
+    running = true;
+    document.getElementById('startBtn').textContent = 'Pause';
+    timerId = setInterval(tick, 1000);
+  }
+}
+
+function tick() {
+  elapsed++;
+  const rem = duration - elapsed;
+  const pct = elapsed / duration;
+  updateDisplay(rem, pct);
+
+  if (elapsed === Math.floor(duration/2)) {
+    beep(440, 0.2);
+    document.getElementById('statusMsg').textContent = '⏱ Half way!';
+    setTimeout(()=>document.getElementById('statusMsg').textContent='', 2000);
+  }
+
+  if (elapsed >= duration) {
+    clearInterval(timerId); running = false;
+    document.getElementById('startBtn').textContent = 'Start';
+    document.getElementById('timeLabel').textContent = 'Time\'s up!';
+    document.getElementById('statusMsg').textContent = '🔔 Done!';
+    document.getElementById('timerDisplay').classList.remove('warn');
+    document.getElementById('timerDisplay').classList.add('over');
+    beep(880, 0.3); setTimeout(()=>beep(880,0.3), 350);
+  }
+}
+
+function updateDisplay(rem, pct) {
+  const m = Math.floor(Math.max(0,rem)/60), s = Math.max(0,rem)%60;
+  document.getElementById('timeNum').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  const offset = CIRCUM * (1-Math.min(1,pct));
+  document.getElementById('ringFill').style.strokeDasharray = CIRCUM;
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  const disp = document.getElementById('timerDisplay');
+  const pctLeft = 1 - pct;
+  if (pct >= 1) { document.getElementById('ringFill').style.stroke = '#f28b82'; }
+  else if (pctLeft <= 0.25) { document.getElementById('ringFill').style.stroke = '#f28b82'; disp.classList.add('warn'); }
+  else if (pctLeft <= 0.5) { document.getElementById('ringFill').style.stroke = '#f7c876'; disp.classList.add('warn'); }
+  else { document.getElementById('ringFill').style.stroke = '#7ddb84'; disp.classList.remove('warn'); }
+  const phasePct = Math.round((1-pct)*100);
+  document.getElementById('phaseLabel').textContent = elapsed===0 ? '' : phasePct+'%\nleft';
+}
+
+function resetTimer() {
+  clearInterval(timerId); running = false; elapsed = 0;
+  document.getElementById('startBtn').textContent = 'Start';
+  document.getElementById('statusMsg').textContent = '';
+  document.getElementById('timerDisplay').className = 'timer-display';
+  document.getElementById('ringFill').style.stroke = '#7ddb84';
+  document.getElementById('ringFill').style.strokeDasharray = CIRCUM;
+  document.getElementById('ringFill').style.strokeDashoffset = 0;
+  const m = Math.floor(duration/60), s = duration%60;
+  document.getElementById('timeNum').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('timeLabel').textContent = 'Ready to start';
+  document.getElementById('phaseLabel').textContent = '';
+}
+
+resetTimer();
+</script>
+</body>
+</html>
