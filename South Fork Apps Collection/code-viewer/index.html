@@ -7,7 +7,7 @@
   <meta name="description" content="Paste code and get instant syntax highlighting for 30+ programming languages. Free online code viewer with auto-detect and line numbers.">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/one-dark.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 
   <style>
@@ -225,7 +225,7 @@
     const editor = CodeMirror(document.getElementById('editor-container'), {
       value: '',
       mode: null,
-      theme: 'one-dark',
+      theme: 'dracula',
       lineNumbers: true,
       lineWrapping: false,
       tabSize: 2,
@@ -254,6 +254,10 @@
       if (lang === 'auto') {
         const detected = hljs.highlightAuto(code);
         lang = detected.language || 'plaintext';
+        // hljs calls HTML "php-template" or "xml" — normalize to html
+        if ((lang === 'php-template' || lang === 'xml') && /<(!DOCTYPE|html|head|body)\b/i.test(code)) {
+          lang = 'html';
+        }
         applyEditorMode(lang);
       }
 
