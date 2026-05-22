@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Cheat Sheet | South Fork Apps</title>
+  <meta name="description" content="Complete Markdown syntax reference with live examples. Headings, bold, italic, links, images, tables, code blocks, and more. Searchable. Free online Markdown cheat sheet.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(900px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    input[type=search]{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;font:inherit;font-size:.95rem;outline:none;margin-bottom:1.25rem;}
+    input[type=search]:focus{border-color:var(--accent);}
+    .section{margin-bottom:1.5rem;}
+    .section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem;padding-bottom:.35rem;border-bottom:1px solid rgba(125,219,132,.2);}
+    .items{display:grid;gap:.4rem;}
+    .item{background:var(--surface);border:1px solid var(--border);border-radius:8px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
+    .item:hover{border-color:rgba(125,219,132,.25);}
+    .syntax,.preview{padding:.65rem .85rem;font-size:.82rem;}
+    .syntax{font-family:monospace;color:var(--accent);background:var(--surface2);border-right:1px solid var(--border);white-space:pre-wrap;word-break:break-all;}
+    .preview{line-height:1.6;}
+    .preview h1,.preview h2,.preview h3,.preview h4{margin:.1rem 0;line-height:1.2;}
+    .preview h1{font-size:1.4rem;}
+    .preview h2{font-size:1.15rem;}
+    .preview h3{font-size:1rem;}
+    .preview h4{font-size:.9rem;}
+    .preview code{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;font-family:monospace;font-size:.82rem;}
+    .preview pre{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .75rem;font-family:monospace;font-size:.78rem;overflow-x:auto;}
+    .preview blockquote{border-left:3px solid var(--accent);margin:0;padding:.1rem .6rem;color:var(--muted);}
+    .preview hr{border:none;border-top:1px solid var(--border);margin:.3rem 0;}
+    .preview table{border-collapse:collapse;font-size:.8rem;}
+    .preview th,.preview td{border:1px solid var(--border);padding:.25rem .5rem;}
+    .preview th{background:var(--surface2);font-weight:700;}
+    .col-labels{display:grid;grid-template-columns:1fr 1fr;margin-bottom:.25rem;}
+    .col-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 .85rem;}
+    .empty{color:var(--muted);text-align:center;padding:2.5rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Markdown Cheat Sheet</span></nav>
+<main>
+  <h1>Markdown Cheat Sheet</h1>
+  <p class="sub">Complete Markdown syntax reference with live rendered examples. Search by name or syntax.</p>
+
+  <input type="search" id="search" placeholder="Search syntax, e.g. bold, table, link…" oninput="render()">
+
+  <div class="col-labels"><div class="col-label">Syntax</div><div class="col-label">Rendered</div></div>
+  <div id="output"></div>
+  <footer>v1.0 · CommonMark / GitHub Flavored Markdown</footer>
+</main>
+<script>
+const SECTIONS = [
+  { title:'Headings', items:[
+    { s:'# Heading 1', p:'<h1>Heading 1</h1>' },
+    { s:'## Heading 2', p:'<h2>Heading 2</h2>' },
+    { s:'### Heading 3', p:'<h3>Heading 3</h3>' },
+    { s:'#### Heading 4', p:'<h4>Heading 4</h4>' },
+  ]},
+  { title:'Emphasis', items:[
+    { s:'**bold text**', p:'<strong>bold text</strong>' },
+    { s:'*italic text*', p:'<em>italic text</em>' },
+    { s:'~~strikethrough~~', p:'<del>strikethrough</del>' },
+    { s:'**bold and _italic_**', p:'<strong>bold and <em>italic</em></strong>' },
+    { s:'==highlighted==', p:'<mark>highlighted</mark> (some parsers)' },
+  ]},
+  { title:'Links & Images', items:[
+    { s:'[Link text](https://example.com)', p:'<a href="#">Link text</a>' },
+    { s:'[Link](https://url.com "Title")', p:'<a href="#" title="Title">Link</a>' },
+    { s:'<https://auto-link.com>', p:'<a href="#">https://auto-link.com</a>' },
+    { s:'![Alt text](image.png)', p:'<em>[image: Alt text]</em>' },
+    { s:'[![Alt](img.png)](url)', p:'<em>[linked image]</em>' },
+  ]},
+  { title:'Lists', items:[
+    { s:'- Item 1\n- Item 2\n  - Nested item', p:'<ul><li>Item 1</li><li>Item 2<ul><li>Nested item</li></ul></li></ul>' },
+    { s:'1. First\n2. Second\n3. Third', p:'<ol><li>First</li><li>Second</li><li>Third</li></ol>' },
+    { s:'- [x] Done task\n- [ ] Pending task', p:'<ul><li>✅ Done task</li><li>☐ Pending task</li></ul>' },
+  ]},
+  { title:'Code', items:[
+    { s:'`inline code`', p:'<code>inline code</code>' },
+    { s:'```\ncode block\n```', p:'<pre><code>code block</code></pre>' },
+    { s:'```js\nconst x = 1;\n```', p:'<pre><code class="language-js">const x = 1;</code></pre>' },
+    { s:'    indented code block', p:'<pre><code>indented code block</code></pre>' },
+  ]},
+  { title:'Blockquotes & Rules', items:[
+    { s:'> This is a blockquote', p:'<blockquote>This is a blockquote</blockquote>' },
+    { s:'> Outer\n>> Nested', p:'<blockquote>Outer<blockquote>Nested</blockquote></blockquote>' },
+    { s:'---', p:'<hr>' },
+    { s:'***', p:'<hr>' },
+  ]},
+  { title:'Tables', items:[
+    { s:'| Header | Header |\n|--------|--------|\n| Cell   | Cell   |', p:'<table><thead><tr><th>Header</th><th>Header</th></tr></thead><tbody><tr><td>Cell</td><td>Cell</td></tr></tbody></table>' },
+    { s:'| Left | Center | Right |\n|:-----|:------:|------:|', p:'<table><tr><th style="text-align:left">Left</th><th style="text-align:center">Center</th><th style="text-align:right">Right</th></tr></table>' },
+  ]},
+  { title:'Miscellaneous', items:[
+    { s:'Line break (two spaces  )\nthen newline', p:'Line break<br>then newline' },
+    { s:'\\*escaped asterisk\\*', p:'*escaped asterisk*' },
+    { s:'[^1] footnote ref\n[^1]: Footnote text', p:'<sup>1</sup> footnote ref (GFM)' },
+    { s:'term\n: definition', p:'<strong>term</strong><br>definition (some parsers)' },
+    { s:'<!-- HTML comment -->', p:'<em>(hidden comment)</em>' },
+  ]},
+];
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const out = document.getElementById('output');
+
+  const filtered = SECTIONS.map(sec => ({
+    ...sec,
+    items: sec.items.filter(it => !q || it.s.toLowerCase().includes(q) || sec.title.toLowerCase().includes(q))
+  })).filter(sec => sec.items.length);
+
+  if (!filtered.length) { out.innerHTML = '<div class="empty">No matching syntax found.</div>'; return; }
+
+  out.innerHTML = filtered.map(sec => `
+    <div class="section">
+      <div class="section-title">${sec.title}</div>
+      <div class="items">${sec.items.map(it => `
+        <div class="item">
+          <div class="syntax">${esc(it.s)}</div>
+          <div class="preview">${it.p}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+render();
+</script>
+</body>
+</html>

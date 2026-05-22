@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Comparison Calculator | South Fork Apps</title>
+  <meta name="description" content="Compare two loan options side by side — different rates, terms, or amounts. See total cost, interest paid, and monthly payment differences instantly. Free online loan comparison tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--a:#7ddb84;--b:#4da8da;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(880px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+    @media(max-width:580px){.grid{grid-template-columns:1fr;}}
+    .loan-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.1rem;}
+    .loan-card.a{border-color:rgba(125,219,132,.3);}
+    .loan-card.b{border-color:rgba(77,168,218,.3);}
+    .loan-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;}
+    .loan-label.a{color:var(--a);}
+    .loan-label.b{color:var(--b);}
+    .field{margin-bottom:.75rem;}
+    label{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
+    .iw{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden;}
+    .iw:focus-within{border-color:var(--accent);}
+    .iw input{flex:1;background:transparent;color:var(--text);border:none;padding:.55rem .65rem;font:inherit;font-size:.9rem;outline:none;min-width:0;}
+    .iw span{padding:0 .6rem;color:var(--muted);font-size:.82rem;font-weight:700;}
+    .result-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(42,47,43,.4);font-size:.85rem;}
+    .result-row:last-child{border-bottom:none;font-weight:800;padding-top:.6rem;}
+    .rv{font-weight:700;}
+    .rv.a{color:var(--a);}
+    .rv.b{color:var(--b);}
+    .comparison-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:1rem;}
+    .comp-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem;}
+    .comp-row{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid rgba(42,47,43,.4);font-size:.85rem;gap:.5rem;}
+    .comp-row:last-child{border-bottom:none;}
+    .comp-label{color:var(--muted);flex:1;}
+    .comp-vals{display:flex;gap:.75rem;font-weight:800;}
+    .diff{font-size:.75rem;color:var(--muted);font-weight:600;}
+    .winner{font-size:.65rem;padding:.15rem .45rem;border-radius:10px;font-weight:800;}
+    .win-a{background:rgba(125,219,132,.15);color:var(--a);}
+    .win-b{background:rgba(77,168,218,.15);color:var(--b);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Loan Comparison</span></nav>
+<main>
+  <h1>Loan Comparison Calculator</h1>
+  <p class="sub">Compare two loan options side by side. See total cost, interest, and monthly payment differences.</p>
+
+  <div class="grid" id="loanInputs">
+    <div class="loan-card a">
+      <div class="loan-label a">Loan A</div>
+      <div class="field"><label>Loan amount</label><div class="iw"><span>$</span><input type="number" id="a_amount" value="25000" oninput="calc()"></div></div>
+      <div class="field"><label>Interest rate</label><div class="iw"><input type="number" id="a_rate" value="6.5" step="0.01" oninput="calc()"><span>%</span></div></div>
+      <div class="field"><label>Term (years)</label><div class="iw"><input type="number" id="a_years" value="5" oninput="calc()"><span>yr</span></div></div>
+      <div class="field"><label>Extra monthly payment</label><div class="iw"><span>$</span><input type="number" id="a_extra" value="0" oninput="calc()"></div></div>
+      <div id="a_results"></div>
+    </div>
+    <div class="loan-card b">
+      <div class="loan-label b">Loan B</div>
+      <div class="field"><label>Loan amount</label><div class="iw"><span>$</span><input type="number" id="b_amount" value="25000" oninput="calc()"></div></div>
+      <div class="field"><label>Interest rate</label><div class="iw"><input type="number" id="b_rate" value="5.9" step="0.01" oninput="calc()"><span>%</span></div></div>
+      <div class="field"><label>Term (years)</label><div class="iw"><input type="number" id="b_years" value="5" oninput="calc()"><span>yr</span></div></div>
+      <div class="field"><label>Extra monthly payment</label><div class="iw"><span>$</span><input type="number" id="b_extra" value="0" oninput="calc()"></div></div>
+      <div id="b_results"></div>
+    </div>
+  </div>
+
+  <div class="comparison-card" id="compCard" style="display:none">
+    <div class="comp-title">Side-by-side comparison</div>
+    <div id="compRows"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const fmt = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n);
+const fmtN = n => new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
+
+function loanCalc(principal, annualRate, years, extra) {
+  if (!principal || !years) return null;
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  const basePayment = r === 0 ? principal/n : principal*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+  const payment = basePayment + (extra||0);
+
+  let bal = principal, totalInt = 0, months = 0;
+  while (bal > 0.01 && months < n) {
+    const int = bal * r;
+    const prin = Math.min(payment - int, bal);
+    bal -= prin;
+    totalInt += int;
+    months++;
+  }
+  return { payment: basePayment, totalPayment: basePayment*months + (extra||0)*months, totalInterest: totalInt, months, totalCost: principal + totalInt };
+}
+
+function renderLoan(id, result) {
+  if (!result) { document.getElementById(id+'_results').innerHTML=''; return; }
+  document.getElementById(id+'_results').innerHTML = [
+    ['Monthly payment', fmt(result.payment + (parseFloat(document.getElementById(id+'_extra').value)||0))],
+    ['Total interest', fmt(result.totalInterest)],
+    ['Total cost', fmt(result.totalCost)],
+    ['Payoff time', `${result.months} months`],
+  ].map(([l,v]) => `<div class="result-row"><span style="color:var(--muted)">${l}</span><span class="rv ${id}">${v}</span></div>`).join('');
+}
+
+function calc() {
+  const a = loanCalc(+document.getElementById('a_amount').value, +document.getElementById('a_rate').value, +document.getElementById('a_years').value, +document.getElementById('a_extra').value||0);
+  const b = loanCalc(+document.getElementById('b_amount').value, +document.getElementById('b_rate').value, +document.getElementById('b_years').value, +document.getElementById('b_extra').value||0);
+  renderLoan('a', a); renderLoan('b', b);
+
+  if (!a || !b) { document.getElementById('compCard').style.display='none'; return; }
+  document.getElementById('compCard').style.display='';
+
+  const rows = [
+    { label:'Monthly payment', av: a.payment, bv: b.payment, lowerIsBetter: true },
+    { label:'Total interest',  av: a.totalInterest, bv: b.totalInterest, lowerIsBetter: true },
+    { label:'Total cost',      av: a.totalCost, bv: b.totalCost, lowerIsBetter: true },
+    { label:'Payoff months',   av: a.months, bv: b.months, lowerIsBetter: true, noFmt: true },
+  ];
+
+  document.getElementById('compRows').innerHTML = rows.map(r => {
+    const aWins = r.lowerIsBetter ? r.av < r.bv : r.av > r.bv;
+    const bWins = r.lowerIsBetter ? r.bv < r.av : r.bv > r.av;
+    const diff = Math.abs(r.av - r.bv);
+    const diffStr = r.noFmt ? `${fmtN(diff)} mo` : fmt(diff);
+    return `<div class="comp-row">
+      <span class="comp-label">${r.label}</span>
+      <div class="comp-vals">
+        <span class="rv a">${r.noFmt ? r.av+' mo' : fmt(r.av)}</span>
+        <span class="rv b">${r.noFmt ? r.bv+' mo' : fmt(r.bv)}</span>
+        ${aWins?'<span class="winner win-a">A saves '+diffStr+'</span>':bWins?'<span class="winner win-b">B saves '+diffStr+'</span>':'<span class="diff">equal</span>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+calc();
+</script>
+</body>
+</html>
