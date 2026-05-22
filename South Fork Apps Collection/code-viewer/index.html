@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Viewer | South Fork Apps</title>
+  <meta name="description" content="Paste code and get instant syntax highlighting for 30+ programming languages. Free online code viewer with auto-detect and line numbers.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1b1e;
+      color: #e1e4e8;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: #24262b;
+      border-bottom: 1px solid #333;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    h1 { font-size: 14px; font-weight: 600; color: #e1e4e8; margin-right: 4px; }
+
+    select {
+      background: #1a1b1e;
+      color: #e1e4e8;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 13px;
+      cursor: pointer;
+      height: 28px;
+    }
+    select:focus { outline: none; border-color: #58a6ff; }
+
+    .btn {
+      background: #2d333b;
+      color: #cdd9e5;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 4px 11px;
+      font-size: 13px;
+      cursor: pointer;
+      height: 28px;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #373e47; }
+    .btn.success { background: #1a3a2a; border-color: #3fb950; color: #3fb950; }
+
+    .spacer { flex: 1; }
+
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+    .pane-label {
+      padding: 5px 14px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8b949e;
+      background: #1f2024;
+      border-bottom: 1px solid #2d2d2d;
+      flex-shrink: 0;
+    }
+
+    .divider { width: 1px; background: #333; flex-shrink: 0; }
+
+    textarea {
+      flex: 1;
+      background: #1a1b1e;
+      color: #cdd9e5;
+      border: none;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+    }
+    textarea::placeholder { color: #3d444d; }
+
+    .output-scroll { flex: 1; overflow: auto; }
+
+    .output-scroll pre {
+      margin: 0;
+      padding: 12px 0;
+      background: transparent !important;
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .output-scroll code.hljs { background: transparent !important; padding: 0 !important; }
+
+    .line-table { border-collapse: collapse; width: 100%; }
+    .ln { user-select: none; color: #3d444d; border-right: 1px solid #2d2d2d; padding: 0 12px 0 14px; text-align: right; min-width: 2.5em; vertical-align: top; }
+    .lc { padding: 0 14px 0 12px; white-space: pre; }
+
+    .empty-state {
+      padding: 16px 14px;
+      color: #3d444d;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 13px;
+    }
+
+    body.drag-active textarea { box-shadow: inset 0 0 0 2px #58a6ff; }
+
+    @media (max-width: 680px) {
+      main { flex-direction: column; }
+      .divider { width: 100%; height: 1px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Code Viewer</h1>
+    <select id="lang">
+      <option value="auto">Auto-Detect</option>
+      <optgroup label="Web">
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="json">JSON</option>
+        <option value="xml">XML / SVG</option>
+      </optgroup>
+      <optgroup label="Scripts &amp; Data">
+        <option value="python">Python</option>
+        <option value="bash">Bash / Shell</option>
+        <option value="sql">SQL</option>
+        <option value="yaml">YAML</option>
+        <option value="markdown">Markdown</option>
+      </optgroup>
+      <optgroup label="Compiled">
+        <option value="go">Go</option>
+        <option value="rust">Rust</option>
+        <option value="swift">Swift</option>
+        <option value="java">Java</option>
+        <option value="cpp">C++</option>
+        <option value="c">C</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+      </optgroup>
+      <optgroup label="Other">
+        <option value="diff">Diff / Patch</option>
+        <option value="plaintext">Plain Text</option>
+      </optgroup>
+    </select>
+
+    <button class="btn" id="openBtn">Open File</button>
+    <input type="file" id="fileInput" style="display:none">
+
+    <div class="spacer"></div>
+
+    <button class="btn" id="copyBtn">Copy</button>
+    <button class="btn" id="clearBtn">Clear</button>
+  </header>
+
+  <main>
+    <div class="pane">
+      <div class="pane-label">Input — paste, type, or drop a file</div>
+      <textarea id="input" placeholder="Paste code here…" spellcheck="false" autocorrect="off" autocomplete="off"></textarea>
+    </div>
+    <div class="divider"></div>
+    <div class="pane">
+      <div class="pane-label" id="outLabel">Output</div>
+      <div class="output-scroll" id="output">
+        <div class="empty-state">Highlighted output will appear here.</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    const inputEl  = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const langEl   = document.getElementById('lang');
+    const outLabel = document.getElementById('outLabel');
+    let timer;
+
+    function render() {
+      const code = inputEl.value;
+      if (!code) {
+        outputEl.innerHTML = '<div class="empty-state">Highlighted output will appear here.</div>';
+        outLabel.textContent = 'Output';
+        return;
+      }
+
+      const lang = langEl.value;
+      let result;
+      if (lang === 'auto') {
+        result = hljs.highlightAuto(code);
+      } else if (lang === 'plaintext') {
+        result = { value: hljs.escapeHtml(code), language: 'plaintext' };
+      } else {
+        try { result = hljs.highlight(code, { language: lang, ignoreIllegals: true }); }
+        catch(e) { result = hljs.highlightAuto(code); }
+      }
+
+      outLabel.textContent = 'Output — ' + (result.language || 'plaintext');
+
+      const lines = result.value.split('\n');
+      if (lines[lines.length - 1] === '') lines.pop();
+
+      const rows = lines.map((ln, i) =>
+        `<tr><td class="ln">${i + 1}</td><td class="lc">${ln || ' '}</td></tr>`
+      ).join('');
+
+      outputEl.innerHTML = `<pre><code class="hljs"><table class="line-table">${rows}</table></code></pre>`;
+    }
+
+    inputEl.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 120); });
+    langEl.addEventListener('change', render);
+
+    inputEl.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const s = inputEl.selectionStart, end = inputEl.selectionEnd;
+        inputEl.value = inputEl.value.slice(0, s) + '  ' + inputEl.value.slice(end);
+        inputEl.selectionStart = inputEl.selectionEnd = s + 2;
+      }
+    });
+
+    document.getElementById('openBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = ev => { inputEl.value = ev.target.result; setLangFromFilename(f.name); render(); };
+      reader.readAsText(f);
+      e.target.value = '';
+    });
+
+    document.addEventListener('dragover', e => { e.preventDefault(); document.body.classList.add('drag-active'); });
+    ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, () => document.body.classList.remove('drag-active')));
+    document.addEventListener('drop', e => {
+      e.preventDefault();
+      const f = e.dataTransfer.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = ev => { inputEl.value = ev.target.result; setLangFromFilename(f.name); render(); };
+      reader.readAsText(f);
+    });
+
+    const EXT_MAP = {
+      html: 'html', htm: 'html', css: 'css',
+      js: 'javascript', mjs: 'javascript', cjs: 'javascript', jsx: 'javascript',
+      ts: 'typescript', tsx: 'typescript',
+      py: 'python', pyw: 'python',
+      md: 'markdown', markdown: 'markdown',
+      json: 'json',
+      yaml: 'yaml', yml: 'yaml',
+      sh: 'bash', bash: 'bash', zsh: 'bash',
+      sql: 'sql', php: 'php', rb: 'ruby', go: 'go',
+      swift: 'swift', java: 'java', kt: 'java',
+      c: 'c', h: 'c', cpp: 'cpp', cc: 'cpp', cxx: 'cpp', hpp: 'cpp',
+      rs: 'rust', xml: 'xml', svg: 'xml',
+      diff: 'diff', patch: 'diff',
+    };
+
+    function setLangFromFilename(name) {
+      const ext = name.split('.').pop().toLowerCase();
+      langEl.value = EXT_MAP[ext] || 'auto';
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      if (!inputEl.value) return;
+      navigator.clipboard.writeText(inputEl.value).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('success');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('success'); }, 1500);
+      });
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      inputEl.value = '';
+      render();
+      inputEl.focus();
+    });
+  </script>
+</body>
+</html>

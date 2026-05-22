@@ -203,6 +203,7 @@ APP_META = {
     "ukulele-fretboard":      ("Ukulele Fretboard",            "Interactive ukulele fretboard showing all note names across 4 strings and 12 frets. Highlight scales and modes in standard GCEA tuning."),
     "virtual-piano":          ("Virtual Piano",                "Playable virtual piano in your browser. Click keys or use your keyboard to play notes across two octaves with sustain control. Free online piano."),
     "xylophone":              ("Xylophone",                    "Playable virtual xylophone in your browser. Click colorful bars to play notes across two octaves. Use your keyboard for fast playing. Free online xylophone."),
+    "code-viewer":            ("Code Viewer",                  "Paste code and get instant syntax highlighting for 30+ programming languages. Free online code viewer with auto-detect and line numbers."),
 }
 
 # Newest 4 apps shown in the "New" section on the homepage.
