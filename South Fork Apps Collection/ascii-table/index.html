@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCII Table | South Fork Apps</title>
+  <meta name="description" content="Complete ASCII character table with decimal, hexadecimal, octal, binary, and HTML entity values. Filter by category and search. Free online ASCII reference.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(1000px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .controls{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:.75rem;align-items:center;}
+    input[type=search]{flex:1;min-width:200px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.55rem .85rem;font:inherit;font-size:.9rem;outline:none;}
+    input[type=search]:focus{border-color:var(--accent);}
+    .filter-btn{padding:.32rem .75rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
+    .filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08);}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+    table{width:100%;border-collapse:collapse;font-size:.8rem;}
+    thead th{background:var(--surface2);padding:.5rem .65rem;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+    tbody tr:nth-child(even){background:rgba(26,31,27,.4);}
+    tbody tr:hover{background:rgba(125,219,132,.04);cursor:pointer;}
+    td{padding:.4rem .65rem;border-bottom:1px solid rgba(42,47,43,.35);white-space:nowrap;}
+    td:last-child{border-bottom:none;}
+    .char-cell{font-family:monospace;font-size:1rem;font-weight:800;color:var(--accent);text-align:center;width:36px;}
+    .mono{font-family:monospace;}
+    .cat-badge{font-size:.65rem;padding:.15rem .45rem;border-radius:10px;font-weight:800;}
+    .cat-ctrl{background:rgba(197,134,192,.12);color:#c586c0;}
+    .cat-print{background:rgba(125,219,132,.1);color:var(--accent);}
+    .cat-num{background:rgba(247,200,118,.1);color:#f7c876;}
+    .cat-upper{background:rgba(170,204,218,.1);color:#aaccda;}
+    .cat-lower{background:rgba(77,168,218,.1);color:#4da8da;}
+    .cat-punct{background:rgba(242,139,130,.1);color:#f28b82;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">ASCII Table</span></nav>
+<main>
+  <h1>ASCII Table</h1>
+  <p class="sub">Complete ASCII reference with decimal, hex, octal, binary, and HTML entity values. Click any row to copy the character.</p>
+
+  <div class="controls">
+    <input type="search" id="search" placeholder="Search by character, name, or value…" oninput="render()">
+    <button class="filter-btn active" data-cat="all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" data-cat="ctrl" onclick="setFilter('ctrl',this)">Control (0–31)</button>
+    <button class="filter-btn" data-cat="print" onclick="setFilter('print',this)">Printable (32–127)</button>
+    <button class="filter-btn" data-cat="num" onclick="setFilter('num',this)">Numbers</button>
+    <button class="filter-btn" data-cat="upper" onclick="setFilter('upper',this)">Uppercase</button>
+    <button class="filter-btn" data-cat="lower" onclick="setFilter('lower',this)">Lowercase</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Char</th><th>Dec</th><th>Hex</th><th>Oct</th><th>Binary</th><th>HTML</th><th>Name / Description</th><th>Category</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <footer>v1.0 · Click any row to copy the character · ASCII 0–127</footer>
+</main>
+<script>
+const CTRL_NAMES = ['NUL','SOH','STX','ETX','EOT','ENQ','ACK','BEL','BS','HT','LF','VT','FF','CR','SO','SI','DLE','DC1','DC2','DC3','DC4','NAK','SYN','ETB','CAN','EM','SUB','ESC','FS','GS','RS','US'];
+const CTRL_DESC = ['Null','Start of Heading','Start of Text','End of Text','End of Transmission','Enquiry','Acknowledge','Bell','Backspace','Horizontal Tab','Line Feed','Vertical Tab','Form Feed','Carriage Return','Shift Out','Shift In','Data Link Escape','Device Control 1','Device Control 2','Device Control 3','Device Control 4','Neg Acknowledge','Synchronous Idle','End Trans Block','Cancel','End of Medium','Substitute','Escape','File Separator','Group Separator','Record Separator','Unit Separator'];
+
+function buildData() {
+  const rows = [];
+  for (let i = 0; i <= 127; i++) {
+    let char, display, name, cat, catLabel;
+    if (i < 32) {
+      char = ''; display = CTRL_NAMES[i]; name = CTRL_DESC[i]; cat='ctrl'; catLabel='Control';
+    } else if (i === 127) {
+      char=''; display='DEL'; name='Delete'; cat='ctrl'; catLabel='Control';
+    } else {
+      char = String.fromCharCode(i);
+      display = char;
+      name = i === 32 ? 'Space' : i === 34 ? 'Quotation mark' : i === 38 ? 'Ampersand' : i === 60 ? 'Less-than' : i === 62 ? 'Greater-than' : '';
+      if (i >= 48 && i <= 57) { cat='num'; catLabel='Number'; }
+      else if (i >= 65 && i <= 90) { cat='upper'; catLabel='Uppercase'; }
+      else if (i >= 97 && i <= 122) { cat='lower'; catLabel='Lowercase'; }
+      else { cat='punct'; catLabel='Punctuation/Symbol'; }
+    }
+    const html = i === 32 ? '&amp;nbsp;' : i === 34 ? '&amp;quot;' : i === 38 ? '&amp;amp;' : i === 60 ? '&amp;lt;' : i === 62 ? '&amp;gt;' : (i < 32 || i > 126) ? `&amp;#${i};` : '';
+    rows.push({ i, char, display, name, cat, catLabel, hex:'0x'+i.toString(16).toUpperCase().padStart(2,'0'), oct:i.toString(8).padStart(3,'0'), bin:i.toString(2).padStart(8,'0'), html });
+  }
+  return rows;
+}
+
+const ALL = buildData();
+let catFilter = 'all';
+
+function setFilter(cat, btn) {
+  catFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = ALL.filter(r => {
+    if (catFilter !== 'all' && r.cat !== catFilter) return false;
+    if (!q) return true;
+    return String(r.i).includes(q) || r.display.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || r.hex.toLowerCase().includes(q) || r.bin.includes(q);
+  });
+  document.getElementById('tbody').innerHTML = filtered.map(r => `
+    <tr onclick="copyChar('${r.char||r.display}')" title="Click to copy">
+      <td class="char-cell">${r.char ? esc(r.char) : `<span style="color:var(--muted);font-size:.7rem">${r.display}</span>`}</td>
+      <td class="mono">${r.i}</td>
+      <td class="mono">${r.hex}</td>
+      <td class="mono">${r.oct}</td>
+      <td class="mono" style="font-size:.72rem">${r.bin}</td>
+      <td class="mono" style="font-size:.72rem">${r.html}</td>
+      <td style="color:var(--muted)">${esc(r.name)}</td>
+      <td><span class="cat-badge cat-${r.cat}">${r.catLabel}</span></td>
+    </tr>`).join('');
+}
+
+function copyChar(c) { navigator.clipboard.writeText(c).catch(()=>{}); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+render();
+</script>
+</body>
+</html>

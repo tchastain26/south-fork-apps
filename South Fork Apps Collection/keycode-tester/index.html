@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Key Code Tester | South Fork Apps</title>
+  <meta name="description" content="Press any key to see its JavaScript event properties: key, code, keyCode, charCode, and modifier states. Free online keyboard event tester for developers.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .key-zone{background:var(--surface);border:2px dashed var(--border);border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;outline:none;transition:border-color .2s;}
+    .key-zone:focus,.key-zone.active{border-color:var(--accent);border-style:solid;}
+    .key-display{font-size:3.5rem;font-weight:800;font-family:monospace;color:var(--accent);min-height:5rem;line-height:1;margin-bottom:.4rem;}
+    .key-hint{font-size:.85rem;color:var(--muted);}
+    .props-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem;margin:1rem 0;}
+    .prop-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem;cursor:pointer;}
+    .prop-card:hover{border-color:rgba(125,219,132,.3);}
+    .prop-key{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.25rem;}
+    .prop-val{font-size:.95rem;font-weight:800;font-family:monospace;color:var(--accent);overflow-wrap:anywhere;}
+    .copy-tip{font-size:.65rem;color:var(--muted);}
+    .mods{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;}
+    .mod{padding:.25rem .65rem;border-radius:6px;font-size:.78rem;font-weight:800;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+    .mod.active{background:rgba(125,219,132,.12);color:var(--accent);border-color:rgba(125,219,132,.3);}
+    .history-section{margin-top:1rem;}
+    .history-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;}
+    .clear-btn{background:transparent;border:none;color:var(--muted);font:inherit;font-size:.72rem;cursor:pointer;}
+    .clear-btn:hover{color:var(--text);}
+    .history-row{display:flex;gap:.5rem;align-items:center;padding:.35rem .5rem;border-radius:6px;font-size:.78rem;}
+    .history-row:hover{background:var(--surface);}
+    .h-key{font-family:monospace;font-weight:800;color:var(--accent);min-width:3rem;}
+    .h-code{color:var(--muted);font-family:monospace;font-size:.72rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Key Code Tester</span></nav>
+<main>
+  <h1>JavaScript Key Code Tester</h1>
+  <p class="sub">Press any key to instantly see all keyboard event properties. Useful for writing event handlers.</p>
+
+  <div class="key-zone" id="keyZone" tabindex="0">
+    <div class="key-display" id="keyDisplay">Press any key</div>
+    <div class="key-hint" id="keyHint">Click here first, then press a key</div>
+  </div>
+
+  <div class="props-grid" id="propsGrid"></div>
+  <div class="mods" id="mods"></div>
+
+  <div class="history-section" id="histSection" style="display:none">
+    <div class="history-title">
+      Recent keys
+      <button class="clear-btn" onclick="clearHistory()">Clear</button>
+    </div>
+    <div id="histList"></div>
+  </div>
+
+  <footer>v1.0 · Click the box above and press any key</footer>
+</main>
+<script>
+let history = [];
+const zone = document.getElementById('keyZone');
+
+zone.addEventListener('focus', ()=>zone.classList.add('active'));
+zone.addEventListener('blur', ()=>zone.classList.remove('active'));
+
+zone.addEventListener('keydown', e => {
+  e.preventDefault();
+  const props = {
+    'event.key':      e.key,
+    'event.code':     e.code,
+    'event.keyCode':  e.keyCode,
+    'event.which':    e.which,
+    'event.charCode': e.charCode,
+    'event.location': e.location,
+  };
+  const mods = {
+    shiftKey: e.shiftKey,
+    ctrlKey: e.ctrlKey,
+    altKey: e.altKey,
+    metaKey: e.metaKey,
+    repeat: e.repeat,
+  };
+
+  const displayKey = e.key.length === 1 ? e.key : `[${e.key}]`;
+  document.getElementById('keyDisplay').textContent = displayKey;
+  document.getElementById('keyHint').textContent = `${e.code} · keyCode: ${e.keyCode}`;
+
+  document.getElementById('propsGrid').innerHTML = Object.entries(props).map(([k,v]) => `
+    <div class="prop-card" onclick="copyTxt('${String(v).replace(/'/g,"\\'")}', this)" title="Click to copy">
+      <div class="prop-key">${k}</div>
+      <div class="prop-val">${esc(String(v))}</div>
+      <div class="copy-tip">click to copy</div>
+    </div>`).join('');
+
+  document.getElementById('mods').innerHTML = Object.entries(mods).map(([k,v]) =>
+    `<span class="mod${v?' active':''}">${k}</span>`).join('');
+
+  history.unshift({ key: e.key, code: e.code, keyCode: e.keyCode });
+  if (history.length > 15) history.pop();
+  renderHistory();
+});
+
+function renderHistory() {
+  const s = document.getElementById('histSection');
+  if (!history.length) { s.style.display='none'; return; }
+  s.style.display = '';
+  document.getElementById('histList').innerHTML = history.map(h =>
+    `<div class="history-row">
+      <span class="h-key">${esc(h.key)}</span>
+      <span class="h-code">${h.code}</span>
+      <span class="h-code" style="margin-left:auto">keyCode: ${h.keyCode}</span>
+    </div>`).join('');
+}
+
+function clearHistory() { history=[]; renderHistory(); }
+
+function copyTxt(val, el) {
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const tip = el.querySelector('.copy-tip');
+  tip.textContent='✓ copied'; setTimeout(()=>tip.textContent='click to copy',1500);
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+zone.focus();
+</script>
+</body>
+</html>

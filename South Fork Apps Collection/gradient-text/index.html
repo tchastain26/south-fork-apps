@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Text Generator | South Fork Apps</title>
+  <meta name="description" content="Create CSS gradient text with a live preview. Choose colors, angle, and font size. Copy the ready-to-use CSS background-clip technique. Free online gradient text generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(780px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    label span{color:var(--accent);}
+    input[type=range]{width:100%;accent-color:var(--accent);}
+    input[type=text],input[type=number],select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.55rem .75rem;font:inherit;font-size:.9rem;outline:none;}
+    input[type=text]:focus,input[type=number]:focus,select:focus{border-color:var(--accent);}
+    .color-stops{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;}
+    input[type=color]{width:44px;height:36px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);cursor:pointer;padding:2px;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .preview-box{min-height:140px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;margin-bottom:.75rem;position:relative;}
+    #previewText{font-weight:800;line-height:1.1;word-break:break-word;}
+    pre{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem;font-size:.78rem;font-family:monospace;overflow-x:auto;line-height:1.6;margin:0;}
+    .copy-btn{width:100%;padding:.55rem;border:none;border-radius:7px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.88rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    .copy-btn:hover{filter:brightness(1.07);}
+    .presets{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+    .preset-btn{padding:.28rem .75rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;background-clip:text;-webkit-background-clip:text;color:transparent;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Gradient Text Generator</span></nav>
+<main>
+  <h1>Gradient Text Generator</h1>
+  <p class="sub">Create CSS gradient text with a live preview. Copy the complete CSS snippet.</p>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="card">
+    <div class="field">
+      <label>Text</label>
+      <input type="text" id="textInput" value="South Fork Apps" oninput="update()">
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Font size <span id="sizeVal">64px</span></label>
+        <input type="range" id="fontSize" min="16" max="120" value="64" oninput="update()">
+      </div>
+      <div class="field">
+        <label>Angle <span id="angleVal">135°</span></label>
+        <input type="range" id="angle" min="0" max="360" value="135" oninput="update()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Color stops</label>
+      <div class="color-stops" id="colorStops">
+        <input type="color" id="c1" value="#7ddb84" oninput="update()">
+        <input type="color" id="c2" value="#4da8da" oninput="update()">
+        <input type="color" id="c3" value="#c586c0" oninput="update()">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Font weight</label>
+        <select id="fontWeight" onchange="update()">
+          <option value="400">Regular (400)</option>
+          <option value="600">Semi-bold (600)</option>
+          <option value="700">Bold (700)</option>
+          <option value="800" selected>Extra-bold (800)</option>
+          <option value="900">Black (900)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Letter spacing <span id="lsVal">0px</span></label>
+        <input type="range" id="letterSpacing" min="-2" max="20" value="0" oninput="update()">
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-box" id="previewBox">
+    <div id="previewText"></div>
+  </div>
+
+  <div class="card">
+    <pre id="cssOut"></pre>
+    <button class="copy-btn" onclick="copyCss()">Copy CSS</button>
+  </div>
+
+  <footer>v1.0 · Uses background-clip: text technique</footer>
+</main>
+<script>
+const PRESETS = [
+  { name:'Sunset', colors:['#f7c876','#f28b82','#c586c0'] },
+  { name:'Ocean', colors:['#4da8da','#7ddb84','#aaccda'] },
+  { name:'Fire', colors:['#ff6b35','#f7c876','#f28b82'] },
+  { name:'Purple', colors:['#c586c0','#4361ee','#aaccda'] },
+  { name:'Forest', colors:['#7ddb84','#4da8da','#f7c876'] },
+  { name:'Monochrome', colors:['#ffffff','#aab5ac','#444'] },
+];
+
+document.getElementById('presets').innerHTML = PRESETS.map((p,i) =>
+  `<button class="preset-btn" onclick="setPreset(${i})" style="background-image:linear-gradient(135deg,${p.colors.join(',')});-webkit-background-clip:text;background-clip:text">${p.name}</button>`
+).join('');
+
+function setPreset(i) {
+  const p = PRESETS[i];
+  document.getElementById('c1').value = p.colors[0];
+  document.getElementById('c2').value = p.colors[1];
+  document.getElementById('c3').value = p.colors[2];
+  update();
+}
+
+function update() {
+  const text = document.getElementById('textInput').value || 'Hello';
+  const size = document.getElementById('fontSize').value;
+  const angle = document.getElementById('angle').value;
+  const c1 = document.getElementById('c1').value;
+  const c2 = document.getElementById('c2').value;
+  const c3 = document.getElementById('c3').value;
+  const fw = document.getElementById('fontWeight').value;
+  const ls = document.getElementById('letterSpacing').value;
+
+  document.getElementById('sizeVal').textContent = size+'px';
+  document.getElementById('angleVal').textContent = angle+'°';
+  document.getElementById('lsVal').textContent = ls+'px';
+
+  const grad = `linear-gradient(${angle}deg, ${c1}, ${c2}, ${c3})`;
+  const el = document.getElementById('previewText');
+  el.textContent = text;
+  el.style.cssText = `font-size:${size}px;font-weight:${fw};letter-spacing:${ls}px;background:${grad};-webkit-background-clip:text;background-clip:text;color:transparent;`;
+
+  document.getElementById('cssOut').textContent =
+`.gradient-text {
+  font-size: ${size}px;
+  font-weight: ${fw};
+  letter-spacing: ${ls}px;
+  background: ${grad};
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}`;
+}
+
+function copyCss() {
+  navigator.clipboard.writeText(document.getElementById('cssOut').textContent).catch(()=>{});
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy CSS',1500);
+}
+
+update();
+</script>
+</body>
+</html>
