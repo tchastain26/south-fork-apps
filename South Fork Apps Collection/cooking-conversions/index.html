@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cooking Conversions | South Fork Apps</title>
+  <meta name="description" content="Convert cooking measurements instantly — cups, tablespoons, teaspoons, milliliters, ounces, grams, and more. Free online cooking conversion calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(720px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;}
+    .tab{padding:.35rem .85rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .tab.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+    .converter{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .from-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    input,select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;font:inherit;font-size:.92rem;outline:none;}
+    input:focus,select:focus{border-color:var(--accent);}
+    .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem;}
+    .result-item{background:var(--surface2);border-radius:8px;padding:.65rem .8rem;cursor:pointer;}
+    .result-item:hover{filter:brightness(1.08);}
+    .result-item.highlight{border:1px solid rgba(125,219,132,.3);}
+    .r-val{font-size:1rem;font-weight:800;color:var(--accent);}
+    .r-unit{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:.1rem;}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.5rem;}
+    .ref-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.35rem .5rem;border-bottom:1px solid var(--border);}
+    .ref-table td{padding:.4rem .5rem;border-bottom:1px solid rgba(42,47,43,.4);font-variant-numeric:tabular-nums;}
+    .ref-table tr:last-child td{border-bottom:none;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Cooking Conversions</span></nav>
+<main>
+  <h1>Cooking Conversions</h1>
+  <p class="sub">Convert between cups, tablespoons, teaspoons, milliliters, ounces, and more. Click any result to copy.</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-cat="volume" onclick="setCategory('volume',this)">Volume</button>
+    <button class="tab" data-cat="weight" onclick="setCategory('weight',this)">Weight</button>
+    <button class="tab" data-cat="temp" onclick="setCategory('temp',this)">Temperature</button>
+  </div>
+
+  <div class="converter">
+    <div class="from-row">
+      <div>
+        <label>Amount</label>
+        <input type="number" id="amount" value="1" min="0" step="any" oninput="convert()">
+      </div>
+      <div>
+        <label>From unit</label>
+        <select id="fromUnit" onchange="convert()"></select>
+      </div>
+    </div>
+    <label>Converted values</label>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const CATS = {
+  volume: {
+    units: [
+      { key:'tsp',  label:'Teaspoon',      ml:4.92892 },
+      { key:'tbsp', label:'Tablespoon',     ml:14.7868 },
+      { key:'floz', label:'Fluid Ounce',    ml:29.5735 },
+      { key:'cup',  label:'Cup (US)',       ml:236.588 },
+      { key:'pt',   label:'Pint',           ml:473.176 },
+      { key:'qt',   label:'Quart',          ml:946.353 },
+      { key:'gal',  label:'Gallon',         ml:3785.41 },
+      { key:'ml',   label:'Milliliter',     ml:1 },
+      { key:'l',    label:'Liter',          ml:1000 },
+    ]
+  },
+  weight: {
+    units: [
+      { key:'g',   label:'Gram',      g:1 },
+      { key:'kg',  label:'Kilogram',  g:1000 },
+      { key:'oz',  label:'Ounce',     g:28.3495 },
+      { key:'lb',  label:'Pound',     g:453.592 },
+      { key:'mg',  label:'Milligram', g:0.001 },
+    ]
+  },
+  temp: {
+    units: [
+      { key:'c', label:'Celsius' },
+      { key:'f', label:'Fahrenheit' },
+      { key:'k', label:'Kelvin' },
+    ]
+  },
+};
+
+let cat = 'volume';
+
+function setCategory(c, btn) {
+  cat = c;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  populateSelect();
+  convert();
+}
+
+function populateSelect() {
+  const sel = document.getElementById('fromUnit');
+  const units = CATS[cat].units;
+  sel.innerHTML = units.map(u => `<option value="${u.key}">${u.label}</option>`).join('');
+}
+
+function convertTemp(val, from) {
+  let c;
+  if (from==='c') c=val; else if (from==='f') c=(val-32)*5/9; else c=val-273.15;
+  return {
+    c: { val: c.toFixed(2), label:'Celsius' },
+    f: { val: (c*9/5+32).toFixed(2), label:'Fahrenheit' },
+    k: { val: (c+273.15).toFixed(2), label:'Kelvin' },
+  };
+}
+
+function fmt(n) {
+  if (Math.abs(n) >= 1000) return n.toLocaleString('en-US',{maximumFractionDigits:2});
+  if (Math.abs(n) >= 1) return +n.toPrecision(6) + '';
+  return +n.toPrecision(4) + '';
+}
+
+function convert() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const fromKey = document.getElementById('fromUnit').value;
+  const units = CATS[cat].units;
+  const grid = document.getElementById('resultsGrid');
+
+  if (cat === 'temp') {
+    const results = convertTemp(amount, fromKey);
+    grid.innerHTML = Object.entries(results).filter(([k])=>k!==fromKey).map(([k,r])=>`
+      <div class="result-item highlight" onclick="copyTxt('${r.val} ${r.label}',this)">
+        <div class="r-val">${r.val}</div><div class="r-unit">${r.label}</div>
+      </div>`).join('');
+    return;
+  }
+
+  const fromUnit = units.find(u=>u.key===fromKey);
+  const baseKey = cat === 'volume' ? 'ml' : 'g';
+  const baseVal = amount * fromUnit[baseKey];
+
+  grid.innerHTML = units.filter(u=>u.key!==fromKey).map(u=>{
+    const converted = baseVal / u[baseKey];
+    const display = fmt(converted);
+    return `<div class="result-item" onclick="copyTxt('${display} ${u.label}',this)">
+      <div class="r-val">${display}</div><div class="r-unit">${u.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function copyTxt(val, el) {
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const orig = el.querySelector('.r-val').textContent;
+  el.querySelector('.r-val').textContent = '✓';
+  setTimeout(()=>el.querySelector('.r-val').textContent=orig, 1200);
+}
+
+populateSelect();
+convert();
+</script>
+</body>
+</html>

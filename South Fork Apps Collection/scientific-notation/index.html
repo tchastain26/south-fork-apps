@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Notation Converter | South Fork Apps</title>
+  <meta name="description" content="Convert numbers to and from scientific notation. See standard form, engineering notation, and word form. Free online scientific notation converter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    input{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;font:inherit;font-size:1rem;font-family:monospace;outline:none;}
+    input:focus{border-color:var(--accent);}
+    .results{display:grid;gap:.5rem;margin-top:.25rem;}
+    .result-row{background:var(--surface2);border-radius:8px;padding:.75rem .9rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;cursor:pointer;}
+    .result-row:hover{filter:brightness(1.08);}
+    .r-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);flex-shrink:0;}
+    .r-val{font-family:monospace;font-size:.95rem;font-weight:700;color:var(--accent);text-align:right;overflow-wrap:anywhere;}
+    .copy-hint{font-size:.65rem;color:var(--muted);margin-left:.5rem;flex-shrink:0;}
+    .error{color:#f28b82;font-size:.85rem;margin-top:.5rem;}
+    .examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+    .ex-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-family:monospace;font-size:.78rem;cursor:pointer;}
+    .ex-btn:hover{border-color:var(--accent);color:var(--accent);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Scientific Notation</span></nav>
+<main>
+  <h1>Scientific Notation Converter</h1>
+  <p class="sub">Convert any number to scientific notation, engineering notation, or back to standard decimal form.</p>
+
+  <div class="examples">
+    <button class="ex-btn" onclick="set('0.000045')">0.000045</button>
+    <button class="ex-btn" onclick="set('299792458')">299792458</button>
+    <button class="ex-btn" onclick="set('6.022e23')">6.022e23</button>
+    <button class="ex-btn" onclick="set('1.6e-19')">1.6e-19</button>
+    <button class="ex-btn" onclick="set('9.109e-31')">9.109e-31</button>
+  </div>
+
+  <div class="card">
+    <label>Enter a number (decimal or scientific notation)</label>
+    <input type="text" id="numInput" placeholder="e.g. 0.000123 or 1.23e-4" oninput="convert()" autofocus>
+    <div class="error" id="err"></div>
+    <div class="results" id="results" style="margin-top:.75rem"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+function set(val) { document.getElementById('numInput').value = val; convert(); }
+
+const PREFIXES = [
+  [1e24,'yotta','Y'],[1e21,'zetta','Z'],[1e18,'exa','E'],
+  [1e15,'peta','P'],[1e12,'tera','T'],[1e9,'giga','G'],
+  [1e6,'mega','M'],[1e3,'kilo','k'],[1e-3,'milli','m'],
+  [1e-6,'micro','μ'],[1e-9,'nano','n'],[1e-12,'pico','p'],
+  [1e-15,'femto','f'],[1e-18,'atto','a'],
+];
+
+function convert() {
+  const raw = document.getElementById('numInput').value.trim();
+  const err = document.getElementById('err');
+  const results = document.getElementById('results');
+  err.textContent = '';
+  if (!raw) { results.innerHTML=''; return; }
+
+  const num = Number(raw);
+  if (isNaN(num)) { err.textContent = 'Not a valid number.'; results.innerHTML=''; return; }
+  if (!isFinite(num)) { err.textContent = 'Number is too large or infinite.'; results.innerHTML=''; return; }
+
+  const abs = Math.abs(num);
+  const sign = num < 0 ? '-' : '';
+
+  // Scientific notation: coefficient × 10^n
+  const sci = num === 0 ? '0' : num.toExponential();
+
+  // Pretty scientific (e.g. 1.23 × 10⁻⁴)
+  const parts = sci.split('e');
+  const coef = parseFloat(parts[0]);
+  const exp = parseInt(parts[1]);
+  const superscript = n => String(n).split('').map(c => '⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺'.charAt('0123456789-+'.indexOf(c)) || c).join('');
+  const prettySci = num === 0 ? '0' : `${coef} × 10${superscript(exp)}`;
+
+  // Engineering notation: exponent multiple of 3
+  let engExp = exp === 0 ? 0 : Math.floor(exp / 3) * 3;
+  let engCoef = abs / Math.pow(10, engExp);
+  const engStr = num === 0 ? '0' : `${sign}${+engCoef.toPrecision(6)} × 10${superscript(engExp)}`;
+
+  // SI prefix
+  let siStr = '';
+  for (const [val, name, sym] of PREFIXES) {
+    if (abs >= val * 0.999 && abs < val * 1000) {
+      siStr = `${+(abs / val).toPrecision(6)} ${sym} (${name})`;
+      break;
+    }
+  }
+
+  // Standard decimal (avoid exponential for display)
+  let stdStr;
+  try { stdStr = abs < 1e21 && abs >= 1e-7 ? num.toLocaleString('fullwide',{maximumSignificantDigits:20}) : sci; } catch(e){ stdStr = sci; }
+  if (typeof stdStr !== 'string') stdStr = String(num);
+
+  const items = [
+    { label:'Scientific notation', val: prettySci },
+    { label:'E notation', val: sci },
+    { label:'Engineering notation', val: engStr },
+    { label:'Standard decimal', val: stdStr },
+    ...(siStr ? [{ label:'SI prefix', val: siStr }] : []),
+    { label:'Exponent', val: String(exp) },
+    { label:'Coefficient', val: String(coef) },
+  ];
+
+  results.innerHTML = items.map(it => `
+    <div class="result-row" onclick="copyTxt('${esc(it.val)}', this)" title="Click to copy">
+      <span class="r-label">${it.label}</span>
+      <span class="r-val">${esc(it.val)}</span>
+      <span class="copy-hint">copy</span>
+    </div>`).join('');
+}
+
+function copyTxt(val, row) {
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const hint = row.querySelector('.copy-hint');
+  hint.textContent = '✓'; setTimeout(()=>hint.textContent='copy',1500);
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>

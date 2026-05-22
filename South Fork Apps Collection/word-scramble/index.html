@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Scramble | South Fork Apps</title>
+  <meta name="description" content="Scramble any words or list for games, puzzles, and activities. Scramble individual words, shuffle lines, or create word search–style puzzles. Free online word scramble tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    textarea{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.75rem;font:inherit;font-size:.92rem;resize:vertical;min-height:100px;outline:none;}
+    textarea:focus{border-color:var(--accent);}
+    .mode-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.85rem;}
+    .mode-btn{padding:.32rem .75rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;}
+    .mode-btn.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+    .btn-row{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;}
+    button{padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .output-area{background:var(--surface2);border-radius:8px;padding:.85rem;min-height:80px;font-size:.92rem;line-height:1.75;word-break:break-word;}
+    .puzzle-grid{display:grid;gap:.4rem;}
+    .puzzle-row{display:flex;gap:.5rem;align-items:baseline;font-family:monospace;}
+    .scrambled{font-size:1.1rem;font-weight:800;color:var(--accent);letter-spacing:.12em;}
+    .original{font-size:.78rem;color:var(--muted);}
+    .show-answers-btn{font-size:.75rem;margin-left:auto;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Word Scramble</span></nav>
+<main>
+  <h1>Word Scramble</h1>
+  <p class="sub">Scramble words for games, classroom activities, or puzzles. Multiple scramble modes.</p>
+
+  <div class="card">
+    <label>Mode</label>
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="letters" onclick="setMode(this)">Scramble letters</button>
+      <button class="mode-btn" data-mode="words" onclick="setMode(this)">Shuffle word order</button>
+      <button class="mode-btn" data-mode="lines" onclick="setMode(this)">Shuffle lines</button>
+      <button class="mode-btn" data-mode="puzzle" onclick="setMode(this)">Puzzle list</button>
+    </div>
+    <label>Input text (one word or phrase per line for puzzle mode)</label>
+    <textarea id="input" placeholder="Enter words or text here…">apple
+banana
+cherry
+grapefruit
+watermelon</textarea>
+    <div class="btn-row">
+      <button class="primary" onclick="scramble()">Scramble</button>
+      <button onclick="navigator.clipboard.writeText(getOutputText()).catch(()=>{})">Copy</button>
+      <button onclick="document.getElementById('input').value='';document.getElementById('output').innerHTML=''">Clear</button>
+    </div>
+  </div>
+
+  <div class="card" id="outputCard" style="display:none">
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+      <label style="margin:0;flex:1">Result</label>
+      <button id="toggleAnswers" onclick="toggleAnswers()" style="font-size:.72rem;padding:.25rem .6rem">Show answers</button>
+    </div>
+    <div id="output" class="output-area"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let mode = 'letters';
+let showAnswers = false;
+let lastPuzzle = [];
+
+function setMode(btn) {
+  mode = btn.dataset.mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('toggleAnswers').style.display = mode === 'puzzle' ? '' : 'none';
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function scrambleWord(w) {
+  const letters = w.split('');
+  let s;
+  let tries = 0;
+  do { s = shuffle(letters).join(''); tries++; } while (s === w && tries < 10);
+  return s;
+}
+
+function scramble() {
+  const text = document.getElementById('input').value.trim();
+  if (!text) return;
+  const out = document.getElementById('output');
+  const card = document.getElementById('outputCard');
+  card.style.display = '';
+  document.getElementById('toggleAnswers').style.display = mode === 'puzzle' ? '' : 'none';
+
+  if (mode === 'letters') {
+    out.textContent = text.split(/(\s+)/).map(t => /\s/.test(t) ? t : scrambleWord(t)).join('');
+  } else if (mode === 'words') {
+    out.textContent = text.split(/\s+/).reduce((acc, w) => { const pos = Math.floor(Math.random()*(acc.length+1)); acc.splice(pos,0,w); return acc; }, []).join(' ');
+  } else if (mode === 'lines') {
+    out.textContent = shuffle(text.split('\n')).join('\n');
+  } else {
+    const lines = text.split('\n').filter(l=>l.trim());
+    lastPuzzle = lines.map(l => ({ orig: l.trim(), scrambled: scrambleWord(l.trim()) }));
+    renderPuzzle();
+    return;
+  }
+}
+
+function renderPuzzle() {
+  const out = document.getElementById('output');
+  out.innerHTML = lastPuzzle.map((p,i) => `
+    <div class="puzzle-row">
+      <span class="scrambled">${p.scrambled.toUpperCase()}</span>
+      <span class="original" id="ans${i}" style="display:${showAnswers?'':'none'}">→ ${p.orig}</span>
+    </div>`).join('');
+}
+
+function toggleAnswers() {
+  showAnswers = !showAnswers;
+  document.getElementById('toggleAnswers').textContent = showAnswers ? 'Hide answers' : 'Show answers';
+  renderPuzzle();
+}
+
+function getOutputText() {
+  return document.getElementById('output').textContent;
+}
+
+// init
+document.getElementById('toggleAnswers').style.display = 'none';
+</script>
+</body>
+</html>

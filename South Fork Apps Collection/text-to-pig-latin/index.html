@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pig Latin Translator | South Fork Apps</title>
+  <meta name="description" content="Translate English text to Pig Latin instantly. Handles capitalization, punctuation, and multiple words. Free online Pig Latin translator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    textarea{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.75rem;font:inherit;font-size:.95rem;resize:vertical;min-height:100px;outline:none;line-height:1.6;}
+    textarea:focus{border-color:var(--accent);}
+    .output{background:var(--surface2);border:1px solid rgba(125,219,132,.2);border-radius:8px;padding:.85rem;font-size:.95rem;min-height:80px;line-height:1.7;color:var(--accent);word-break:break-word;}
+    .btn-row{display:flex;gap:.5rem;margin-top:.5rem;}
+    button{padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+    .ex-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;cursor:pointer;}
+    .ex-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .rule-box{font-size:.78rem;color:var(--muted);line-height:1.7;background:var(--surface2);border-radius:8px;padding:.75rem .9rem;}
+    .rule-box strong{color:var(--text);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Pig Latin Translator</span></nav>
+<main>
+  <h1>Pig Latin Translator</h1>
+  <p class="sub">Translate English to Pig Latin. Preserves capitalization and punctuation.</p>
+
+  <div class="examples">
+    <button class="ex-btn" onclick="setEx('Hello world')">Hello world</button>
+    <button class="ex-btn" onclick="setEx('The quick brown fox')">The quick brown fox</button>
+    <button class="ex-btn" onclick="setEx('I love South Fork Apps')">I love South Fork Apps</button>
+    <button class="ex-btn" onclick="setEx('Stacking consonants is tricky')">Stacking consonants</button>
+  </div>
+
+  <div class="card">
+    <label>English text</label>
+    <textarea id="input" placeholder="Type or paste English here…" oninput="translate()"></textarea>
+    <div class="btn-row">
+      <button onclick="navigator.clipboard.writeText(document.getElementById('output').textContent).catch(()=>{})" class="primary">Copy result</button>
+      <button onclick="document.getElementById('input').value='';translate()">Clear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Pig Latin</label>
+    <div class="output" id="output"></div>
+  </div>
+
+  <div class="rule-box">
+    <strong>Rules:</strong> Words starting with a vowel → add <em>-way</em> (e.g. <em>apple → appleway</em>). Words starting with consonants → move leading consonant cluster to end, add <em>-ay</em> (e.g. <em>string → ingstray</em>).
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const VOWELS = new Set('aeiouAEIOU');
+
+function translateWord(word) {
+  const punct = word.match(/[^a-zA-Z']+$/) ? word.match(/[^a-zA-Z']+$/)[0] : '';
+  const core = word.slice(0, word.length - punct.length);
+  if (!core || !/[a-zA-Z]/.test(core)) return word;
+
+  const isUpper = core === core.toUpperCase();
+  const isCap = core[0] === core[0].toUpperCase() && core.slice(1) === core.slice(1).toLowerCase();
+
+  const lower = core.toLowerCase();
+
+  let result;
+  if (VOWELS.has(lower[0])) {
+    result = lower + 'way';
+  } else {
+    let i = 0;
+    while (i < lower.length && !VOWELS.has(lower[i])) {
+      // handle 'qu' as unit
+      if (lower[i] === 'q' && lower[i+1] === 'u') { i += 2; break; }
+      i++;
+    }
+    if (i === lower.length) i = 1; // all consonants
+    result = lower.slice(i) + lower.slice(0, i) + 'ay';
+  }
+
+  if (isUpper) result = result.toUpperCase();
+  else if (isCap) result = result[0].toUpperCase() + result.slice(1);
+
+  return result + punct;
+}
+
+function translate() {
+  const text = document.getElementById('input').value;
+  const out = text.replace(/[a-zA-Z']+[^a-zA-Z\s]*/g, translateWord);
+  document.getElementById('output').textContent = out;
+}
+
+function setEx(t) { document.getElementById('input').value = t; translate(); }
+</script>
+</body>
+</html>

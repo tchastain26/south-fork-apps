@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leet Speak Translator | South Fork Apps</title>
+  <meta name="description" content="Translate text to leet speak (1337) with adjustable leet level. Convert back from leet to English. Free online leet speak generator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    textarea{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.75rem;font:inherit;font-size:.95rem;resize:vertical;min-height:90px;outline:none;}
+    textarea:focus{border-color:var(--accent);}
+    .output{background:var(--surface2);border:1px solid rgba(125,219,132,.2);border-radius:8px;padding:.85rem;font-size:.95rem;min-height:70px;font-family:monospace;color:var(--accent);word-break:break-word;line-height:1.7;}
+    .level-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+    .level-row label{margin:0;white-space:nowrap;}
+    input[type=range]{flex:1;accent-color:var(--accent);}
+    .level-val{font-weight:800;color:var(--accent);min-width:2rem;}
+    .btn-row{display:flex;gap:.5rem;margin-top:.5rem;}
+    button{padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+    .ex-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;cursor:pointer;}
+    .ex-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.4rem;margin-top:.5rem;}
+    .ref-pair{background:var(--surface2);border-radius:6px;padding:.4rem .5rem;text-align:center;font-family:monospace;font-size:.82rem;}
+    .ref-pair .orig{color:var(--muted);font-weight:700;}
+    .ref-pair .leet{color:var(--accent);font-weight:800;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Leet Speak</span></nav>
+<main>
+  <h1>Leet Speak Translator</h1>
+  <p class="sub">Translate English text to 1337 speak. Adjust the leet level from subtle to maximum chaos.</p>
+
+  <div class="examples">
+    <button class="ex-btn" onclick="setEx('Hello World')">Hello World</button>
+    <button class="ex-btn" onclick="setEx('South Fork Apps')">South Fork Apps</button>
+    <button class="ex-btn" onclick="setEx('The quick brown fox jumps over the lazy dog')">Quick brown fox</button>
+    <button class="ex-btn" onclick="setEx('I am elite hacker')">Elite hacker</button>
+  </div>
+
+  <div class="card">
+    <div class="level-row">
+      <label>Leet level</label>
+      <input type="range" id="level" min="1" max="3" step="1" value="2" oninput="updateLevel()">
+      <span class="level-val" id="levelVal">2</span>
+    </div>
+    <label>English text</label>
+    <textarea id="input" placeholder="Type or paste English here…" oninput="translate()"></textarea>
+    <div class="btn-row">
+      <button class="primary" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent).catch(()=>{})">Copy</button>
+      <button onclick="document.getElementById('input').value='';translate()">Clear</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>1337 output</label>
+    <div class="output" id="output"></div>
+  </div>
+
+  <div class="card">
+    <label>Character map (level 3)</label>
+    <div class="ref-grid" id="refGrid"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const MAPS = [
+  // Level 1: minimal substitution
+  { a:'4', e:'3', i:'1', o:'0', s:'5', t:'7' },
+  // Level 2: moderate
+  { a:'4', b:'8', e:'3', g:'9', i:'1', l:'1', o:'0', s:'5', t:'7', z:'2' },
+  // Level 3: maximum
+  { a:'4', b:'|3', c:'(', d:'|)', e:'3', f:'|=', g:'9', h:'|-|', i:'!', j:'_|', k:'|<', l:'|_', m:'|\/|', n:'|\\|', o:'0', p:'|*', q:'0_', r:'|2', s:'5', t:'7', u:'|_|', v:'\\/', w:'\/\/', x:'><', y:'`/', z:'2' },
+];
+
+function updateLevel() {
+  const lv = document.getElementById('level').value;
+  document.getElementById('levelVal').textContent = lv;
+  translate();
+}
+
+function translate() {
+  const text = document.getElementById('input').value;
+  const level = parseInt(document.getElementById('level').value) - 1;
+  const map = MAPS[level];
+  const result = text.split('').map(c => {
+    const lower = c.toLowerCase();
+    if (map[lower]) {
+      const r = map[lower];
+      return c === c.toUpperCase() && c !== c.toLowerCase() ? r.toUpperCase() : r;
+    }
+    return c;
+  }).join('');
+  document.getElementById('output').textContent = result;
+}
+
+// Build reference grid (level 3)
+const fullMap = MAPS[2];
+document.getElementById('refGrid').innerHTML = Object.entries(fullMap).map(([k,v]) =>
+  `<div class="ref-pair"><div class="orig">${k.toUpperCase()}</div><div class="leet">${v}</div></div>`
+).join('');
+
+function setEx(t) { document.getElementById('input').value = t; translate(); }
+</script>
+</body>
+</html>

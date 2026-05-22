@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Planner | South Fork Apps</title>
+  <meta name="description" content="Plan your monthly budget by adding income and expense categories. See totals, balance, and how your spending breaks down. Free online budget planner — no signup, data stays in your browser.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;--warn:#f7c876;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(820px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:620px){.layout{grid-template-columns:1fr;}}
+    .section-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+    .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;}
+    .section-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+    .section-total{font-size:1.1rem;font-weight:800;}
+    .income-total{color:var(--accent);}
+    .expense-total{color:var(--danger);}
+    .items{display:grid;gap:.4rem;margin-bottom:.6rem;}
+    .item-row{display:grid;grid-template-columns:1fr auto auto;gap:.4rem;align-items:center;}
+    .item-row input{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.45rem .6rem;font:inherit;font-size:.85rem;outline:none;width:100%;}
+    .item-row input:focus{border-color:var(--accent);}
+    .item-row input[type=text]{flex:1;}
+    .item-row input[type=number]{width:100px;}
+    .del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:.2rem;}
+    .del:hover{color:var(--danger);}
+    .add-btn{width:100%;padding:.45rem;border:1px dashed var(--border);border-radius:7px;background:transparent;color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .add-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-top:1rem;}
+    .bal-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);}
+    .bal-row:last-child{border-bottom:none;padding-top:.65rem;}
+    .bal-label{font-size:.85rem;color:var(--muted);}
+    .bal-val{font-size:1rem;font-weight:800;}
+    .positive{color:var(--accent);}
+    .negative{color:var(--danger);}
+    .bar-wrap{margin-top:.75rem;}
+    .bar-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .bar-track{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:5px;transition:width .3s;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Budget Planner</span></nav>
+<main>
+  <h1>Budget Planner</h1>
+  <p class="sub">Plan your monthly budget. Add income sources and expense categories to see your balance. Saved in your browser.</p>
+
+  <div class="layout">
+    <div class="section-card">
+      <div class="section-head">
+        <span class="section-title">Income</span>
+        <span class="section-total income-total" id="incomeTotal">$0</span>
+      </div>
+      <div class="items" id="incomeItems"></div>
+      <button class="add-btn" onclick="addItem('income')">+ Add income</button>
+    </div>
+    <div class="section-card">
+      <div class="section-head">
+        <span class="section-title">Expenses</span>
+        <span class="section-total expense-total" id="expenseTotal">$0</span>
+      </div>
+      <div class="items" id="expenseItems"></div>
+      <button class="add-btn" onclick="addItem('expense')">+ Add expense</button>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <div class="bal-row"><span class="bal-label">Total Income</span><span class="bal-val positive" id="sumIncome">$0</span></div>
+    <div class="bal-row"><span class="bal-label">Total Expenses</span><span class="bal-val negative" id="sumExpense">$0</span></div>
+    <div class="bar-wrap">
+      <div class="bar-label">Spending ratio</div>
+      <div class="bar-track"><div class="bar-fill" id="spendBar" style="width:0%;background:var(--accent)"></div></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem" id="ratioLabel"></div>
+    </div>
+    <div class="bal-row" style="margin-top:.5rem"><span class="bal-label" style="font-weight:800;color:var(--text)">Net Balance</span><span class="bal-val" id="balance">$0</span></div>
+  </div>
+  <footer>v1.0 · Data saved in browser localStorage</footer>
+</main>
+<script>
+const KEY = 'sfa-budget';
+let data = { income: [], expense: [] };
+
+function load() {
+  try { const s = localStorage.getItem(KEY); if (s) data = JSON.parse(s); } catch(e){}
+  if (!data.income.length) data.income = [{name:'Salary',amount:4000},{name:'Freelance',amount:500}];
+  if (!data.expense.length) data.expense = [{name:'Rent',amount:1400},{name:'Groceries',amount:400},{name:'Utilities',amount:150},{name:'Transport',amount:200}];
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+const fmt = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function addItem(type) {
+  data[type].push({name:'',amount:0});
+  render();
+  const inputs = document.querySelectorAll(`#${type}Items .item-row input[type=text]`);
+  inputs[inputs.length-1]?.focus();
+}
+
+function removeItem(type, i) { data[type].splice(i,1); save(); render(); }
+
+function update(type, i, field, val) {
+  data[type][i][field] = field === 'name' ? val : parseFloat(val)||0;
+  save(); renderTotals();
+}
+
+function render() {
+  ['income','expense'].forEach(type => {
+    document.getElementById(type+'Items').innerHTML = data[type].map((it,i) => `
+      <div class="item-row">
+        <input type="text" value="${esc(it.name)}" placeholder="Category" oninput="update('${type}',${i},'name',this.value)">
+        <input type="number" value="${it.amount}" min="0" step="0.01" oninput="update('${type}',${i},'amount',this.value)">
+        <button class="del" onclick="removeItem('${type}',${i})">×</button>
+      </div>`).join('');
+  });
+  renderTotals();
+}
+
+function renderTotals() {
+  const inc = data.income.reduce((s,it)=>s+(+it.amount||0),0);
+  const exp = data.expense.reduce((s,it)=>s+(+it.amount||0),0);
+  const bal = inc - exp;
+  const ratio = inc > 0 ? Math.min(100,(exp/inc)*100) : 0;
+
+  document.getElementById('incomeTotal').textContent = fmt(inc);
+  document.getElementById('expenseTotal').textContent = fmt(exp);
+  document.getElementById('sumIncome').textContent = fmt(inc);
+  document.getElementById('sumExpense').textContent = fmt(exp);
+  const balEl = document.getElementById('balance');
+  balEl.textContent = fmt(Math.abs(bal));
+  balEl.className = 'bal-val ' + (bal >= 0 ? 'positive' : 'negative');
+  if (bal < 0) balEl.textContent = '-' + fmt(Math.abs(bal));
+  const bar = document.getElementById('spendBar');
+  bar.style.width = ratio.toFixed(1) + '%';
+  bar.style.background = ratio > 100 ? 'var(--danger)' : ratio > 80 ? 'var(--warn)' : 'var(--accent)';
+  document.getElementById('ratioLabel').textContent = `${ratio.toFixed(1)}% of income spent`;
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+load(); render();
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wind Chill & Heat Index Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--cold:#aaccda;--hot:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .tabs{display:flex;gap:.4rem;margin-bottom:1rem;}
+    .tab{padding:.35rem .85rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .tab.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .input-wrap:focus-within{border-color:var(--accent);}
+    .input-wrap input{flex:1;background:transparent;color:var(--text);border:none;padding:.6rem .75rem;font:inherit;font-size:.95rem;outline:none;}
+    .sfx{padding:0 .7rem;color:var(--muted);font-size:.85rem;font-weight:700;}
+    .unit-toggle{display:flex;gap:.4rem;margin-bottom:.9rem;}
+    .unit-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
+    .unit-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .result-display{text-align:center;padding:1.5rem;border-radius:10px;margin-top:.75rem;}
+    .feels-num{font-size:4rem;font-weight:800;line-height:1;}
+    .feels-label{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:.4rem;opacity:.8;}
+    .diff-badge{display:inline-block;margin-top:.5rem;padding:.3rem .75rem;border-radius:20px;font-size:.82rem;font-weight:800;}
+    .cold-bg{background:rgba(170,204,218,.12);color:var(--cold);}
+    .hot-bg{background:rgba(242,139,130,.12);color:var(--hot);}
+    .neutral-bg{background:var(--surface2);color:var(--muted);}
+    .danger-note{font-size:.8rem;color:#f28b82;margin-top:.6rem;text-align:center;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Wind Chill & Heat Index</span></nav>
+<main>
+  <h1>Wind Chill &amp; Heat Index</h1>
+  <p class="sub">Calculate how the temperature feels based on wind speed (cold) or humidity (hot).</p>
+
+  <div class="tabs">
+    <button class="tab active" id="tabWC" onclick="setMode('wc')">Wind Chill</button>
+    <button class="tab" id="tabHI" onclick="setMode('hi')">Heat Index</button>
+  </div>
+
+  <div class="card">
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="btnF" onclick="setUnit('F')">°F</button>
+      <button class="unit-btn" id="btnC" onclick="setUnit('C')">°C</button>
+    </div>
+
+    <div class="field">
+      <label id="tempLabel">Air Temperature (°F)</label>
+      <div class="input-wrap"><input type="number" id="temp" value="30" oninput="calc()"><span class="sfx" id="tempSfx">°F</span></div>
+    </div>
+
+    <div class="field" id="windField">
+      <label id="windLabel">Wind Speed (mph)</label>
+      <div class="input-wrap"><input type="number" id="wind" value="15" min="0" oninput="calc()"><span class="sfx" id="windSfx">mph</span></div>
+    </div>
+    <div class="field" id="humField" style="display:none">
+      <label>Relative Humidity (%)</label>
+      <div class="input-wrap"><input type="number" id="humidity" value="70" min="0" max="100" oninput="calc()"><span class="sfx">%</span></div>
+    </div>
+
+    <div id="resultBox"></div>
+    <div id="dangerNote" class="danger-note"></div>
+  </div>
+
+  <footer>v1.0 · NWS wind chill formula · Rothfusz heat index regression</footer>
+</main>
+<script>
+let mode = 'wc', unit = 'F';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('tabWC').classList.toggle('active', m==='wc');
+  document.getElementById('tabHI').classList.toggle('active', m==='hi');
+  document.getElementById('windField').style.display = m==='wc' ? '' : 'none';
+  document.getElementById('humField').style.display  = m==='hi' ? '' : 'none';
+  calc();
+}
+
+function setUnit(u) {
+  unit = u;
+  document.getElementById('btnF').classList.toggle('active', u==='F');
+  document.getElementById('btnC').classList.toggle('active', u==='C');
+  const isF = u==='F';
+  document.getElementById('tempLabel').textContent = `Air Temperature (°${u})`;
+  document.getElementById('tempSfx').textContent = '°' + u;
+  document.getElementById('windLabel').textContent = `Wind Speed (${isF?'mph':'km/h'})`;
+  document.getElementById('windSfx').textContent = isF ? 'mph' : 'km/h';
+  calc();
+}
+
+function calc() {
+  let T = parseFloat(document.getElementById('temp').value);
+  let W = parseFloat(document.getElementById('wind').value)||0;
+  const H = parseFloat(document.getElementById('humidity').value)||50;
+  if (isNaN(T)) { document.getElementById('resultBox').innerHTML=''; return; }
+
+  // Convert to F for formulas
+  const TF = unit==='C' ? T*9/5+32 : T;
+  const Wmph = unit==='C' ? W*0.621371 : W;
+
+  let feelsF, note='', isCold=false, isHot=false;
+
+  if (mode === 'wc') {
+    // NWS Wind Chill: valid for T ≤ 50°F and W ≥ 3 mph
+    if (TF > 50 || Wmph < 3) {
+      feelsF = TF;
+      note = TF > 50 ? 'Wind chill applies when temperature is ≤ 50°F (10°C).' : 'Wind chill applies when wind speed is ≥ 3 mph.';
+    } else {
+      feelsF = 35.74 + 0.6215*TF - 35.75*Math.pow(Wmph,0.16) + 0.4275*TF*Math.pow(Wmph,0.16);
+      isCold = true;
+      if (feelsF < -20) note = '⚠️ Frostbite possible in 30 minutes or less.';
+      if (feelsF < -40) note = '⚠️ Frostbite possible in under 10 minutes. Dangerous.';
+    }
+  } else {
+    // Rothfusz heat index: valid for T ≥ 80°F and H ≥ 40%
+    if (TF < 80 || H < 40) {
+      feelsF = TF;
+      note = TF < 80 ? 'Heat index applies when temperature is ≥ 80°F (27°C).' : 'Heat index applies when humidity is ≥ 40%.';
+    } else {
+      const c = [-42.379,2.04901523,10.14333127,-0.22475541,-0.00683783,-0.05481717,0.00122874,0.00085282,-0.00000199];
+      feelsF = c[0]+c[1]*TF+c[2]*H+c[3]*TF*H+c[4]*TF*TF+c[5]*H*H+c[6]*TF*TF*H+c[7]*TF*H*H+c[8]*TF*TF*H*H;
+      isHot = true;
+      if (feelsF >= 103) note = '⚠️ Heat stroke possible. Limit outdoor activity.';
+      if (feelsF >= 125) note = '⚠️ Extreme danger. Heat stroke highly likely.';
+    }
+  }
+
+  const feelsDisplay = unit==='C' ? (feelsF-32)*5/9 : feelsF;
+  const actualDisplay = T;
+  const diff = feelsDisplay - actualDisplay;
+  const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1) + '°' + unit;
+  const bgClass = isCold ? 'cold-bg' : isHot ? 'hot-bg' : 'neutral-bg';
+  const bgStyle = isCold ? 'background:rgba(170,204,218,.08)' : isHot ? 'background:rgba(242,139,130,.06)' : 'background:var(--surface2)';
+  const numColor = isCold ? 'color:var(--cold)' : isHot ? 'color:var(--hot)' : 'color:var(--muted)';
+
+  document.getElementById('resultBox').innerHTML = `
+    <div class="result-display" style="${bgStyle}">
+      <div class="feels-num" style="${numColor}">${feelsDisplay.toFixed(1)}°${unit}</div>
+      <div class="feels-label">Feels like</div>
+      ${diff !== 0 ? `<div class="diff-badge ${bgClass}">${diffStr} from actual</div>` : ''}
+    </div>`;
+  document.getElementById('dangerNote').textContent = note;
+}
+
+calc();
+</script>
+</body>
+</html>
