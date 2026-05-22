@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ohm's Law Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate voltage, current, resistance, and power using Ohm's Law (V=IR). Enter any two values and get the other two instantly. Free online electronics calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(600px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .field{position:relative;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .15s;}
+    .input-wrap:focus-within{border-color:var(--accent);}
+    .input-wrap.solved{border-color:rgba(125,219,132,.4);background:rgba(125,219,132,.05);}
+    .input-wrap input{flex:1;background:transparent;color:var(--text);border:none;padding:.65rem .7rem;font:inherit;font-size:1rem;font-weight:700;outline:none;min-width:0;}
+    .unit{padding:0 .65rem;color:var(--muted);font-size:.82rem;font-weight:700;white-space:nowrap;}
+    .hint{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+    button.solve{width:100%;padding:.7rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    button.solve:hover{filter:brightness(1.07);}
+    button.clear{width:100%;padding:.5rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;margin-top:.4rem;}
+    .formula-box{background:var(--surface2);border-radius:10px;padding:1rem;text-align:center;margin-bottom:.75rem;}
+    .formula{font-size:1.5rem;font-weight:800;letter-spacing:.05em;color:var(--accent);}
+    .formula-sub{font-size:.78rem;color:var(--muted);margin-top:.35rem;}
+    .error{color:#f28b82;font-size:.82rem;margin-top:.4rem;text-align:center;}
+    .ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.25rem;}
+    .ref-item{background:var(--surface2);border-radius:7px;padding:.6rem .75rem;font-size:.8rem;}
+    .ref-item strong{color:var(--accent);font-family:monospace;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Ohm's Law Calculator</span></nav>
+<main>
+  <h1>Ohm's Law Calculator</h1>
+  <p class="sub">Enter any two values to solve for the other two. Covers voltage, current, resistance, and power.</p>
+
+  <div class="card">
+    <div class="formula-box">
+      <div class="formula">V = I × R &nbsp;|&nbsp; P = V × I</div>
+      <div class="formula-sub">Voltage (V) · Current (I) · Resistance (R) · Power (P)</div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label>Voltage (V)</label>
+        <div class="input-wrap" id="wrapV"><input type="number" id="inV" placeholder="—" oninput="autoSolve()"><span class="unit">V</span></div>
+      </div>
+      <div class="field">
+        <label>Current (I)</label>
+        <div class="input-wrap" id="wrapI"><input type="number" id="inI" placeholder="—" oninput="autoSolve()"><span class="unit">A</span></div>
+      </div>
+      <div class="field">
+        <label>Resistance (R)</label>
+        <div class="input-wrap" id="wrapR"><input type="number" id="inR" placeholder="—" oninput="autoSolve()"><span class="unit">Ω</span></div>
+      </div>
+      <div class="field">
+        <label>Power (P)</label>
+        <div class="input-wrap" id="wrapP"><input type="number" id="inP" placeholder="—" oninput="autoSolve()"><span class="unit">W</span></div>
+      </div>
+    </div>
+
+    <div class="error" id="errMsg"></div>
+    <button class="clear" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <div class="card">
+    <strong style="font-size:.82rem;font-weight:800">Formula reference</strong>
+    <div class="ref-grid">
+      <div class="ref-item"><strong>V = I × R</strong><br>Voltage = Current × Resistance</div>
+      <div class="ref-item"><strong>I = V / R</strong><br>Current = Voltage / Resistance</div>
+      <div class="ref-item"><strong>R = V / I</strong><br>Resistance = Voltage / Current</div>
+      <div class="ref-item"><strong>P = V × I</strong><br>Power = Voltage × Current</div>
+      <div class="ref-item"><strong>P = I² × R</strong><br>Power = Current² × Resistance</div>
+      <div class="ref-item"><strong>P = V² / R</strong><br>Power = Voltage² / Resistance</div>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+const ids = ['V','I','R','P'];
+
+function getVals() {
+  return Object.fromEntries(ids.map(id => {
+    const v = parseFloat(document.getElementById('in'+id).value);
+    return [id, isNaN(v) ? null : v];
+  }));
+}
+
+function setVal(id, v, solved) {
+  const el = document.getElementById('in'+id);
+  const wrap = document.getElementById('wrap'+id);
+  if (v !== null && el.value === '') {
+    el.value = +v.toPrecision(6);
+    wrap.classList.add('solved');
+  } else if (!solved) {
+    wrap.classList.remove('solved');
+  }
+}
+
+function clearSolved() {
+  ids.forEach(id => document.getElementById('wrap'+id).classList.remove('solved'));
+}
+
+function autoSolve() {
+  clearSolved();
+  document.getElementById('errMsg').textContent = '';
+  const {V,I,R,P} = getVals();
+  const known = [V,I,R,P].filter(v => v !== null).length;
+  if (known < 2) return;
+
+  // Solve for unknowns using all combos
+  let nV=V,nI=I,nR=R,nP=P;
+
+  if (nV!==null && nI!==null) { if(nR===null) nR=nV/nI; if(nP===null) nP=nV*nI; }
+  if (nV!==null && nR!==null) { if(nI===null) nI=nV/nR; if(nP===null) nP=nV*nI||nV*nV/nR; }
+  if (nV!==null && nP!==null) { if(nI===null) nI=nP/nV; if(nR===null) nR=nV*nV/nP; }
+  if (nI!==null && nR!==null) { if(nV===null) nV=nI*nR; if(nP===null) nP=nI*nI*nR; }
+  if (nI!==null && nP!==null) { if(nV===null) nV=nP/nI; if(nR===null) nR=nP/(nI*nI); }
+  if (nR!==null && nP!==null) { if(nV===null) nV=Math.sqrt(nP*nR); if(nI===null) nI=Math.sqrt(nP/nR); }
+
+  if (nV!==null && nV<0) { document.getElementById('errMsg').textContent = 'Voltage cannot be negative.'; return; }
+  if (nI!==null && nI<0) { document.getElementById('errMsg').textContent = 'Current cannot be negative.'; return; }
+  if (nR!==null && nR<0) { document.getElementById('errMsg').textContent = 'Resistance cannot be negative.'; return; }
+
+  setVal('V',nV, V===null); setVal('I',nI, I===null);
+  setVal('R',nR, R===null); setVal('P',nP, P===null);
+}
+
+function clearAll() {
+  ids.forEach(id => { document.getElementById('in'+id).value = ''; document.getElementById('wrap'+id).classList.remove('solved'); });
+  document.getElementById('errMsg').textContent = '';
+}
+</script>
+</body>
+</html>

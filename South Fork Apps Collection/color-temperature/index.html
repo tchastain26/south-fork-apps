@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Temperature Converter | South Fork Apps</title>
+  <meta name="description" content="Convert color temperature in Kelvin to RGB hex color and see the visual color swatch. Includes reference chart for common light sources. Free online color temperature tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.4rem;}
+    .slider-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+    input[type=range]{flex:1;accent-color:var(--accent);}
+    .kelvin-input{width:90px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.5rem .7rem;font:inherit;font-size:1rem;font-weight:800;outline:none;text-align:center;}
+    .kelvin-input:focus{border-color:var(--accent);}
+    .swatch{width:100%;height:120px;border-radius:10px;border:1px solid var(--border);margin-bottom:.75rem;transition:background .2s;}
+    .color-results{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+    .color-item{background:var(--surface2);border-radius:7px;padding:.6rem;text-align:center;cursor:pointer;}
+    .color-item:hover{filter:brightness(1.1);}
+    .color-val{font-size:.95rem;font-weight:800;font-family:monospace;}
+    .color-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .copied-tip{font-size:.7rem;color:var(--accent);opacity:0;transition:opacity .3s;}
+    .copied-tip.show{opacity:1;}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.5rem;}
+    .ref-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.35rem .5rem;border-bottom:1px solid var(--border);}
+    .ref-table td{padding:.4rem .5rem;border-bottom:1px solid rgba(42,47,43,.4);}
+    .ref-table tr:last-child td{border-bottom:none;}
+    .ref-table td:first-child{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;}
+    .swatch-sm{width:20px;height:20px;border-radius:4px;display:inline-block;vertical-align:middle;border:1px solid rgba(255,255,255,.1);}
+    .ref-row{cursor:pointer;}
+    .ref-row:hover td{background:rgba(125,219,132,.04);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Color Temperature</span></nav>
+<main>
+  <h1>Color Temperature Converter</h1>
+  <p class="sub">Convert color temperature (Kelvin) to RGB and HEX. Used in photography, lighting, and display calibration.</p>
+
+  <div class="card">
+    <label>Color Temperature</label>
+    <div class="slider-row">
+      <input type="range" id="slider" min="1000" max="12000" step="100" value="6500" oninput="syncSlider()">
+      <input class="kelvin-input" type="number" id="kInput" value="6500" min="1000" max="12000" step="100" oninput="syncInput()">
+      <span style="font-size:.85rem;font-weight:700;color:var(--muted)">K</span>
+    </div>
+
+    <div class="swatch" id="swatch"></div>
+
+    <div class="color-results" id="colorResults"></div>
+    <div style="text-align:center;margin-top:.35rem"><span class="copied-tip" id="copiedTip">Copied!</span></div>
+  </div>
+
+  <div class="card">
+    <strong style="font-size:.82rem;font-weight:800">Common light sources</strong>
+    <table class="ref-table">
+      <thead><tr><th>Kelvin</th><th>Swatch</th><th>Light source</th></tr></thead>
+      <tbody id="refBody"></tbody>
+    </table>
+  </div>
+
+  <footer>v1.0 · Uses Tanner Helland's algorithm</footer>
+</main>
+<script>
+const REFS = [
+  [1000,'Candlelight'],
+  [1900,'Incandescent dim'],
+  [2700,'Standard incandescent / warm white LED'],
+  [3000,'Halogen / warm fluorescent'],
+  [3200,'Studio tungsten'],
+  [4000,'Moonlight / cool white fluorescent'],
+  [5000,'Horizon daylight / electronic flash'],
+  [5500,'Midday sun'],
+  [6500,'D65 standard (daylight / sRGB white point)'],
+  [7500,'Overcast sky'],
+  [9000,'Blue sky / shade'],
+  [10000,'Clear blue sky'],
+];
+
+function kelvinToRGB(k) {
+  k = Math.max(1000, Math.min(40000, k)) / 100;
+  let r, g, b;
+  r = k <= 66 ? 255 : 329.698727446 * Math.pow(k - 60, -0.1332047592);
+  if (k <= 66) {
+    g = 99.4708025861 * Math.log(k) - 161.1195681661;
+  } else {
+    g = 288.1221695283 * Math.pow(k - 60, -0.0755148492);
+  }
+  b = k >= 66 ? 255 : k <= 19 ? 0 : 138.5177312231 * Math.log(k - 10) - 305.0447927307;
+  return [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))));
+}
+
+function toHex(r, g, b) {
+  return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+}
+
+function update(k) {
+  const [r,g,b] = kelvinToRGB(k);
+  const hex = toHex(r,g,b);
+  document.getElementById('swatch').style.background = hex;
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  const fg = brightness > 128 ? '#111412' : '#e8e8e8';
+
+  const items = [
+    { label:'HEX', val: hex.toUpperCase() },
+    { label:'RGB', val: `rgb(${r},${g},${b})` },
+    { label:'HSL', val: rgbToHSL(r,g,b) },
+  ];
+  document.getElementById('colorResults').innerHTML = items.map(it => `
+    <div class="color-item" onclick="copyVal('${it.val.replace(/'/g,"\\'")}')">
+      <div class="color-val">${it.val}</div>
+      <div class="color-label">${it.label}</div>
+    </div>`).join('');
+}
+
+function rgbToHSL(r,g,b) {
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}
+    h/=6;
+  }
+  return `hsl(${Math.round(h*360)},${Math.round(s*100)}%,${Math.round(l*100)}%)`;
+}
+
+function copyVal(val) {
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const tip = document.getElementById('copiedTip');
+  tip.classList.add('show');
+  setTimeout(()=>tip.classList.remove('show'),1500);
+}
+
+function syncSlider() {
+  const k = +document.getElementById('slider').value;
+  document.getElementById('kInput').value = k;
+  update(k);
+}
+
+function syncInput() {
+  const k = Math.max(1000, Math.min(12000, +document.getElementById('kInput').value || 6500));
+  document.getElementById('slider').value = k;
+  update(k);
+}
+
+// Build reference table
+document.getElementById('refBody').innerHTML = REFS.map(([k, name]) => {
+  const [r,g,b] = kelvinToRGB(k);
+  const hex = toHex(r,g,b);
+  return `<tr class="ref-row" onclick="setK(${k})">
+    <td>${k.toLocaleString()}</td>
+    <td><span class="swatch-sm" style="background:${hex}"></span></td>
+    <td>${name}</td>
+  </tr>`;
+}).join('');
+
+function setK(k) {
+  document.getElementById('slider').value = Math.min(12000, k);
+  document.getElementById('kInput').value = k;
+  update(k);
+}
+
+update(6500);
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Price Calculator | South Fork Apps</title>
+  <meta name="description" content="Compare prices per unit across multiple products. Find the best deal by calculating cost per ounce, gram, count, or any unit. Free online unit price comparison tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .unit-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
+    label.tiny{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+    input.unit-sel{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.35rem .6rem;font:inherit;font-size:.82rem;outline:none;width:90px;}
+    input.unit-sel:focus{border-color:var(--accent);}
+    .items{display:grid;gap:.6rem;margin-bottom:.75rem;}
+    .item-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.5rem;align-items:center;}
+    .item-card.best{border-color:var(--accent);background:rgba(125,219,132,.04);}
+    .item-card input{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.5rem .6rem;font:inherit;font-size:.88rem;outline:none;width:100%;}
+    .item-card input:focus{border-color:var(--accent);}
+    .item-card input[type=text]{font-weight:600;}
+    .unit-price{font-size:.82rem;font-weight:800;color:var(--muted);text-align:right;}
+    .unit-price.best{color:var(--accent);}
+    .best-badge{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.2rem .5rem;border-radius:20px;background:rgba(125,219,132,.15);color:var(--accent);white-space:nowrap;}
+    .del-btn{background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem .4rem;}
+    .del-btn:hover{color:var(--danger);}
+    button.add{width:100%;padding:.6rem;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;}
+    button.add:hover{border-color:var(--accent);color:var(--accent);}
+    .header-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.5rem;padding:0 .25rem;margin-bottom:.2rem;}
+    .header-row span{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Unit Price Calculator</span></nav>
+<main>
+  <h1>Unit Price Calculator</h1>
+  <p class="sub">Compare products by price per unit. The best deal is highlighted automatically.</p>
+
+  <div class="unit-row">
+    <label class="tiny">Unit label:</label>
+    <input class="unit-sel" type="text" id="unitLabel" value="oz" placeholder="oz, g, count…" oninput="render()">
+  </div>
+
+  <div class="header-row">
+    <span>Product name</span><span>Price ($)</span><span>Quantity</span><span></span>
+  </div>
+  <div id="itemsEl" class="items"></div>
+  <button class="add" onclick="addItem()">+ Add product</button>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let items = [
+  { name:'Small (16 oz)',  price: 2.49, qty: 16 },
+  { name:'Medium (32 oz)', price: 3.99, qty: 32 },
+  { name:'Large (64 oz)',  price: 6.49, qty: 64 },
+];
+
+function addItem() {
+  items.push({ name:'', price:'', qty:'' });
+  render();
+  // focus last name input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.item-card input[type=text]');
+    inputs[inputs.length-1]?.focus();
+  }, 50);
+}
+
+function removeItem(i) { items.splice(i,1); render(); }
+
+function update(i, field, val) {
+  items[i][field] = field === 'name' ? val : parseFloat(val) || '';
+  render();
+}
+
+function render() {
+  const unit = document.getElementById('unitLabel').value || 'unit';
+  const prices = items.map(it => {
+    const p = parseFloat(it.price), q = parseFloat(it.qty);
+    return (!isNaN(p) && !isNaN(q) && q > 0) ? p / q : Infinity;
+  });
+  const minPrice = Math.min(...prices.filter(p => p < Infinity));
+
+  document.getElementById('itemsEl').innerHTML = items.map((it, i) => {
+    const up = prices[i];
+    const isBest = up === minPrice && up < Infinity;
+    const upStr = up < Infinity ? `$${up.toFixed(4)}/${unit}` : '—';
+    return `<div class="item-card${isBest?' best':''}">
+      <input type="text" value="${esc(it.name)}" placeholder="Product name" oninput="update(${i},'name',this.value)">
+      <input type="number" value="${it.price}" placeholder="0.00" min="0" step="0.01" oninput="update(${i},'price',this.value)">
+      <input type="number" value="${it.qty}" placeholder="qty" min="0" step="any" oninput="update(${i},'qty',this.value)">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <button class="del-btn" onclick="removeItem(${i})">×</button>
+        <span class="unit-price${isBest?' best':''}">${upStr}</span>
+        ${isBest ? '<span class="best-badge">Best deal</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROI Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate return on investment (ROI), annualized return, and total profit from any investment. Free online ROI calculator with annualized rate.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.9rem;}
+    label{display:block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    .input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .input-wrap:focus-within{border-color:var(--accent);}
+    .input-prefix{padding:0 .7rem;color:var(--muted);font-weight:700;font-size:.9rem;background:var(--surface2);}
+    .input-wrap input{flex:1;background:transparent;color:var(--text);border:none;padding:.65rem .5rem;font:inherit;font-size:.95rem;outline:none;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .results{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;}
+    .result-card{background:var(--surface2);border-radius:8px;padding:.85rem;text-align:center;}
+    .result-val{font-size:1.5rem;font-weight:800;}
+    .result-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .positive{color:var(--accent);}
+    .negative{color:var(--danger);}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">ROI Calculator</span></nav>
+<main>
+  <h1>ROI Calculator</h1>
+  <p class="sub">Calculate return on investment, net profit, and annualized return rate for any investment.</p>
+
+  <div class="card">
+    <div class="two-col">
+      <div class="field">
+        <label>Initial Investment</label>
+        <div class="input-wrap"><span class="input-prefix">$</span><input type="number" id="initial" value="10000" min="0" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label>Final Value</label>
+        <div class="input-wrap"><span class="input-prefix">$</span><input type="number" id="final" value="14500" min="0" oninput="calc()"></div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Duration (years)</label>
+        <input style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .8rem;font:inherit;font-size:.95rem;width:100%;outline:none" type="number" id="years" value="3" min="0" step="0.1" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Additional Costs</label>
+        <div class="input-wrap"><span class="input-prefix">$</span><input type="number" id="costs" value="0" min="0" oninput="calc()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+function fmt(n) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n);
+}
+
+function calc() {
+  const initial = +document.getElementById('initial').value;
+  const finalVal = +document.getElementById('final').value;
+  const years = +document.getElementById('years').value;
+  const costs = +document.getElementById('costs').value || 0;
+  if (!initial) return;
+
+  const netProfit = finalVal - initial - costs;
+  const roi = (netProfit / (initial + costs)) * 100;
+  const annualized = years > 0 ? (Math.pow(finalVal / (initial + costs), 1 / years) - 1) * 100 : null;
+
+  const positive = roi >= 0;
+
+  const items = [
+    { label: 'Net Profit', val: fmt(netProfit), cls: netProfit >= 0 ? 'positive' : 'negative' },
+    { label: 'ROI', val: roi.toFixed(2) + '%', cls: positive ? 'positive' : 'negative' },
+    { label: 'Total Invested', val: fmt(initial + costs), cls: '' },
+    { label: 'Final Value', val: fmt(finalVal), cls: '' },
+  ];
+
+  if (annualized !== null) {
+    items.push({ label: 'Annualized Return', val: annualized.toFixed(2) + '%', cls: annualized >= 0 ? 'positive' : 'negative' });
+  }
+
+  document.getElementById('results').innerHTML = items.map(it => `
+    <div class="result-card">
+      <div class="result-val ${it.cls}">${it.val}</div>
+      <div class="result-label">${it.label}</div>
+    </div>`).join('');
+}
+
+calc();
+</script>
+</body>
+</html>

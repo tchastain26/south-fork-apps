@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Viewer | South Fork Apps</title>
+  <meta name="description" content="Paste CSV data and view it as a formatted, sortable table instantly. Supports custom delimiters and header detection. Free online CSV viewer and table formatter.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(1100px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;margin-bottom:.75rem;}
+    textarea{width:100%;min-height:120px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.75rem;font-family:monospace;font-size:.82rem;resize:vertical;outline:none;margin-bottom:.5rem;}
+    textarea:focus{border-color:var(--accent);}
+    select,input[type=text]{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.5rem .75rem;font:inherit;font-size:.85rem;outline:none;}
+    select:focus,input[type=text]:focus{border-color:var(--accent);}
+    button{padding:.5rem 1rem;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    .meta{font-size:.78rem;color:var(--muted);margin-bottom:.6rem;}
+    .search-wrap{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+    .search-wrap input{flex:1;max-width:300px;}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+    table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    thead th{background:var(--surface2);padding:.6rem .8rem;text-align:left;font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--border);}
+    thead th:hover{color:var(--accent);}
+    thead th.asc::after{content:' ▲';color:var(--accent);}
+    thead th.desc::after{content:' ▼';color:var(--accent);}
+    tbody tr:nth-child(even){background:rgba(26,31,27,.5);}
+    tbody tr:hover{background:rgba(125,219,132,.04);}
+    td{padding:.5rem .8rem;border-bottom:1px solid rgba(42,47,43,.4);white-space:nowrap;max-width:300px;overflow:hidden;text-overflow:ellipsis;}
+    tbody tr:last-child td{border-bottom:none;}
+    .empty{color:var(--muted);text-align:center;padding:2rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">CSV Viewer</span></nav>
+<main>
+  <h1>CSV Viewer</h1>
+  <p class="sub">Paste CSV data to see it as a sortable table. Click any column header to sort.</p>
+
+  <textarea id="csvInput" placeholder="Paste CSV data here…
+name,age,city
+Alice,30,Nashville
+Bob,25,Memphis"></textarea>
+
+  <div class="controls">
+    <div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:.3rem">Delimiter</label>
+      <select id="delim">
+        <option value=",">Comma (,)</option>
+        <option value="	">Tab</option>
+        <option value=";">Semicolon (;)</option>
+        <option value="|">Pipe (|)</option>
+        <option value="custom">Custom…</option>
+      </select>
+    </div>
+    <div id="customDelimWrap" style="display:none">
+      <label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:.3rem">Custom</label>
+      <input type="text" id="customDelim" style="width:60px" maxlength="3">
+    </div>
+    <div style="display:flex;align-items:center;gap:.4rem;padding-bottom:.05rem">
+      <input type="checkbox" id="hasHeader" checked>
+      <label for="hasHeader" style="font-size:.85rem;font-weight:600;color:var(--text);cursor:pointer">First row is header</label>
+    </div>
+    <button class="primary" onclick="parse()">Render Table</button>
+    <button onclick="clearAll()">Clear</button>
+  </div>
+
+  <div id="output"></div>
+  <footer>v1.0</footer>
+</main>
+<script>
+let rows = [], headers = [], sortCol = -1, sortDir = 1;
+
+document.getElementById('delim').addEventListener('change', function() {
+  document.getElementById('customDelimWrap').style.display = this.value === 'custom' ? '' : 'none';
+});
+
+document.getElementById('csvInput').addEventListener('input', parse);
+document.getElementById('hasHeader').addEventListener('change', parse);
+document.getElementById('delim').addEventListener('change', parse);
+
+function getDelim() {
+  const sel = document.getElementById('delim').value;
+  return sel === 'custom' ? (document.getElementById('customDelim').value || ',') : sel;
+}
+
+function parseCSVLine(line, d) {
+  const cells = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (!inQ && line.slice(i, i + d.length) === d) { cells.push(cur); cur = ''; i += d.length - 1; continue; }
+    cur += c;
+  }
+  cells.push(cur);
+  return cells;
+}
+
+function parse() {
+  const raw = document.getElementById('csvInput').value.trim();
+  const d = getDelim();
+  const hasHeader = document.getElementById('hasHeader').checked;
+  if (!raw) { document.getElementById('output').innerHTML = ''; return; }
+
+  const lines = raw.split(/\r?\n/).filter(l => l.trim());
+  const parsed = lines.map(l => parseCSVLine(l, d));
+  if (!parsed.length) return;
+
+  headers = hasHeader ? parsed[0] : parsed[0].map((_, i) => `Column ${i + 1}`);
+  rows = hasHeader ? parsed.slice(1) : parsed;
+  sortCol = -1;
+  render();
+}
+
+function sortBy(col) {
+  if (sortCol === col) { sortDir *= -1; } else { sortCol = col; sortDir = 1; }
+  rows.sort((a, b) => {
+    const va = a[col] || '', vb = b[col] || '';
+    const na = parseFloat(va), nb = parseFloat(vb);
+    if (!isNaN(na) && !isNaN(nb)) return (na - nb) * sortDir;
+    return va.localeCompare(vb) * sortDir;
+  });
+  render();
+}
+
+function render() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const filtered = q ? rows.filter(r => r.some(c => c.toLowerCase().includes(q))) : rows;
+
+  const out = document.getElementById('output');
+  if (!rows.length) { out.innerHTML = '<div class="empty">No data to display.</div>'; return; }
+
+  out.innerHTML = `
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Filter rows…" oninput="render()" value="${esc(q)}">
+      <span class="meta">${filtered.length.toLocaleString()} of ${rows.length.toLocaleString()} rows · ${headers.length} columns</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>${headers.map((h, i) => `<th onclick="sortBy(${i})" class="${sortCol===i?(sortDir===1?'asc':'desc'):''}">${esc(h)}</th>`).join('')}</tr></thead>
+        <tbody>${filtered.map(r => `<tr>${headers.map((_, i) => `<td title="${esc(r[i]||'')}">${esc(r[i]||'')}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function clearAll() {
+  document.getElementById('csvInput').value = '';
+  rows = []; headers = [];
+  document.getElementById('output').innerHTML = '';
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+parse();
+</script>
+</body>
+</html>

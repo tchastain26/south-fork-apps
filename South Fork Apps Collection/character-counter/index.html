@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Counter | South Fork Apps</title>
+  <meta name="description" content="Count characters, bytes, Unicode code points, words, lines, and spaces in any text. See character frequency breakdown. Free online character counter tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(780px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    textarea{width:100%;min-height:180px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:.85rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;resize:vertical;outline:none;line-height:1.6;}
+    textarea:focus{border-color:var(--accent);}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin:1rem 0;}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center;}
+    .stat-val{font-size:1.5rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;}
+    .stat-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.75rem 0 .4rem;}
+    .freq-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+    .freq-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.35rem .5rem;border-bottom:1px solid var(--border);}
+    .freq-table td{padding:.35rem .5rem;border-bottom:1px solid rgba(42,47,43,.4);font-family:monospace;}
+    .freq-table td:last-child{text-align:right;font-family:'Plus Jakarta Sans',sans-serif;color:var(--accent);font-weight:700;}
+    .bar{height:4px;background:rgba(125,219,132,.25);border-radius:2px;margin-top:.2rem;}
+    .bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .2s;}
+    .target-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.5rem;}
+    .target-row label{font-size:.78rem;color:var(--muted);font-weight:700;}
+    .target-row input{width:80px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.85rem;outline:none;}
+    .target-row input:focus{border-color:var(--accent);}
+    .limit-info{font-size:.82rem;color:var(--muted);}
+    .limit-over{color:#f28b82;font-weight:700;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Character Counter</span></nav>
+<main>
+  <h1>Character Counter</h1>
+  <p class="sub">Detailed text statistics including character count, bytes, Unicode code points, words, and character frequency.</p>
+
+  <textarea id="textInput" placeholder="Start typing or paste text here…" oninput="update()"></textarea>
+
+  <div class="target-row">
+    <label>Character limit:</label>
+    <input type="number" id="limitInput" placeholder="e.g. 280" min="1" oninput="update()">
+    <span class="limit-info" id="limitInfo"></span>
+  </div>
+
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <div id="freqSection" style="display:none">
+    <div class="section-title">Top character frequency</div>
+    <table class="freq-table">
+      <thead><tr><th>Char</th><th>Name</th><th>Count</th></tr></thead>
+      <tbody id="freqBody"></tbody>
+    </table>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+function update() {
+  const text = document.getElementById('textInput').value;
+  const limit = parseInt(document.getElementById('limitInput').value);
+
+  const chars = text.length;
+  const noSpaces = text.replace(/\s/g, '').length;
+  const bytes = new TextEncoder().encode(text).length;
+  const codePoints = [...text].length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const lines = text === '' ? 0 : text.split('\n').length;
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim()).length;
+  const spaces = (text.match(/\s/g) || []).length;
+  const unique = new Set([...text].filter(c => c.trim())).size;
+
+  const stats = [
+    { label: 'Characters', val: chars.toLocaleString() },
+    { label: 'No Spaces', val: noSpaces.toLocaleString() },
+    { label: 'Words', val: words.toLocaleString() },
+    { label: 'Lines', val: lines.toLocaleString() },
+    { label: 'Sentences', val: sentences.toLocaleString() },
+    { label: 'Bytes (UTF-8)', val: bytes.toLocaleString() },
+    { label: 'Code Points', val: codePoints.toLocaleString() },
+    { label: 'Unique Chars', val: unique.toLocaleString() },
+  ];
+
+  document.getElementById('statsGrid').innerHTML = stats.map(s =>
+    `<div class="stat"><div class="stat-val">${s.val}</div><div class="stat-label">${s.label}</div></div>`
+  ).join('');
+
+  const li = document.getElementById('limitInfo');
+  if (!isNaN(limit) && limit > 0) {
+    const rem = limit - chars;
+    li.className = 'limit-info' + (rem < 0 ? ' limit-over' : '');
+    li.textContent = rem < 0 ? `${Math.abs(rem)} over limit` : `${rem} remaining`;
+  } else { li.textContent = ''; }
+
+  const freq = {};
+  for (const c of text) { if (c.trim()) freq[c] = (freq[c] || 0) + 1; }
+  const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 20);
+  const maxFreq = sorted[0]?.[1] || 1;
+
+  if (sorted.length) {
+    document.getElementById('freqSection').style.display = '';
+    document.getElementById('freqBody').innerHTML = sorted.map(([c, n]) => {
+      const name = charName(c);
+      const pct = (n / maxFreq * 100).toFixed(0);
+      return `<tr><td>${esc(c)}</td><td style="color:var(--muted)">${name}</td><td>${n.toLocaleString()}<div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div></td></tr>`;
+    }).join('');
+  } else { document.getElementById('freqSection').style.display = 'none'; }
+}
+
+function charName(c) {
+  const code = c.codePointAt(0);
+  if (c === ' ') return 'space';
+  if (c === '\t') return 'tab';
+  if (/[a-z]/.test(c)) return 'lowercase';
+  if (/[A-Z]/.test(c)) return 'uppercase';
+  if (/[0-9]/.test(c)) return 'digit';
+  if (/[.,!?;:'"]/.test(c)) return 'punctuation';
+  return `U+${code.toString(16).toUpperCase().padStart(4,'0')}`;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+update();
+</script>
+</body>
+</html>

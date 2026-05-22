@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fraction Calculator | South Fork Apps</title>
+  <meta name="description" content="Add, subtract, multiply, and divide fractions. Simplify fractions, convert to decimals, and convert between mixed numbers and improper fractions. Free online fraction calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(680px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    input{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.55rem .7rem;font:inherit;font-size:.95rem;outline:none;width:100%;}
+    input:focus{border-color:var(--accent);}
+    .frac-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+    .frac-group{display:flex;flex-direction:column;align-items:center;gap:.15rem;min-width:60px;}
+    .frac-num input{width:60px;text-align:center;}
+    .frac-bar{width:60px;height:2px;background:var(--text);border-radius:1px;}
+    .frac-den input{width:60px;text-align:center;}
+    .op-btn{width:2.8rem;height:2.8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:1.2rem;font-weight:800;cursor:pointer;flex-shrink:0;}
+    .op-btn.active{border-color:var(--accent);background:rgba(125,219,132,.12);color:var(--accent);}
+    .calc-btn{width:100%;padding:.7rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:1rem;font-weight:800;cursor:pointer;margin-top:.75rem;}
+    .calc-btn:hover{filter:brightness(1.07);}
+    .result-box{background:var(--surface2);border-radius:10px;padding:1.1rem;text-align:center;margin-bottom:.6rem;}
+    .result-main{font-size:2rem;font-weight:800;color:var(--accent);line-height:1.1;}
+    .result-alt{font-size:.88rem;color:var(--muted);margin-top:.35rem;}
+    .divider{border:none;border-top:1px solid var(--border);margin:.75rem 0;}
+    .simplify-section{margin-top:1rem;}
+    .simplify-row{display:flex;gap:.6rem;align-items:flex-end;}
+    .simplify-row .frac-group{margin-bottom:0;}
+    .simplify-row button{padding:.55rem 1rem;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    .simplify-row button:hover{filter:brightness(1.1);}
+    .error{color:var(--danger);font-size:.85rem;margin-top:.4rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Fraction Calculator</span></nav>
+<main>
+  <h1>Fraction Calculator</h1>
+  <p class="sub">Add, subtract, multiply, or divide two fractions. Results are automatically simplified.</p>
+
+  <div class="card">
+    <div class="frac-row" id="fracRow">
+      <div class="frac-group">
+        <label style="text-align:center">Numerator</label>
+        <div class="frac-num"><input type="number" id="n1" value="1"></div>
+        <div class="frac-bar"></div>
+        <div class="frac-den"><input type="number" id="d1" value="2"></div>
+        <label style="text-align:center;margin-top:.15rem">Denominator</label>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.35rem;padding-top:.3rem">
+        <button class="op-btn active" data-op="+" onclick="setOp(this)">+</button>
+        <button class="op-btn" data-op="−" onclick="setOp(this)">−</button>
+        <button class="op-btn" data-op="×" onclick="setOp(this)">×</button>
+        <button class="op-btn" data-op="÷" onclick="setOp(this)">÷</button>
+      </div>
+      <div class="frac-group">
+        <label style="text-align:center">Numerator</label>
+        <div class="frac-num"><input type="number" id="n2" value="1"></div>
+        <div class="frac-bar"></div>
+        <div class="frac-den"><input type="number" id="d2" value="3"></div>
+        <label style="text-align:center;margin-top:.15rem">Denominator</label>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate</button>
+    <div id="errorMsg" class="error"></div>
+    <div id="resultArea" style="margin-top:.9rem;display:none">
+      <div class="result-box" id="resultBox"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <strong style="font-size:.85rem;font-weight:800">Simplify a fraction</strong>
+    <div class="simplify-row" style="margin-top:.75rem">
+      <div class="frac-group">
+        <div class="frac-num"><input type="number" id="sn" value="12"></div>
+        <div class="frac-bar"></div>
+        <div class="frac-den"><input type="number" id="sd" value="18"></div>
+      </div>
+      <button onclick="simplify()">Simplify</button>
+    </div>
+    <div id="simplifyResult" style="margin-top:.6rem;color:var(--accent);font-weight:700;font-size:.95rem"></div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let op = '+';
+
+function setOp(btn) {
+  document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  op = btn.dataset.op;
+}
+
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+
+function reduce(n, d) {
+  if (d === 0) return null;
+  const g = gcd(Math.abs(n), Math.abs(d));
+  if (d < 0) { n = -n; d = -d; }
+  return { n: n / g, d: d / g };
+}
+
+function toMixed(n, d) {
+  if (Math.abs(n) < d) return null;
+  const w = Math.trunc(n / d);
+  const r = Math.abs(n % d);
+  return r === 0 ? `${w}` : `${w} ${r}/${d}`;
+}
+
+function calculate() {
+  const n1 = parseInt(document.getElementById('n1').value);
+  const d1 = parseInt(document.getElementById('d1').value);
+  const n2 = parseInt(document.getElementById('n2').value);
+  const d2 = parseInt(document.getElementById('d2').value);
+  const err = document.getElementById('errorMsg');
+  err.textContent = '';
+
+  if (isNaN(n1)||isNaN(d1)||isNaN(n2)||isNaN(d2)) { err.textContent = 'Enter valid numbers.'; return; }
+  if (d1 === 0 || d2 === 0) { err.textContent = 'Denominator cannot be zero.'; return; }
+  if (op === '÷' && n2 === 0) { err.textContent = 'Cannot divide by zero.'; return; }
+
+  let rn, rd;
+  if (op === '+') { rn = n1 * d2 + n2 * d1; rd = d1 * d2; }
+  else if (op === '−') { rn = n1 * d2 - n2 * d1; rd = d1 * d2; }
+  else if (op === '×') { rn = n1 * n2; rd = d1 * d2; }
+  else { rn = n1 * d2; rd = d1 * n2; }
+
+  const res = reduce(rn, rd);
+  if (!res) { err.textContent = 'Result is undefined.'; return; }
+
+  const dec = res.n / res.d;
+  const mixed = toMixed(res.n, res.d);
+  const box = document.getElementById('resultBox');
+  box.innerHTML = `
+    <div class="result-main">${res.n}/${res.d}</div>
+    <div class="result-alt">
+      ${mixed ? `Mixed number: ${mixed} &nbsp;|&nbsp;` : ''}
+      Decimal: ${dec.toFixed(6).replace(/\.?0+$/, '')}
+    </div>`;
+  document.getElementById('resultArea').style.display = '';
+}
+
+function simplify() {
+  const n = parseInt(document.getElementById('sn').value);
+  const d = parseInt(document.getElementById('sd').value);
+  const el = document.getElementById('simplifyResult');
+  if (isNaN(n)||isNaN(d)||d===0) { el.textContent = 'Enter a valid fraction.'; return; }
+  const res = reduce(n, d);
+  const mixed = toMixed(res.n, res.d);
+  el.innerHTML = `${n}/${d} = <strong>${res.n}/${res.d}</strong>${mixed ? ` = ${mixed}` : ''} = ${(res.n/res.d).toFixed(8).replace(/\.?0+$/,'')}`;
+}
+</script>
+</body>
+</html>

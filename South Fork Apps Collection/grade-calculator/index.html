@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate your weighted grade average or GPA. Add assignments with weights, see your current grade and what you need on the final. Free online grade calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--danger:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(720px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .add-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.5rem;align-items:end;margin-bottom:.75rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    input{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.6rem .8rem;font:inherit;font-size:.92rem;outline:none;}
+    input:focus{border-color:var(--accent);}
+    button{padding:.6rem 1rem;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;}
+    button:hover{filter:brightness(1.1);}
+    button.primary{background:var(--accent);color:#0a1a0c;border-color:var(--accent);}
+    button.danger{background:transparent;border:none;color:var(--muted);font-size:1rem;padding:.3rem .5rem;}
+    button.danger:hover{color:var(--danger);filter:none;}
+    .grades-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:1rem;}
+    .grades-table th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:.4rem .6rem;border-bottom:1px solid var(--border);}
+    .grades-table td{padding:.5rem .6rem;border-bottom:1px solid rgba(42,47,43,.5);}
+    .grades-table tr:last-child td{border-bottom:none;}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin:1rem 0;}
+    .summary-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center;}
+    .summary-val{font-size:1.6rem;font-weight:800;color:var(--accent);}
+    .summary-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .letter{font-size:1.4rem;font-weight:800;}
+    .weight-warn{font-size:.78rem;color:var(--danger);margin-bottom:.5rem;}
+    .final-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:.5rem;align-items:end;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Grade Calculator</span></nav>
+<main>
+  <h1>Grade Calculator</h1>
+  <p class="sub">Add your assignments with weights to see your weighted average and letter grade.</p>
+
+  <div class="add-row">
+    <div><label>Assignment / Category</label><input id="aName" placeholder="Midterm Exam" value=""></div>
+    <div><label>Score (%)</label><input id="aScore" type="number" min="0" max="100" placeholder="85"></div>
+    <div><label>Weight (%)</label><input id="aWeight" type="number" min="0" max="100" placeholder="25"></div>
+    <div style="padding-bottom:.05rem"><button class="primary" onclick="addItem()">Add</button></div>
+  </div>
+
+  <div id="warnEl" class="weight-warn" style="display:none"></div>
+
+  <table class="grades-table" id="gradesTable">
+    <thead><tr><th>Name</th><th>Score</th><th>Weight</th><th>Points</th><th></th></tr></thead>
+    <tbody id="gradesBody"></tbody>
+  </table>
+
+  <div class="summary-grid" id="summaryGrid" style="display:none">
+    <div class="summary-item"><div class="summary-val" id="avgScore">—</div><div class="summary-label">Weighted Average</div></div>
+    <div class="summary-item"><div class="summary-val letter" id="letterGrade">—</div><div class="summary-label">Letter Grade</div></div>
+    <div class="summary-item"><div class="summary-val" id="totalWeight">—%</div><div class="summary-label">Weight Assigned</div></div>
+  </div>
+
+  <div id="finalCalc" style="display:none">
+    <hr style="border-color:var(--border);margin:1rem 0">
+    <strong style="font-size:.85rem">Final exam calculator</strong>
+    <p style="font-size:.8rem;color:var(--muted);margin:.25rem 0 .5rem">What score do you need on the remaining <span id="remWeight">0</span>% to hit your target grade?</p>
+    <div class="final-row">
+      <div><label>Target grade (%)</label><input id="targetGrade" type="number" value="90" min="0" max="100" oninput="calcFinal()"></div>
+      <div><label>Final weight (%)</label><input id="finalWeight" type="number" oninput="calcFinal()" placeholder="auto"></div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.6rem .8rem;text-align:center">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)">Need on final</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent)" id="neededFinal">—</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
+</main>
+<script>
+let items = [];
+
+function letterFor(avg) {
+  if (avg >= 93) return 'A';
+  if (avg >= 90) return 'A−';
+  if (avg >= 87) return 'B+';
+  if (avg >= 83) return 'B';
+  if (avg >= 80) return 'B−';
+  if (avg >= 77) return 'C+';
+  if (avg >= 73) return 'C';
+  if (avg >= 70) return 'C−';
+  if (avg >= 67) return 'D+';
+  if (avg >= 60) return 'D';
+  return 'F';
+}
+
+function addItem() {
+  const name = document.getElementById('aName').value.trim() || 'Assignment';
+  const score = parseFloat(document.getElementById('aScore').value);
+  const weight = parseFloat(document.getElementById('aWeight').value);
+  if (isNaN(score) || isNaN(weight)) return;
+  items.push({ name, score, weight });
+  document.getElementById('aName').value = '';
+  document.getElementById('aScore').value = '';
+  document.getElementById('aWeight').value = '';
+  render();
+}
+
+function removeItem(i) {
+  items.splice(i, 1);
+  render();
+}
+
+function render() {
+  const body = document.getElementById('gradesBody');
+  body.innerHTML = items.map((it, i) => `
+    <tr>
+      <td>${esc(it.name)}</td>
+      <td>${it.score.toFixed(1)}%</td>
+      <td>${it.weight.toFixed(1)}%</td>
+      <td>${(it.score * it.weight / 100).toFixed(2)}</td>
+      <td><button class="danger" onclick="removeItem(${i})">×</button></td>
+    </tr>`).join('');
+
+  const totalWeight = items.reduce((s, it) => s + it.weight, 0);
+  const weightedSum = items.reduce((s, it) => s + it.score * it.weight, 0);
+  const avg = totalWeight > 0 ? weightedSum / totalWeight : 0;
+
+  const warn = document.getElementById('warnEl');
+  if (totalWeight > 100) { warn.textContent = `Weights sum to ${totalWeight.toFixed(1)}% — over 100%.`; warn.style.display = 'block'; }
+  else { warn.style.display = 'none'; }
+
+  if (items.length) {
+    document.getElementById('summaryGrid').style.display = '';
+    document.getElementById('avgScore').textContent = avg.toFixed(2) + '%';
+    document.getElementById('letterGrade').textContent = letterFor(avg);
+    document.getElementById('totalWeight').textContent = totalWeight.toFixed(1) + '%';
+
+    const rem = Math.max(0, 100 - totalWeight);
+    document.getElementById('finalCalc').style.display = rem > 0 ? '' : 'none';
+    document.getElementById('remWeight').textContent = rem.toFixed(1);
+    document.getElementById('finalWeight').placeholder = rem.toFixed(1);
+    calcFinal();
+  } else {
+    document.getElementById('summaryGrid').style.display = 'none';
+    document.getElementById('finalCalc').style.display = 'none';
+  }
+}
+
+function calcFinal() {
+  const totalWeight = items.reduce((s, it) => s + it.weight, 0);
+  const weightedSum = items.reduce((s, it) => s + it.score * it.weight, 0);
+  const rem = Math.max(0, 100 - totalWeight);
+  const fw = parseFloat(document.getElementById('finalWeight').value) || rem;
+  const target = parseFloat(document.getElementById('targetGrade').value) || 90;
+  if (fw <= 0) { document.getElementById('neededFinal').textContent = 'N/A'; return; }
+  const needed = (target * (totalWeight + fw) - weightedSum) / fw;
+  const el = document.getElementById('neededFinal');
+  el.textContent = needed.toFixed(1) + '%';
+  el.style.color = needed > 100 ? '#f28b82' : needed < 0 ? '#7ddb84' : 'var(--accent)';
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.getElementById('aScore').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('aWeight').focus(); });
+document.getElementById('aWeight').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+</script>
+</body>
+</html>

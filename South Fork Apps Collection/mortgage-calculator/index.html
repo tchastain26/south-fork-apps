@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate monthly mortgage payments with down payment, PMI, property tax, and insurance. See full amortization schedule and total cost breakdown. Free online mortgage calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(800px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.25rem;color:var(--muted);line-height:1.6;}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:600px){.layout{grid-template-columns:1fr;}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden;}
+    .input-wrap:focus-within{border-color:var(--accent);}
+    .pfx{padding:0 .65rem;color:var(--muted);font-weight:700;font-size:.9rem;white-space:nowrap;}
+    .input-wrap input{flex:1;background:transparent;color:var(--text);border:none;padding:.6rem .5rem;font:inherit;font-size:.9rem;outline:none;min-width:0;}
+    button.primary{width:100%;padding:.7rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    button.primary:hover{filter:brightness(1.07);}
+    .summary{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem;}
+    .s-item{background:var(--surface2);border-radius:8px;padding:.75rem;text-align:center;}
+    .s-val{font-size:1.3rem;font-weight:800;color:var(--accent);}
+    .s-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.15rem;}
+    .breakdown{font-size:.82rem;}
+    .b-row{display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid rgba(42,47,43,.5);}
+    .b-row:last-child{border-bottom:none;font-weight:800;}
+    .table-wrap{overflow-x:auto;max-height:300px;overflow-y:auto;margin-top:.75rem;border:1px solid var(--border);border-radius:8px;}
+    table{width:100%;border-collapse:collapse;font-size:.78rem;}
+    thead th{position:sticky;top:0;background:var(--surface2);padding:.5rem .6rem;text-align:right;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);}
+    thead th:first-child{text-align:left;}
+    td{padding:.4rem .6rem;border-bottom:1px solid rgba(42,47,43,.4);text-align:right;}
+    td:first-child{text-align:left;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Mortgage Calculator</span></nav>
+<main>
+  <h1>Mortgage Calculator</h1>
+  <p class="sub">Calculate monthly payments including principal, interest, taxes, insurance, and PMI.</p>
+
+  <div class="layout">
+    <div class="card">
+      <div class="field"><label>Home Price</label><div class="input-wrap"><span class="pfx">$</span><input type="number" id="price" value="350000" oninput="calc()"></div></div>
+      <div class="field"><label>Down Payment</label>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:.5rem">
+          <div class="input-wrap"><span class="pfx">$</span><input type="number" id="down" value="70000" oninput="syncDown('$')"></div>
+          <div class="input-wrap" style="width:80px"><input type="number" id="downPct" value="20" min="0" max="100" oninput="syncDown('%')"><span class="pfx">%</span></div>
+        </div>
+      </div>
+      <div class="field"><label>Interest Rate (% / year)</label><div class="input-wrap"><input type="number" id="rate" value="6.75" step="0.01" oninput="calc()"><span class="pfx">%</span></div></div>
+      <div class="field"><label>Loan Term</label>
+        <select id="term" onchange="calc()" style="width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:.6rem .75rem;font:inherit;font-size:.9rem;outline:none">
+          <option value="360">30 years</option>
+          <option value="180">15 years</option>
+          <option value="120">10 years</option>
+          <option value="84">7 years</option>
+        </select>
+      </div>
+      <div class="field"><label>Property Tax (% / year)</label><div class="input-wrap"><input type="number" id="tax" value="1.1" step="0.01" oninput="calc()"><span class="pfx">%</span></div></div>
+      <div class="field"><label>Home Insurance ($ / year)</label><div class="input-wrap"><span class="pfx">$</span><input type="number" id="ins" value="1200" oninput="calc()"></div></div>
+      <div class="field"><label>PMI Rate (% / year, if &lt;20% down)</label><div class="input-wrap"><input type="number" id="pmi" value="0.5" step="0.01" oninput="calc()"><span class="pfx">%</span></div></div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:1rem">
+        <div class="summary" id="summary"></div>
+        <div class="breakdown" id="breakdown"></div>
+      </div>
+      <div class="card">
+        <strong style="font-size:.82rem">Amortization Schedule</strong>
+        <div class="table-wrap">
+          <table><thead><tr><th>Month</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+          <tbody id="amortBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>v1.0</footer>
+</main>
+<script>
+const fmt = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+const fmtD = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n);
+
+function syncDown(src) {
+  const price = +document.getElementById('price').value || 0;
+  if (src === '$') {
+    const d = +document.getElementById('down').value || 0;
+    document.getElementById('downPct').value = price ? ((d / price) * 100).toFixed(1) : 0;
+  } else {
+    const p = +document.getElementById('downPct').value || 0;
+    document.getElementById('down').value = Math.round(price * p / 100);
+  }
+  calc();
+}
+
+function calc() {
+  const price = +document.getElementById('price').value || 0;
+  const down  = +document.getElementById('down').value  || 0;
+  const rate  = +document.getElementById('rate').value  / 100 / 12;
+  const n     = +document.getElementById('term').value;
+  const taxPct = +document.getElementById('tax').value / 100 / 12;
+  const insAnn = +document.getElementById('ins').value || 0;
+  const pmiPct = +document.getElementById('pmi').value / 100 / 12;
+
+  const loan = price - down;
+  if (loan <= 0 || n <= 0) return;
+
+  const piPayment = rate === 0 ? loan / n : loan * (rate * Math.pow(1+rate,n)) / (Math.pow(1+rate,n)-1);
+  const monthTax = price * taxPct;
+  const monthIns = insAnn / 12;
+  const downPct = price ? down / price : 0;
+  const monthPMI = downPct < 0.2 ? loan * pmiPct : 0;
+  const total = piPayment + monthTax + monthIns + monthPMI;
+
+  document.getElementById('summary').innerHTML = `
+    <div class="s-item"><div class="s-val">${fmtD(total)}</div><div class="s-label">Total / month</div></div>
+    <div class="s-item"><div class="s-val">${fmtD(piPayment)}</div><div class="s-label">P&amp;I / month</div></div>
+    <div class="s-item"><div class="s-val">${fmt(loan)}</div><div class="s-label">Loan amount</div></div>
+    <div class="s-item"><div class="s-val">${((down/price)*100).toFixed(1)}%</div><div class="s-label">Down payment</div></div>`;
+
+  const rows = [
+    ['Principal & Interest', fmtD(piPayment)],
+    ['Property Tax', fmtD(monthTax)],
+    ['Home Insurance', fmtD(monthIns)],
+    ...(monthPMI > 0 ? [['PMI', fmtD(monthPMI)]] : []),
+    ['Total Monthly', fmtD(total)],
+  ];
+  document.getElementById('breakdown').innerHTML = rows.map(([l,v]) => `<div class="b-row"><span>${l}</span><span>${v}</span></div>`).join('');
+
+  let bal = loan, totalInt = 0;
+  const amortRows = [];
+  for (let i = 1; i <= n; i++) {
+    const int = bal * rate;
+    const prin = piPayment - int;
+    bal -= prin;
+    totalInt += int;
+    if (i <= 24 || i % 12 === 0 || i === n) {
+      amortRows.push(`<tr><td>${i}</td><td>${fmtD(piPayment)}</td><td>${fmtD(prin)}</td><td>${fmtD(int)}</td><td>${fmtD(Math.max(0,bal))}</td></tr>`);
+    }
+  }
+  document.getElementById('amortBody').innerHTML = amortRows.join('');
+}
+
+calc();
+</script>
+</body>
+</html>

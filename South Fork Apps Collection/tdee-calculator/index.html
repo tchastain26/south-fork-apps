@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDEE Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate your Total Daily Energy Expenditure (TDEE) and daily calorie needs based on weight, height, age, sex, and activity level. Free online TDEE calculator.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.9rem;}
+    label{display:block;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    input[type=number],select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;font:inherit;font-size:.95rem;outline:none;}
+    input[type=number]:focus,select:focus{border-color:var(--accent);}
+    .unit-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+    .radio-group{display:flex;gap:.5rem;flex-wrap:wrap;}
+    .radio-group label{font-size:.88rem;text-transform:none;letter-spacing:0;color:var(--text);font-weight:600;cursor:pointer;padding:.4rem .85rem;border:1px solid var(--border);border-radius:20px;background:var(--surface2);transition:all .12s;}
+    .radio-group input[type=radio]{display:none;}
+    .radio-group input:checked + label{border-color:var(--accent);background:rgba(125,219,132,.12);color:var(--accent);}
+    button.primary{width:100%;padding:.75rem;border:none;border-radius:8px;background:var(--accent);color:#0a1a0c;font:inherit;font-size:1rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
+    button.primary:hover{filter:brightness(1.07);}
+    .results{display:none;}
+    .results.visible{display:block;}
+    .result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-bottom:1rem;}
+    .result-item{background:var(--surface2);border-radius:8px;padding:.8rem;text-align:center;}
+    .result-val{font-size:1.5rem;font-weight:800;color:var(--accent);}
+    .result-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:.2rem;}
+    .goal-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+    .goal-table th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:.4rem .6rem;border-bottom:1px solid var(--border);}
+    .goal-table td{padding:.5rem .6rem;border-bottom:1px solid rgba(42,47,43,.5);}
+    .goal-table tr:last-child td{border-bottom:none;}
+    .goal-table td:last-child{font-weight:700;color:var(--accent);}
+    .active-row td:first-child{color:var(--accent);font-weight:800;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">TDEE Calculator</span></nav>
+<main>
+  <h1>TDEE Calculator</h1>
+  <p class="sub">Calculate your Total Daily Energy Expenditure — the calories your body needs each day based on your stats and activity level.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>Units</label>
+      <div class="radio-group">
+        <input type="radio" name="units" id="uImp" value="imperial" checked><label for="uImp">Imperial (lbs/in)</label>
+        <input type="radio" name="units" id="uMet" value="metric"><label for="uMet">Metric (kg/cm)</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Sex</label>
+      <div class="radio-group">
+        <input type="radio" name="sex" id="sMale" value="male" checked><label for="sMale">Male</label>
+        <input type="radio" name="sex" id="sFem" value="female"><label for="sFem">Female</label>
+      </div>
+    </div>
+    <div class="unit-row">
+      <div class="field">
+        <label>Age (years)</label>
+        <input type="number" id="age" value="30" min="10" max="100">
+      </div>
+      <div class="field">
+        <label id="weightLabel">Weight (lbs)</label>
+        <input type="number" id="weight" value="170" min="1">
+      </div>
+    </div>
+    <div class="unit-row">
+      <div class="field">
+        <label id="heightLabel1">Height (feet)</label>
+        <input type="number" id="heightFt" value="5" min="0" max="8">
+      </div>
+      <div class="field">
+        <label id="heightLabel2">Height (inches)</label>
+        <input type="number" id="heightIn" value="10" min="0" max="11">
+      </div>
+    </div>
+    <div id="heightCmRow" class="field" style="display:none">
+      <label>Height (cm)</label>
+      <input type="number" id="heightCm" value="178" min="50" max="300">
+    </div>
+    <div class="field">
+      <label>Activity Level</label>
+      <select id="activity">
+        <option value="1.2">Sedentary (desk job, little/no exercise)</option>
+        <option value="1.375">Lightly active (light exercise 1–3 days/week)</option>
+        <option value="1.55" selected>Moderately active (moderate exercise 3–5 days/week)</option>
+        <option value="1.725">Very active (hard exercise 6–7 days/week)</option>
+        <option value="1.9">Extra active (physical job + hard training)</option>
+      </select>
+    </div>
+    <button class="primary" onclick="calc()">Calculate TDEE</button>
+  </div>
+
+  <div class="results card" id="results">
+    <div class="result-grid">
+      <div class="result-item"><div class="result-val" id="bmr">—</div><div class="result-label">BMR (cal/day)</div></div>
+      <div class="result-item"><div class="result-val" id="tdee">—</div><div class="result-label">TDEE (cal/day)</div></div>
+      <div class="result-item"><div class="result-val" id="bmi">—</div><div class="result-label">BMI</div></div>
+    </div>
+    <table class="goal-table">
+      <thead><tr><th>Goal</th><th>Adjustment</th><th>Calories/day</th></tr></thead>
+      <tbody id="goalRows"></tbody>
+    </table>
+  </div>
+
+  <footer>v1.0 · Uses Mifflin-St Jeor BMR formula</footer>
+</main>
+<script>
+  document.querySelectorAll('input[name="units"]').forEach(r => r.addEventListener('change', toggleUnits));
+
+  function toggleUnits() {
+    const imp = document.querySelector('input[name="units"]:checked').value === 'imperial';
+    document.getElementById('heightFt').closest('.unit-row').style.display = imp ? '' : 'none';
+    document.getElementById('heightCmRow').style.display = imp ? 'none' : '';
+    document.getElementById('weightLabel').textContent = imp ? 'Weight (lbs)' : 'Weight (kg)';
+    document.getElementById('heightLabel1').textContent = 'Height (feet)';
+    document.getElementById('heightLabel2').textContent = 'Height (inches)';
+  }
+
+  function calc() {
+    const imp = document.querySelector('input[name="units"]:checked').value === 'imperial';
+    const sex = document.querySelector('input[name="sex"]:checked').value;
+    const age = +document.getElementById('age').value;
+    const activity = +document.getElementById('activity').value;
+
+    let weightKg, heightCm;
+    if (imp) {
+      weightKg = +document.getElementById('weight').value * 0.453592;
+      heightCm = (+document.getElementById('heightFt').value * 30.48) + (+document.getElementById('heightIn').value * 2.54);
+    } else {
+      weightKg = +document.getElementById('weight').value;
+      heightCm = +document.getElementById('heightCm').value;
+    }
+
+    if (!weightKg || !heightCm || !age) return;
+
+    // Mifflin-St Jeor
+    const bmr = sex === 'male'
+      ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
+      : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+
+    const tdee = bmr * activity;
+    const bmi = weightKg / ((heightCm / 100) ** 2);
+
+    document.getElementById('bmr').textContent = Math.round(bmr);
+    document.getElementById('tdee').textContent = Math.round(tdee);
+    document.getElementById('bmi').textContent = bmi.toFixed(1);
+
+    const goals = [
+      { label: 'Extreme cut', adj: -1000, note: '−1000 cal' },
+      { label: 'Moderate cut', adj: -500, note: '−500 cal' },
+      { label: 'Mild cut', adj: -250, note: '−250 cal' },
+      { label: 'Maintain weight', adj: 0, note: 'TDEE', active: true },
+      { label: 'Mild bulk', adj: 250, note: '+250 cal' },
+      { label: 'Moderate bulk', adj: 500, note: '+500 cal' },
+    ];
+
+    document.getElementById('goalRows').innerHTML = goals.map(g => `
+      <tr ${g.active ? 'class="active-row"' : ''}>
+        <td>${g.label}</td>
+        <td>${g.note}</td>
+        <td>${Math.round(tdee + g.adj)}</td>
+      </tr>`).join('');
+
+    document.getElementById('results').classList.add('visible');
+  }
+</script>
+</body>
+</html>

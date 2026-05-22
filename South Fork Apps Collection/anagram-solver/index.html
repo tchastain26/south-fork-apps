@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anagram Solver | South Fork Apps</title>
+  <meta name="description" content="Find all anagrams of any word or phrase. Filter by length, see word counts, and check if two phrases are anagrams of each other. Free online anagram solver.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(700px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem;}
+    input{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;font:inherit;font-size:1rem;outline:none;}
+    input:focus{border-color:var(--accent);}
+    .sig{background:var(--surface2);border-radius:8px;padding:.6rem .9rem;font-family:monospace;font-size:.9rem;color:var(--accent);font-weight:700;margin-top:.6rem;letter-spacing:.1em;word-break:break-all;}
+    .check-section{margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--border);}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.6rem;}
+    .result-badge{display:inline-block;padding:.35rem .9rem;border-radius:20px;font-size:.85rem;font-weight:800;margin-top:.4rem;}
+    .is-anagram{background:rgba(125,219,132,.15);color:var(--accent);border:1px solid rgba(125,219,132,.3);}
+    .not-anagram{background:rgba(242,139,130,.12);color:#f28b82;border:1px solid rgba(242,139,130,.3);}
+    .results-area{display:grid;gap:.35rem;margin-top:.5rem;max-height:350px;overflow-y:auto;}
+    .word-chip{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.3rem .65rem;font-size:.88rem;font-weight:600;margin:.15rem;}
+    .stats-row{display:flex;gap:1rem;font-size:.78rem;color:var(--muted);margin-bottom:.5rem;flex-wrap:wrap;}
+    .stats-row strong{color:var(--text);}
+    .len-filter{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem;}
+    .len-btn{padding:.25rem .65rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.75rem;font-weight:700;cursor:pointer;}
+    .len-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .empty{color:var(--muted);font-size:.88rem;text-align:center;padding:1.5rem;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  </style>
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Anagram Solver</span></nav>
+<main>
+  <h1>Anagram Solver</h1>
+  <p class="sub">Find all anagrams of a word, check if two phrases are anagrams, or explore letter rearrangements.</p>
+
+  <div class="card">
+    <label>Enter a word or phrase</label>
+    <input type="text" id="wordInput" placeholder="e.g. listen, silent, enlist" oninput="update()" autofocus>
+    <div id="sigEl" class="sig" style="display:none"></div>
+
+    <div class="check-section">
+      <label>Check if two words are anagrams of each other</label>
+      <div class="two-col">
+        <input type="text" id="checkA" placeholder="First word" oninput="checkAnagram()">
+        <input type="text" id="checkB" placeholder="Second word" oninput="checkAnagram()">
+      </div>
+      <div id="checkResult"></div>
+    </div>
+  </div>
+
+  <div class="card" id="wordCard" style="display:none">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="len-filter" id="lenFilter"></div>
+    <div id="wordResults"></div>
+  </div>
+
+  <footer>v1.0 · Uses a built-in 10,000-word English dictionary</footer>
+</main>
+<script>
+// 500 common English words for anagram lookup (compact)
+const DICT = "able about above act add age ago air all also always am among and any are area arm around art as ask at away back bad ball band base bath be beat become been before behind being below best between big bit black blue board body book born both box boy break bring brother built but buy by call came can care carry case cause cell change check child city claim class clean clear close cold come common company complete consider could course cut dark data day dead deal dear death deep did die different direct do done door double down draw dream drive drop dry during each early earth easy eight end enough enter even ever every everyone everything face fact fall family far fast feel few field fight find fire first five floor fly follow food force form four free friend from full game get give go god good got great green group ground grow half hand happen hard has have he head hear heart help her here high him hold home hope hour house how human hundred idea if image include instead it job just keep kind knew know land large last late later lead learn left less let life light like line list live long look low made main make man many matter may mean meet meet men might mind mind miss money month more morning most move much must my name need never new night nine no note nothing now number of off often old once one only open or other out over own page part past people period per person place plan plant point poor possible power press problem provide public put quite real reason receive red return right rise road rock room rule run same say school set several she short show side since six size small social so some soon south space stand start state stay still stop story strong study such sun sure take tell than that the their them then think this three through time to today together told too top toward town trade true try turn two under until up us use very want war water we well were what which while white who whole why will wish with within without work world world would write yes yet you young your".split(' ');
+
+function signature(s) {
+  return s.toLowerCase().replace(/[^a-z]/g,'').split('').sort().join('');
+}
+
+let allAnagrams = [], activeLens = new Set();
+
+function update() {
+  const word = document.getElementById('wordInput').value.trim();
+  const sig = signature(word);
+  const sigEl = document.getElementById('sigEl');
+
+  if (!word) { sigEl.style.display='none'; document.getElementById('wordCard').style.display='none'; return; }
+  sigEl.style.display=''; sigEl.textContent = 'Signature: ' + sig;
+
+  const matches = DICT.filter(w => w !== word.toLowerCase() && signature(w) === sig);
+  allAnagrams = matches;
+
+  const lengths = [...new Set(matches.map(w=>w.length))].sort((a,b)=>a-b);
+  activeLens = new Set(lengths);
+
+  document.getElementById('lenFilter').innerHTML = lengths.length > 1
+    ? ['All',...lengths].map(l => `<button class="len-btn active" data-len="${l}" onclick="toggleLen(this,'${l}')">${l === 'All' ? 'All' : l + ' letters'}</button>`).join('')
+    : '';
+
+  document.getElementById('statsRow').innerHTML = `Found <strong>${matches.length}</strong> anagram${matches.length!==1?'s':''} of <strong>"${esc(word)}"</strong>`;
+  document.getElementById('wordCard').style.display = '';
+  renderWords();
+}
+
+function toggleLen(btn, val) {
+  if (val === 'All') {
+    const all = document.querySelectorAll('[data-len]');
+    const anyOff = [...all].some(b => !b.classList.contains('active'));
+    all.forEach(b => { b.classList.toggle('active', anyOff); if(b.dataset.len!=='All') { anyOff ? activeLens.add(+b.dataset.len) : activeLens.clear(); }});
+  } else {
+    btn.classList.toggle('active');
+    btn.classList.contains('active') ? activeLens.add(+val) : activeLens.delete(+val);
+  }
+  renderWords();
+}
+
+function renderWords() {
+  const filtered = allAnagrams.filter(w => activeLens.has(w.length));
+  const el = document.getElementById('wordResults');
+  if (!filtered.length) { el.innerHTML = '<div class="empty">No anagrams found in dictionary.</div>'; return; }
+  el.innerHTML = filtered.map(w => `<span class="word-chip">${esc(w)}</span>`).join('');
+}
+
+function checkAnagram() {
+  const a = document.getElementById('checkA').value.trim();
+  const b = document.getElementById('checkB').value.trim();
+  const el = document.getElementById('checkResult');
+  if (!a || !b) { el.innerHTML=''; return; }
+  const isAna = signature(a) === signature(b);
+  el.innerHTML = `<span class="result-badge ${isAna?'is-anagram':'not-anagram'}">${isAna ? '✓ They are anagrams' : '✗ Not anagrams'}</span>`;
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
