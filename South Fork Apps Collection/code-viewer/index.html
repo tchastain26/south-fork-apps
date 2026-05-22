@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Code Viewer | South Fork Apps</title>
   <meta name="description" content="Paste code and get instant syntax highlighting for 30+ programming languages. Free online code viewer with auto-detect and line numbers.">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/one-dark.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -61,11 +65,7 @@
 
     .spacer { flex: 1; }
 
-    main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
+    main { flex: 1; display: flex; overflow: hidden; }
 
     .pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
@@ -82,46 +82,32 @@
 
     .divider { width: 1px; background: #333; flex-shrink: 0; }
 
-    textarea {
+    /* CodeMirror fill */
+    #editor-container { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .CodeMirror {
       flex: 1;
-      background: #1a1b1e;
-      color: #cdd9e5;
-      border: none;
-      padding: 12px 14px;
-      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.65;
-      resize: none;
-      outline: none;
-      tab-size: 2;
+      height: 100% !important;
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace !important;
+      font-size: 13px !important;
+      line-height: 1.65 !important;
     }
-    textarea::placeholder { color: #3d444d; }
+    .CodeMirror-scroll { height: 100%; }
 
+    /* Right pane */
     .output-scroll { flex: 1; overflow: auto; }
-
     .output-scroll pre {
-      margin: 0;
-      padding: 12px 0;
+      margin: 0; padding: 12px 0;
       background: transparent !important;
       font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.65;
+      font-size: 13px; line-height: 1.65;
     }
-
     .output-scroll code.hljs { background: transparent !important; padding: 0 !important; }
-
     .line-table { border-collapse: collapse; width: 100%; }
     .ln { user-select: none; color: #3d444d; border-right: 1px solid #2d2d2d; padding: 0 12px 0 14px; text-align: right; min-width: 2.5em; vertical-align: top; }
     .lc { padding: 0 14px 0 12px; white-space: pre; }
+    .empty-state { padding: 16px 14px; color: #3d444d; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; }
 
-    .empty-state {
-      padding: 16px 14px;
-      color: #3d444d;
-      font-family: 'JetBrains Mono', Consolas, monospace;
-      font-size: 13px;
-    }
-
-    body.drag-active textarea { box-shadow: inset 0 0 0 2px #58a6ff; }
+    #preview-frame { flex: 1; border: none; width: 100%; display: none; background: white; }
 
     @media (max-width: 680px) {
       main { flex-direction: column; }
@@ -177,38 +163,110 @@
   <main>
     <div class="pane">
       <div class="pane-label">Input — paste, type, or drop a file</div>
-      <textarea id="input" placeholder="Paste code here…" spellcheck="false" autocorrect="off" autocomplete="off"></textarea>
+      <div id="editor-container"></div>
     </div>
     <div class="divider"></div>
     <div class="pane">
       <div class="pane-label" id="outLabel">Output</div>
+      <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
       <div class="output-scroll" id="output">
         <div class="empty-state">Highlighted output will appear here.</div>
       </div>
     </div>
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/yaml/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/shell/shell.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/rust/rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/ruby/ruby.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/diff/diff.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
   <script>
-    const inputEl  = document.getElementById('input');
-    const outputEl = document.getElementById('output');
-    const langEl   = document.getElementById('lang');
-    const outLabel = document.getElementById('outLabel');
+    const langEl     = document.getElementById('lang');
+    const outLabel   = document.getElementById('outLabel');
+    const outputEl   = document.getElementById('output');
+    const previewEl  = document.getElementById('preview-frame');
     let timer;
 
+    const CM_MODE = {
+      html:       'htmlmixed',
+      css:        'css',
+      javascript: 'javascript',
+      typescript: {name: 'javascript', typescript: true},
+      json:       {name: 'javascript', json: true},
+      xml:        'xml',
+      python:     'python',
+      bash:       'shell',
+      sql:        'sql',
+      yaml:       'yaml',
+      markdown:   'markdown',
+      go:         'go',
+      rust:       'rust',
+      swift:      'clike',
+      java:       'clike',
+      cpp:        'clike',
+      c:          'clike',
+      php:        'htmlmixed',
+      ruby:       'ruby',
+      diff:       'diff',
+    };
+
+    const editor = CodeMirror(document.getElementById('editor-container'), {
+      value: '',
+      mode: null,
+      theme: 'one-dark',
+      lineNumbers: true,
+      lineWrapping: false,
+      tabSize: 2,
+      indentWithTabs: false,
+      autofocus: true,
+      extraKeys: { Tab: cm => cm.replaceSelection('  ') },
+    });
+
+    editor.on('change', () => { clearTimeout(timer); timer = setTimeout(render, 150); });
+    langEl.addEventListener('change', () => { applyEditorMode(langEl.value); render(); });
+
+    function applyEditorMode(lang) {
+      editor.setOption('mode', CM_MODE[lang] || null);
+    }
+
     function render() {
-      const code = inputEl.value;
-      if (!code) {
-        outputEl.innerHTML = '<div class="empty-state">Highlighted output will appear here.</div>';
+      const code = editor.getValue();
+      if (!code.trim()) {
+        showHighlight('<div class="empty-state">Highlighted output will appear here.</div>');
         outLabel.textContent = 'Output';
         return;
       }
 
-      const lang = langEl.value;
-      let result;
+      let lang = langEl.value;
+
       if (lang === 'auto') {
-        result = hljs.highlightAuto(code);
-      } else if (lang === 'plaintext') {
+        const detected = hljs.highlightAuto(code);
+        lang = detected.language || 'plaintext';
+        applyEditorMode(lang);
+      }
+
+      if (lang === 'html') {
+        previewEl.style.display = 'block';
+        outputEl.style.display = 'none';
+        previewEl.srcdoc = code;
+        outLabel.textContent = 'Preview — rendered in browser';
+        return;
+      }
+
+      let result;
+      if (lang === 'plaintext' || !lang) {
         result = { value: hljs.escapeHtml(code), language: 'plaintext' };
       } else {
         try { result = hljs.highlight(code, { language: lang, ignoreIllegals: true }); }
@@ -216,49 +274,19 @@
       }
 
       outLabel.textContent = 'Output — ' + (result.language || 'plaintext');
-
       const lines = result.value.split('\n');
       if (lines[lines.length - 1] === '') lines.pop();
-
       const rows = lines.map((ln, i) =>
         `<tr><td class="ln">${i + 1}</td><td class="lc">${ln || ' '}</td></tr>`
       ).join('');
-
-      outputEl.innerHTML = `<pre><code class="hljs"><table class="line-table">${rows}</table></code></pre>`;
+      showHighlight(`<pre><code class="hljs"><table class="line-table">${rows}</table></code></pre>`);
     }
 
-    inputEl.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 120); });
-    langEl.addEventListener('change', render);
-
-    inputEl.addEventListener('keydown', e => {
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const s = inputEl.selectionStart, end = inputEl.selectionEnd;
-        inputEl.value = inputEl.value.slice(0, s) + '  ' + inputEl.value.slice(end);
-        inputEl.selectionStart = inputEl.selectionEnd = s + 2;
-      }
-    });
-
-    document.getElementById('openBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-    document.getElementById('fileInput').addEventListener('change', e => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = ev => { inputEl.value = ev.target.result; setLangFromFilename(f.name); render(); };
-      reader.readAsText(f);
-      e.target.value = '';
-    });
-
-    document.addEventListener('dragover', e => { e.preventDefault(); document.body.classList.add('drag-active'); });
-    ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, () => document.body.classList.remove('drag-active')));
-    document.addEventListener('drop', e => {
-      e.preventDefault();
-      const f = e.dataTransfer.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = ev => { inputEl.value = ev.target.result; setLangFromFilename(f.name); render(); };
-      reader.readAsText(f);
-    });
+    function showHighlight(html) {
+      previewEl.style.display = 'none';
+      outputEl.style.display = '';
+      outputEl.innerHTML = html;
+    }
 
     const EXT_MAP = {
       html: 'html', htm: 'html', css: 'css',
@@ -266,24 +294,42 @@
       ts: 'typescript', tsx: 'typescript',
       py: 'python', pyw: 'python',
       md: 'markdown', markdown: 'markdown',
-      json: 'json',
-      yaml: 'yaml', yml: 'yaml',
+      json: 'json', yaml: 'yaml', yml: 'yaml',
       sh: 'bash', bash: 'bash', zsh: 'bash',
       sql: 'sql', php: 'php', rb: 'ruby', go: 'go',
       swift: 'swift', java: 'java', kt: 'java',
       c: 'c', h: 'c', cpp: 'cpp', cc: 'cpp', cxx: 'cpp', hpp: 'cpp',
-      rs: 'rust', xml: 'xml', svg: 'xml',
-      diff: 'diff', patch: 'diff',
+      rs: 'rust', xml: 'xml', svg: 'xml', diff: 'diff', patch: 'diff',
     };
 
-    function setLangFromFilename(name) {
-      const ext = name.split('.').pop().toLowerCase();
-      langEl.value = EXT_MAP[ext] || 'auto';
+    function loadFile(file) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        editor.setValue(ev.target.result);
+        const ext = file.name.split('.').pop().toLowerCase();
+        const mapped = EXT_MAP[ext];
+        if (mapped) { langEl.value = mapped; applyEditorMode(mapped); }
+        render();
+      };
+      reader.readAsText(file);
     }
 
+    document.getElementById('openBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => {
+      if (e.target.files[0]) loadFile(e.target.files[0]);
+      e.target.value = '';
+    });
+
+    document.addEventListener('dragover', e => e.preventDefault());
+    document.addEventListener('drop', e => {
+      e.preventDefault();
+      if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+    });
+
     document.getElementById('copyBtn').addEventListener('click', () => {
-      if (!inputEl.value) return;
-      navigator.clipboard.writeText(inputEl.value).then(() => {
+      const code = editor.getValue();
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(() => {
         const btn = document.getElementById('copyBtn');
         btn.textContent = 'Copied!';
         btn.classList.add('success');
@@ -292,9 +338,9 @@
     });
 
     document.getElementById('clearBtn').addEventListener('click', () => {
-      inputEl.value = '';
+      editor.setValue('');
       render();
-      inputEl.focus();
+      editor.focus();
     });
   </script>
 </body>
