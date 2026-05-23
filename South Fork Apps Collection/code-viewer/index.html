@@ -109,6 +109,9 @@
 
     #preview-frame { flex: 1; border: none; width: 100%; display: none; background: white; }
 
+    main.output-hidden .pane:last-child,
+    main.output-hidden .divider { display: none; }
+
     @media (max-width: 680px) {
       main { flex-direction: column; }
       .divider { width: 100%; height: 1px; }
@@ -156,6 +159,7 @@
 
     <div class="spacer"></div>
 
+    <button class="btn" id="toggleOutputBtn">Hide Output</button>
     <button class="btn" id="copyBtn">Copy</button>
     <button class="btn" id="clearBtn">Clear</button>
   </header>
@@ -376,6 +380,21 @@
       render();
       editor.focus();
     });
+
+    const mainEl = document.querySelector('main');
+    const toggleOutputBtn = document.getElementById('toggleOutputBtn');
+
+    function setOutputVisible(visible) {
+      mainEl.classList.toggle('output-hidden', !visible);
+      toggleOutputBtn.textContent = visible ? 'Hide Output' : 'Show Output';
+      localStorage.setItem('codeviewer-output-visible', visible ? '1' : '0');
+    }
+
+    toggleOutputBtn.addEventListener('click', () => {
+      setOutputVisible(mainEl.classList.contains('output-hidden'));
+    });
+
+    if (localStorage.getItem('codeviewer-output-visible') === '0') setOutputVisible(false);
   </script>
 </body>
 </html>
