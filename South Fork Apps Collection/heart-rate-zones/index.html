@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Rate Zones | South Fork Apps</title>
+  <meta name="description" content="Calculate your 5 aerobic training zones by age or custom max heart rate. Supports Karvonen method. Free online tool.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#111412;color:#e8e8e8;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:1rem;padding:0.75rem 1.5rem;background:#1a1f1b;border-bottom:1px solid #2a2f2b}
+.nav-back{color:#7ddb84;text-decoration:none;font-size:0.875rem;font-weight:500}
+.nav-back:hover{text-decoration:underline}
+.nav-title{color:#e8e8e8;font-size:0.875rem;font-weight:600}
+main{flex:1;padding:2rem 1rem;max-width:680px;margin:0 auto;width:100%}
+h1{font-size:1.75rem;font-weight:700;margin-bottom:0.5rem}
+.subtitle{color:#a0a8a1;font-size:0.9rem;margin-bottom:2rem}
+.card{background:#1a1f1b;border:1px solid #2a2f2b;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+@media(max-width:480px){.inputs{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:0.4rem}
+label{font-size:0.8rem;font-weight:600;color:#a0a8a1;text-transform:uppercase;letter-spacing:0.05em}
+input,select{background:#111412;border:1px solid #2a2f2b;color:#e8e8e8;font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;padding:0.6rem 0.8rem;border-radius:8px;width:100%;transition:border-color 0.2s}
+input:focus,select:focus{outline:none;border-color:#7ddb84}
+.hint{font-size:0.75rem;color:#6a726b;margin-top:0.25rem}
+.max-hr-display{background:#111412;border:1px solid #2a2f2b;border-radius:8px;padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.max-hr-label{font-size:0.85rem;color:#a0a8a1}
+.max-hr-val{font-size:1.25rem;font-weight:700;color:#7ddb84}
+.zones{display:flex;flex-direction:column;gap:0.75rem}
+.zone{border-radius:10px;padding:1rem 1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center}
+.zone-num{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;white-space:nowrap}
+.zone-info{}
+.zone-name{font-weight:700;font-size:1rem}
+.zone-desc{font-size:0.8rem;opacity:0.75;margin-top:0.15rem}
+.zone-range{font-size:1.1rem;font-weight:700;white-space:nowrap;text-align:right}
+.zone-pct{font-size:0.75rem;opacity:0.7;text-align:right;margin-top:0.1rem}
+.bar-wrap{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;margin-top:1rem;overflow:hidden;display:flex}
+.bar-seg{height:100%;transition:width 0.4s}
+footer{text-align:center;padding:1.5rem;color:#4a524b;font-size:0.8rem;border-top:1px solid #1a1f1b}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Heart Rate Zones</span>
+</nav>
+<main>
+  <h1>Heart Rate Zones</h1>
+  <p class="subtitle">Calculate your 5 aerobic training zones based on your max heart rate.</p>
+
+  <div class="card">
+    <div class="inputs">
+      <div class="field">
+        <label>Age</label>
+        <input type="number" id="age" value="35" min="10" max="100">
+        <span class="hint">Used for age-predicted max HR (220 − age)</span>
+      </div>
+      <div class="field">
+        <label>Custom Max HR <span style="font-weight:400;text-transform:none">(optional)</span></label>
+        <input type="number" id="customMax" placeholder="Leave blank to use age formula" min="100" max="230">
+      </div>
+      <div class="field">
+        <label>Resting HR <span style="font-weight:400;text-transform:none">(optional)</span></label>
+        <input type="number" id="restingHR" placeholder="e.g. 60" min="30" max="120">
+        <span class="hint">Enables Karvonen (heart rate reserve) method</span>
+      </div>
+      <div class="field">
+        <label>Method</label>
+        <select id="method">
+          <option value="percent">% of Max HR</option>
+          <option value="karvonen">Karvonen (HR Reserve)</option>
+        </select>
+      </div>
+    </div>
+    <div class="max-hr-display">
+      <span class="max-hr-label">Max Heart Rate</span>
+      <span class="max-hr-val" id="maxHRDisplay">185 bpm</span>
+    </div>
+    <div class="bar-wrap" id="barWrap"></div>
+  </div>
+
+  <div class="zones" id="zones"></div>
+</main>
+<footer>Heart Rate Zones — South Fork Apps — v1.0</footer>
+
+<script>
+const ZONES=[
+  {name:"Zone 1",label:"Recovery",desc:"Very light effort — active recovery, warm-up",pctLo:50,pctHi:60,color:"#4fc3f7"},
+  {name:"Zone 2",label:"Aerobic Base",desc:"Comfortable effort — builds endurance, fat burning",pctLo:60,pctHi:70,color:"#81c784"},
+  {name:"Zone 3",label:"Aerobic",desc:"Moderate effort — improves aerobic capacity",pctLo:70,pctHi:80,color:"#7ddb84"},
+  {name:"Zone 4",label:"Threshold",desc:"Hard effort — improves lactate threshold",pctLo:80,pctHi:90,color:"#ffb74d"},
+  {name:"Zone 5",label:"Max Effort",desc:"All-out effort — peak speed and power",pctLo:90,pctHi:100,color:"#ef5350"},
+];
+
+const ageEl=document.getElementById('age');
+const customEl=document.getElementById('customMax');
+const restEl=document.getElementById('restingHR');
+const methodEl=document.getElementById('method');
+const maxDisp=document.getElementById('maxHRDisplay');
+const zonesEl=document.getElementById('zones');
+const barWrap=document.getElementById('barWrap');
+
+function calc(){
+  const age=parseInt(ageEl.value)||35;
+  const maxHR=parseInt(customEl.value)||(220-age);
+  const resting=parseInt(restEl.value)||0;
+  const useKarv=methodEl.value==='karvonen'&&resting>0;
+  const hrr=maxHR-resting;
+
+  maxDisp.textContent=`${maxHR} bpm`;
+
+  zonesEl.innerHTML='';
+  barWrap.innerHTML='';
+
+  ZONES.forEach(z=>{
+    let lo,hi;
+    if(useKarv){
+      lo=Math.round(resting+hrr*(z.pctLo/100));
+      hi=Math.round(resting+hrr*(z.pctHi/100));
+    } else {
+      lo=Math.round(maxHR*(z.pctLo/100));
+      hi=Math.round(maxHR*(z.pctHi/100));
+    }
+
+    const div=document.createElement('div');
+    div.className='zone';
+    div.style.background=z.color+'18';
+    div.style.border=`1px solid ${z.color}44`;
+    div.innerHTML=`
+      <div class="zone-num" style="color:${z.color}">${z.name}</div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:${z.color}">${z.label}</div>
+        <div class="zone-desc">${z.desc}</div>
+      </div>
+      <div>
+        <div class="zone-range" style="color:${z.color}">${lo}–${hi} bpm</div>
+        <div class="zone-pct">${z.pctLo}–${z.pctHi}%</div>
+      </div>`;
+    zonesEl.appendChild(div);
+
+    const seg=document.createElement('div');
+    seg.className='bar-seg';
+    seg.style.width=`${z.pctHi-z.pctLo}%`;
+    seg.style.background=z.color;
+    barWrap.appendChild(seg);
+  });
+
+  if(useKarv){
+    const note=document.createElement('p');
+    note.style.cssText='font-size:0.75rem;color:#6a726b;margin-top:0.75rem';
+    note.textContent=`Using Karvonen formula with resting HR ${resting} bpm and HRR ${hrr} bpm.`;
+    zonesEl.appendChild(note);
+  }
+}
+
+[ageEl,customEl,restEl,methodEl].forEach(el=>el.addEventListener('input',calc));
+calc();
+</script>
+</body>
+</html>
