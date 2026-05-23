@@ -15,6 +15,7 @@ TODAY = date.today().isoformat()
 APP_META = {
     "currency-converter":     ("Currency Converter",         "Convert between 30+ world currencies instantly using a built-in rate table. Free online currency converter."),
     "heart-rate-zones":       ("Heart Rate Zones",           "Calculate your 5 aerobic training zones by age or custom max heart rate. Supports Karvonen method. Free online tool."),
+    "net-worth-tracker":      ("Net Worth Tracker",          "Add assets and liabilities to calculate your net worth instantly. Free browser-based net worth calculator with visual breakdown."),
     "file-size-converter":    ("File Size Converter",        "Convert between bytes, KB, MB, GB, TB, and PB instantly. Free online file size converter with bit equivalents."),
     "metronome":              ("Metronome",                  "Free online metronome with BPM slider, tap tempo, visual beat, and audio click. Works in your browser with no install."),
     "tag-stripper":           ("Tag Stripper",               "Remove HTML tags, XML tags, or Markdown formatting from any text instantly. Free online tag and markup stripper."),

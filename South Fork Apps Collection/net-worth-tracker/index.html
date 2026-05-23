@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Net Worth Tracker | South Fork Apps</title>
+  <meta name="description" content="Add assets and liabilities to calculate your net worth instantly. Free browser-based net worth calculator with visual breakdown.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#111412;color:#e8e8e8;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.nav{display:flex;align-items:center;gap:1rem;padding:0.75rem 1.5rem;background:#1a1f1b;border-bottom:1px solid #2a2f2b}
+.nav-back{color:#7ddb84;text-decoration:none;font-size:0.875rem;font-weight:500}
+.nav-back:hover{text-decoration:underline}
+.nav-title{color:#e8e8e8;font-size:0.875rem;font-weight:600}
+main{flex:1;padding:2rem 1rem;max-width:720px;margin:0 auto;width:100%}
+h1{font-size:1.75rem;font-weight:700;margin-bottom:0.5rem}
+.subtitle{color:#a0a8a1;font-size:0.9rem;margin-bottom:2rem}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+@media(max-width:520px){.summary{grid-template-columns:1fr}}
+.stat{background:#1a1f1b;border:1px solid #2a2f2b;border-radius:12px;padding:1.25rem;text-align:center}
+.stat-label{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#a0a8a1;margin-bottom:0.4rem}
+.stat-val{font-size:1.6rem;font-weight:700}
+.positive{color:#7ddb84}
+.negative{color:#ef5350}
+.neutral{color:#e8e8e8}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:600px){.cols{grid-template-columns:1fr}}
+.section{background:#1a1f1b;border:1px solid #2a2f2b;border-radius:12px;padding:1.25rem}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.section-title{font-weight:700;font-size:1rem}
+.section-total{font-weight:700;font-size:0.95rem}
+.add-row{display:flex;gap:0.5rem;margin-bottom:0.75rem}
+.add-row input{background:#111412;border:1px solid #2a2f2b;color:#e8e8e8;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.875rem;padding:0.5rem 0.7rem;border-radius:7px;transition:border-color 0.2s}
+.add-row input:focus{outline:none;border-color:#7ddb84}
+.add-row .name-input{flex:2}
+.add-row .val-input{flex:1;min-width:80px}
+.add-btn{background:#7ddb84;color:#111412;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.8rem;padding:0.5rem 0.8rem;border-radius:7px;cursor:pointer;white-space:nowrap}
+.add-btn:hover{background:#6bc972}
+.item-list{display:flex;flex-direction:column;gap:0.4rem}
+.item{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.6rem;background:#111412;border-radius:7px;font-size:0.875rem}
+.item-name{flex:1;color:#e8e8e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-val{font-weight:600;margin:0 0.75rem}
+.del-btn{background:none;border:none;color:#4a524b;cursor:pointer;font-size:1rem;padding:0;line-height:1}
+.del-btn:hover{color:#ef5350}
+.empty{color:#4a524b;font-size:0.85rem;padding:0.5rem 0}
+.bar-wrap{height:10px;background:#111412;border-radius:5px;margin-top:1.5rem;overflow:hidden;display:flex;border:1px solid #2a2f2b}
+.bar-asset{background:#7ddb84;height:100%;transition:width 0.4s}
+.bar-liab{background:#ef5350;height:100%;transition:width 0.4s}
+footer{text-align:center;padding:1.5rem;color:#4a524b;font-size:0.8rem;border-top:1px solid #1a1f1b}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+  <span class="nav-title">Net Worth Tracker</span>
+</nav>
+<main>
+  <h1>Net Worth Tracker</h1>
+  <p class="subtitle">Add your assets and liabilities to calculate your net worth. Data stays in your browser session.</p>
+
+  <div class="summary">
+    <div class="stat">
+      <div class="stat-label">Total Assets</div>
+      <div class="stat-val positive" id="totalAssets">$0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total Liabilities</div>
+      <div class="stat-val negative" id="totalLiabs">$0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Net Worth</div>
+      <div class="stat-val neutral" id="netWorth">$0</div>
+    </div>
+  </div>
+
+  <div class="bar-wrap">
+    <div class="bar-asset" id="barAsset" style="width:50%"></div>
+    <div class="bar-liab" id="barLiab" style="width:50%"></div>
+  </div>
+  <div style="display:flex;gap:1.5rem;margin:0.5rem 0 1.5rem;font-size:0.75rem;color:#a0a8a1">
+    <span style="color:#7ddb84">■</span> Assets &nbsp;
+    <span style="color:#ef5350">■</span> Liabilities
+  </div>
+
+  <div class="cols">
+    <div class="section" id="assetSection">
+      <div class="section-head">
+        <span class="section-title" style="color:#7ddb84">Assets</span>
+        <span class="section-total positive" id="assetTotal">$0</span>
+      </div>
+      <div class="add-row">
+        <input class="name-input" id="assetName" placeholder="e.g. Checking account" type="text">
+        <input class="val-input" id="assetVal" placeholder="Amount" type="number" min="0" step="any">
+        <button class="add-btn" onclick="addItem('asset')">Add</button>
+      </div>
+      <div class="item-list" id="assetList"><span class="empty">No assets added yet.</span></div>
+    </div>
+
+    <div class="section" id="liabSection">
+      <div class="section-head">
+        <span class="section-title" style="color:#ef5350">Liabilities</span>
+        <span class="section-total negative" id="liabTotal">$0</span>
+      </div>
+      <div class="add-row">
+        <input class="name-input" id="liabName" placeholder="e.g. Car loan" type="text">
+        <input class="val-input" id="liabVal" placeholder="Amount" type="number" min="0" step="any">
+        <button class="add-btn" style="background:#ef5350" onclick="addItem('liab')">Add</button>
+      </div>
+      <div class="item-list" id="liabList"><span class="empty">No liabilities added yet.</span></div>
+    </div>
+  </div>
+</main>
+<footer>Net Worth Tracker — South Fork Apps — v1.0 — Data is not saved between sessions</footer>
+
+<script>
+const state={assets:[],liabs:[]};
+
+function fmt(n){return '$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+
+function addItem(type){
+  const nameEl=document.getElementById(type==='asset'?'assetName':'liabName');
+  const valEl=document.getElementById(type==='asset'?'assetVal':'liabVal');
+  const name=nameEl.value.trim();
+  const val=parseFloat(valEl.value);
+  if(!name||isNaN(val)||val<0)return;
+  state[type==='asset'?'assets':'liabs'].push({name,val});
+  nameEl.value='';valEl.value='';
+  render();
+}
+
+function removeItem(type,idx){
+  state[type==='asset'?'assets':'liabs'].splice(idx,1);
+  render();
+}
+
+function render(){
+  const assetSum=state.assets.reduce((s,i)=>s+i.val,0);
+  const liabSum=state.liabs.reduce((s,i)=>s+i.val,0);
+  const net=assetSum-liabSum;
+  const total=assetSum+liabSum;
+
+  document.getElementById('totalAssets').textContent=fmt(assetSum);
+  document.getElementById('totalLiabs').textContent=fmt(liabSum);
+  const nw=document.getElementById('netWorth');
+  nw.textContent=(net<0?'-':'')+fmt(net);
+  nw.className='stat-val '+(net>0?'positive':net<0?'negative':'neutral');
+
+  document.getElementById('assetTotal').textContent=fmt(assetSum);
+  document.getElementById('liabTotal').textContent=fmt(liabSum);
+
+  if(total>0){
+    document.getElementById('barAsset').style.width=(assetSum/total*100)+'%';
+    document.getElementById('barLiab').style.width=(liabSum/total*100)+'%';
+  } else {
+    document.getElementById('barAsset').style.width='50%';
+    document.getElementById('barLiab').style.width='50%';
+  }
+
+  ['assets','liabs'].forEach(type=>{
+    const listEl=document.getElementById(type==='assets'?'assetList':'liabList');
+    const color=type==='assets'?'#7ddb84':'#ef5350';
+    if(state[type].length===0){
+      listEl.innerHTML=`<span class="empty">No ${type} added yet.</span>`;
+      return;
+    }
+    listEl.innerHTML='';
+    state[type].forEach((item,idx)=>{
+      const div=document.createElement('div');
+      div.className='item';
+      div.innerHTML=`<span class="item-name" title="${item.name}">${item.name}</span><span class="item-val" style="color:${color}">${fmt(item.val)}</span><button class="del-btn" title="Remove">✕</button>`;
+      div.querySelector('.del-btn').addEventListener('click',()=>removeItem(type==='assets'?'asset':'liab',idx));
+      listEl.appendChild(div);
+    });
+  });
+}
+
+['assetVal','liabVal'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{
+    if(e.key==='Enter')addItem(id.startsWith('asset')?'asset':'liab');
+  });
+});
+
+render();
+</script>
+</body>
+</html>
