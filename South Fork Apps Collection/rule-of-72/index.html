@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rule of 72 | South Fork Apps</title>
+  <meta name="description" content="Enter an interest rate to instantly see how many years it takes to double your money. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #151916;
+      --text: #e8e8e8;
+      --muted: #a6b4aa;
+      --accent: #7ddb84;
+      --border: #2a2f2b;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+      --danger: #ff8f8f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.16), transparent 22%),
+        linear-gradient(180deg, rgba(20, 25, 21, 0.4), transparent 30%),
+        var(--bg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1150px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4rem);
+      line-height: 1.02;
+      max-width: 11ch;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 64ch;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+
+    .panel,
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(26, 31, 27, 0.98), rgba(17, 20, 18, 0.98));
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 1.25rem;
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+    }
+
+    .card {
+      padding: 1.25rem;
+    }
+
+    h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.05rem;
+    }
+
+    .section-copy {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+
+    .label-row span:first-child {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    input[type="number"],
+    input[type="range"] {
+      width: 100%;
+    }
+
+    input[type="number"] {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      font: inherit;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: rgba(125, 219, 132, 0.75);
+      box-shadow: 0 0 0 3px rgba(125, 219, 132, 0.14);
+    }
+
+    input[type="range"] {
+      appearance: none;
+      background: transparent;
+      height: 2rem;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 0.5rem;
+      background: rgba(125, 219, 132, 0.18);
+      border-radius: 999px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 1.1rem;
+      height: 1.1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: -0.3rem;
+      border: none;
+      box-shadow: 0 0 0 4px rgba(125, 219, 132, 0.16);
+      cursor: pointer;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      border: 1px solid rgba(125, 219, 132, 0.25);
+      background: rgba(125, 219, 132, 0.1);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 0.7rem 0.95rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(125, 219, 132, 0.55);
+      background: rgba(125, 219, 132, 0.17);
+    }
+
+    .error {
+      min-height: 1.3rem;
+      margin-top: 0.75rem;
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 1.15rem;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(21, 25, 22, 0.92);
+      padding: 1rem;
+      display: grid;
+      gap: 0.55rem;
+      min-height: 150px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .metric-value {
+      font-size: clamp(1.75rem, 4vw, 2.7rem);
+      line-height: 1;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .metric-copy {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .timeline-row {
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .timeline-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    .timeline-track {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      height: 1rem;
+      overflow: hidden;
+    }
+
+    .timeline-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5aa764, #7ddb84);
+      width: 0;
+      transition: width 0.28s ease;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .comparison {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(21, 25, 22, 0.92);
+      padding: 0.95rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .comparison strong {
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    .comparison span {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .callout {
+      margin-top: 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(125, 219, 132, 0.2);
+      background: rgba(125, 219, 132, 0.08);
+      padding: 1rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    footer {
+      width: min(1150px, calc(100% - 2rem));
+      margin: 0 auto 2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .version {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .layout,
+      .result-grid,
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Rule of 72</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Finance Shortcut</span>
+      <h1>See how fast money doubles at your current return.</h1>
+      <p>The Rule of 72 is a fast estimate for how many years it takes an investment to double. Enter an annual return and compare the shortcut to the exact compounding math, plus rough tripling and quadrupling timelines.</p>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <h2>Inputs</h2>
+        <p class="section-copy">Change the annual rate with the number field or the slider. Everything updates instantly.</p>
+
+        <label for="rateInput">
+          <div class="label-row">
+            <span>Annual return rate</span>
+            <span id="ratePreview">8.0%</span>
+          </div>
+          <input id="rateInput" type="number" min="0.1" max="100" step="0.1" value="8">
+        </label>
+
+        <label for="rateSlider">
+          <div class="label-row">
+            <span>Quick slider</span>
+            <span>0.1% to 30%</span>
+          </div>
+          <input id="rateSlider" type="range" min="0.1" max="30" step="0.1" value="8">
+        </label>
+
+        <div class="chip-row">
+          <button type="button" data-rate="3">Savings 3%</button>
+          <button type="button" data-rate="7">Index 7%</button>
+          <button type="button" data-rate="10">Aggressive 10%</button>
+        </div>
+
+        <p class="error" id="errorMessage" aria-live="polite"></p>
+      </aside>
+
+      <section class="dashboard">
+        <article class="card">
+          <h2>Doubling timeline</h2>
+          <p class="section-copy">The Rule of 72 is the shortcut. The exact result uses annual compounding math for a cleaner comparison.</p>
+
+          <div class="result-grid">
+            <div class="metric">
+              <span class="metric-label">Rule of 72 estimate</span>
+              <strong class="metric-value" id="rule72Years">0 years</strong>
+              <span class="metric-copy" id="rule72Copy">A quick mental-math estimate for doubling time.</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Exact doubling time</span>
+              <strong class="metric-value" id="exactYears">0 years</strong>
+              <span class="metric-copy" id="exactCopy">Calculated with annual compounding.</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Difference</span>
+              <strong class="metric-value" id="differenceYears">0 years</strong>
+              <span class="metric-copy" id="differenceCopy">How close the shortcut is at this rate.</span>
+            </div>
+
+            <div class="metric">
+              <span class="metric-label">Rule-of-thumb check</span>
+              <strong class="metric-value" id="fitLabel">Good fit</strong>
+              <span class="metric-copy" id="fitCopy">The Rule of 72 tends to work best in the mid-single-digit to low-teen range.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Growth milestones</h2>
+          <p class="section-copy">These bars show rough timelines for common milestones using exact annual compounding at your selected rate.</p>
+
+          <div class="timeline">
+            <div class="timeline-row">
+              <div class="timeline-meta">
+                <span>Double your money</span>
+                <strong id="doubleLabel">0 years</strong>
+              </div>
+              <div class="timeline-track"><div class="timeline-fill" id="doubleBar"></div></div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-meta">
+                <span>Triple your money</span>
+                <strong id="tripleLabel">0 years</strong>
+              </div>
+              <div class="timeline-track"><div class="timeline-fill" id="tripleBar"></div></div>
+            </div>
+
+            <div class="timeline-row">
+              <div class="timeline-meta">
+                <span>Quadruple your money</span>
+                <strong id="quadLabel">0 years</strong>
+              </div>
+              <div class="timeline-track"><div class="timeline-fill" id="quadBar"></div></div>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong id="moneyStory">At 8.0%, money roughly doubles every 9 years.</strong>
+            <span id="moneyCopy">That means a long horizon matters. A small rate change can shave years off your doubling time.</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Compare the shortcuts</h2>
+          <p class="section-copy">Different rules are used for different back-of-the-envelope estimates. This gives you the quick mental-math reference points.</p>
+
+          <div class="comparison-grid">
+            <div class="comparison">
+              <strong id="rule69Value">0 years</strong>
+              <span>Rule of 69.3 (continuous compounding style estimate)</span>
+            </div>
+            <div class="comparison">
+              <strong id="rule70Value">0 years</strong>
+              <span>Rule of 70 (slightly conservative shortcut)</span>
+            </div>
+            <div class="comparison">
+              <strong id="rule72Value">0 years</strong>
+              <span>Rule of 72 (popular balance between speed and accuracy)</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <span>Rule of 72 gives a quick investing estimate without needing a spreadsheet.</span>
+    <span class="version">v1.0</span>
+  </footer>
+
+  <script>
+    const rateInput = document.getElementById('rateInput');
+    const rateSlider = document.getElementById('rateSlider');
+    const ratePreview = document.getElementById('ratePreview');
+    const errorMessage = document.getElementById('errorMessage');
+
+    const rule72YearsEl = document.getElementById('rule72Years');
+    const exactYearsEl = document.getElementById('exactYears');
+    const differenceYearsEl = document.getElementById('differenceYears');
+    const fitLabelEl = document.getElementById('fitLabel');
+    const fitCopyEl = document.getElementById('fitCopy');
+    const rule72CopyEl = document.getElementById('rule72Copy');
+    const exactCopyEl = document.getElementById('exactCopy');
+    const differenceCopyEl = document.getElementById('differenceCopy');
+    const doubleLabelEl = document.getElementById('doubleLabel');
+    const tripleLabelEl = document.getElementById('tripleLabel');
+    const quadLabelEl = document.getElementById('quadLabel');
+    const doubleBarEl = document.getElementById('doubleBar');
+    const tripleBarEl = document.getElementById('tripleBar');
+    const quadBarEl = document.getElementById('quadBar');
+    const moneyStoryEl = document.getElementById('moneyStory');
+    const moneyCopyEl = document.getElementById('moneyCopy');
+    const rule69ValueEl = document.getElementById('rule69Value');
+    const rule70ValueEl = document.getElementById('rule70Value');
+    const rule72ValueEl = document.getElementById('rule72Value');
+
+    function formatYears(value) {
+      return `${value.toFixed(value >= 20 ? 1 : 2)} years`;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function setRate(value) {
+      rateInput.value = value;
+      rateSlider.value = clamp(value, 0.1, 30);
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const rate = Number(rateInput.value);
+      rateSlider.value = clamp(rate || 0.1, 0.1, 30);
+      ratePreview.textContent = `${(rate || 0).toFixed(1)}%`;
+
+      if (!Number.isFinite(rate) || rate <= 0) {
+        errorMessage.textContent = 'Enter a positive annual return rate greater than 0%.';
+        return;
+      }
+
+      errorMessage.textContent = '';
+
+      const decimalRate = rate / 100;
+      const rule72 = 72 / rate;
+      const exactDouble = Math.log(2) / Math.log(1 + decimalRate);
+      const exactTriple = Math.log(3) / Math.log(1 + decimalRate);
+      const exactQuad = Math.log(4) / Math.log(1 + decimalRate);
+      const rule69 = 69.3 / rate;
+      const rule70 = 70 / rate;
+      const difference = Math.abs(rule72 - exactDouble);
+      const maxTimeline = Math.max(exactQuad, 1);
+
+      rule72YearsEl.textContent = formatYears(rule72);
+      exactYearsEl.textContent = formatYears(exactDouble);
+      differenceYearsEl.textContent = formatYears(difference);
+      rule72CopyEl.textContent = `72 ÷ ${rate.toFixed(1)} = ${rule72.toFixed(2)} years.`;
+      exactCopyEl.textContent = `Exact annual compounding says ${exactDouble.toFixed(2)} years.`;
+      differenceCopyEl.textContent = `The shortcut is off by about ${difference.toFixed(2)} years at this return rate.`;
+
+      if (rate >= 6 && rate <= 12) {
+        fitLabelEl.textContent = 'Best fit';
+        fitCopyEl.textContent = 'This is the sweet spot where the Rule of 72 usually feels strongest and most practical.';
+      } else if (rate > 12) {
+        fitLabelEl.textContent = 'Looser fit';
+        fitCopyEl.textContent = 'At higher rates, the shortcut gets rougher. Use the exact math when the stakes matter.';
+      } else {
+        fitLabelEl.textContent = 'Usable fit';
+        fitCopyEl.textContent = 'At lower rates, the estimate is still useful, but exact compounding gives a cleaner answer.';
+      }
+
+      doubleLabelEl.textContent = formatYears(exactDouble);
+      tripleLabelEl.textContent = formatYears(exactTriple);
+      quadLabelEl.textContent = formatYears(exactQuad);
+      doubleBarEl.style.width = `${clamp((exactDouble / maxTimeline) * 100, 0, 100)}%`;
+      tripleBarEl.style.width = `${clamp((exactTriple / maxTimeline) * 100, 0, 100)}%`;
+      quadBarEl.style.width = `${clamp((exactQuad / maxTimeline) * 100, 0, 100)}%`;
+
+      moneyStoryEl.textContent = `At ${rate.toFixed(1)}%, money roughly doubles every ${Math.round(rule72 * 10) / 10} years.`;
+      if (rate >= 10) {
+        moneyCopyEl.textContent = 'Strong returns compress time fast. The challenge is maintaining that rate without taking reckless risk.';
+      } else if (rate >= 5) {
+        moneyCopyEl.textContent = 'This is why patient compounding works. Consistent mid-range returns still change the timeline a lot.';
+      } else {
+        moneyCopyEl.textContent = 'Lower rates still compound, but they need much more time. Time becomes the main lever.';
+      }
+
+      rule69ValueEl.textContent = formatYears(rule69);
+      rule70ValueEl.textContent = formatYears(rule70);
+      rule72ValueEl.textContent = formatYears(rule72);
+    }
+
+    rateInput.addEventListener('input', updateCalculator);
+    rateSlider.addEventListener('input', (event) => setRate(Number(event.target.value)));
+    document.querySelectorAll('[data-rate]').forEach((button) => {
+      button.addEventListener('click', () => setRate(Number(button.dataset.rate)));
+    });
+
+    updateCalculator();
+  </script>
+</body>
+</html>

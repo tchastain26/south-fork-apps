@@ -122,6 +122,7 @@ APP_META = {
     "nato-alphabet":          ("NATO Phonetic Alphabet Converter", "Convert any text to the NATO phonetic alphabet. Alpha, Bravo, Charlie. Free online NATO alphabet converter."),
     "morse-code":             ("Morse Code Translator",       "Translate text to Morse code and back with audio playback. Free online Morse code translator and decoder."),
     "compound-interest":      ("Compound Interest Calculator", "Calculate compound interest with monthly contributions. Includes growth chart and year-by-year table. Free online calculator."),
+    "rule-of-72":             ("Rule of 72",                  "Enter an interest rate to instantly see how many years it takes to double your money. Free online tool."),
     "roman-numerals":         ("Roman Numeral Converter",      "Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown."),
     "zalgo-text":             ("Zalgo Text Generator",         "Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker."),
     "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
