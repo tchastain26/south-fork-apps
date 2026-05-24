@@ -123,6 +123,7 @@ APP_META = {
     "morse-code":             ("Morse Code Translator",       "Translate text to Morse code and back with audio playback. Free online Morse code translator and decoder."),
     "compound-interest":      ("Compound Interest Calculator", "Calculate compound interest with monthly contributions. Includes growth chart and year-by-year table. Free online calculator."),
     "rule-of-72":             ("Rule of 72",                  "Enter an interest rate to instantly see how many years it takes to double your money. Free online tool."),
+    "resistor-color-code":    ("Resistor Color Code",         "Decode or build 4-band and 5-band resistor color codes with real-time ohm display. Free online tool."),
     "roman-numerals":         ("Roman Numeral Converter",      "Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown."),
     "zalgo-text":             ("Zalgo Text Generator",         "Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker."),
     "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
