@@ -141,6 +141,7 @@ APP_META = {
     "dice-roller":            ("Dice Roller",                  "Roll d4, d6, d8, d10, d12, d20, and d100 with modifiers and roll history. Free online dice roller for tabletop games."),
     "jwt-decoder":            ("JWT Decoder",                  "Decode JSON Web Tokens instantly. See header, payload, expiration, and claims. Everything runs in your browser. Free online JWT decoder."),
     "bill-splitter":          ("Bill Splitter",                "Split a restaurant bill unevenly between any number of people. Assign individual subtotals and split tax and tip proportionally. Free online bill splitter."),
+    "break-even-calculator":  ("Break-Even Calculator",        "Enter fixed costs, variable cost per unit, and selling price to find break-even volume. Free online tool."),
     "sleep-cycle-calculator": ("Sleep Cycle Calculator",       "Find the best times to wake up or go to sleep based on 90-minute sleep cycles. Wake up refreshed instead of groggy. Free online sleep calculator."),
     "breath-timer":           ("Breath Timer",                 "Guided breathing timer with animated visual cues for box breathing, 4-7-8, and calm patterns. Free online breath timer."),
     "pay-converter":          ("Pay Converter",                "Convert any salary between hourly, daily, weekly, biweekly, monthly, and annual pay rates instantly. Free online pay rate converter."),
