@@ -70,6 +70,7 @@ APP_META = {
     "random-picker":          ("Random Picker",              "Pick a random item from any list instantly. Paste your options and let the random picker choose for you."),
     "reading-time-calculator":("Reading Time Calculator",    "Calculate how long it takes to read any text. Paste your content and get an estimated reading time instantly."),
     "recipe-scaler":          ("Recipe Scaler",              "Scale any recipe up or down by changing the number of servings. Free online recipe scaling tool."),
+    "rock-paper-scissors":    ("Rock Paper Scissors",        "Play rock paper scissors against the computer with saved scores, streak tracking, and recent round history. Free online tool."),
     "remove-empty-lines":     ("Empty Line Remover",         "Remove all blank lines from a block of text instantly. Free online tool to clean up empty lines."),
     "reverse-lines":          ("Reverse Lines",              "Reverse the order of lines in any block of text. Free online line reversal tool."),
     "slugify-text":           ("Slugify Text",               "Convert any text to a URL-friendly slug. Free online slugifier for creating clean URLs and filenames."),
