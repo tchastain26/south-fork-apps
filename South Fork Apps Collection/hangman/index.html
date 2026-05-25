@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman | South Fork Apps</title>
+  <meta name="description" content="Play classic hangman with category hints, difficulty modes, keyboard input, and persistent stats. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #a6b2a8;
+      --accent: #7ddb84;
+      --danger: #ff9a9a;
+      --warning: #f7c876;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.12), transparent 22rem),
+        radial-gradient(circle at bottom right, rgba(125, 219, 132, 0.08), transparent 18rem),
+        #111412;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1240px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .stat-card,
+    .footer {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      max-width: 60ch;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .hero-note {
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.7);
+      border: 1px solid rgba(42, 47, 43, 0.9);
+    }
+
+    .hero-note strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.95rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.9rem;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    select,
+    button {
+      font: inherit;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-alt);
+      color: var(--text);
+      padding: 0.82rem 0.95rem;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    .button-row,
+    .difficulty-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0d170e;
+      padding: 0.8rem 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(125, 219, 132, 0.18);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .difficulty-chip {
+      border-color: rgba(125, 219, 132, 0.22);
+      background: rgba(125, 219, 132, 0.06);
+      color: var(--muted);
+      padding-inline: 0.95rem;
+    }
+
+    .difficulty-chip.active {
+      background: var(--accent);
+      color: #0d170e;
+    }
+
+    .status-banner {
+      margin: 1rem 0 1.1rem;
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(125, 219, 132, 0.22);
+      background: rgba(125, 219, 132, 0.1);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .status-banner.loss {
+      border-color: rgba(255, 154, 154, 0.25);
+      background: rgba(255, 154, 154, 0.1);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .stat-card {
+      padding: 1rem;
+    }
+
+    .stat-card span {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-card strong {
+      font-size: 1.6rem;
+      letter-spacing: -0.04em;
+    }
+
+    .hangman-wrap {
+      display: grid;
+      gap: 1rem;
+      justify-items: center;
+      padding: 1.4rem 1rem;
+      border-radius: 18px;
+      background: rgba(17, 20, 18, 0.74);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      margin-bottom: 1rem;
+    }
+
+    .gallows {
+      width: min(100%, 300px);
+      height: auto;
+    }
+
+    .word-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      justify-content: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .letter-slot,
+    .space-slot {
+      min-width: 2.6rem;
+      min-height: 3.2rem;
+      display: grid;
+      place-items: center;
+      font-size: 1.55rem;
+      font-weight: 800;
+      border-radius: 14px;
+    }
+
+    .letter-slot {
+      border: 1px solid var(--border);
+      background: rgba(32, 39, 34, 0.88);
+      box-shadow: inset 0 -3px 0 rgba(125, 219, 132, 0.06);
+    }
+
+    .space-slot {
+      min-width: 1.2rem;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .pill {
+      padding: 0.42rem 0.72rem;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 219, 132, 0.18);
+      background: rgba(125, 219, 132, 0.08);
+    }
+
+    .wrong-list {
+      min-height: 1.7rem;
+      color: var(--warning);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+
+    .key {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(32, 39, 34, 0.92);
+      color: var(--text);
+      padding: 0.9rem 0;
+      font-weight: 800;
+    }
+
+    .key.correct {
+      background: rgba(125, 219, 132, 0.14);
+      border-color: rgba(125, 219, 132, 0.34);
+      color: var(--accent);
+    }
+
+    .key.wrong {
+      background: rgba(255, 154, 154, 0.1);
+      border-color: rgba(255, 154, 154, 0.22);
+      color: var(--danger);
+    }
+
+    .sidebar-stack {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .info-item {
+      padding: 0.95rem 1rem;
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.72);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      padding: 1rem 1.1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .hero,
+      .panel {
+        padding: 1.1rem;
+      }
+
+      .control-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .keyboard {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .letter-slot,
+      .space-slot {
+        min-width: 2.15rem;
+        min-height: 2.9rem;
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">&#8592; South Fork Apps</a>
+    <span class="nav-title">Hangman</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Fun and games</p>
+        <h1>Classic Hangman, cleaned up.</h1>
+        <p>Pick a category, choose your difficulty, and guess the hidden word before the drawing is complete. Use the on-screen keyboard or your physical keyboard. Stats stay saved in your browser.</p>
+      </div>
+      <div class="hero-list">
+        <div class="hero-note">
+          <strong>Built-in categories</strong>
+          <span>Travel, food, music, science, outdoors, and more.</span>
+        </div>
+        <div class="hero-note">
+          <strong>Difficulty modes</strong>
+          <span>Easy reveals the first letter. Standard and hard tighten the life count.</span>
+        </div>
+        <div class="hero-note">
+          <strong>Quick rematch</strong>
+          <span>Jump straight to a new word without resetting your stats.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="control-grid">
+          <label>
+            Category
+            <select id="categorySelect" aria-label="Choose a category"></select>
+          </label>
+          <button id="newGameButton" type="button">New Word</button>
+        </div>
+
+        <div class="difficulty-row" id="difficultyRow" aria-label="Difficulty options"></div>
+
+        <div id="statusBanner" class="status-banner">Pick letters to start the round.</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Lives left</span>
+            <strong id="livesValue">6</strong>
+          </div>
+          <div class="stat-card">
+            <span>Wins</span>
+            <strong id="winsValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Current streak</span>
+            <strong id="streakValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Best streak</span>
+            <strong id="bestValue">0</strong>
+          </div>
+        </div>
+
+        <div class="hangman-wrap">
+          <svg class="gallows" viewBox="0 0 260 220" aria-hidden="true">
+            <line x1="26" y1="202" x2="126" y2="202" stroke="#2a2f2b" stroke-width="10" stroke-linecap="round"></line>
+            <line x1="56" y1="202" x2="56" y2="22" stroke="#2a2f2b" stroke-width="10" stroke-linecap="round"></line>
+            <line x1="56" y1="24" x2="170" y2="24" stroke="#2a2f2b" stroke-width="10" stroke-linecap="round"></line>
+            <line x1="168" y1="24" x2="168" y2="52" stroke="#2a2f2b" stroke-width="10" stroke-linecap="round"></line>
+            <circle id="partHead" cx="168" cy="76" r="22" fill="none" stroke="#7ddb84" stroke-width="8" opacity="0.18"></circle>
+            <line id="partBody" x1="168" y1="98" x2="168" y2="146" stroke="#7ddb84" stroke-width="8" stroke-linecap="round" opacity="0.18"></line>
+            <line id="partLeftArm" x1="168" y1="112" x2="138" y2="136" stroke="#7ddb84" stroke-width="8" stroke-linecap="round" opacity="0.18"></line>
+            <line id="partRightArm" x1="168" y1="112" x2="198" y2="136" stroke="#7ddb84" stroke-width="8" stroke-linecap="round" opacity="0.18"></line>
+            <line id="partLeftLeg" x1="168" y1="146" x2="142" y2="184" stroke="#7ddb84" stroke-width="8" stroke-linecap="round" opacity="0.18"></line>
+            <line id="partRightLeg" x1="168" y1="146" x2="194" y2="184" stroke="#7ddb84" stroke-width="8" stroke-linecap="round" opacity="0.18"></line>
+          </svg>
+
+          <div id="wordRow" class="word-row" aria-live="polite"></div>
+
+          <div class="meta-row">
+            <div class="pill">Category: <strong id="categoryValue">Travel</strong></div>
+            <div class="pill">Word length: <strong id="lengthValue">7</strong></div>
+            <div class="pill">Difficulty: <strong id="difficultyValue">Standard</strong></div>
+          </div>
+
+          <div class="wrong-list">Wrong letters: <span id="wrongLetters">None yet</span></div>
+        </div>
+
+        <div id="keyboard" class="keyboard" aria-label="Letter keyboard"></div>
+      </section>
+
+      <aside class="sidebar-stack">
+        <section class="panel">
+          <h2 class="section-title">How this round works</h2>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>1. Pick your lane</strong>
+              <span>Category decides the word bank. Easy gives you 8 lives and reveals the opening letter. Standard gives 6. Hard gives 5.</span>
+            </div>
+            <div class="info-item">
+              <strong>2. Guess cleanly</strong>
+              <span>Correct letters fill every matching slot. Wrong guesses burn a life and draw the next body part.</span>
+            </div>
+            <div class="info-item">
+              <strong>3. Keep the streak alive</strong>
+              <span>Wins build streaks. One loss drops the streak to zero, but your best streak stays saved.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 class="section-title">Round details</h2>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Hidden answer</strong>
+              <span id="answerType">Single words and short phrases appear in uppercase with spaces preserved.</span>
+            </div>
+            <div class="info-item">
+              <strong>Keyboard support</strong>
+              <span>Press any A to Z key on your keyboard. Repeat guesses are ignored automatically.</span>
+            </div>
+            <div class="info-item">
+              <strong>Word pool</strong>
+              <span id="poolCount">42 possible answers loaded.</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="footer">v1.0</footer>
+  </main>
+
+  <script>
+    const WORD_BANK = {
+      All: [],
+      Travel: ['PASSPORT', 'ROAD TRIP', 'CAMPGROUND', 'LAYOVER', 'BOARDING PASS', 'SUITCASE', 'POSTCARD'],
+      Food: ['SOURDOUGH', 'BLUEBERRY', 'CASSEROLE', 'LEMON TART', 'PANTRY', 'WAFFLE IRON', 'CHOPSTICKS'],
+      Music: ['BACKBEAT', 'CHORD PROGRESSION', 'HEADPHONES', 'VINYL', 'PRACTICE AMP', 'SONGWRITER', 'METRONOME'],
+      Science: ['GRAVITY', 'NEBULA', 'ATLAS', 'TELESCOPE', 'CARBON', 'LAB NOTEBOOK', 'MOLECULE'],
+      Outdoors: ['TRAILHEAD', 'CAMPFIRE', 'WILDFLOWER', 'PINECONE', 'DAYPACK', 'HIKING POLE', 'RIVERBANK'],
+      Productivity: ['CHECKLIST', 'DEEP WORK', 'FOCUS BLOCK', 'WHITEBOARD', 'CALENDAR', 'NOTE STACK', 'DEADLINE']
+    };
+
+    WORD_BANK.All = Object.keys(WORD_BANK)
+      .filter((key) => key !== 'All')
+      .flatMap((key) => WORD_BANK[key].map((answer) => ({ category: key, answer })));
+
+    const DIFFICULTIES = {
+      easy: { label: 'Easy', lives: 8, revealFirstLetter: true },
+      standard: { label: 'Standard', lives: 6, revealFirstLetter: false },
+      hard: { label: 'Hard', lives: 5, revealFirstLetter: false }
+    };
+
+    const STATS_KEY = 'southForkHangmanStats';
+    const BODY_PARTS = ['partHead', 'partBody', 'partLeftArm', 'partRightArm', 'partLeftLeg', 'partRightLeg'];
+    const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+    const state = {
+      difficulty: 'standard',
+      answer: '',
+      selectedCategory: 'All',
+      answerCategory: 'All',
+      guessed: new Set(),
+      wrong: [],
+      livesLeft: DIFFICULTIES.standard.lives,
+      maxLives: DIFFICULTIES.standard.lives,
+      stats: loadStats(),
+      gameOver: false
+    };
+
+    const categorySelect = document.getElementById('categorySelect');
+    const difficultyRow = document.getElementById('difficultyRow');
+    const newGameButton = document.getElementById('newGameButton');
+    const statusBanner = document.getElementById('statusBanner');
+    const wordRow = document.getElementById('wordRow');
+    const keyboard = document.getElementById('keyboard');
+    const wrongLetters = document.getElementById('wrongLetters');
+    const categoryValue = document.getElementById('categoryValue');
+    const lengthValue = document.getElementById('lengthValue');
+    const difficultyValue = document.getElementById('difficultyValue');
+    const livesValue = document.getElementById('livesValue');
+    const winsValue = document.getElementById('winsValue');
+    const streakValue = document.getElementById('streakValue');
+    const bestValue = document.getElementById('bestValue');
+    const poolCount = document.getElementById('poolCount');
+
+    function loadStats() {
+      try {
+        return JSON.parse(localStorage.getItem(STATS_KEY)) || { wins: 0, losses: 0, streak: 0, best: 0 };
+      } catch (error) {
+        return { wins: 0, losses: 0, streak: 0, best: 0 };
+      }
+    }
+
+    function saveStats() {
+      localStorage.setItem(STATS_KEY, JSON.stringify(state.stats));
+    }
+
+    function setupCategorySelect() {
+      Object.keys(WORD_BANK).forEach((category) => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+      });
+      categorySelect.value = state.selectedCategory;
+      categorySelect.addEventListener('change', () => {
+        state.selectedCategory = categorySelect.value;
+        startRound();
+      });
+      poolCount.textContent = `${WORD_BANK.All.length} possible answers loaded.`;
+    }
+
+    function setupDifficultyButtons() {
+      Object.entries(DIFFICULTIES).forEach(([key, value]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'difficulty-chip' + (state.difficulty === key ? ' active' : '');
+        button.textContent = `${value.label} (${value.lives})`;
+        button.addEventListener('click', () => {
+          state.difficulty = key;
+          syncDifficultyUI();
+          startRound();
+        });
+        button.dataset.difficulty = key;
+        difficultyRow.appendChild(button);
+      });
+    }
+
+    function syncDifficultyUI() {
+      difficultyValue.textContent = DIFFICULTIES[state.difficulty].label;
+      Array.from(difficultyRow.children).forEach((button) => {
+        button.classList.toggle('active', button.dataset.difficulty === state.difficulty);
+      });
+    }
+
+    function setupKeyboard() {
+      ALPHABET.forEach((letter) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'key';
+        button.textContent = letter;
+        button.addEventListener('click', () => handleGuess(letter));
+        keyboard.appendChild(button);
+      });
+    }
+
+    function pickAnswer() {
+      const pool = state.selectedCategory === 'All'
+        ? WORD_BANK.All
+        : WORD_BANK[state.selectedCategory].map((answer) => ({ category: state.selectedCategory, answer }));
+      const choice = pool[Math.floor(Math.random() * pool.length)];
+      state.answer = choice.answer;
+      state.answerCategory = choice.category;
+      categorySelect.value = state.selectedCategory;
+    }
+
+    function startRound() {
+      pickAnswer();
+      state.guessed = new Set();
+      state.wrong = [];
+      state.gameOver = false;
+      state.maxLives = DIFFICULTIES[state.difficulty].lives;
+      state.livesLeft = state.maxLives;
+
+      if (DIFFICULTIES[state.difficulty].revealFirstLetter) {
+        const firstLetter = state.answer.replace(/[^A-Z]/g, '').charAt(0);
+        if (firstLetter) {
+          state.guessed.add(firstLetter);
+        }
+      }
+
+      render();
+      setStatus('Pick a letter to start the round.');
+    }
+
+    function handleGuess(letter) {
+      if (state.gameOver || state.guessed.has(letter) || state.wrong.includes(letter)) {
+        return;
+      }
+
+      if (state.answer.includes(letter)) {
+        state.guessed.add(letter);
+        if (isSolved()) {
+          state.gameOver = true;
+          state.stats.wins += 1;
+          state.stats.streak += 1;
+          state.stats.best = Math.max(state.stats.best, state.stats.streak);
+          saveStats();
+          render();
+          setStatus(`You got it. The answer was ${state.answer}.`, false);
+          return;
+        }
+        render();
+        setStatus(`Nice. ${letter} is in the word.`);
+        return;
+      }
+
+      state.wrong.push(letter);
+      state.livesLeft -= 1;
+
+      if (state.livesLeft <= 0) {
+        state.gameOver = true;
+        state.stats.losses += 1;
+        state.stats.streak = 0;
+        saveStats();
+        render();
+        setStatus(`Round lost. The answer was ${state.answer}.`, true);
+        return;
+      }
+
+      render();
+      setStatus(`${letter} is not in the word. ${state.livesLeft} lives left.`);
+    }
+
+    function isSolved() {
+      return state.answer
+        .replace(/[^A-Z]/g, '')
+        .split('')
+        .every((letter) => state.guessed.has(letter));
+    }
+
+    function renderWord() {
+      wordRow.innerHTML = '';
+      [...state.answer].forEach((character) => {
+        const slot = document.createElement('div');
+        if (character === ' ') {
+          slot.className = 'space-slot';
+          wordRow.appendChild(slot);
+          return;
+        }
+
+        const shouldReveal = state.guessed.has(character) || state.gameOver;
+        slot.className = 'letter-slot';
+        slot.textContent = shouldReveal ? character : '';
+        wordRow.appendChild(slot);
+      });
+    }
+
+    function renderKeyboard() {
+      Array.from(keyboard.children).forEach((button) => {
+        const letter = button.textContent;
+        button.disabled = state.gameOver || state.guessed.has(letter) || state.wrong.includes(letter);
+        button.classList.toggle('correct', state.guessed.has(letter));
+        button.classList.toggle('wrong', state.wrong.includes(letter));
+      });
+    }
+
+    function renderBody() {
+      const usedLives = state.maxLives - state.livesLeft;
+      const visibleParts = Math.min(BODY_PARTS.length, usedLives);
+      BODY_PARTS.forEach((partId, index) => {
+        document.getElementById(partId).setAttribute('opacity', index < visibleParts ? '1' : '0.18');
+      });
+    }
+
+    function renderStats() {
+      livesValue.textContent = String(state.livesLeft);
+      winsValue.textContent = String(state.stats.wins);
+      streakValue.textContent = String(state.stats.streak);
+      bestValue.textContent = String(state.stats.best);
+    }
+
+    function renderMeta() {
+      categoryValue.textContent = state.answerCategory;
+      lengthValue.textContent = String(state.answer.replace(/ /g, '').length);
+      difficultyValue.textContent = DIFFICULTIES[state.difficulty].label;
+      wrongLetters.textContent = state.wrong.length ? state.wrong.join(', ') : 'None yet';
+    }
+
+    function setStatus(message, isLoss = false) {
+      statusBanner.textContent = message;
+      statusBanner.classList.toggle('loss', isLoss);
+    }
+
+    function render() {
+      syncDifficultyUI();
+      renderWord();
+      renderKeyboard();
+      renderBody();
+      renderStats();
+      renderMeta();
+    }
+
+    document.addEventListener('keydown', (event) => {
+      const letter = event.key.toUpperCase();
+      if (/^[A-Z]$/.test(letter)) {
+        handleGuess(letter);
+      }
+    });
+
+    newGameButton.addEventListener('click', startRound);
+
+    setupCategorySelect();
+    setupDifficultyButtons();
+    setupKeyboard();
+    startRound();
+  </script>
+</body>
+</html>

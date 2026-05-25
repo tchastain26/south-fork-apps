@@ -49,6 +49,7 @@ APP_META = {
     "dog-poop-tracker":       ("Dog Poop Tracker",           "Track where your dog goes in the yard using GPS. Mark, map, and clear poop locations with this free PWA."),
     "email-extractor":        ("Email Extractor",            "Extract all email addresses from a block of text instantly. Free online email address extractor tool."),
     "gemini-3-1-flash-tts-studio": ("Gemini TTS Studio",    "Convert text to speech using Google Gemini. Free browser-based text-to-speech studio powered by Gemini API."),
+    "hangman":                ("Hangman",                    "Play classic hangman with category hints, difficulty modes, keyboard input, and persistent stats. Free online tool."),
     "habit-tracker":          ("Habit Tracker",              "Track your daily habits with a simple, free habit tracker. No account required — works right in your browser."),
     "hex-code-color-generator": ("Hex Color Code Generator","Generate random hex color codes or convert colors instantly. Free online hex color picker and generator."),
     "html-entity-decoder":    ("HTML Entity Decoder",        "Decode HTML entities like &amp; and &lt; back to plain text. Free online HTML entity decoder."),
