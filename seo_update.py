@@ -132,6 +132,7 @@ APP_META = {
     "zalgo-text":             ("Zalgo Text Generator",         "Generate creepy glitchy Zalgo text with adjustable chaos level. Free online Zalgo text generator and corrupted text maker."),
     "kanban-board":           ("Kanban Board",                 "Simple drag-and-drop Kanban board saved in your browser. Add columns, cards, and tags. Free online Kanban tool."),
     "life-stats":             ("Life Stats Calculator",        "See how many heartbeats, breaths, and full moons you've lived through. Enter your birthday for live stats. Free tool."),
+    "meeting-agenda-builder": ("Meeting Agenda Builder",      "Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool."),
     "word-clock":             ("Word Clock",                   "A live clock that spells out the current time in words on a glowing letter grid. Free online word clock with fullscreen mode."),
     "css-gradient-generator": ("CSS Gradient Generator",       "Generate linear, radial, and conic CSS gradients visually with live preview. Copy ready CSS code. Free online tool."),
     "password-strength":      ("Password Strength Checker",    "Check password strength with entropy score and time-to-crack estimate. All checks run locally. Free online password checker."),
@@ -222,11 +223,11 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
+    ("meeting-agenda-builder", "Meeting Agenda Builder",      "Productivity & Planning", "event_note",   "Build timed agendas with owners, notes, total meeting length, and copy-ready plain-text or Markdown output."),
     ("decision-matrix", "Decision Matrix",                "Productivity & Planning", "balance",       "Score options against weighted criteria, then rank the results with live totals, percentages, and winning picks."),
     ("unit-circle", "Unit Circle Reference",            "Everyday Tools", "trip_origin",   "Click standard angles to see exact coordinates plus sine, cosine, and tangent values with degree and radian labels."),
     ("quadratic-solver", "Quadratic Solver",              "Everyday Tools", "functions",     "Solve ax² + bx + c = 0 with real or complex roots, full working, discriminant details, and a live parabola graph."),
     ("periodic-table", "Periodic Table",                "Everyday Tools", "science",        "Explore all 118 elements with a clickable layout, category filters, phase markers, and fast detail lookup."),
-    ("statistics-calculator", "Statistics Calculator",  "Everyday Tools", "analytics",      "Paste a dataset to calculate mean, median, mode, quartiles, range, variance, standard deviation, and frequency counts."),
 ]
 
 def update_latest_drop():
