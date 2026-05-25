@@ -109,6 +109,7 @@ APP_META = {
     "json-formatter":         ("JSON Formatter & Validator", "Format, beautify, and validate JSON instantly with syntax highlighting. Free online JSON formatter and minifier."),
     "percentage-calculator":  ("Percentage Calculator",      "Calculate percentages, percentage change, and add or subtract percentages instantly. Free online percentage calculator."),
     "periodic-table":         ("Periodic Table",             "Explore all 118 elements in a clickable periodic table with mass, group, period, phase, and electron configuration. Free online tool."),
+    "quadratic-solver":       ("Quadratic Solver",           "Solve ax² + bx + c = 0 with real or complex roots, step-by-step work, discriminant details, and a live parabola graph. Free online tool."),
     "color-converter":        ("Color Format Converter",     "Convert colors between HEX, RGB, HSL, and HSB formats with a live preview. Free online color converter."),
     "binary-hex-converter":   ("Binary, Hex & Decimal Converter", "Convert between binary, hexadecimal, decimal, and octal instantly. Free online number base converter."),
     "bmi-calculator":         ("BMI Calculator",              "Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range."),
@@ -219,10 +220,10 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
+    ("quadratic-solver", "Quadratic Solver",              "Everyday Tools", "functions",     "Solve ax² + bx + c = 0 with real or complex roots, full working, discriminant details, and a live parabola graph."),
     ("periodic-table", "Periodic Table",                "Everyday Tools", "science",        "Explore all 118 elements with a clickable layout, category filters, phase markers, and fast detail lookup."),
     ("statistics-calculator", "Statistics Calculator",  "Everyday Tools", "analytics",      "Paste a dataset to calculate mean, median, mode, quartiles, range, variance, standard deviation, and frequency counts."),
     ("triangle-solver", "Triangle Solver",              "Everyday Tools", "change_history", "Solve any triangle from three known values, including ambiguous SSA cases, then see the missing sides, angles, area, and perimeter."),
-    ("resistor-color-code", "Resistor Color Code",      "Code & Web",     "memory",         "Decode or build 4-band and 5-band resistor values with tolerance, multiplier, and quick visual feedback."),
 ]
 
 def update_latest_drop():
