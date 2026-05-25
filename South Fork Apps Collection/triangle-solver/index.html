@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triangle Solver | South Fork Apps</title>
+  <meta name="description" content="Solve any triangle from three known values, including ambiguous SSA cases. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #a7b2aa;
+      --accent: #7ddb84;
+      --accent-dark: #4bae57;
+      --danger: #ff8f8f;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.12), transparent 24rem),
+        radial-gradient(circle at bottom right, rgba(125, 219, 132, 0.08), transparent 20rem),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .result-card,
+    .mini-card {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p,
+    .helper,
+    .formula,
+    .summary-line,
+    .footer-copy {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero-copy p {
+      margin: 1rem 0 0;
+      max-width: 56ch;
+    }
+
+    .hero-notes {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .mini-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .mini-card strong,
+    .section-title,
+    .metric-value,
+    .solution-title,
+    .triangle-label {
+      color: var(--text);
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.9rem;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .helper {
+      margin: 0 0 1rem;
+      font-size: 0.94rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-alt);
+      color: var(--text);
+      padding: 0.9rem 0.95rem;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.16s ease, transform 0.16s ease;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .actions,
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0f180f;
+      padding: 0.82rem 1.2rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(125, 219, 132, 0.15);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .preset {
+      border-color: rgba(125, 219, 132, 0.24);
+      background: rgba(125, 219, 132, 0.08);
+      color: var(--text);
+      padding: 0.7rem 0.95rem;
+      font-size: 0.86rem;
+    }
+
+    .result-card {
+      padding: 1.35rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .status {
+      padding: 0.95rem 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.25);
+      border-radius: 14px;
+      background: rgba(125, 219, 132, 0.08);
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .status.error {
+      border-color: rgba(255, 143, 143, 0.24);
+      background: rgba(255, 143, 143, 0.08);
+      color: #ffd2d2;
+    }
+
+    .solution-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .solution {
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: 18px;
+      background: rgba(17, 20, 18, 0.96);
+      padding: 1rem;
+    }
+
+    .solution-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.32rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(125, 219, 132, 0.14);
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .metric {
+      padding: 0.9rem;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+    }
+
+    .metric-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .summary {
+      display: grid;
+      gap: 0.55rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.92rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid rgba(42, 47, 43, 0.7);
+    }
+
+    .summary-line:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .triangle-diagram {
+      width: 100%;
+      min-height: 220px;
+      padding: 1rem;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(32, 39, 34, 0.95), rgba(17, 20, 18, 0.95));
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .triangle-side {
+      stroke: var(--accent);
+      stroke-width: 4;
+      fill: rgba(125, 219, 132, 0.08);
+    }
+
+    .triangle-point {
+      fill: var(--accent);
+    }
+
+    .triangle-label {
+      font-size: 14px;
+      font-weight: 700;
+      fill: var(--text);
+    }
+
+    .formula {
+      font-size: 0.85rem;
+    }
+
+    footer {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto 2rem;
+      padding: 1rem 1.1rem 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .version {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.72rem;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(125, 219, 132, 0.08);
+    }
+
+    @media (max-width: 860px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics,
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      main,
+      footer {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .hero,
+      .panel,
+      .result-card {
+        padding: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Triangle Solver</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Geometry Tool</p>
+        <h1>Solve almost any triangle from three known values.</h1>
+        <p>Enter any three known values with at least one side. This solver handles SSS, SAS, ASA, AAS, and the tricky SSA case where two valid triangles may exist.</p>
+      </div>
+      <div class="hero-notes">
+        <div class="mini-card">
+          <strong>Accepted input sets</strong>
+          <span class="helper">Three values total. At least one side is required. Angles must sum to less than 180° before solving.</span>
+        </div>
+        <div class="mini-card">
+          <strong>What you get back</strong>
+          <span class="helper">All side lengths, all angles, perimeter, area, height to side c, and a live triangle sketch.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2 class="section-title">Known Values</h2>
+        <p class="helper">Leave unknown fields blank. Side lengths can use any unit as long as all sides use the same one.</p>
+
+        <div class="field-grid">
+          <label>Side a
+            <input id="sideA" inputmode="decimal" placeholder="e.g. 7.5">
+          </label>
+          <label>Side b
+            <input id="sideB" inputmode="decimal" placeholder="e.g. 10">
+          </label>
+          <label>Side c
+            <input id="sideC" inputmode="decimal" placeholder="e.g. 12.2">
+          </label>
+          <label>Angle A (degrees)
+            <input id="angleA" inputmode="decimal" placeholder="e.g. 42">
+          </label>
+          <label>Angle B (degrees)
+            <input id="angleB" inputmode="decimal" placeholder="e.g. 71">
+          </label>
+          <label>Angle C (degrees)
+            <input id="angleC" inputmode="decimal" placeholder="e.g. 67">
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="solveButton" type="button">Solve Triangle</button>
+          <button id="resetButton" class="ghost" type="button">Clear</button>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 1.35rem;">Quick Examples</h2>
+        <div class="preset-row">
+          <button class="preset" type="button" data-preset="sss">SSS example</button>
+          <button class="preset" type="button" data-preset="sas">SAS example</button>
+          <button class="preset" type="button" data-preset="ssa">SSA ambiguous</button>
+          <button class="preset" type="button" data-preset="aas">AAS example</button>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div>
+          <h2 class="section-title">Results</h2>
+          <div id="status" class="status">Ready. Enter exactly three known values, with at least one side, then click <strong>Solve Triangle</strong>.</div>
+        </div>
+
+        <div>
+          <div id="solutionList" class="solution-list"></div>
+        </div>
+
+        <div class="triangle-diagram">
+          <svg id="triangleSvg" viewBox="0 0 360 240" role="img" aria-label="Triangle diagram">
+            <polygon class="triangle-side" points="50,190 310,190 120,70"></polygon>
+            <circle class="triangle-point" cx="50" cy="190" r="5"></circle>
+            <circle class="triangle-point" cx="310" cy="190" r="5"></circle>
+            <circle class="triangle-point" cx="120" cy="70" r="5"></circle>
+            <text class="triangle-label" x="40" y="212">A</text>
+            <text class="triangle-label" x="312" y="212">B</text>
+            <text class="triangle-label" x="118" y="58">C</text>
+            <text class="triangle-label" x="170" y="215">c</text>
+            <text class="triangle-label" x="75" y="126">b</text>
+            <text class="triangle-label" x="220" y="120">a</text>
+          </svg>
+        </div>
+
+        <p class="formula">Triangle notation uses standard convention: side <strong>a</strong> is opposite angle <strong>A</strong>, side <strong>b</strong> is opposite <strong>B</strong>, and side <strong>c</strong> is opposite <strong>C</strong>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-copy">Runs entirely in your browser. No data leaves your device.</span>
+    <span class="version">v1.0</span>
+  </footer>
+
+  <script>
+    const fields = {
+      a: document.getElementById('sideA'),
+      b: document.getElementById('sideB'),
+      c: document.getElementById('sideC'),
+      A: document.getElementById('angleA'),
+      B: document.getElementById('angleB'),
+      C: document.getElementById('angleC')
+    };
+    const statusEl = document.getElementById('status');
+    const solutionList = document.getElementById('solutionList');
+    const triangleSvg = document.getElementById('triangleSvg');
+
+    const presets = {
+      sss: { a: 6, b: 8, c: 10, A: '', B: '', C: '' },
+      sas: { a: 7, b: 11, c: '', A: '', B: '', C: 38 },
+      ssa: { a: 10, b: 12, c: '', A: 35, B: '', C: '' },
+      aas: { a: '', b: 9, c: '', A: 52, B: '', C: 61 }
+    };
+
+    document.getElementById('solveButton').addEventListener('click', handleSolve);
+    document.getElementById('resetButton').addEventListener('click', resetAll);
+    document.querySelectorAll('[data-preset]').forEach((button) => {
+      button.addEventListener('click', () => loadPreset(button.dataset.preset));
+    });
+
+    Object.values(fields).forEach((input) => {
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') handleSolve();
+      });
+    });
+
+    function toRadians(deg) {
+      return deg * Math.PI / 180;
+    }
+
+    function toDegrees(rad) {
+      return rad * 180 / Math.PI;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function round(value, digits) {
+      return Number.parseFloat(value.toFixed(digits));
+    }
+
+    function formatNumber(value, digits = 3) {
+      if (!Number.isFinite(value)) return '—';
+      return Number(value.toFixed(digits)).toLocaleString(undefined, {
+        maximumFractionDigits: digits
+      });
+    }
+
+    function parseField(input) {
+      const raw = input.value.trim();
+      if (!raw) return null;
+      const value = Number(raw);
+      return Number.isFinite(value) ? value : NaN;
+    }
+
+    function readValues() {
+      const values = {};
+      for (const [key, input] of Object.entries(fields)) {
+        values[key] = parseField(input);
+      }
+      return values;
+    }
+
+    function validate(values) {
+      const knownKeys = Object.keys(values).filter((key) => values[key] !== null);
+      if (knownKeys.length !== 3) {
+        throw new Error('Enter exactly three known values.');
+      }
+
+      const sideCount = ['a', 'b', 'c'].filter((key) => values[key] !== null).length;
+      if (sideCount === 0) {
+        throw new Error('At least one side length is required.');
+      }
+
+      for (const [key, value] of Object.entries(values)) {
+        if (value === null) continue;
+        if (!Number.isFinite(value) || value <= 0) {
+          throw new Error(`${key} must be a positive number.`);
+        }
+        if ('ABC'.includes(key) && value >= 180) {
+          throw new Error(`Angle ${key} must be less than 180°.`);
+        }
+      }
+
+      const angleSum = ['A', 'B', 'C']
+        .map((key) => values[key])
+        .filter((value) => value !== null)
+        .reduce((total, value) => total + value, 0);
+      if (angleSum >= 180) {
+        throw new Error('Known angles must sum to less than 180°.');
+      }
+    }
+
+    function solveSSS(values) {
+      const { a, b, c } = values;
+      if (a + b <= c || a + c <= b || b + c <= a) {
+        throw new Error('These side lengths cannot form a triangle.');
+      }
+      const A = toDegrees(Math.acos(clamp((b * b + c * c - a * a) / (2 * b * c), -1, 1)));
+      const B = toDegrees(Math.acos(clamp((a * a + c * c - b * b) / (2 * a * c), -1, 1)));
+      const C = 180 - A - B;
+      return [{ a, b, c, A, B, C, caseLabel: 'SSS' }];
+    }
+
+    function solveSAS(values) {
+      const sides = ['a', 'b', 'c'].filter((key) => values[key] !== null);
+      const angles = ['A', 'B', 'C'].filter((key) => values[key] !== null);
+      const angleKey = angles[0];
+      const includedMap = {
+        A: ['b', 'c', 'a'],
+        B: ['a', 'c', 'b'],
+        C: ['a', 'b', 'c']
+      };
+      const needed = includedMap[angleKey];
+      if (!needed || values[needed[0]] === null || values[needed[1]] === null) {
+        throw new Error('This side-angle combination is not SAS. Use the matching opposite side for an SSA solve.');
+      }
+      const angle = values[angleKey];
+      const side1 = values[needed[0]];
+      const side2 = values[needed[1]];
+      const oppositeKey = needed[2];
+      const opposite = Math.sqrt(
+        side1 * side1 + side2 * side2 - 2 * side1 * side2 * Math.cos(toRadians(angle))
+      );
+      return solveSSS({ ...values, [oppositeKey]: opposite });
+    }
+
+    function solveAngleDriven(values) {
+      const complete = { ...values };
+      const missingAngle = ['A', 'B', 'C'].find((key) => complete[key] === null);
+      if (missingAngle) {
+        complete[missingAngle] = 180 - ((complete.A || 0) + (complete.B || 0) + (complete.C || 0));
+      }
+
+      if (complete.A <= 0 || complete.B <= 0 || complete.C <= 0) {
+        throw new Error('Angles must add up to a valid triangle.');
+      }
+
+      const knownSide = ['a', 'b', 'c'].find((key) => complete[key] !== null);
+      const ratio = complete[knownSide] / Math.sin(toRadians(complete[knownSide.toUpperCase()]));
+      ['a', 'b', 'c'].forEach((sideKey) => {
+        if (complete[sideKey] === null) {
+          complete[sideKey] = ratio * Math.sin(toRadians(complete[sideKey.toUpperCase()]));
+        }
+      });
+      return [{ ...complete, caseLabel: 'ASA / AAS' }];
+    }
+
+    function solveSSA(values) {
+      const angleKey = ['A', 'B', 'C'].find((key) => values[key] !== null);
+      const knownAngle = values[angleKey];
+      const oppositeSideKey = angleKey.toLowerCase();
+      const oppositeSide = values[oppositeSideKey];
+
+      if (oppositeSide === null) {
+        throw new Error('SSA needs the side opposite the known angle.');
+      }
+
+      const sideCandidates = ['a', 'b', 'c'].filter((key) => key !== oppositeSideKey && values[key] !== null);
+      if (sideCandidates.length !== 1) {
+        throw new Error('SSA needs one additional known side.');
+      }
+
+      const secondSideKey = sideCandidates[0];
+      const secondSide = values[secondSideKey];
+      const secondAngleKey = secondSideKey.toUpperCase();
+      const ratio = secondSide * Math.sin(toRadians(knownAngle)) / oppositeSide;
+
+      if (ratio > 1) {
+        throw new Error('No triangle exists for these SSA values.');
+      }
+
+      const firstAngle = toDegrees(Math.asin(clamp(ratio, -1, 1)));
+      const possibilities = [firstAngle];
+      const supplementary = 180 - firstAngle;
+      if (Math.abs(supplementary - firstAngle) > 1e-7) {
+        possibilities.push(supplementary);
+      }
+
+      const solutions = [];
+      possibilities.forEach((candidateAngle) => {
+        const thirdAngle = 180 - knownAngle - candidateAngle;
+        if (candidateAngle <= 0 || thirdAngle <= 0) return;
+        const full = { ...values };
+        full[secondAngleKey] = candidateAngle;
+        const thirdAngleKey = ['A', 'B', 'C'].find((key) => key !== angleKey && key !== secondAngleKey);
+        full[thirdAngleKey] = thirdAngle;
+        const ratioScale = oppositeSide / Math.sin(toRadians(knownAngle));
+        const missingSideKey = ['a', 'b', 'c'].find((key) => full[key] === null);
+        full[missingSideKey] = ratioScale * Math.sin(toRadians(full[missingSideKey.toUpperCase()]));
+        full.caseLabel = 'SSA';
+        solutions.push(full);
+      });
+
+      if (!solutions.length) {
+        throw new Error('No valid triangle could be solved from these SSA values.');
+      }
+
+      return solutions;
+    }
+
+    function solveTriangle(values) {
+      validate(values);
+      const sideCount = ['a', 'b', 'c'].filter((key) => values[key] !== null).length;
+      const angleCount = ['A', 'B', 'C'].filter((key) => values[key] !== null).length;
+
+      if (sideCount === 3) return solveSSS(values);
+      if (angleCount >= 2) return solveAngleDriven(values);
+
+      const knownAngleKey = ['A', 'B', 'C'].find((key) => values[key] !== null);
+      const includedMap = {
+        A: ['b', 'c'],
+        B: ['a', 'c'],
+        C: ['a', 'b']
+      };
+      const includedSides = includedMap[knownAngleKey] || [];
+      const isSAS = includedSides.every((key) => values[key] !== null);
+
+      if (isSAS) return solveSAS(values);
+      return solveSSA(values);
+    }
+
+    function addDerivedMetrics(solution) {
+      const semiPerimeter = (solution.a + solution.b + solution.c) / 2;
+      const area = Math.sqrt(Math.max(0, semiPerimeter * (semiPerimeter - solution.a) * (semiPerimeter - solution.b) * (semiPerimeter - solution.c)));
+      const heightToC = solution.c ? (2 * area) / solution.c : 0;
+      return {
+        ...solution,
+        perimeter: solution.a + solution.b + solution.c,
+        area,
+        heightToC
+      };
+    }
+
+    function renderStatus(message, isError = false) {
+      statusEl.className = isError ? 'status error' : 'status';
+      statusEl.innerHTML = message;
+    }
+
+    function renderSolutions(solutions) {
+      solutionList.innerHTML = '';
+      solutions.forEach((solution, index) => {
+        const item = document.createElement('article');
+        item.className = 'solution';
+        const label = solutions.length > 1 ? `Solution ${index + 1}` : 'Solved Triangle';
+        item.innerHTML = `
+          <div class="solution-title">
+            <span>${label}</span>
+            <span class="tag">${solution.caseLabel}</span>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <span class="metric-label">Sides</span>
+              <div class="metric-value">${formatNumber(solution.a)}, ${formatNumber(solution.b)}, ${formatNumber(solution.c)}</div>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Angles</span>
+              <div class="metric-value">${formatNumber(solution.A)}°, ${formatNumber(solution.B)}°, ${formatNumber(solution.C)}°</div>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Area</span>
+              <div class="metric-value">${formatNumber(solution.area)}</div>
+            </div>
+          </div>
+          <div class="summary">
+            <div class="summary-line"><span>Perimeter</span><strong>${formatNumber(solution.perimeter)}</strong></div>
+            <div class="summary-line"><span>Height to side c</span><strong>${formatNumber(solution.heightToC)}</strong></div>
+            <div class="summary-line"><span>Angle sum</span><strong>${formatNumber(solution.A + solution.B + solution.C, 4)}°</strong></div>
+          </div>
+        `;
+        solutionList.appendChild(item);
+      });
+    }
+
+    function updateDiagram(solution) {
+      const a = solution.a;
+      const b = solution.b;
+      const c = solution.c;
+      const xC = (b * b + c * c - a * a) / (2 * c);
+      const yC = Math.sqrt(Math.max(0, b * b - xC * xC));
+      const width = Math.max(c, xC, 1);
+      const minX = Math.min(0, xC);
+      const maxX = Math.max(c, xC);
+      const minY = 0;
+      const maxY = Math.max(yC, 1);
+      const padding = 28;
+      const svgWidth = 360 - padding * 2;
+      const svgHeight = 220 - padding * 2;
+      const scale = Math.min(svgWidth / (maxX - minX || 1), svgHeight / (maxY - minY || 1));
+
+      const points = {
+        A: { x: padding + (0 - minX) * scale, y: 210 - padding },
+        B: { x: padding + (c - minX) * scale, y: 210 - padding },
+        C: { x: padding + (xC - minX) * scale, y: 210 - padding - yC * scale }
+      };
+
+      const mid = (left, right) => ({
+        x: (left.x + right.x) / 2,
+        y: (left.y + right.y) / 2
+      });
+
+      const sideA = mid(points.B, points.C);
+      const sideB = mid(points.A, points.C);
+      const sideC = mid(points.A, points.B);
+
+      triangleSvg.innerHTML = `
+        <polygon class="triangle-side" points="${points.A.x},${points.A.y} ${points.B.x},${points.B.y} ${points.C.x},${points.C.y}"></polygon>
+        <circle class="triangle-point" cx="${points.A.x}" cy="${points.A.y}" r="5"></circle>
+        <circle class="triangle-point" cx="${points.B.x}" cy="${points.B.y}" r="5"></circle>
+        <circle class="triangle-point" cx="${points.C.x}" cy="${points.C.y}" r="5"></circle>
+        <text class="triangle-label" x="${points.A.x - 14}" y="${points.A.y + 20}">A (${formatNumber(solution.A, 1)}°)</text>
+        <text class="triangle-label" x="${points.B.x - 12}" y="${points.B.y + 20}">B (${formatNumber(solution.B, 1)}°)</text>
+        <text class="triangle-label" x="${points.C.x - 18}" y="${points.C.y - 12}">C (${formatNumber(solution.C, 1)}°)</text>
+        <text class="triangle-label" x="${sideA.x + 10}" y="${sideA.y - 4}">a = ${formatNumber(solution.a, 2)}</text>
+        <text class="triangle-label" x="${sideB.x - 48}" y="${sideB.y - 4}">b = ${formatNumber(solution.b, 2)}</text>
+        <text class="triangle-label" x="${sideC.x - 24}" y="${sideC.y + 24}">c = ${formatNumber(solution.c, 2)}</text>
+      `;
+    }
+
+    function handleSolve() {
+      try {
+        const values = readValues();
+        const solved = solveTriangle(values).map(addDerivedMetrics);
+        renderStatus(
+          solved.length === 2
+            ? 'Two valid triangles exist for this SSA input. Review both solutions below.'
+            : 'Triangle solved successfully.',
+          false
+        );
+        renderSolutions(solved);
+        updateDiagram(solved[0]);
+      } catch (error) {
+        renderStatus(error.message, true);
+        solutionList.innerHTML = '';
+      }
+    }
+
+    function loadPreset(name) {
+      const preset = presets[name];
+      if (!preset) return;
+      Object.entries(fields).forEach(([key, input]) => {
+        input.value = preset[key];
+      });
+      handleSolve();
+    }
+
+    function resetAll() {
+      Object.values(fields).forEach((input) => {
+        input.value = '';
+      });
+      solutionList.innerHTML = '';
+      renderStatus('Ready. Enter exactly three known values, with at least one side, then click <strong>Solve Triangle</strong>.', false);
+      triangleSvg.innerHTML = `
+        <polygon class="triangle-side" points="50,190 310,190 120,70"></polygon>
+        <circle class="triangle-point" cx="50" cy="190" r="5"></circle>
+        <circle class="triangle-point" cx="310" cy="190" r="5"></circle>
+        <circle class="triangle-point" cx="120" cy="70" r="5"></circle>
+        <text class="triangle-label" x="40" y="212">A</text>
+        <text class="triangle-label" x="312" y="212">B</text>
+        <text class="triangle-label" x="118" y="58">C</text>
+        <text class="triangle-label" x="170" y="215">c</text>
+        <text class="triangle-label" x="75" y="126">b</text>
+        <text class="triangle-label" x="220" y="120">a</text>
+      `;
+    }
+  </script>
+</body>
+</html>
