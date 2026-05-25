@@ -210,6 +210,7 @@ APP_META = {
     "virtual-piano":          ("Virtual Piano",                "Playable virtual piano in your browser. Click keys or use your keyboard to play notes across two octaves with sustain control. Free online piano."),
     "xylophone":              ("Xylophone",                    "Playable virtual xylophone in your browser. Click colorful bars to play notes across two octaves. Use your keyboard for fast playing. Free online xylophone."),
     "triangle-solver":        ("Triangle Solver",              "Solve any triangle from three known values, including ambiguous SSA cases. Free online tool."),
+    "statistics-calculator":  ("Statistics Calculator",        "Compute mean, median, mode, range, variance, and standard deviation for any dataset. Free online tool."),
     "code-viewer":            ("Code Viewer",                  "Paste code and get instant syntax highlighting for 30+ programming languages. Free online code viewer with auto-detect and line numbers."),
 }
 
@@ -217,10 +218,10 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
-    ("triangle-solver", "Triangle Solver",               "Everyday Tools", "change_history", "Solve any triangle from three known values, including ambiguous SSA cases, then see the missing sides, angles, area, and perimeter."),
+    ("statistics-calculator", "Statistics Calculator",  "Everyday Tools", "analytics",      "Paste a dataset to calculate mean, median, mode, quartiles, range, variance, standard deviation, and frequency counts."),
+    ("triangle-solver", "Triangle Solver",              "Everyday Tools", "change_history", "Solve any triangle from three known values, including ambiguous SSA cases, then see the missing sides, angles, area, and perimeter."),
     ("resistor-color-code", "Resistor Color Code",      "Code & Web",     "memory",         "Decode or build 4-band and 5-band resistor values with tolerance, multiplier, and quick visual feedback."),
     ("rule-of-72", "Rule of 72",                        "Everyday Tools", "trending_up",    "Enter an annual return rate and see how long it takes an investment to double, plus the required rate for a target timeline."),
-    ("break-even-calculator", "Break-Even Calculator",  "Everyday Tools", "query_stats",    "Find break-even units, revenue, margin, and profit targets from your fixed costs, variable cost, and selling price."),
 ]
 
 def update_latest_drop():

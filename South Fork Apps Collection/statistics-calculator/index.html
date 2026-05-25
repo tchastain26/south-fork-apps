@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Calculator | South Fork Apps</title>
+  <meta name="description" content="Compute mean, median, mode, range, variance, and standard deviation for any dataset. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #a8b1aa;
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --danger: #ff9c9c;
+      --radius: 18px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.12), transparent 22rem),
+        radial-gradient(circle at right center, rgba(125, 219, 132, 0.07), transparent 20rem),
+        var(--bg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .stat-card,
+    .mini-card,
+    .table-wrap {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    p,
+    .helper,
+    .muted,
+    .footer-copy {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      max-width: 58ch;
+    }
+
+    .hero-aside {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .mini-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.85rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface-alt);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: border-color 0.16s ease, transform 0.16s ease;
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 280px;
+      padding: 1rem;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin: 1rem 0;
+    }
+
+    label {
+      display: grid;
+      gap: 0.38rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    select,
+    input {
+      padding: 0.82rem 0.9rem;
+    }
+
+    .actions,
+    .samples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0e180f;
+      padding: 0.82rem 1.18rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(125, 219, 132, 0.16);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .sample {
+      background: var(--accent-soft);
+      border-color: rgba(125, 219, 132, 0.24);
+      color: var(--text);
+      padding: 0.7rem 0.92rem;
+      font-size: 0.86rem;
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 0.95rem 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      border-radius: 16px;
+      background: var(--accent-soft);
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .status.error {
+      border-color: rgba(255, 156, 156, 0.24);
+      background: rgba(255, 156, 156, 0.08);
+      color: #ffd6d6;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .stat-card {
+      padding: 1rem;
+    }
+
+    .stat-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value {
+      color: var(--text);
+      font-size: 1.22rem;
+      font-weight: 700;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .table-wrap {
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    th,
+    td {
+      padding: 0.72rem 0.2rem;
+      border-bottom: 1px solid rgba(42, 47, 43, 0.78);
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .summary {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      background: rgba(17, 20, 18, 0.96);
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    footer {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .version {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.42rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 940px) {
+      .hero,
+      .layout,
+      .options,
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      main,
+      footer {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .hero,
+      .panel,
+      .table-wrap {
+        padding: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Statistics Calculator</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Math Tool</p>
+        <h1>Turn any pasted dataset into clean descriptive statistics.</h1>
+        <p>Paste numbers separated by commas, spaces, tabs, or line breaks. The calculator parses the dataset, flags invalid tokens, and computes the summary stats people actually need.</p>
+      </div>
+      <div class="hero-aside">
+        <div class="mini-card">
+          <strong>What it computes</strong>
+          <span class="helper">Mean, median, mode, min, max, range, quartiles, IQR, variance, standard deviation, and frequency counts.</span>
+        </div>
+        <div class="mini-card">
+          <strong>Who it helps</strong>
+          <span class="helper">Students, teachers, analysts, and anyone cleaning or checking numeric data quickly in the browser.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <h2 class="section-title">Dataset</h2>
+        <p class="helper">Separate values with commas, spaces, tabs, or new lines. Negative numbers and decimals are supported.</p>
+        <textarea id="dataset" placeholder="Example:&#10;12, 15, 18, 18, 21, 24&#10;30 33 36 36 42"></textarea>
+
+        <div class="options">
+          <label>Variance mode
+            <select id="varianceMode">
+              <option value="sample">Sample (n - 1)</option>
+              <option value="population">Population (n)</option>
+            </select>
+          </label>
+          <label>Decimals
+            <input id="decimals" type="number" min="0" max="8" step="1" value="3">
+          </label>
+          <label>Mode handling
+            <select id="modeLimit">
+              <option value="8">Show up to 8 modes</option>
+              <option value="3">Show up to 3 modes</option>
+              <option value="20">Show up to 20 modes</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="analyzeButton" type="button">Analyze Dataset</button>
+          <button id="copyButton" class="ghost" type="button">Copy Summary</button>
+          <button id="clearButton" class="ghost" type="button">Clear</button>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 1.35rem;">Sample Sets</h2>
+        <div class="samples">
+          <button class="sample" type="button" data-sample="test-scores">Test scores</button>
+          <button class="sample" type="button" data-sample="expenses">Monthly expenses</button>
+          <button class="sample" type="button" data-sample="outlier">Outlier check</button>
+        </div>
+
+        <div id="status" class="status">Ready. Paste a dataset and click <strong>Analyze Dataset</strong>.</div>
+      </div>
+
+      <div style="display:grid; gap:1rem;">
+        <div class="stat-grid" id="statGrid"></div>
+
+        <div class="table-wrap">
+          <h2 class="section-title">Frequency Table</h2>
+          <div id="frequencyContainer" class="muted">No dataset analyzed yet.</div>
+        </div>
+
+        <div class="table-wrap">
+          <h2 class="section-title">Copyable Summary</h2>
+          <div id="summaryOutput" class="summary">No summary yet.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-copy">Everything runs locally in your browser. No upload required.</span>
+    <span class="version">v1.0</span>
+  </footer>
+
+  <script>
+    const datasetInput = document.getElementById('dataset');
+    const varianceModeInput = document.getElementById('varianceMode');
+    const decimalsInput = document.getElementById('decimals');
+    const modeLimitInput = document.getElementById('modeLimit');
+    const statusEl = document.getElementById('status');
+    const statGrid = document.getElementById('statGrid');
+    const frequencyContainer = document.getElementById('frequencyContainer');
+    const summaryOutput = document.getElementById('summaryOutput');
+
+    const samples = {
+      'test-scores': '88, 92, 76, 95, 88, 91, 84, 79, 88, 97, 73, 85',
+      expenses: '1240.55\n1310.42\n1278.90\n1450.00\n1299.10\n1310.42\n1405.75\n1268.44',
+      outlier: '9 10 10 11 11 12 12 13 14 15 40'
+    };
+
+    document.getElementById('analyzeButton').addEventListener('click', analyzeDataset);
+    document.getElementById('copyButton').addEventListener('click', copySummary);
+    document.getElementById('clearButton').addEventListener('click', clearAll);
+    document.querySelectorAll('[data-sample]').forEach((button) => {
+      button.addEventListener('click', () => {
+        datasetInput.value = samples[button.dataset.sample] || '';
+        analyzeDataset();
+      });
+    });
+
+    datasetInput.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        analyzeDataset();
+      }
+    });
+
+    function formatNumber(value, decimals) {
+      if (!Number.isFinite(value)) return '—';
+      return Number(value.toFixed(decimals)).toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function parseDataset(raw) {
+      const tokens = raw.trim().split(/[\s,]+/).filter(Boolean);
+      if (!tokens.length) {
+        throw new Error('Enter at least one number.');
+      }
+
+      const values = [];
+      const invalid = [];
+      tokens.forEach((token) => {
+        const value = Number(token);
+        if (Number.isFinite(value)) {
+          values.push(value);
+        } else {
+          invalid.push(token);
+        }
+      });
+
+      if (invalid.length) {
+        throw new Error(`These entries are not valid numbers: ${invalid.slice(0, 8).join(', ')}${invalid.length > 8 ? '…' : ''}`);
+      }
+
+      return values;
+    }
+
+    function median(sorted) {
+      const mid = Math.floor(sorted.length / 2);
+      if (sorted.length % 2 === 0) {
+        return (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+      return sorted[mid];
+    }
+
+    function quartiles(sorted) {
+      if (sorted.length === 1) {
+        return { q1: sorted[0], q2: sorted[0], q3: sorted[0] };
+      }
+      const q2 = median(sorted);
+      const half = Math.floor(sorted.length / 2);
+      const lower = sorted.slice(0, half);
+      const upper = sorted.slice(sorted.length % 2 === 0 ? half : half + 1);
+      return {
+        q1: median(lower),
+        q2,
+        q3: median(upper)
+      };
+    }
+
+    function buildFrequency(values) {
+      const counts = new Map();
+      values.forEach((value) => {
+        counts.set(value, (counts.get(value) || 0) + 1);
+      });
+      return [...counts.entries()]
+        .sort((left, right) => Number(left[0]) - Number(right[0]))
+        .map(([value, count]) => ({ value: Number(value), count }));
+    }
+
+    function computeStats(values, varianceMode, decimals, modeLimit) {
+      const sorted = [...values].sort((a, b) => a - b);
+      const count = sorted.length;
+      const sum = sorted.reduce((total, value) => total + value, 0);
+      const mean = sum / count;
+      const min = sorted[0];
+      const max = sorted[count - 1];
+      const range = max - min;
+      const { q1, q2, q3 } = quartiles(sorted);
+      const iqr = q3 - q1;
+      const frequencies = buildFrequency(sorted);
+      const highestFrequency = Math.max(...frequencies.map((entry) => entry.count));
+      const modes = highestFrequency === 1
+        ? []
+        : frequencies.filter((entry) => entry.count === highestFrequency).map((entry) => entry.value);
+      const divisor = varianceMode === 'population' ? count : count - 1;
+
+      if (varianceMode === 'sample' && count < 2) {
+        throw new Error('Sample variance and sample standard deviation require at least two values.');
+      }
+
+      const variance = sorted.reduce((total, value) => total + (value - mean) ** 2, 0) / divisor;
+      const standardDeviation = Math.sqrt(variance);
+
+      return {
+        count,
+        sum,
+        mean,
+        median: q2,
+        modes,
+        modeLimit,
+        min,
+        max,
+        range,
+        q1,
+        q3,
+        iqr,
+        variance,
+        standardDeviation,
+        frequencies,
+        sortedPreview: sorted.slice(0, 40),
+        sortedOverflow: Math.max(0, sorted.length - 40),
+        decimals
+      };
+    }
+
+    function renderStatus(message, isError = false) {
+      statusEl.className = isError ? 'status error' : 'status';
+      statusEl.innerHTML = message;
+    }
+
+    function renderStats(stats) {
+      const modeText = stats.modes.length
+        ? stats.modes.slice(0, stats.modeLimit).map((value) => formatNumber(value, stats.decimals)).join(', ')
+        : 'No mode';
+      const truncated = stats.modes.length > stats.modeLimit ? ` (+${stats.modes.length - stats.modeLimit} more)` : '';
+
+      const cards = [
+        ['Count', stats.count],
+        ['Sum', formatNumber(stats.sum, stats.decimals)],
+        ['Mean', formatNumber(stats.mean, stats.decimals)],
+        ['Median', formatNumber(stats.median, stats.decimals)],
+        ['Mode', modeText + truncated],
+        ['Min / Max', `${formatNumber(stats.min, stats.decimals)} / ${formatNumber(stats.max, stats.decimals)}`],
+        ['Range', formatNumber(stats.range, stats.decimals)],
+        ['Q1 / Q3', `${formatNumber(stats.q1, stats.decimals)} / ${formatNumber(stats.q3, stats.decimals)}`],
+        ['IQR', formatNumber(stats.iqr, stats.decimals)],
+        ['Variance', formatNumber(stats.variance, stats.decimals)],
+        ['Std Dev', formatNumber(stats.standardDeviation, stats.decimals)]
+      ];
+
+      statGrid.innerHTML = cards.map(([label, value]) => `
+        <article class="stat-card">
+          <span class="stat-label">${label}</span>
+          <div class="stat-value">${value}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderFrequency(stats) {
+      if (!stats.frequencies.length) {
+        frequencyContainer.textContent = 'No frequency data.';
+        return;
+      }
+
+      const rows = stats.frequencies.slice(0, 20).map((entry) => `
+        <tr>
+          <td>${formatNumber(entry.value, stats.decimals)}</td>
+          <td>${entry.count}</td>
+          <td>${formatNumber((entry.count / stats.count) * 100, 1)}%</td>
+        </tr>
+      `).join('');
+      const overflow = stats.frequencies.length > 20
+        ? `<p class="muted" style="margin:0.9rem 0 0;">Showing the first 20 unique values out of ${stats.frequencies.length}.</p>`
+        : '';
+
+      frequencyContainer.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Value</th>
+              <th>Count</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${overflow}
+      `;
+    }
+
+    function buildSummary(stats, varianceMode) {
+      const modeText = stats.modes.length
+        ? stats.modes.map((value) => formatNumber(value, stats.decimals)).join(', ')
+        : 'No mode';
+      const preview = stats.sortedPreview.map((value) => formatNumber(value, stats.decimals)).join(', ');
+      const previewSuffix = stats.sortedOverflow ? ` ... (+${stats.sortedOverflow} more)` : '';
+
+      return [
+        `Count: ${stats.count}`,
+        `Sum: ${formatNumber(stats.sum, stats.decimals)}`,
+        `Mean: ${formatNumber(stats.mean, stats.decimals)}`,
+        `Median: ${formatNumber(stats.median, stats.decimals)}`,
+        `Mode: ${modeText}`,
+        `Min: ${formatNumber(stats.min, stats.decimals)}`,
+        `Max: ${formatNumber(stats.max, stats.decimals)}`,
+        `Range: ${formatNumber(stats.range, stats.decimals)}`,
+        `Q1: ${formatNumber(stats.q1, stats.decimals)}`,
+        `Q3: ${formatNumber(stats.q3, stats.decimals)}`,
+        `IQR: ${formatNumber(stats.iqr, stats.decimals)}`,
+        `${varianceMode === 'population' ? 'Population' : 'Sample'} variance: ${formatNumber(stats.variance, stats.decimals)}`,
+        `${varianceMode === 'population' ? 'Population' : 'Sample'} standard deviation: ${formatNumber(stats.standardDeviation, stats.decimals)}`,
+        `Sorted preview: ${preview}${previewSuffix}`
+      ].join('\n');
+    }
+
+    function analyzeDataset() {
+      try {
+        const decimals = Math.min(8, Math.max(0, Number(decimalsInput.value) || 0));
+        const varianceMode = varianceModeInput.value;
+        const modeLimit = Number(modeLimitInput.value) || 8;
+        const values = parseDataset(datasetInput.value);
+        const stats = computeStats(values, varianceMode, decimals, modeLimit);
+        renderStats(stats);
+        renderFrequency(stats);
+        const summary = buildSummary(stats, varianceMode);
+        summaryOutput.textContent = summary;
+        renderStatus(`Analyzed ${stats.count} value${stats.count === 1 ? '' : 's'} successfully.`, false);
+      } catch (error) {
+        renderStatus(error.message, true);
+        statGrid.innerHTML = '';
+        frequencyContainer.textContent = 'No dataset analyzed yet.';
+        summaryOutput.textContent = 'No summary yet.';
+      }
+    }
+
+    async function copySummary() {
+      if (!summaryOutput.textContent || summaryOutput.textContent === 'No summary yet.') {
+        renderStatus('Analyze a dataset before copying the summary.', true);
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(summaryOutput.textContent);
+        renderStatus('Summary copied to your clipboard.', false);
+      } catch (error) {
+        renderStatus('Clipboard copy failed in this browser. You can still select and copy the summary manually.', true);
+      }
+    }
+
+    function clearAll() {
+      datasetInput.value = '';
+      varianceModeInput.value = 'sample';
+      decimalsInput.value = 3;
+      modeLimitInput.value = 8;
+      statGrid.innerHTML = '';
+      frequencyContainer.textContent = 'No dataset analyzed yet.';
+      summaryOutput.textContent = 'No summary yet.';
+      renderStatus('Ready. Paste a dataset and click <strong>Analyze Dataset</strong>.', false);
+    }
+  </script>
+</body>
+</html>
