@@ -44,6 +44,7 @@ APP_META = {
     "csv-column-extractor":   ("CSV Column Extractor",       "Extract specific columns from CSV data instantly. Paste your CSV and pull out just the columns you need."),
     "date-calculator":        ("Date Calculator",            "Calculate the difference between two dates or add/subtract days from any date. Free online date calculator."),
     "debt-snowball":          ("Debt Snowball Calculator",   "Plan your debt payoff with the debt snowball method. Enter your balances and see your payoff order and timeline."),
+    "decision-matrix":        ("Decision Matrix",            "Score options against weighted criteria to rank competing choices with live totals, percentages, and sortable results. Free online tool."),
     "dedupe-lines":           ("Duplicate Line Remover",     "Remove duplicate lines from any list of text instantly. Free online tool to deduplicate text."),
     "dog-poop-tracker":       ("Dog Poop Tracker",           "Track where your dog goes in the yard using GPS. Mark, map, and clear poop locations with this free PWA."),
     "email-extractor":        ("Email Extractor",            "Extract all email addresses from a block of text instantly. Free online email address extractor tool."),
@@ -221,6 +222,7 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
+    ("decision-matrix", "Decision Matrix",                "Productivity & Planning", "balance",       "Score options against weighted criteria, then rank the results with live totals, percentages, and winning picks."),
     ("unit-circle", "Unit Circle Reference",            "Everyday Tools", "trip_origin",   "Click standard angles to see exact coordinates plus sine, cosine, and tangent values with degree and radian labels."),
     ("quadratic-solver", "Quadratic Solver",              "Everyday Tools", "functions",     "Solve ax² + bx + c = 0 with real or complex roots, full working, discriminant details, and a live parabola graph."),
     ("periodic-table", "Periodic Table",                "Everyday Tools", "science",        "Explore all 118 elements with a clickable layout, category filters, phase markers, and fast detail lookup."),

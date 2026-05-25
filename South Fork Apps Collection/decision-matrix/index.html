@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Matrix | South Fork Apps</title>
+  <meta name="description" content="Score options against weighted criteria to rank competing choices with live totals, percentages, and sortable results. Free online tool.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #a8b2ab;
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --radius: 18px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.14), transparent 24rem),
+        radial-gradient(circle at bottom right, rgba(125, 219, 132, 0.08), transparent 20rem),
+        var(--bg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1300px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .mini-card,
+    .summary-card,
+    .footer {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    p,
+    .helper,
+    .muted,
+    .footer-copy {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      max-width: 60ch;
+    }
+
+    .hero-aside {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .mini-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.9rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .toolbar,
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0e180f;
+      padding: 0.8rem 1.12rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(125, 219, 132, 0.16);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 0.95rem 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      border-radius: 16px;
+      background: var(--accent-soft);
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .matrix-wrap,
+    .summary-wrap {
+      margin-top: 1rem;
+      overflow-x: auto;
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.72);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 0.82rem 0.9rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(42, 47, 43, 0.95);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .matrix-input,
+    .score-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-alt);
+      color: var(--text);
+      padding: 0.65rem 0.72rem;
+      outline: none;
+    }
+
+    .matrix-input:focus,
+    .score-input:focus {
+      border-color: var(--accent);
+    }
+
+    .score-input {
+      max-width: 5.25rem;
+      text-align: center;
+    }
+
+    .delete-button {
+      border-color: rgba(255, 157, 157, 0.28);
+      color: #ffbcbc;
+      background: rgba(255, 157, 157, 0.08);
+      padding: 0.58rem 0.82rem;
+      box-shadow: none;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .summary-card {
+      padding: 1rem;
+    }
+
+    .summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .summary-value {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .rank-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      background: rgba(125, 219, 132, 0.1);
+      color: var(--text);
+      padding: 0.42rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .version {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border-radius: 999px;
+      background: rgba(125, 219, 132, 0.12);
+      border: 1px solid rgba(125, 219, 132, 0.22);
+      padding: 0.45rem 0.7rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .layout,
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Decision Matrix</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Decision Support</p>
+        <h1>Decision Matrix</h1>
+        <p>Compare multiple options against weighted criteria and let the math show which choice actually wins. Add your own criteria, assign importance weights, score each option, and watch the rankings update live.</p>
+      </div>
+      <div class="hero-aside">
+        <article class="mini-card">
+          <strong>Weighted scoring</strong>
+          <span class="muted">Each criterion has its own importance weight, so price does not have to count the same as speed or ease of use.</span>
+        </article>
+        <article class="mini-card">
+          <strong>Live rankings</strong>
+          <span class="muted">Totals, percentages, and the winning option update automatically as you change any score.</span>
+        </article>
+        <article class="mini-card">
+          <strong>Good for messy choices</strong>
+          <span class="muted">Useful for software picks, hiring decisions, product comparisons, travel plans, or any situation where gut feel is noisy.</span>
+        </article>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <h2 class="section-title">Matrix Builder</h2>
+        <p class="helper">Weights and scores use a 1 to 10 scale by default. Higher scores are always treated as better.</p>
+
+        <div class="toolbar">
+          <button id="addCriterionButton" type="button">Add Criterion</button>
+          <button id="addOptionButton" type="button">Add Option</button>
+          <button id="exampleButton" class="ghost" type="button">Load Example</button>
+          <button id="resetButton" class="ghost" type="button">Reset</button>
+        </div>
+
+        <div id="status" class="status">Ready. Edit the example matrix or add your own criteria and options.</div>
+
+        <div class="matrix-wrap">
+          <table>
+            <thead>
+              <tr id="matrixHeadRow"></tr>
+            </thead>
+            <tbody id="matrixBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Ranked Results</h2>
+        <p class="helper">Total score is the sum of <strong>criterion weight × option score</strong> across the full matrix.</p>
+
+        <div class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Current Winner</span>
+            <div class="summary-value" id="winnerValue">MacBook Pro</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Weighted Score</span>
+            <div class="summary-value" id="winnerScoreValue">255</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Criteria Count</span>
+            <div class="summary-value" id="criteriaCountValue">4</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Option Count</span>
+            <div class="summary-value" id="optionCountValue">3</div>
+          </article>
+        </div>
+
+        <div class="summary-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Option</th>
+                <th>Total</th>
+                <th>Percent</th>
+                <th>Best Criterion</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-copy">Simple weighted decision scoring in a single browser tab. No account, no export ceremony, no extra setup.</div>
+      <div class="version">v1.0</div>
+    </footer>
+  </main>
+
+  <script>
+    const matrixHeadRow = document.getElementById('matrixHeadRow');
+    const matrixBody = document.getElementById('matrixBody');
+    const resultsBody = document.getElementById('resultsBody');
+    const winnerValue = document.getElementById('winnerValue');
+    const winnerScoreValue = document.getElementById('winnerScoreValue');
+    const criteriaCountValue = document.getElementById('criteriaCountValue');
+    const optionCountValue = document.getElementById('optionCountValue');
+    const statusEl = document.getElementById('status');
+
+    const addCriterionButton = document.getElementById('addCriterionButton');
+    const addOptionButton = document.getElementById('addOptionButton');
+    const exampleButton = document.getElementById('exampleButton');
+    const resetButton = document.getElementById('resetButton');
+
+    const DEFAULT_STATE = () => ({
+      criteria: [
+        { id: crypto.randomUUID(), name: 'Performance', weight: 9 },
+        { id: crypto.randomUUID(), name: 'Battery life', weight: 8 },
+        { id: crypto.randomUUID(), name: 'Price', weight: 7 },
+        { id: crypto.randomUUID(), name: 'Portability', weight: 6 }
+      ],
+      options: [
+        { id: crypto.randomUUID(), name: 'MacBook Pro', scores: {} },
+        { id: crypto.randomUUID(), name: 'MacBook Air', scores: {} },
+        { id: crypto.randomUUID(), name: 'Desktop + iPad', scores: {} }
+      ]
+    });
+
+    let state = DEFAULT_STATE();
+
+    function clampScore(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return 0;
+      return Math.min(10, Math.max(0, numeric));
+    }
+
+    function seedScores() {
+      state.options.forEach((option, optionIndex) => {
+        state.criteria.forEach((criterion, criterionIndex) => {
+          if (option.scores[criterion.id] === undefined) {
+            option.scores[criterion.id] = Math.max(1, 9 - criterionIndex - optionIndex);
+          }
+        });
+      });
+    }
+
+    function renderStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function renderMatrix() {
+      seedScores();
+      matrixHeadRow.innerHTML = `
+        <th style="min-width: 220px;">Criterion</th>
+        <th style="width: 120px;">Weight</th>
+        ${state.options.map((option) => `<th style="min-width: 160px;">${option.name}</th>`).join('')}
+        <th style="width: 80px;">Actions</th>
+      `;
+
+      matrixBody.innerHTML = state.criteria.map((criterion) => `
+        <tr>
+          <td>
+            <input class="matrix-input" data-role="criterion-name" data-id="${criterion.id}" value="${criterion.name}">
+          </td>
+          <td>
+            <input class="score-input" type="number" min="0" max="10" step="1" data-role="criterion-weight" data-id="${criterion.id}" value="${criterion.weight}">
+          </td>
+          ${state.options.map((option) => `
+            <td>
+              <input class="score-input" type="number" min="0" max="10" step="1" data-role="option-score" data-option-id="${option.id}" data-criterion-id="${criterion.id}" value="${option.scores[criterion.id]}">
+            </td>
+          `).join('')}
+          <td>
+            <button class="delete-button" type="button" data-role="delete-criterion" data-id="${criterion.id}">Remove</button>
+          </td>
+        </tr>
+      `).join('') + `
+        <tr>
+          <td><strong>Option names</strong></td>
+          <td class="muted">Higher is better</td>
+          ${state.options.map((option) => `
+            <td>
+              <input class="matrix-input" data-role="option-name" data-id="${option.id}" value="${option.name}">
+            </td>
+          `).join('')}
+          <td class="muted">Use remove in results</td>
+        </tr>
+      `;
+    }
+
+    function calculateResults() {
+      const totalWeight = state.criteria.reduce((sum, criterion) => sum + clampScore(criterion.weight), 0);
+      const maxPossible = totalWeight * 10;
+
+      const results = state.options.map((option) => {
+        let total = 0;
+        let bestContribution = { name: 'None', value: 0 };
+        state.criteria.forEach((criterion) => {
+          const weight = clampScore(criterion.weight);
+          const score = clampScore(option.scores[criterion.id]);
+          const contribution = weight * score;
+          total += contribution;
+          if (contribution > bestContribution.value) {
+            bestContribution = { name: criterion.name || 'Unnamed criterion', value: contribution };
+          }
+        });
+        return {
+          ...option,
+          total,
+          percent: maxPossible ? (total / maxPossible) * 100 : 0,
+          bestContribution
+        };
+      }).sort((left, right) => right.total - left.total);
+
+      return { results, totalWeight, maxPossible };
+    }
+
+    function renderResults() {
+      const { results } = calculateResults();
+      const winner = results[0];
+      winnerValue.textContent = winner ? winner.name : 'No options yet';
+      winnerScoreValue.textContent = winner ? String(winner.total) : '0';
+      criteriaCountValue.textContent = String(state.criteria.length);
+      optionCountValue.textContent = String(state.options.length);
+
+      resultsBody.innerHTML = results.map((result, index) => `
+        <tr>
+          <td><span class="rank-pill">#${index + 1}</span></td>
+          <td>
+            <strong>${result.name}</strong>
+            <div class="muted" style="margin-top:0.25rem;">Weighted ranking</div>
+          </td>
+          <td>${result.total}</td>
+          <td>${result.percent.toFixed(1)}%</td>
+          <td>
+            <strong>${result.bestContribution.name}</strong>
+            <div class="muted" style="margin-top:0.25rem;">${result.bestContribution.value} points</div>
+            <button class="delete-button" type="button" data-role="delete-option" data-id="${result.id}" style="margin-top:0.65rem;">Remove option</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function render() {
+      renderMatrix();
+      renderResults();
+    }
+
+    function addCriterion() {
+      const criterion = { id: crypto.randomUUID(), name: `Criterion ${state.criteria.length + 1}`, weight: 5 };
+      state.criteria.push(criterion);
+      state.options.forEach((option) => {
+        option.scores[criterion.id] = 5;
+      });
+      renderStatus('Added a new criterion.');
+      render();
+    }
+
+    function addOption() {
+      const option = { id: crypto.randomUUID(), name: `Option ${state.options.length + 1}`, scores: {} };
+      state.criteria.forEach((criterion) => {
+        option.scores[criterion.id] = 5;
+      });
+      state.options.push(option);
+      renderStatus('Added a new option.');
+      render();
+    }
+
+    function resetState() {
+      state = DEFAULT_STATE();
+      seedScores();
+      renderStatus('Reset to the default example.');
+      render();
+    }
+
+    function loadExample() {
+      state = {
+        criteria: [
+          { id: crypto.randomUUID(), name: 'Upfront cost', weight: 8 },
+          { id: crypto.randomUUID(), name: 'Ease of use', weight: 9 },
+          { id: crypto.randomUUID(), name: 'Automation potential', weight: 10 },
+          { id: crypto.randomUUID(), name: 'Mobile access', weight: 6 }
+        ],
+        options: [
+          { id: crypto.randomUUID(), name: 'Option A', scores: {} },
+          { id: crypto.randomUUID(), name: 'Option B', scores: {} },
+          { id: crypto.randomUUID(), name: 'Option C', scores: {} }
+        ]
+      };
+      const starter = [
+        [6, 7, 9, 5],
+        [9, 8, 6, 9],
+        [7, 6, 8, 7]
+      ];
+      state.options.forEach((option, optionIndex) => {
+        state.criteria.forEach((criterion, criterionIndex) => {
+          option.scores[criterion.id] = starter[optionIndex][criterionIndex];
+        });
+      });
+      renderStatus('Loaded a clean sample matrix.');
+      render();
+    }
+
+    document.addEventListener('input', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) return;
+
+      const role = target.dataset.role;
+      if (role === 'criterion-name') {
+        const criterion = state.criteria.find((entry) => entry.id === target.dataset.id);
+        if (criterion) criterion.name = target.value || 'Unnamed criterion';
+      }
+      if (role === 'criterion-weight') {
+        const criterion = state.criteria.find((entry) => entry.id === target.dataset.id);
+        if (criterion) criterion.weight = clampScore(target.value);
+      }
+      if (role === 'option-name') {
+        const option = state.options.find((entry) => entry.id === target.dataset.id);
+        if (option) option.name = target.value || 'Unnamed option';
+      }
+      if (role === 'option-score') {
+        const option = state.options.find((entry) => entry.id === target.dataset.optionId);
+        if (option) {
+          option.scores[target.dataset.criterionId] = clampScore(target.value);
+        }
+      }
+      renderResults();
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) return;
+      const role = target.dataset.role;
+      if (role === 'delete-criterion') {
+        state.criteria = state.criteria.filter((entry) => entry.id !== target.dataset.id);
+        state.options.forEach((option) => {
+          delete option.scores[target.dataset.id];
+        });
+        renderStatus('Removed a criterion.');
+        render();
+      }
+      if (role === 'delete-option') {
+        state.options = state.options.filter((entry) => entry.id !== target.dataset.id);
+        renderStatus('Removed an option.');
+        render();
+      }
+    });
+
+    addCriterionButton.addEventListener('click', addCriterion);
+    addOptionButton.addEventListener('click', addOption);
+    resetButton.addEventListener('click', resetState);
+    exampleButton.addEventListener('click', loadExample);
+
+    seedScores();
+    render();
+  </script>
+</body>
+</html>
