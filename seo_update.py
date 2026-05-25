@@ -83,6 +83,7 @@ APP_META = {
     "temperature-converter":  ("Temperature Converter",      "Convert between Fahrenheit, Celsius, and Kelvin instantly. Free online temperature conversion tool."),
     "text-case-converter":    ("Text Case Converter",        "Convert text to uppercase, lowercase, title case, or sentence case instantly. Free online case converter."),
     "text-repeater":          ("Text Repeater",              "Repeat any text a set number of times with a custom separator. Free online text repetition tool."),
+    "tic-tac-toe":            ("Tic Tac Toe",                "Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool."),
     "timestamp-converter":    ("Timestamp Converter",        "Convert Unix timestamps to readable dates and vice versa. Free online Unix timestamp converter."),
     "tip-calculator":         ("Tip Calculator",             "Calculate the tip and split the bill for any group size. Free online tip calculator."),
     "transfer-time-estimator":("Transfer Time Estimator",    "Estimate how long a file transfer will take at any connection speed. Free online transfer time calculator."),
