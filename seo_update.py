@@ -115,6 +115,7 @@ APP_META = {
     "bmi-calculator":         ("BMI Calculator",              "Calculate your Body Mass Index in imperial or metric units. Free online BMI calculator with healthy weight range."),
     "loan-calculator":        ("Loan Payment Calculator",     "Calculate monthly loan payments, total interest, and a full amortization schedule. Free online loan calculator."),
     "timezone-converter":     ("Timezone Converter",          "Convert times between any two timezones instantly with a live world clock. Free online timezone converter."),
+    "unit-circle":            ("Unit Circle Reference",       "Interactive unit circle with standard angles, radians, exact sin cos tan values, coordinates, and quadrant patterns. Free online tool."),
     "qr-code-generator":      ("QR Code Generator",           "Generate QR codes from any URL, text, WiFi, or contact info. Download as PNG. Free online QR code generator."),
     "decision-spinner":       ("Decision Spinner",            "Can't decide? Add your options and spin the wheel. Free online decision spinner and random picker wheel."),
     "meeting-cost-tracker":   ("Meeting Cost Tracker",        "See how much your meeting costs in real time. Enter attendees and salaries and watch the cost tick up. Free tool."),
@@ -220,10 +221,10 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
+    ("unit-circle", "Unit Circle Reference",            "Everyday Tools", "trip_origin",   "Click standard angles to see exact coordinates plus sine, cosine, and tangent values with degree and radian labels."),
     ("quadratic-solver", "Quadratic Solver",              "Everyday Tools", "functions",     "Solve ax² + bx + c = 0 with real or complex roots, full working, discriminant details, and a live parabola graph."),
     ("periodic-table", "Periodic Table",                "Everyday Tools", "science",        "Explore all 118 elements with a clickable layout, category filters, phase markers, and fast detail lookup."),
     ("statistics-calculator", "Statistics Calculator",  "Everyday Tools", "analytics",      "Paste a dataset to calculate mean, median, mode, quartiles, range, variance, standard deviation, and frequency counts."),
-    ("triangle-solver", "Triangle Solver",              "Everyday Tools", "change_history", "Solve any triangle from three known values, including ambiguous SSA cases, then see the missing sides, angles, area, and perimeter."),
 ]
 
 def update_latest_drop():
