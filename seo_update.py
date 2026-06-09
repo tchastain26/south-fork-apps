@@ -318,7 +318,10 @@ def build_sitemap():
     urls = []
 
     for index_path in sorted(base_path.rglob("index.html")):
-        if any(part.startswith(".") for part in index_path.relative_to(base_path).parts):
+        rel_parts = index_path.relative_to(base_path).parts
+        if any(part.startswith(".") for part in rel_parts):
+            continue
+        if rel_parts[0] == "2025":
             continue
 
         rel = index_path.relative_to(base_path)
