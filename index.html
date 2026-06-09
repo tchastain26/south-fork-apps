@@ -212,7 +212,7 @@
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "South Fork Apps",
-  "description": "Browse free online tools for text, code, design, productivity, calculators, and everyday work.",
+  "description": "Browse a maintained library of free browser-based tools for text cleanup, developer workflows, design checks, planning, calculators, music practice, and everyday work.",
   "url": "https://southforkapps.com/",
   "publisher": {
     "@type": "Organization",
@@ -229,8 +229,11 @@
     <div class="text-2xl font-bold tracking-tighter text-emerald-400 uppercase font-['Epilogue']">
       South Fork Apps
     </div>
-    <div class="hidden md:flex items-center gap-8">
-      <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Repository</a>
+    <div class="hidden md:flex items-center gap-6">
+      <a class="text-emerald-400 border-b-2 border-emerald-400 pb-1 font-['Epilogue'] tracking-tight" href="#repository">Library</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="/categories/">Categories</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="/topics/">Topics</a>
+      <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="/about/">About</a>
       <a class="text-slate-300 font-medium hover:text-emerald-200 font-['Epilogue'] tracking-tight transition-all duration-300" href="https://blog.southforkapps.com" target="_blank" rel="noopener">Field Notes</a>
     </div>
     <div class="flex items-center gap-4">
@@ -245,8 +248,23 @@
   <canvas id="riverCanvas"></canvas>
 
   <section id="latest-drop" class="pt-28 pb-10 px-6 md:px-12 max-w-screen-2xl mx-auto relative z-10">
+    <div class="mb-10 grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)] lg:items-end">
+      <div>
+        <span class="mb-4 block font-label text-xs font-black uppercase tracking-[0.22em] text-primary">Free browser tools</span>
+        <h1 class="max-w-5xl font-headline text-4xl font-extrabold tracking-tight text-on-surface md:text-6xl">Small utilities for real work, published as a maintained app library.</h1>
+        <p class="mt-5 max-w-3xl text-lg leading-8 text-on-surface-variant">South Fork Apps collects fast, no-account tools for writing cleanup, code and web chores, design checks, planning, calculators, music practice, and everyday reference tasks. Most tools run directly in the browser so you can finish the job without installing a larger app.</p>
+      </div>
+      <div class="rounded-2xl border border-primary/20 bg-surface-container-low/85 p-6 backdrop-blur-sm">
+        <h2 class="font-headline text-2xl font-bold text-on-surface">What you can do here</h2>
+        <ul class="mt-4 space-y-3 text-sm leading-6 text-on-surface-variant">
+          <li><strong class="text-on-surface">Use the tools immediately:</strong> search the full library or browse by category and topic.</li>
+          <li><strong class="text-on-surface">Keep context local:</strong> many utilities process input on the page without an account.</li>
+          <li><strong class="text-on-surface">Follow updates:</strong> new apps, fixes, and release notes are linked through Field Notes.</li>
+        </ul>
+      </div>
+    </div>
     <div class="mb-8">
-      <h1 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-5xl">New</h1>
+      <h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-5xl">Newest tools</h2>
     </div>
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 <!-- LATEST_DROP_START -->
@@ -1826,12 +1844,12 @@
 
   <section id="mission" class="py-32 bg-surface-container-low relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-20">
-      <span class="font-label text-primary tracking-widest uppercase text-xs font-black mb-8 block">Mission Briefing</span>
+      <span class="font-label text-primary tracking-widest uppercase text-xs font-black mb-8 block">How the library is maintained</span>
       <h2 class="font-headline text-5xl md:text-7xl font-extrabold mb-12 tracking-tight leading-tight">
-        Small tools, built <span class="text-primary italic">solo.</span>
+        Useful tools, kept <span class="text-primary italic">practical.</span>
       </h2>
       <p class="text-xl text-on-surface-variant font-body mb-12 leading-relaxed">
-        South Fork Apps is the home for my vibe-coded side projects. One-person studio, zero frameworks when I can help it, every app shipped fast and iterated in the field. No roadmaps, no committees, no mission creep. Just useful things, made with AI as a collaborator and deployed from East Tennessee.
+        South Fork Apps is an independent tool library built and maintained by Tucker Chastain. Each page is meant to solve a specific task with a clear interface, useful output, and durable links. The collection is updated as new app ideas, bug reports, and workflow gaps surface.
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-6">
         <a href="#latest-drop" class="primary-gradient text-on-primary font-headline font-bold px-12 py-5 rounded-xl text-lg hover:scale-105 transition-all">
