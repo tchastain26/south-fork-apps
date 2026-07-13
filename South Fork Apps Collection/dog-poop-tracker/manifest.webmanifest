@@ -1,0 +1,18 @@
+{
+  "name": "Dog Poop Tracker",
+  "short_name": "Poop Tracker",
+  "description": "Track where your dog goes in the yard using GPS with honest accuracy handling.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111412",
+  "theme_color": "#111412",
+  "icons": [
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
