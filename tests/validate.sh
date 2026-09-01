@@ -3,7 +3,7 @@
 # Example: ./tests/validate.sh tip-calculator
 # Run with no argument to validate all apps in the collection directory
 
-COLLECTION="South Fork Apps Collection"
+COLLECTION="tools"
 PASS=0
 FAIL=0
 

@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wind Chill & Heat Index Calculator | South Fork Apps</title>
+  <meta name="description" content="Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.">
+  
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/tools/wind-chill/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wind Chill &amp; Heat Index Calculator">
+<meta property="og:description" content="Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.">
+<meta property="og:url" content="https://southforkapps.com/tools/wind-chill/">
+<meta property="og:image" content="https://southforkapps.com/tools/wind-chill/share.jpg">
+<meta property="og:image:alt" content="Wind Chill &amp; Heat Index Calculator preview image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wind Chill &amp; Heat Index Calculator">
+<meta name="twitter:description" content="Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.">
+<meta name="twitter:image" content="https://southforkapps.com/tools/wind-chill/share.jpg">
+<!-- SFA_SOCIAL_END -->
+<!-- SFA_ADS_START -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076043873825717" crossorigin="anonymous"></script>
+<!-- SFA_ADS_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#111412;--surface:#1a1f1b;--surface2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac;--cold:#aaccda;--hot:#f28b82;}
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;}
+    .nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);}
+    .nav a{color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500;}
+    .nav a:hover{text-decoration:underline;}
+    .nav-title{color:var(--text);font-size:.875rem;font-weight:600;}
+    main{width:min(640px,calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;}
+    h1{margin:0 0 .4rem;font-size:clamp(1.6rem,3.5vw,2.2rem);}
+    .sub{margin:0 0 1.5rem;color:var(--muted);line-height:1.6;}
+    .tabs{display:flex;gap:.4rem;margin-bottom:1rem;}
+    .tab{padding:.35rem .85rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;}
+    .tab.active{border-color:var(--accent);background:rgba(125,219,132,.1);color:var(--accent);}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+    .field{margin-bottom:.85rem;}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem;}
+    .input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .input-wrap:focus-within{border-color:var(--accent);}
+    .input-wrap input{flex:1;background:transparent;color:var(--text);border:none;padding:.6rem .75rem;font:inherit;font-size:.95rem;outline:none;}
+    .sfx{padding:0 .7rem;color:var(--muted);font-size:.85rem;font-weight:700;}
+    .unit-toggle{display:flex;gap:.4rem;margin-bottom:.9rem;}
+    .unit-btn{padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
+    .unit-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.1);}
+    .result-display{text-align:center;padding:1.5rem;border-radius:10px;margin-top:.75rem;}
+    .feels-num{font-size:4rem;font-weight:800;line-height:1;}
+    .feels-label{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:.4rem;opacity:.8;}
+    .diff-badge{display:inline-block;margin-top:.5rem;padding:.3rem .75rem;border-radius:20px;font-size:.82rem;font-weight:800;}
+    .cold-bg{background:rgba(170,204,218,.12);color:var(--cold);}
+    .hot-bg{background:rgba(242,139,130,.12);color:var(--hot);}
+    .neutral-bg{background:var(--surface2);color:var(--muted);}
+    .danger-note{font-size:.8rem;color:#f28b82;margin-top:.6rem;text-align:center;}
+    footer{margin-top:2rem;color:var(--muted);font-size:.8rem;text-align:center;}
+  
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+</style>
+<!-- SFA_JSONLD_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Wind Chill & Heat Index Calculator",
+  "description": "Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "url": "https://southforkapps.com/tools/wind-chill/",
+  "image": "https://southforkapps.com/tools/wind-chill/share.jpg",
+  "screenshot": "https://southforkapps.com/tools/wind-chill/screenshot.jpg",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Tucker Chastain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "South Fork Apps",
+    "url": "https://southforkapps.com"
+  },
+  "mainEntityOfPage": "https://southforkapps.com/tools/wind-chill/"
+}
+</script>
+<!-- SFA_JSONLD_END -->
+<!-- SFA_BREADCRUMB_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "South Fork Apps",
+      "item": "https://southforkapps.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Everyday Tools",
+      "item": "https://southforkapps.com/categories/everyday-tools/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Wind Chill & Heat Index Calculator",
+      "item": "https://southforkapps.com/tools/wind-chill/"
+    }
+  ]
+}
+</script>
+<!-- SFA_BREADCRUMB_END -->
+</head>
+<body>
+<nav class="nav"><a href="https://southforkapps.com">&#8592; South Fork Apps</a><span class="nav-title">Wind Chill & Heat Index</span></nav>
+<main>
+  <h1>Wind Chill &amp; Heat Index Calculator</h1>
+  <p class="sub">Calculate how the temperature feels based on wind speed (cold) or humidity (hot).</p>
+
+  <div class="tabs">
+    <button class="tab active" id="tabWC" onclick="setMode('wc')">Wind Chill</button>
+    <button class="tab" id="tabHI" onclick="setMode('hi')">Heat Index</button>
+  </div>
+
+  <div class="card">
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="btnF" onclick="setUnit('F')">°F</button>
+      <button class="unit-btn" id="btnC" onclick="setUnit('C')">°C</button>
+    </div>
+
+    <div class="field">
+      <label id="tempLabel">Air Temperature (°F)</label>
+      <div class="input-wrap"><input type="number" id="temp" value="30" oninput="calc()"><span class="sfx" id="tempSfx">°F</span></div>
+    </div>
+
+    <div class="field" id="windField">
+      <label id="windLabel">Wind Speed (mph)</label>
+      <div class="input-wrap"><input type="number" id="wind" value="15" min="0" oninput="calc()"><span class="sfx" id="windSfx">mph</span></div>
+    </div>
+    <div class="field" id="humField" style="display:none">
+      <label>Relative Humidity (%)</label>
+      <div class="input-wrap"><input type="number" id="humidity" value="70" min="0" max="100" oninput="calc()"><span class="sfx">%</span></div>
+    </div>
+
+    <div id="resultBox"></div>
+    <div id="dangerNote" class="danger-note"></div>
+  </div>
+<!-- SFA_FEATURE_START -->
+<section class="sfa-feature" aria-labelledby="sfa-feature-title">
+  <div class="sfa-feature-shell">
+    <div class="sfa-feature-copy">
+      <div class="sfa-kicker">About this tool</div>
+      <h2 id="sfa-feature-title">Wind Chill &amp; Heat Index Calculator</h2>
+      <p>Calculate wind chill temperature and heat index (feels-like temperature) from actual temperature and wind speed or humidity. Free online weather calculator.</p>
+      <p>Wind Chill &amp; Heat Index Calculator is a free browser-based tool from South Fork Apps. There&#x27;s nothing to install, no account to create, and no usage limit. Open the page, do the work, and move on.</p>
+      <h3 class="sfa-subhead">How it works</h3>
+      <ol class="sfa-steps">
+        <li>Open Wind Chill &amp; Heat Index Calculator in any modern browser on desktop or mobile.</li>
+        <li>Enter or paste your input into the tool&#x27;s main field.</li>
+        <li>Adjust any options shown on the page to match what you need.</li>
+        <li>Copy or download the result and continue with your work.</li>
+      </ol>
+      <h3 class="sfa-subhead">Why use a browser tool</h3>
+      <p>Browser tools beat installable apps when the job is small. You don&#x27;t have to manage updates, sign in, or wait for a heavy program to load. Wind Chill &amp; Heat Index Calculator runs entirely in your browser. Your input never leaves your device, no analytics watch what you type, and the page stops working the moment you close the tab.</p>
+      <h3 class="sfa-subhead">Privacy and data</h3>
+      <p>South Fork Apps tools process everything client-side in JavaScript. No server sees your data. Nothing is stored, logged, or sent anywhere. If you&#x27;re working with sensitive content, you can verify by opening the page once, disconnecting from the internet, and watching Wind Chill &amp; Heat Index Calculator keep working.</p>
+      <div class="sfa-links">
+        <a href="https://southforkapps.com/categories/everyday-tools/">More Everyday Tools</a>
+        <a href="https://southforkapps.com/about/">About South Fork Apps</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+      </div>
+    </div>
+    <figure class="sfa-preview">
+      <img src="screenshot.jpg" alt="Wind Chill &amp; Heat Index Calculator interface preview" loading="lazy" decoding="async" width="1600" height="900">
+      <figcaption>Screenshot of the live Wind Chill &amp; Heat Index Calculator interface.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- SFA_FEATURE_END -->
+<!-- SFA_RELATED_START -->
+<section class="sfa-related" aria-label="More apps in Everyday Tools">
+  <div class="sfa-related-shell">
+    <div class="sfa-related-header">
+      <div class="sfa-related-title">More Everyday Tools</div>
+      <div class="sfa-related-meta">South Fork Apps</div>
+    </div>
+    <div class="sfa-related-grid">
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/age-calculator/">
+          <strong>Age Calculator</strong>
+          <span>Turn a birthdate into exact age, total days alive, rough heartbeats, breaths, and full moons.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/bill-splitter/">
+          <strong>Bill Splitter</strong>
+          <span>Enter each person&#x27;s subtotal and split tax and tip proportionally. Handles unequal splits between any number of people.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/blood-pressure/">
+          <strong>Blood Pressure Checker</strong>
+          <span>Check your blood pressure reading against AHA categories. Enter systolic and diastolic values to see your BP category and what it means.</span>
+        </a>
+    </div>
+  </div>
+</section>
+<!-- SFA_RELATED_END -->
+
+
+
+
+
+
+
+
+  <footer>v1.0 · NWS wind chill formula · Rothfusz heat index regression</footer>
+</main>
+<script>
+let mode = 'wc', unit = 'F';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('tabWC').classList.toggle('active', m==='wc');
+  document.getElementById('tabHI').classList.toggle('active', m==='hi');
+  document.getElementById('windField').style.display = m==='wc' ? '' : 'none';
+  document.getElementById('humField').style.display  = m==='hi' ? '' : 'none';
+  calc();
+}
+
+function setUnit(u) {
+  unit = u;
+  document.getElementById('btnF').classList.toggle('active', u==='F');
+  document.getElementById('btnC').classList.toggle('active', u==='C');
+  const isF = u==='F';
+  document.getElementById('tempLabel').textContent = `Air Temperature (°${u})`;
+  document.getElementById('tempSfx').textContent = '°' + u;
+  document.getElementById('windLabel').textContent = `Wind Speed (${isF?'mph':'km/h'})`;
+  document.getElementById('windSfx').textContent = isF ? 'mph' : 'km/h';
+  calc();
+}
+
+function calc() {
+  let T = parseFloat(document.getElementById('temp').value);
+  let W = parseFloat(document.getElementById('wind').value)||0;
+  const H = parseFloat(document.getElementById('humidity').value)||50;
+  if (isNaN(T)) { document.getElementById('resultBox').innerHTML=''; return; }
+
+  // Convert to F for formulas
+  const TF = unit==='C' ? T*9/5+32 : T;
+  const Wmph = unit==='C' ? W*0.621371 : W;
+
+  let feelsF, note='', isCold=false, isHot=false;
+
+  if (mode === 'wc') {
+    // NWS Wind Chill: valid for T ≤ 50°F and W ≥ 3 mph
+    if (TF > 50 || Wmph < 3) {
+      feelsF = TF;
+      note = TF > 50 ? 'Wind chill applies when temperature is ≤ 50°F (10°C).' : 'Wind chill applies when wind speed is ≥ 3 mph.';
+    } else {
+      feelsF = 35.74 + 0.6215*TF - 35.75*Math.pow(Wmph,0.16) + 0.4275*TF*Math.pow(Wmph,0.16);
+      isCold = true;
+      if (feelsF < -20) note = '⚠️ Frostbite possible in 30 minutes or less.';
+      if (feelsF < -40) note = '⚠️ Frostbite possible in under 10 minutes. Dangerous.';
+    }
+  } else {
+    // Rothfusz heat index: valid for T ≥ 80°F and H ≥ 40%
+    if (TF < 80 || H < 40) {
+      feelsF = TF;
+      note = TF < 80 ? 'Heat index applies when temperature is ≥ 80°F (27°C).' : 'Heat index applies when humidity is ≥ 40%.';
+    } else {
+      const c = [-42.379,2.04901523,10.14333127,-0.22475541,-0.00683783,-0.05481717,0.00122874,0.00085282,-0.00000199];
+      feelsF = c[0]+c[1]*TF+c[2]*H+c[3]*TF*H+c[4]*TF*TF+c[5]*H*H+c[6]*TF*TF*H+c[7]*TF*H*H+c[8]*TF*TF*H*H;
+      isHot = true;
+      if (feelsF >= 103) note = '⚠️ Heat stroke possible. Limit outdoor activity.';
+      if (feelsF >= 125) note = '⚠️ Extreme danger. Heat stroke highly likely.';
+    }
+  }
+
+  const feelsDisplay = unit==='C' ? (feelsF-32)*5/9 : feelsF;
+  const actualDisplay = T;
+  const diff = feelsDisplay - actualDisplay;
+  const diffStr = (diff >= 0 ? '+' : '') + diff.toFixed(1) + '°' + unit;
+  const bgClass = isCold ? 'cold-bg' : isHot ? 'hot-bg' : 'neutral-bg';
+  const bgStyle = isCold ? 'background:rgba(170,204,218,.08)' : isHot ? 'background:rgba(242,139,130,.06)' : 'background:var(--surface2)';
+  const numColor = isCold ? 'color:var(--cold)' : isHot ? 'color:var(--hot)' : 'color:var(--muted)';
+
+  document.getElementById('resultBox').innerHTML = `
+    <div class="result-display" style="${bgStyle}">
+      <div class="feels-num" style="${numColor}">${feelsDisplay.toFixed(1)}°${unit}</div>
+      <div class="feels-label">Feels like</div>
+      ${diff !== 0 ? `<div class="diff-badge ${bgClass}">${diffStr} from actual</div>` : ''}
+    </div>`;
+  document.getElementById('dangerNote').textContent = note;
+}
+
+calc();
+</script>
+</body>
+</html>

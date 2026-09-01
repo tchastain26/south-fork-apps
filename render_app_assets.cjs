@@ -7,7 +7,7 @@ const sharp = require("sharp");
 const { chromium } = require("playwright");
 
 const ROOT = path.resolve(__dirname);
-const COLLECTION_DIR = path.join(ROOT, "South Fork Apps Collection");
+const COLLECTION_DIR = path.join(ROOT, "tools");
 const INDEX_PATH = path.join(ROOT, "index.html");
 const PORT = 8766;
 
@@ -41,7 +41,7 @@ function parseApps() {
   const start = text.indexOf('<div id="appGrid"');
   const end = text.indexOf('<div id="noResults"');
   const grid = text.slice(start, end);
-  const pattern = /<div data-app-card data-title="([^"]+)" data-description="([^"]+)" data-category="([^"]+)".*?<a href="\/South%20Fork%20Apps%20Collection\/([^/]+)\//gs;
+  const pattern = /<div data-app-card data-title="([^"]+)" data-description="([^"]+)" data-category="([^"]+)".*?<a href="\/tools\/([^/]+)\//gs;
   const apps = [];
   for (const match of grid.matchAll(pattern)) {
     apps.push({
@@ -179,7 +179,7 @@ async function main() {
 
   for (const [index, app] of apps.entries()) {
     const page = await context.newPage();
-    const url = `http://127.0.0.1:${PORT}/South%20Fork%20Apps%20Collection/${app.slug}/`;
+    const url = `http://127.0.0.1:${PORT}/tools/${app.slug}/`;
     const appDir = path.join(COLLECTION_DIR, app.slug);
     const screenshotPath = path.join(appDir, "screenshot.jpg");
     const sharePath = path.join(appDir, "share.jpg");

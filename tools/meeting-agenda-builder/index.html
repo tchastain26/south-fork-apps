@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Agenda Builder | South Fork Apps</title>
+  <meta name="description" content="Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool.">
+  
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/tools/meeting-agenda-builder/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Meeting Agenda Builder">
+<meta property="og:description" content="Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool.">
+<meta property="og:url" content="https://southforkapps.com/tools/meeting-agenda-builder/">
+<meta property="og:image" content="https://southforkapps.com/tools/meeting-agenda-builder/share.jpg">
+<meta property="og:image:alt" content="Meeting Agenda Builder preview image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Meeting Agenda Builder">
+<meta name="twitter:description" content="Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool.">
+<meta name="twitter:image" content="https://southforkapps.com/tools/meeting-agenda-builder/share.jpg">
+<!-- SFA_SOCIAL_END -->
+<!-- SFA_ADS_START -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076043873825717" crossorigin="anonymous"></script>
+<!-- SFA_ADS_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #a8b2ab;
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --danger: #ffb1b1;
+      --radius: 18px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.14), transparent 24rem),
+        radial-gradient(circle at bottom right, rgba(125, 219, 132, 0.08), transparent 20rem),
+        var(--bg);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1320px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .mini-card,
+    .summary-card,
+    .footer {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.85rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    p,
+    .helper,
+    .muted,
+    .footer-copy {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      max-width: 60ch;
+    }
+
+    .hero-aside {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .mini-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.84fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.9rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .top-fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.36rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    input,
+    textarea,
+    button {
+      font: inherit;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-alt);
+      color: var(--text);
+      padding: 0.82rem 0.9rem;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .actions,
+    .copy-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0e180f;
+      padding: 0.8rem 1.12rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(125, 219, 132, 0.16);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .remove-button {
+      border-color: rgba(255, 177, 177, 0.28);
+      color: var(--danger);
+      background: rgba(255, 177, 177, 0.08);
+      box-shadow: none;
+      padding: 0.62rem 0.86rem;
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 0.95rem 1rem;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      border-radius: 16px;
+      background: var(--accent-soft);
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .agenda-list {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .agenda-item {
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.72);
+      padding: 1rem;
+    }
+
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(120px, 0.55fr) minmax(120px, 0.55fr) auto;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .summary-card {
+      padding: 1rem;
+    }
+
+    .summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .summary-value {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .output-wrap {
+      margin-top: 1rem;
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.72);
+      padding: 1rem;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+      color: #d6ead8;
+      line-height: 1.7;
+      font-size: 0.88rem;
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .version {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border-radius: 999px;
+      background: rgba(125, 219, 132, 0.12);
+      border: 1px solid rgba(125, 219, 132, 0.22);
+      padding: 0.45rem 0.7rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .layout,
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      main {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .top-fields,
+      .summary-grid,
+      .agenda-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+</style>
+<!-- SFA_JSONLD_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Meeting Agenda Builder",
+  "description": "Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool.",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Any",
+  "url": "https://southforkapps.com/tools/meeting-agenda-builder/",
+  "image": "https://southforkapps.com/tools/meeting-agenda-builder/share.jpg",
+  "screenshot": "https://southforkapps.com/tools/meeting-agenda-builder/screenshot.jpg",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Tucker Chastain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "South Fork Apps",
+    "url": "https://southforkapps.com"
+  },
+  "mainEntityOfPage": "https://southforkapps.com/tools/meeting-agenda-builder/"
+}
+</script>
+<!-- SFA_JSONLD_END -->
+<!-- SFA_BREADCRUMB_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "South Fork Apps",
+      "item": "https://southforkapps.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Productivity & Planning",
+      "item": "https://southforkapps.com/categories/productivity-planning/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Meeting Agenda Builder",
+      "item": "https://southforkapps.com/tools/meeting-agenda-builder/"
+    }
+  ]
+}
+</script>
+<!-- SFA_BREADCRUMB_END -->
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a>
+    <span class="nav-title">Meeting Agenda Builder</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Meeting Prep</p>
+        <h1>Meeting Agenda Builder</h1>
+        <p>Build a clean timed agenda that stays realistic about how long the meeting actually is. Add owners, minutes, and notes for each segment, then copy the final result as plain text or Markdown.</p>
+      </div>
+      <div class="hero-aside">
+        <article class="mini-card">
+          <strong>Timed by default</strong>
+          <span class="muted">Every agenda item has a minutes field so meetings stop pretending thirty items fit into twenty minutes.</span>
+        </article>
+        <article class="mini-card">
+          <strong>Copy in two formats</strong>
+          <span class="muted">Use the same agenda for email, chat, docs, or markdown-based meeting notes without rewriting it.</span>
+        </article>
+        <article class="mini-card">
+          <strong>Owner-aware</strong>
+          <span class="muted">Assign each section to a person so the flow is clear before the meeting starts.</span>
+        </article>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <h2 class="section-title">Agenda Setup</h2>
+        <p class="helper">Start with a title and meeting details, then add agenda rows below.</p>
+
+        <div class="top-fields">
+          <label>
+            Meeting title
+            <input id="titleInput" type="text" value="Weekly Team Sync">
+          </label>
+          <label>
+            Date or context
+            <input id="contextInput" type="text" value="Monday, 9:00 AM">
+          </label>
+          <label>
+            Goal
+            <input id="goalInput" type="text" value="Align on priorities and blockers">
+          </label>
+        </div>
+
+        <div class="actions" style="margin-top:1rem;">
+          <button id="addItemButton" type="button">Add Agenda Item</button>
+          <button id="exampleButton" class="ghost" type="button">Load Example</button>
+          <button id="resetButton" class="ghost" type="button">Reset</button>
+        </div>
+
+        <div id="status" class="status">Ready. Edit the sample agenda, then copy it as plain text or Markdown.</div>
+
+        <div class="agenda-list" id="agendaList"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Agenda Output</h2>
+        <p class="helper">The total time, item count, and copy output update automatically.</p>
+
+        <div class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Total Time</span>
+            <div class="summary-value" id="totalTimeValue">35 minutes</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Agenda Items</span>
+            <div class="summary-value" id="itemCountValue">4</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Longest Segment</span>
+            <div class="summary-value" id="longestItemValue">Roadblocks (15 min)</div>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Meeting Goal</span>
+            <div class="summary-value" id="goalValue">Align on priorities and blockers</div>
+          </article>
+        </div>
+
+        <div class="copy-actions" style="margin-top:1rem;">
+          <button id="copyTextButton" type="button">Copy Plain Text</button>
+          <button id="copyMarkdownButton" class="ghost" type="button">Copy Markdown</button>
+        </div>
+
+        <div class="output-wrap">
+          <pre id="outputPreview"></pre>
+        </div>
+      </section>
+    </div>
+<!-- SFA_FEATURE_START -->
+<section class="sfa-feature" aria-labelledby="sfa-feature-title">
+  <div class="sfa-feature-shell">
+    <div class="sfa-feature-copy">
+      <div class="sfa-kicker">About this tool</div>
+      <h2 id="sfa-feature-title">Meeting Agenda Builder</h2>
+      <p>Build a timed meeting agenda and copy it as formatted plain text or Markdown with totals, owners, and notes. Free online tool.</p>
+      <p>Meeting Agenda Builder is a free browser-based tool from South Fork Apps. There&#x27;s nothing to install, no account to create, and no usage limit. Open the page, do the work, and move on.</p>
+      <h3 class="sfa-subhead">How it works</h3>
+      <ol class="sfa-steps">
+        <li>Open Meeting Agenda Builder in any modern browser on desktop or mobile.</li>
+        <li>Enter or paste your input into the tool&#x27;s main field.</li>
+        <li>Adjust any options shown on the page to match what you need.</li>
+        <li>Copy or download the result and continue with your work.</li>
+      </ol>
+      <h3 class="sfa-subhead">Why use a browser tool</h3>
+      <p>Browser tools beat installable apps when the job is small. You don&#x27;t have to manage updates, sign in, or wait for a heavy program to load. Meeting Agenda Builder runs entirely in your browser. Your input never leaves your device, no analytics watch what you type, and the page stops working the moment you close the tab.</p>
+      <h3 class="sfa-subhead">Privacy and data</h3>
+      <p>South Fork Apps tools process everything client-side in JavaScript. No server sees your data. Nothing is stored, logged, or sent anywhere. If you&#x27;re working with sensitive content, you can verify by opening the page once, disconnecting from the internet, and watching Meeting Agenda Builder keep working.</p>
+      <div class="sfa-links">
+        <a href="https://southforkapps.com/categories/productivity-planning/">More Productivity &amp; Planning</a>
+        <a href="https://southforkapps.com/about/">About South Fork Apps</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+      </div>
+    </div>
+    <figure class="sfa-preview">
+      <img src="screenshot.jpg" alt="Meeting Agenda Builder interface preview" loading="lazy" decoding="async" width="1600" height="900">
+      <figcaption>Screenshot of the live Meeting Agenda Builder interface.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- SFA_FEATURE_END -->
+<!-- SFA_RELATED_START -->
+<section class="sfa-related" aria-label="More apps in Productivity &amp; Planning">
+  <div class="sfa-related-shell">
+    <div class="sfa-related-header">
+      <div class="sfa-related-title">More Productivity &amp; Planning</div>
+      <div class="sfa-related-meta">South Fork Apps</div>
+    </div>
+    <div class="sfa-related-grid">
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/meeting-cost-tracker/">
+          <strong>Meeting Cost Tracker</strong>
+          <span>Watch the dollar amount tick up in real time as your meeting runs. Enter attendees and salary to start.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/timezone-planner/">
+          <strong>Meeting Time Zone Planner</strong>
+          <span>Find the best meeting time across multiple time zones. See overlapping work hours for distributed teams.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/no-list/">
+          <strong>No List</strong>
+          <span>Build a running record of the things you&#x27;ve committed to declining. Say no with intention and stick to it.</span>
+        </a>
+    </div>
+  </div>
+</section>
+<!-- SFA_RELATED_END -->
+
+
+
+
+
+
+
+
+    <footer class="footer">
+      <div class="footer-copy">Simple agenda drafting with real timing and easy copy output for the rest of your workflow.</div>
+      <div class="version">v1.0</div>
+    </footer>
+  </main>
+
+  <script>
+    const titleInput = document.getElementById('titleInput');
+    const contextInput = document.getElementById('contextInput');
+    const goalInput = document.getElementById('goalInput');
+    const agendaList = document.getElementById('agendaList');
+    const statusEl = document.getElementById('status');
+    const totalTimeValue = document.getElementById('totalTimeValue');
+    const itemCountValue = document.getElementById('itemCountValue');
+    const longestItemValue = document.getElementById('longestItemValue');
+    const goalValue = document.getElementById('goalValue');
+    const outputPreview = document.getElementById('outputPreview');
+
+    const addItemButton = document.getElementById('addItemButton');
+    const exampleButton = document.getElementById('exampleButton');
+    const resetButton = document.getElementById('resetButton');
+    const copyTextButton = document.getElementById('copyTextButton');
+    const copyMarkdownButton = document.getElementById('copyMarkdownButton');
+
+    const createDefaultItems = () => ([
+      { id: crypto.randomUUID(), topic: 'Welcome and quick wins', owner: 'Tucker', minutes: 5, notes: 'Celebrate progress since last meeting.' },
+      { id: crypto.randomUUID(), topic: 'Priority review', owner: 'Amanda', minutes: 10, notes: 'Confirm top work and current deadlines.' },
+      { id: crypto.randomUUID(), topic: 'Roadblocks', owner: 'Team', minutes: 15, notes: 'Surface blockers early and assign next actions.' },
+      { id: crypto.randomUUID(), topic: 'Wrap-up and owners', owner: 'Tucker', minutes: 5, notes: 'Confirm decisions and next steps.' }
+    ]);
+
+    let agendaItems = createDefaultItems();
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function minutesLabel(value) {
+      return `${value} minute${value === 1 ? '' : 's'}`;
+    }
+
+    function renderItems() {
+      agendaList.innerHTML = agendaItems.map((item, index) => `
+        <article class="agenda-item">
+          <div class="agenda-grid">
+            <label>
+              Topic
+              <input type="text" data-role="topic" data-id="${item.id}" value="${item.topic}">
+            </label>
+            <label>
+              Owner
+              <input type="text" data-role="owner" data-id="${item.id}" value="${item.owner}">
+            </label>
+            <label>
+              Minutes
+              <input type="number" min="1" step="1" data-role="minutes" data-id="${item.id}" value="${item.minutes}">
+            </label>
+            <button class="remove-button" type="button" data-role="remove" data-id="${item.id}">Remove</button>
+          </div>
+          <label style="margin-top:0.85rem;">
+            Notes
+            <textarea data-role="notes" data-id="${item.id}">${item.notes}</textarea>
+          </label>
+          <div class="muted" style="margin-top:0.65rem;">Item ${index + 1}</div>
+        </article>
+      `).join('');
+    }
+
+    function buildPlainText() {
+      const title = titleInput.value.trim() || 'Meeting Agenda';
+      const context = contextInput.value.trim();
+      const goal = goalInput.value.trim();
+      const totalMinutes = agendaItems.reduce((sum, item) => sum + Number(item.minutes || 0), 0);
+
+      const lines = [
+        title,
+        context ? `When: ${context}` : '',
+        goal ? `Goal: ${goal}` : '',
+        `Total time: ${minutesLabel(totalMinutes)}`,
+        '',
+        'Agenda'
+      ].filter(Boolean);
+
+      agendaItems.forEach((item, index) => {
+        lines.push(`${index + 1}. ${item.topic} (${item.minutes} min)`);
+        if (item.owner.trim()) lines.push(`   Owner: ${item.owner}`);
+        if (item.notes.trim()) lines.push(`   Notes: ${item.notes}`);
+      });
+
+      return lines.join('\n');
+    }
+
+    function buildMarkdown() {
+      const title = titleInput.value.trim() || 'Meeting Agenda';
+      const context = contextInput.value.trim();
+      const goal = goalInput.value.trim();
+      const totalMinutes = agendaItems.reduce((sum, item) => sum + Number(item.minutes || 0), 0);
+
+      const lines = [`# ${title}`, ''];
+      if (context) lines.push(`- **When:** ${context}`);
+      if (goal) lines.push(`- **Goal:** ${goal}`);
+      lines.push(`- **Total time:** ${minutesLabel(totalMinutes)}`);
+      lines.push('', '## Agenda', '');
+
+      agendaItems.forEach((item) => {
+        lines.push(`- **${item.topic}** (${item.minutes} min)`);
+        if (item.owner.trim()) lines.push(`  Owner: ${item.owner}`);
+        if (item.notes.trim()) lines.push(`  Notes: ${item.notes}`);
+      });
+
+      return lines.join('\n');
+    }
+
+    function updateSummary() {
+      const totalMinutes = agendaItems.reduce((sum, item) => sum + Number(item.minutes || 0), 0);
+      const longest = agendaItems.reduce((current, item) => Number(item.minutes) > Number(current.minutes || 0) ? item : current, agendaItems[0] || { topic: 'None', minutes: 0 });
+      totalTimeValue.textContent = minutesLabel(totalMinutes);
+      itemCountValue.textContent = String(agendaItems.length);
+      longestItemValue.textContent = agendaItems.length ? `${longest.topic} (${longest.minutes} min)` : 'None';
+      goalValue.textContent = goalInput.value.trim() || 'No goal set';
+      outputPreview.textContent = buildPlainText();
+    }
+
+    function render() {
+      renderItems();
+      updateSummary();
+    }
+
+    function addItem() {
+      agendaItems.push({
+        id: crypto.randomUUID(),
+        topic: `Agenda item ${agendaItems.length + 1}`,
+        owner: '',
+        minutes: 5,
+        notes: ''
+      });
+      setStatus('Added a new agenda item.');
+      render();
+    }
+
+    function resetAll() {
+      titleInput.value = 'Weekly Team Sync';
+      contextInput.value = 'Monday, 9:00 AM';
+      goalInput.value = 'Align on priorities and blockers';
+      agendaItems = createDefaultItems();
+      setStatus('Reset to the default agenda.');
+      render();
+    }
+
+    function loadExample() {
+      titleInput.value = 'Product Launch Readiness Review';
+      contextInput.value = 'Thursday, 2:00 PM';
+      goalInput.value = 'Decide whether launch blockers are cleared';
+      agendaItems = [
+        { id: crypto.randomUUID(), topic: 'Launch status snapshot', owner: 'PM', minutes: 8, notes: 'Review green, yellow, red areas only.' },
+        { id: crypto.randomUUID(), topic: 'Open blockers', owner: 'Engineering', minutes: 12, notes: 'Call out owner and expected resolution date.' },
+        { id: crypto.randomUUID(), topic: 'Go / no-go decision', owner: 'Leadership', minutes: 10, notes: 'Record final call and fallback plan.' },
+        { id: crypto.randomUUID(), topic: 'Next actions', owner: 'Operations', minutes: 5, notes: 'Assign owners for follow-up communication.' }
+      ];
+      setStatus('Loaded a launch-review example agenda.');
+      render();
+    }
+
+    async function copyOutput(markdown = false) {
+      const text = markdown ? buildMarkdown() : buildPlainText();
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus(markdown ? 'Markdown agenda copied to the clipboard.' : 'Plain-text agenda copied to the clipboard.');
+      } catch (error) {
+        setStatus('Clipboard copy failed in this browser. You can still copy from the preview panel.');
+      }
+    }
+
+    document.addEventListener('input', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) return;
+
+      if (target === titleInput || target === contextInput || target === goalInput) {
+        updateSummary();
+        return;
+      }
+
+      const item = agendaItems.find((entry) => entry.id === target.dataset.id);
+      if (!item) return;
+
+      if (target.dataset.role === 'topic') item.topic = target.value;
+      if (target.dataset.role === 'owner') item.owner = target.value;
+      if (target.dataset.role === 'minutes') item.minutes = Math.max(1, Number(target.value) || 1);
+      if (target.dataset.role === 'notes') item.notes = target.value;
+      updateSummary();
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) return;
+      if (target.dataset.role === 'remove') {
+        agendaItems = agendaItems.filter((entry) => entry.id !== target.dataset.id);
+        setStatus('Removed an agenda item.');
+        render();
+      }
+    });
+
+    addItemButton.addEventListener('click', addItem);
+    exampleButton.addEventListener('click', loadExample);
+    resetButton.addEventListener('click', resetAll);
+    copyTextButton.addEventListener('click', () => copyOutput(false));
+    copyMarkdownButton.addEventListener('click', () => copyOutput(true));
+
+    render();
+  </script>
+</body>
+</html>

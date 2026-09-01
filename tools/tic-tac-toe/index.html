@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe | South Fork Apps</title>
+  <meta name="description" content="Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool.">
+  
+<!-- SFA_SOCIAL_START -->
+<link rel="canonical" href="https://southforkapps.com/tools/tic-tac-toe/">
+<meta property="og:site_name" content="South Fork Apps">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tic Tac Toe">
+<meta property="og:description" content="Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool.">
+<meta property="og:url" content="https://southforkapps.com/tools/tic-tac-toe/">
+<meta property="og:image" content="https://southforkapps.com/tools/tic-tac-toe/share.jpg">
+<meta property="og:image:alt" content="Tic Tac Toe preview image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tic Tac Toe">
+<meta name="twitter:description" content="Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool.">
+<meta name="twitter:image" content="https://southforkapps.com/tools/tic-tac-toe/share.jpg">
+<!-- SFA_SOCIAL_END -->
+<!-- SFA_ADS_START -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076043873825717" crossorigin="anonymous"></script>
+<!-- SFA_ADS_END -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-alt: #202722;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #aab3ac;
+      --accent: #7ddb84;
+      --accent-soft: rgba(125, 219, 132, 0.12);
+      --danger: #ffb0b0;
+      --radius: 18px;
+      --shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 219, 132, 0.12), transparent 22rem),
+        radial-gradient(circle at bottom right, rgba(125, 219, 132, 0.08), transparent 18rem),
+        #111412;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #1a1f1b;
+      border-bottom: 1px solid #2a2f2b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-back {
+      color: #7ddb84;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-back:hover { text-decoration: underline; }
+    .nav-title {
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    main {
+      width: min(1220px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .hero,
+    .panel,
+    .stat-card,
+    .footer {
+      background: rgba(26, 31, 27, 0.94);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      margin: 1rem 0 0;
+      max-width: 58ch;
+    }
+
+    .hero-notes {
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .hero-note {
+      padding: 1rem 1.05rem;
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.74);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+    }
+
+    .hero-note strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 1.35rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.95rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .controls {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      font: inherit;
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #0d180f;
+      padding: 0.8rem 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(125, 219, 132, 0.16);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .chip {
+      background: rgba(125, 219, 132, 0.06);
+      border-color: rgba(125, 219, 132, 0.2);
+      color: var(--muted);
+    }
+
+    .chip.active {
+      background: var(--accent);
+      color: #0d180f;
+    }
+
+    .chip.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .status-banner {
+      margin-bottom: 1.1rem;
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(125, 219, 132, 0.24);
+      background: var(--accent-soft);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .status-banner.loss {
+      border-color: rgba(255, 176, 176, 0.24);
+      background: rgba(255, 176, 176, 0.1);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      padding: 1rem;
+    }
+
+    .stat-card span {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stat-card strong {
+      font-size: 1.7rem;
+      letter-spacing: -0.05em;
+    }
+
+    .board-shell {
+      position: relative;
+      padding: 1.15rem;
+      border-radius: 18px;
+      background: rgba(17, 20, 18, 0.76);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      aspect-ratio: 1 / 1;
+    }
+
+    .cell {
+      border: 1px solid rgba(125, 219, 132, 0.16);
+      border-radius: 20px;
+      background: rgba(32, 39, 34, 0.94);
+      color: var(--text);
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      min-height: 110px;
+    }
+
+    .cell:hover:not(:disabled) {
+      background: rgba(125, 219, 132, 0.1);
+      color: var(--accent);
+    }
+
+    .cell.x-mark { color: var(--accent); }
+    .cell.o-mark { color: #c9dfcc; }
+    .cell.win {
+      background: rgba(125, 219, 132, 0.16);
+      border-color: rgba(125, 219, 132, 0.42);
+      box-shadow: inset 0 0 0 2px rgba(125, 219, 132, 0.12);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .pill {
+      padding: 0.45rem 0.72rem;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 219, 132, 0.18);
+      background: rgba(125, 219, 132, 0.08);
+    }
+
+    .sidebar-stack {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .info-item {
+      padding: 0.95rem 1rem;
+      border-radius: 16px;
+      background: rgba(17, 20, 18, 0.72);
+      border: 1px solid rgba(42, 47, 43, 0.95);
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      padding: 1rem 1.1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 960px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        width: min(100%, calc(100% - 1rem));
+      }
+
+      .hero,
+      .panel {
+        padding: 1.1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cell {
+        min-height: 84px;
+        border-radius: 16px;
+      }
+    }
+  
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
+</style>
+<!-- SFA_JSONLD_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GameApplication",
+  "name": "Tic Tac Toe",
+  "description": "Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "url": "https://southforkapps.com/tools/tic-tac-toe/",
+  "image": "https://southforkapps.com/tools/tic-tac-toe/share.jpg",
+  "screenshot": "https://southforkapps.com/tools/tic-tac-toe/screenshot.jpg",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Tucker Chastain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "South Fork Apps",
+    "url": "https://southforkapps.com"
+  },
+  "mainEntityOfPage": "https://southforkapps.com/tools/tic-tac-toe/"
+}
+</script>
+<!-- SFA_JSONLD_END -->
+<!-- SFA_BREADCRUMB_START -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "South Fork Apps",
+      "item": "https://southforkapps.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Fun & Games",
+      "item": "https://southforkapps.com/categories/fun-games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Tic Tac Toe",
+      "item": "https://southforkapps.com/tools/tic-tac-toe/"
+    }
+  ]
+}
+</script>
+<!-- SFA_BREADCRUMB_END -->
+</head>
+<body>
+  <nav class="nav">
+    <a href="https://southforkapps.com" class="nav-back">&#8592; South Fork Apps</a>
+    <span class="nav-title">Tic Tac Toe</span>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Fun and games</p>
+        <h1>Tic Tac Toe</h1>
+        <p>Play head-to-head on one device or switch on computer mode for an unbeatable AI. Scoreboards stay saved locally, rematches are instant, and number keys 1 through 9 can place moves if you prefer the keyboard.</p>
+      </div>
+      <div class="hero-notes">
+        <div class="hero-note">
+          <strong>Two ways to play</strong>
+          <span>Swap between local two-player and computer mode anytime.</span>
+        </div>
+        <div class="hero-note">
+          <strong>Unbeatable computer</strong>
+          <span>The AI uses minimax, so sloppy openings get punished fast.</span>
+        </div>
+        <div class="hero-note">
+          <strong>Saved scoreboards</strong>
+          <span>Wins and ties stay in your browser until you clear them.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="controls">
+          <div>
+            <h2 class="section-title">Mode</h2>
+            <div class="toggle-group" id="modeGroup"></div>
+          </div>
+          <div>
+            <h2 class="section-title">Your mark</h2>
+            <div class="toggle-group" id="markGroup"></div>
+          </div>
+          <div class="toggle-group">
+            <button id="newRoundButton" type="button">New Round</button>
+            <button id="clearScoreButton" type="button" class="ghost">Clear Scores</button>
+          </div>
+        </div>
+
+        <div id="statusBanner" class="status-banner">Choose a mode and make the first move.</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span id="scoreLabelOne">You</span>
+            <strong id="scoreValueOne">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Ties</span>
+            <strong id="tieValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span id="scoreLabelTwo">Computer</span>
+            <strong id="scoreValueTwo">0</strong>
+          </div>
+        </div>
+
+        <div class="board-shell">
+          <div id="board" class="board" aria-label="Tic tac toe board"></div>
+          <div class="meta-row">
+            <div class="pill">Current turn: <strong id="turnValue">X</strong></div>
+            <div class="pill">Round type: <strong id="roundTypeValue">Computer</strong></div>
+            <div class="pill">Opening mark: <strong id="openingValue">X</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar-stack">
+        <section class="panel">
+          <h2 class="section-title">How to use it</h2>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>1. Pick your setup</strong>
+              <span>Computer mode gives you a solo game. Two-player mode turns the board into a local pass-and-play match.</span>
+            </div>
+            <div class="info-item">
+              <strong>2. Make your move</strong>
+              <span>Click a square or use keys 1 to 9. Top row is 1 2 3, middle is 4 5 6, bottom is 7 8 9.</span>
+            </div>
+            <div class="info-item">
+              <strong>3. Run it back</strong>
+              <span>New Round keeps the scoreboard. Clear Scores wipes both scoreboards and starts fresh.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 class="section-title">What is tracked</h2>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Computer mode</strong>
+              <span id="computerSummary">Human wins, computer wins, and ties are stored separately from local two-player results.</span>
+            </div>
+            <div class="info-item">
+              <strong>Two-player mode</strong>
+              <span id="duoSummary">X wins, O wins, and ties stay grouped under the shared board scoreboard.</span>
+            </div>
+            <div class="info-item">
+              <strong>AI behavior</strong>
+              <span>The computer evaluates every legal line before choosing. It will not intentionally blunder.</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+<!-- SFA_FEATURE_START -->
+<section class="sfa-feature" aria-labelledby="sfa-feature-title">
+  <div class="sfa-feature-shell">
+    <div class="sfa-feature-copy">
+      <div class="sfa-kicker">About this tool</div>
+      <h2 id="sfa-feature-title">Tic Tac Toe</h2>
+      <p>Play tic tac toe against an unbeatable computer or a second player with saved local scoreboards. Free online tool.</p>
+      <p>Tic Tac Toe is a free browser-based tool from South Fork Apps. There&#x27;s nothing to install, no account to create, and no usage limit. Open the page, do the work, and move on.</p>
+      <h3 class="sfa-subhead">How it works</h3>
+      <ol class="sfa-steps">
+        <li>Open Tic Tac Toe in any modern browser on desktop or mobile.</li>
+        <li>Enter or paste your input into the tool&#x27;s main field.</li>
+        <li>Adjust any options shown on the page to match what you need.</li>
+        <li>Copy or download the result and continue with your work.</li>
+      </ol>
+      <h3 class="sfa-subhead">Why use a browser tool</h3>
+      <p>Browser tools beat installable apps when the job is small. You don&#x27;t have to manage updates, sign in, or wait for a heavy program to load. Tic Tac Toe runs entirely in your browser. Your input never leaves your device, no analytics watch what you type, and the page stops working the moment you close the tab.</p>
+      <h3 class="sfa-subhead">Privacy and data</h3>
+      <p>South Fork Apps tools process everything client-side in JavaScript. No server sees your data. Nothing is stored, logged, or sent anywhere. If you&#x27;re working with sensitive content, you can verify by opening the page once, disconnecting from the internet, and watching Tic Tac Toe keep working.</p>
+      <div class="sfa-links">
+        <a href="https://southforkapps.com/categories/fun-games/">More Fun &amp; Games</a>
+        <a href="https://southforkapps.com/about/">About South Fork Apps</a>
+        <a href="https://southforkapps.com/privacy/">Privacy</a>
+      </div>
+    </div>
+    <figure class="sfa-preview">
+      <img src="screenshot.jpg" alt="Tic Tac Toe interface preview" loading="lazy" decoding="async" width="1600" height="900">
+      <figcaption>Screenshot of the live Tic Tac Toe interface.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- SFA_FEATURE_END -->
+<!-- SFA_RELATED_START -->
+<section class="sfa-related" aria-label="More apps in Fun &amp; Games">
+  <div class="sfa-related-shell">
+    <div class="sfa-related-header">
+      <div class="sfa-related-title">More Fun &amp; Games</div>
+      <div class="sfa-related-meta">South Fork Apps</div>
+    </div>
+    <div class="sfa-related-grid">
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/virtual-pop/">
+          <strong>Virtual Pop</strong>
+          <span>Reusable browser fidget board with tappable bubbles, size presets, and instant reset.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/word-clock/">
+          <strong>Word Clock</strong>
+          <span>A live clock that displays the current time spelled out in words on an illuminated letter grid. Fullscreen mode included.</span>
+        </a>
+        <a class="sfa-related-card" href="https://southforkapps.com/tools/word-scramble/">
+          <strong>Word Scramble</strong>
+          <span>Scramble any words or list for games, puzzles, and activities. Scramble individual words, shuffle lines, or create word search-style puzzles.</span>
+        </a>
+    </div>
+  </div>
+</section>
+<!-- SFA_RELATED_END -->
+
+
+
+
+
+
+
+
+    <footer class="footer">v1.0</footer>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'southForkTicTacToeScores';
+    const WIN_LINES = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    const state = {
+      mode: 'computer',
+      humanMark: 'X',
+      board: Array(9).fill(''),
+      current: 'X',
+      gameOver: false,
+      locked: false,
+      winnerLine: [],
+      scores: loadScores(),
+      computerTimer: null
+    };
+
+    const modeGroup = document.getElementById('modeGroup');
+    const markGroup = document.getElementById('markGroup');
+    const boardEl = document.getElementById('board');
+    const statusBanner = document.getElementById('statusBanner');
+    const newRoundButton = document.getElementById('newRoundButton');
+    const clearScoreButton = document.getElementById('clearScoreButton');
+    const scoreLabelOne = document.getElementById('scoreLabelOne');
+    const scoreLabelTwo = document.getElementById('scoreLabelTwo');
+    const scoreValueOne = document.getElementById('scoreValueOne');
+    const scoreValueTwo = document.getElementById('scoreValueTwo');
+    const tieValue = document.getElementById('tieValue');
+    const turnValue = document.getElementById('turnValue');
+    const roundTypeValue = document.getElementById('roundTypeValue');
+    const openingValue = document.getElementById('openingValue');
+
+    function loadScores() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+          computer: { human: 0, cpu: 0, ties: 0 },
+          duo: { x: 0, o: 0, ties: 0 }
+        };
+      } catch (error) {
+        return {
+          computer: { human: 0, cpu: 0, ties: 0 },
+          duo: { x: 0, o: 0, ties: 0 }
+        };
+      }
+    }
+
+    function saveScores() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.scores));
+    }
+
+    function computerMark() {
+      return state.humanMark === 'X' ? 'O' : 'X';
+    }
+
+    function setStatus(message, isLoss = false) {
+      statusBanner.textContent = message;
+      statusBanner.classList.toggle('loss', isLoss);
+    }
+
+    function buildModeControls() {
+      [
+        { key: 'computer', label: 'Vs Computer' },
+        { key: 'duo', label: 'Two Players' }
+      ].forEach((item) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'chip';
+        button.dataset.mode = item.key;
+        button.textContent = item.label;
+        button.addEventListener('click', () => {
+          state.mode = item.key;
+          syncControlState();
+          startRound();
+        });
+        modeGroup.appendChild(button);
+      });
+    }
+
+    function buildMarkControls() {
+      ['X', 'O'].forEach((mark) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'chip';
+        button.dataset.mark = mark;
+        button.textContent = `Play ${mark}`;
+        button.addEventListener('click', () => {
+          state.humanMark = mark;
+          syncControlState();
+          startRound();
+        });
+        markGroup.appendChild(button);
+      });
+    }
+
+    function buildBoard() {
+      for (let index = 0; index < 9; index += 1) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'cell';
+        button.setAttribute('aria-label', `Cell ${index + 1}`);
+        button.addEventListener('click', () => tryMove(index));
+        boardEl.appendChild(button);
+      }
+    }
+
+    function syncControlState() {
+      Array.from(modeGroup.children).forEach((button) => {
+        button.classList.toggle('active', button.dataset.mode === state.mode);
+      });
+
+      Array.from(markGroup.children).forEach((button) => {
+        const active = button.dataset.mark === state.humanMark;
+        button.classList.toggle('active', active);
+        button.classList.toggle('disabled', state.mode !== 'computer');
+      });
+    }
+
+    function renderBoard() {
+      Array.from(boardEl.children).forEach((button, index) => {
+        const value = state.board[index];
+        button.textContent = value;
+        button.disabled = state.gameOver || state.locked || Boolean(value);
+        button.classList.toggle('x-mark', value === 'X');
+        button.classList.toggle('o-mark', value === 'O');
+        button.classList.toggle('win', state.winnerLine.includes(index));
+      });
+    }
+
+    function renderScores() {
+      if (state.mode === 'computer') {
+        scoreLabelOne.textContent = 'You';
+        scoreLabelTwo.textContent = 'Computer';
+        scoreValueOne.textContent = String(state.scores.computer.human);
+        scoreValueTwo.textContent = String(state.scores.computer.cpu);
+        tieValue.textContent = String(state.scores.computer.ties);
+        roundTypeValue.textContent = 'Computer';
+      } else {
+        scoreLabelOne.textContent = 'X wins';
+        scoreLabelTwo.textContent = 'O wins';
+        scoreValueOne.textContent = String(state.scores.duo.x);
+        scoreValueTwo.textContent = String(state.scores.duo.o);
+        tieValue.textContent = String(state.scores.duo.ties);
+        roundTypeValue.textContent = 'Two players';
+      }
+      turnValue.textContent = state.current;
+      openingValue.textContent = 'X';
+    }
+
+    function render() {
+      syncControlState();
+      renderBoard();
+      renderScores();
+    }
+
+    function startRound() {
+      clearTimeout(state.computerTimer);
+      state.board = Array(9).fill('');
+      state.current = 'X';
+      state.gameOver = false;
+      state.locked = false;
+      state.winnerLine = [];
+      render();
+
+      if (state.mode === 'computer' && state.humanMark === 'O') {
+        setStatus('Computer opens as X. Your mark is O.');
+        scheduleComputerMove();
+      } else {
+        setStatus(state.mode === 'computer' ? 'Your move.' : 'Player X starts.');
+      }
+    }
+
+    function tryMove(index) {
+      if (state.gameOver || state.locked || state.board[index]) {
+        return;
+      }
+
+      const mark = state.current;
+      state.board[index] = mark;
+      const result = evaluateBoard(state.board);
+
+      if (result.winner) {
+        finishRound(result.winner, result.line);
+        return;
+      }
+
+      if (result.draw) {
+        state.gameOver = true;
+        incrementTie();
+        render();
+        setStatus('Draw. Nobody found the edge this time.');
+        return;
+      }
+
+      state.current = state.current === 'X' ? 'O' : 'X';
+      render();
+
+      if (state.mode === 'computer' && state.current === computerMark()) {
+        setStatus('Computer is thinking...');
+        scheduleComputerMove();
+      } else {
+        setStatus(state.mode === 'computer' ? 'Your move.' : `Player ${state.current} to move.`);
+      }
+    }
+
+    function scheduleComputerMove() {
+      state.locked = true;
+      render();
+      state.computerTimer = setTimeout(() => {
+        const move = findBestMove(state.board.slice(), computerMark(), state.humanMark);
+        state.locked = false;
+        tryMove(move);
+      }, 220);
+    }
+
+    function finishRound(winner, line) {
+      state.gameOver = true;
+      state.winnerLine = line;
+
+      if (state.mode === 'computer') {
+        if (winner === state.humanMark) {
+          state.scores.computer.human += 1;
+          setStatus(`You win as ${winner}. Nicely done.`);
+        } else {
+          state.scores.computer.cpu += 1;
+          setStatus(`Computer wins as ${winner}.`, true);
+        }
+      } else {
+        if (winner === 'X') {
+          state.scores.duo.x += 1;
+        } else {
+          state.scores.duo.o += 1;
+        }
+        setStatus(`Player ${winner} wins the round.`);
+      }
+
+      saveScores();
+      render();
+    }
+
+    function incrementTie() {
+      if (state.mode === 'computer') {
+        state.scores.computer.ties += 1;
+      } else {
+        state.scores.duo.ties += 1;
+      }
+      saveScores();
+    }
+
+    function evaluateBoard(board) {
+      for (const line of WIN_LINES) {
+        const [a, b, c] = line;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return { winner: board[a], line, draw: false };
+        }
+      }
+
+      if (board.every(Boolean)) {
+        return { winner: null, line: [], draw: true };
+      }
+
+      return { winner: null, line: [], draw: false };
+    }
+
+    function findBestMove(board, aiMark, humanMark) {
+      let bestScore = -Infinity;
+      let bestMove = board.findIndex((cell) => !cell);
+
+      board.forEach((cell, index) => {
+        if (cell) return;
+        board[index] = aiMark;
+        const score = minimax(board, false, aiMark, humanMark, 0);
+        board[index] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = index;
+        }
+      });
+
+      return bestMove;
+    }
+
+    function minimax(board, isMaximizing, aiMark, humanMark, depth) {
+      const result = evaluateBoard(board);
+      if (result.winner === aiMark) return 10 - depth;
+      if (result.winner === humanMark) return depth - 10;
+      if (result.draw) return 0;
+
+      if (isMaximizing) {
+        let bestScore = -Infinity;
+        board.forEach((cell, index) => {
+          if (cell) return;
+          board[index] = aiMark;
+          bestScore = Math.max(bestScore, minimax(board, false, aiMark, humanMark, depth + 1));
+          board[index] = '';
+        });
+        return bestScore;
+      }
+
+      let bestScore = Infinity;
+      board.forEach((cell, index) => {
+        if (cell) return;
+        board[index] = humanMark;
+        bestScore = Math.min(bestScore, minimax(board, true, aiMark, humanMark, depth + 1));
+        board[index] = '';
+      });
+      return bestScore;
+    }
+
+    function clearScores() {
+      state.scores = {
+        computer: { human: 0, cpu: 0, ties: 0 },
+        duo: { x: 0, o: 0, ties: 0 }
+      };
+      saveScores();
+      render();
+      setStatus('Scores cleared. Start a fresh round.');
+    }
+
+    document.addEventListener('keydown', (event) => {
+      const map = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+      const index = map.indexOf(event.key);
+      if (index !== -1) {
+        tryMove(index);
+      }
+    });
+
+    newRoundButton.addEventListener('click', startRound);
+    clearScoreButton.addEventListener('click', clearScores);
+
+    buildModeControls();
+    buildMarkControls();
+    buildBoard();
+    render();
+    startRound();
+  </script>
+</body>
+</html>

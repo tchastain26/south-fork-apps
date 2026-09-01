@@ -20,7 +20,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-COLLECTION_DIR = ROOT / "South Fork Apps Collection"
+COLLECTION_DIR = ROOT / "tools"
 
 PUBLISHER_ID = "ca-pub-3076043873825717"
 MARKER = "SFA_ADS"

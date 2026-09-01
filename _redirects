@@ -1,1 +1,6 @@
+# Tool pages moved from /South Fork Apps Collection/ to /tools/ on 2026.09.01.
+# The old path carried encoded spaces, which printed badly in search results and
+# broke when pasted. 301 so the existing indexed URLs pass their equity across.
+/South%20Fork%20Apps%20Collection/*  /tools/:splat  301
+
 /*  /404.html  404

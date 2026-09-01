@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-COLLECTION_DIR = os.path.join(BASE_DIR, "South Fork Apps Collection")
+COLLECTION_DIR = os.path.join(BASE_DIR, "tools")
 BASE_URL = "https://southforkapps.com"
 TODAY = date.today().isoformat()
 
@@ -252,7 +252,7 @@ def update_latest_drop():
     for folder, title, category, icon, desc in LATEST_APPS:
         cat_html = category.replace("&", "&amp;")
         cards += (
-            f'      <a href="/South%20Fork%20Apps%20Collection/{folder}/" target="_blank" rel="noopener" {card_class}>\n'
+            f'      <a href="/tools/{folder}/" target="_blank" rel="noopener" {card_class}>\n'
             f'        <div class="mb-5 flex items-start justify-between gap-3">\n'
             f'          <span class="inline-flex rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-label text-[11px] font-black uppercase tracking-[0.18em] text-primary">New</span>\n'
             f'          <span class="material-symbols-outlined text-3xl text-primary/90">{icon}</span>\n'

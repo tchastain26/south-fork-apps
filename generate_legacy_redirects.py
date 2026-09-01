@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BASE_URL = "https://southforkapps.com"
-COLLECTION_PREFIX = "/South%20Fork%20Apps%20Collection"
+COLLECTION_PREFIX = "/tools"
 
 
 REDIRECTS = {

@@ -262,7 +262,7 @@ def app_cards_from_homepage() -> list[dict[str, str]]:
     grid = text[start:end]
     pattern = re.compile(
         r'<div data-app-card data-title="([^"]+)" data-description="([^"]+)" '
-        r'data-category="([^"]+)".*?<a href="/South%20Fork%20Apps%20Collection/([^/]+)/"',
+        r'data-category="([^"]+)".*?<a href="/tools/([^/]+)/"',
         re.S,
     )
     apps = []
@@ -279,7 +279,7 @@ def app_cards_from_homepage() -> list[dict[str, str]]:
 
 
 def app_url(slug: str) -> str:
-    return f"{BASE_URL}/South%20Fork%20Apps%20Collection/{slug}/"
+    return f"{BASE_URL}/tools/{slug}/"
 
 
 def category_url(category: str) -> str:
@@ -303,7 +303,7 @@ def pill_link(href: str, label: str) -> str:
 
 
 def page_shell(*, title: str, description: str, canonical: str, body_class: str, eyebrow: str, heading: str, intro: str, bullets: list[str], main_html: str, jsonld_type: str = "CollectionPage", image: str | None = None) -> str:
-    image_url = image or f"{BASE_URL}/South%20Fork%20Apps%20Collection/word-counter/share.jpg"
+    image_url = image or f"{BASE_URL}/tools/word-counter/share.jpg"
     bullets_html = "\n".join(f"<li>{html.escape(item)}</li>" for item in bullets)
     jsonld = f"""{{
   "@context": "https://schema.org",

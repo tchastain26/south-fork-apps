@@ -9,7 +9,7 @@ from pathlib import Path
 
 BASE_URL = "https://southforkapps.com"
 ROOT = Path(__file__).resolve().parent
-COLLECTION_DIR = ROOT / "South Fork Apps Collection"
+COLLECTION_DIR = ROOT / "tools"
 INDEX_PATH = ROOT / "index.html"
 
 CATEGORY_SCHEMA = {
@@ -435,7 +435,7 @@ DISCOVERY_CSS = """
 
 
 def app_url(slug: str) -> str:
-    return f"{BASE_URL}/South%20Fork%20Apps%20Collection/{slug}/"
+    return f"{BASE_URL}/tools/{slug}/"
 
 
 def asset_url(slug: str, filename: str) -> str:
@@ -488,7 +488,7 @@ def app_cards_from_homepage() -> list[dict[str, str]]:
     grid = text[start:end]
     pattern = re.compile(
         r'<div data-app-card data-title="([^"]+)" data-description="([^"]+)" '
-        r'data-category="([^"]+)".*?<a href="/South%20Fork%20Apps%20Collection/([^/]+)/"',
+        r'data-category="([^"]+)".*?<a href="/tools/([^/]+)/"',
         re.S,
     )
     apps = []
@@ -606,7 +606,7 @@ def inject_breadcrumb(text: str, app: dict[str, str]) -> str:
     """Breadcrumb markup so search results show a readable trail.
 
     Without it Google prints the raw URL, and these paths carry an encoded
-    "South Fork Apps Collection" segment that reads badly in a result.
+    encoded "South Fork Apps Collection" segment that read badly in a result.
     """
     payload = {
         "@context": "https://schema.org",
