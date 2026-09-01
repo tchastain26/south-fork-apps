@@ -74,7 +74,7 @@ def monetizable_pages() -> list[Path]:
 
 
 def main() -> None:
-    added = skipped_present = skipped_noindex = failed = 0
+    added = already_ok = skipped_present = skipped_noindex = failed = 0
 
     for path in monetizable_pages():
         rel = path.relative_to(ROOT)
@@ -97,11 +97,14 @@ def main() -> None:
         if updated != text:
             path.write_text(updated, encoding="utf-8")
             added += 1
+        else:
+            already_ok += 1
 
-    total = added + skipped_present + skipped_noindex + failed
+    total = added + already_ok + skipped_present + skipped_noindex + failed
     print(f"scanned {total} pages")
     print(f"  loader added:        {added}")
-    print(f"  already had tag:     {skipped_present}")
+    print(f"  already correct:     {already_ok}")
+    print(f"  pre-existing tag:    {skipped_present}")
     print(f"  skipped (noindex):   {skipped_noindex}")
     print(f"  failed:              {failed}")
 
