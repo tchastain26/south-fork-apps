@@ -691,5 +691,561 @@
    "Reading a signature as major without listening. A major key and its relative minor share an identical signature, and only the music tells you which it is.",
    "Forgetting that a key signature applies to every octave, not just the line or space where the symbol sits."
   ]
+ },
+ "metronome": {
+  "intro": "Metronome gives you a click, a visual beat, and a tempo slider from 20 to 280 BPM. There is a tap tempo button for matching a tempo you already have in your head, and preset buttons for the standard Italian tempo markings.",
+  "how": [
+   "Drag the slider to a tempo, or tap the Tap button in time to set it by feel.",
+   "Use a preset if you are working from a score marking: Largo 52, Adagio 66, Andante 84, Moderato 108, Allegro 132, Presto 176.",
+   "Press Start. Watch the visual beat as well as listening, which helps in a noisy room."
+  ],
+  "method_title": "What BPM actually measures",
+  "method": [
+   "Beats per minute counts quarter notes in most time signatures, so 120 BPM means one beat every 500 milliseconds. Halving the tempo doubles the gap between clicks.",
+   "Tap tempo works by measuring the time between your taps and averaging it. Four or five taps gives a far steadier reading than two, because a single early or late tap has less influence on the average."
+  ],
+  "example": {
+   "setup": "Practising a passage marked Andante:",
+   "given": [
+    [
+     "Preset",
+     "Andante 84"
+    ],
+    [
+     "Beat length",
+     "60000 / 84"
+    ],
+    [
+     "Result",
+     "about 714 ms per beat"
+    ]
+   ],
+   "result": "A click roughly every three quarters of a second, which is the walking pace Andante literally describes."
+  },
+  "uses": [
+   "Practising a difficult passage slowly and raising the tempo in small steps.",
+   "Keeping a recording take in time without printing a click into the mix.",
+   "Checking whether you are rushing, which almost everyone does under the pressure of a hard bar.",
+   "Setting a tempo from a score marking rather than guessing."
+  ],
+  "mistakes": [
+   "Practising fast before it is clean. Speed built on top of mistakes just makes the mistakes faster.",
+   "Raising the tempo in large jumps. Five BPM at a time holds up far better than twenty.",
+   "Only listening. Watching the visual beat catches drift that your ear will forgive."
+  ]
+ },
+ "bpm-counter": {
+  "intro": "BPM Counter measures tempo by tapping. Hit the button or any key in time with the music and it calculates beats per minute live, refining the figure with every tap.",
+  "how": [
+   "Tap the button or press any key in time with the beat.",
+   "Keep tapping. The reading gets steadier as more taps are averaged.",
+   "Press Reset to start a new measurement."
+  ],
+  "method_title": "How tap tempo is calculated",
+  "method": [
+   "The tool records the time between consecutive taps and averages those intervals. Because there are 60,000 milliseconds in a minute, BPM is simply 60,000 divided by the average interval.",
+   "Averaging is why the number settles down as you go. Two taps give one interval and inherit all of its error. Eight taps give seven intervals, and a single sloppy tap barely moves the result."
+  ],
+  "example": {
+   "setup": "Tapping along to a track at a steady half-second pulse:",
+   "given": [
+    [
+     "Average interval",
+     "500 ms"
+    ],
+    [
+     "Calculation",
+     "60000 / 500"
+    ]
+   ],
+   "result": "120 BPM, the most common tempo in pop and house music."
+  },
+  "uses": [
+   "Finding the tempo of a song so you can practise or produce at the same speed.",
+   "Matching two tracks before beatmatching them.",
+   "Working out the tempo of a piece with no marking on the score.",
+   "Checking whether a live performance is drifting from the intended tempo."
+  ],
+  "mistakes": [
+   "Tapping on every other beat, which halves the reading. Tap the pulse you would clap.",
+   "Stopping after two taps. Give it at least four before trusting the number.",
+   "Tapping to the snare in a fast track when the actual beat is twice as quick, or the reverse."
+  ]
+ },
+ "chromatic-scale": {
+  "intro": "Chromatic Scale is an interactive reference for all twelve pitches in Western music. Click any note to hear it and see its enharmonic equivalent, in your choice of three octaves.",
+  "how": [
+   "Choose an octave: 3 for low, 4 for middle, 5 for high.",
+   "Click any of the twelve notes to hear it.",
+   "Read the enharmonic equivalent shown alongside each altered note."
+  ],
+  "method_title": "Twelve notes, more than twelve names",
+  "method": [
+   "Western music divides the octave into twelve equal semitones. Play all twelve in order and you have the chromatic scale, which is the raw material every other scale is carved out of.",
+   "Five of those twelve have two names each. C sharp and D flat are the same key on a piano but are written differently depending on the key you are in. Sharps are used when a note is rising, flats when it is falling, which is why the same pitch changes name between contexts."
+  ],
+  "example": {
+   "setup": "The chromatic scale starting on C:",
+   "given": [
+    [
+     "Ascending",
+     "C, C#, D, D#, E, F, F#, G, G#, A, A#, B"
+    ],
+    [
+     "Descending equivalents",
+     "Db, Eb, Gb, Ab, Bb"
+    ]
+   ],
+   "result": "Twelve pitches, seven letter names, and five notes that carry two spellings each."
+  },
+  "uses": [
+   "Hearing the difference between a semitone and a whole tone.",
+   "Checking which enharmonic spelling belongs in a given key.",
+   "Learning where the semitones fall between E and F, and between B and C, where there is no black key.",
+   "Ear training on individual pitches."
+  ],
+  "mistakes": [
+   "Assuming every letter has a sharp. E sharp is F and B sharp is C, because those pairs are already only a semitone apart.",
+   "Treating enharmonics as interchangeable in notation. They sound identical but only one spelling is correct in a given key."
+  ]
+ },
+ "diatonic-scale": {
+  "intro": "Diatonic Scale is a full reference for any major key. Pick a key and it shows the seven scale notes, the triads built on each degree, the seventh chords, and the Roman numeral for every one.",
+  "how": [
+   "Select a key.",
+   "Read the seven scale notes in order.",
+   "Read the triad and seventh chord built on each degree, with its Roman numeral."
+  ],
+  "method_title": "The pattern that defines a major scale",
+  "method": [
+   "Every major scale follows the same step pattern: whole, whole, half, whole, whole, whole, half. That fixed pattern is what makes every major scale sound like a major scale regardless of which note you start on.",
+   "The chord qualities follow automatically from that pattern and never change: I major, ii minor, iii minor, IV major, V major, vi minor, vii diminished. You do not choose them, the scale hands them to you."
+  ],
+  "example": {
+   "setup": "Building G major from the step pattern:",
+   "given": [
+    [
+     "Start",
+     "G"
+    ],
+    [
+     "Steps",
+     "W W H W W W H"
+    ],
+    [
+     "Notes",
+     "G A B C D E F#"
+    ]
+   ],
+   "result": "One sharp (F sharp), which is exactly what the key signature for G major shows."
+  },
+  "uses": [
+   "Seeing every chord available in a key at once.",
+   "Understanding why a particular note has to be sharpened or flattened.",
+   "Finding the seventh chords when a triad sounds too plain.",
+   "Learning Roman numeral analysis on real keys."
+  ],
+  "mistakes": [
+   "Counting the semitone steps wrong between the third and fourth degrees. That half step is what separates major from every other mode.",
+   "Forgetting that the eighth note is the first one again, an octave up, so a scale has seven distinct notes and not eight."
+  ]
+ },
+ "pentatonic-scale": {
+  "intro": "Pentatonic Scale Explorer shows major and minor pentatonic scales for any root on a piano keyboard, and plays them back. Five notes per octave instead of seven, which is why these scales are so forgiving to improvise with.",
+  "how": [
+   "Pick a root note.",
+   "Choose Major Pentatonic or Minor Pentatonic.",
+   "Press Play to hear the scale, and read the highlighted keys."
+  ],
+  "method_title": "What gets left out, and why it matters",
+  "method": [
+   "A major pentatonic takes the major scale and removes the fourth and seventh degrees, leaving 1, 2, 3, 5 and 6. Those two removed notes are the ones that create the strongest dissonance against the tonic chord, which is why what remains sounds consonant against almost anything.",
+   "A minor pentatonic is 1, flat 3, 4, 5 and flat 7. It is the same five pitches as the major pentatonic a minor third above it, which is why A minor pentatonic and C major pentatonic contain identical notes and simply resolve to different homes."
+  ],
+  "example": {
+   "setup": "Comparing the two pentatonic types on the same five pitches:",
+   "given": [
+    [
+     "C major pentatonic",
+     "C D E G A"
+    ],
+    [
+     "A minor pentatonic",
+     "A C D E G"
+    ]
+   ],
+   "result": "Identical notes, different root. The tonal centre, not the note set, is what makes one sound bright and the other sound bluesy."
+  },
+  "uses": [
+   "Improvising over a chord progression without hitting a wrong note.",
+   "Writing a melody that stays singable.",
+   "Learning your first soloing vocabulary on guitar or piano.",
+   "Understanding why so much folk and blues music worldwide uses five notes."
+  ],
+  "mistakes": [
+   "Playing only the five notes and never leaving them. The removed notes are exactly what create tension, so avoiding them forever makes solos bland.",
+   "Assuming major and minor pentatonic are unrelated. They are the same set viewed from different roots."
+  ]
+ },
+ "scale-formulas": {
+  "intro": "Scale Formulas is a reference chart of whole and half step patterns for major, minor, the seven modes, pentatonics, blues and more. Every scale is given as its interval pattern so you can build it from any root.",
+  "method_title": "Reading a step pattern",
+  "method": [
+   "A scale formula is a sequence of steps: W for a whole tone (two semitones) and H for a half tone (one semitone). Apply the pattern from any starting note and you get that scale in that key.",
+   "The modes are all the same seven notes as a major scale started from a different degree. Dorian is the major pattern started from the second degree, Mixolydian from the fifth. That is why they share a key signature but sound completely different, since the tonal centre has moved."
+  ],
+  "example": {
+   "setup": "Applying the Dorian pattern from D:",
+   "given": [
+    [
+     "Formula",
+     "W H W W W H W"
+    ],
+    [
+     "Start",
+     "D"
+    ],
+    [
+     "Notes",
+     "D E F G A B C"
+    ]
+   ],
+   "result": "The white keys from D to D. Same notes as C major, but D is home, which gives Dorian its minor sound with a raised sixth."
+  },
+  "uses": [
+   "Building any scale from any root without memorising all twelve keys.",
+   "Understanding what actually separates one mode from another.",
+   "Finding the one altered note that changes a scale's character.",
+   "Transferring a scale between instruments."
+  ],
+  "mistakes": [
+   "Thinking the modes are difficult because they have Greek names. Each is just a major scale started somewhere else.",
+   "Counting the last step wrong. Every seven-note scale formula has seven steps that add up to twelve semitones and land back on the octave."
+  ]
+ },
+ "scale-finder": {
+  "intro": "Scale Finder builds any scale from a root note and a scale type, showing every note, the intervals between them, and the scale degrees on a mini keyboard.",
+  "how": [
+   "Pick a root note.",
+   "Pick a scale type.",
+   "Read the notes, intervals and degree numbers, and see the shape on the keyboard."
+  ],
+  "method_title": "Notes, intervals and degrees",
+  "method": [
+   "The notes tell you what to play. The intervals tell you the distance between consecutive notes. The degrees tell you each note's function relative to the root, which is the part that transfers to other keys.",
+   "Degrees are what let you talk about music portably. The fifth degree pulls toward the root in every key, so once you hear that relationship you can use it anywhere."
+  ],
+  "uses": [
+   "Working out the notes of an unfamiliar scale.",
+   "Comparing two scales to see which notes actually differ.",
+   "Finding a scale that fits a chord you are improvising over.",
+   "Checking a scale before writing it into a part."
+  ],
+  "mistakes": [
+   "Learning notes without degrees. Note names change with every key, degrees never do.",
+   "Assuming a scale name means one fixed thing. Minor alone can mean natural, harmonic or melodic, and they differ in the sixth and seventh degrees."
+  ]
+ },
+ "music-intervals": {
+  "intro": "Music Intervals is a full reference for interval names, abbreviations, semitone counts and audible examples, covering everything from a unison to an octave and beyond into compound intervals.",
+  "method_title": "How intervals are counted",
+  "method": [
+   "An interval is measured in semitones but named by letter distance, which is why the two do not always agree. C to E spans four semitones and three letter names (C, D, E), so it is a major third rather than a fourth.",
+   "The twelve intervals inside an octave are: unison 0, minor second 1, major second 2, minor third 3, major third 4, perfect fourth 5, tritone 6, perfect fifth 7, minor sixth 8, major sixth 9, minor seventh 10, major seventh 11, octave 12."
+  ],
+  "example": {
+   "setup": "Identifying the interval from C to G:",
+   "given": [
+    [
+     "Semitones",
+     "7"
+    ],
+    [
+     "Letters spanned",
+     "C D E F G, so five"
+    ]
+   ],
+   "result": "A perfect fifth. It is the interval at the root of almost every chord and the reason the circle of fifths works."
+  },
+  "uses": [
+   "Naming an interval you hear or see written.",
+   "Building chords, since every chord is a stack of specific intervals.",
+   "Ear training by associating each interval with a song that opens on it.",
+   "Understanding why some pairs of notes sound stable and others tense."
+  ],
+  "mistakes": [
+   "Counting semitones and calling it the interval name. A diminished fourth and a major third are both four semitones but are spelled and used differently.",
+   "Forgetting the tritone is neither major nor minor. At exactly six semitones it sits halfway and belongs to neither family."
+  ]
+ },
+ "music-theory-cheat-sheet": {
+  "intro": "Music Theory Cheat Sheet collects the reference material you keep looking up: intervals, scale formulas, chord construction, the circle of fifths, key signatures and common progressions, all on one page.",
+  "method_title": "How the pieces connect",
+  "method": [
+   "Almost all of Western theory follows from two ideas. First, the octave is divided into twelve equal semitones. Second, a major scale picks seven of them using the pattern whole, whole, half, whole, whole, whole, half.",
+   "Everything else is built on that. Chords are alternate notes from a scale stacked up. Keys are scales given a home note. The circle of fifths is what you get when you order the twelve keys by how many notes they share, which is why keys next to each other on it sound related."
+  ],
+  "uses": [
+   "Checking a formula mid-practice without hunting through a textbook.",
+   "Revising before a theory exam or an audition.",
+   "Settling an argument about what a chord symbol means.",
+   "Teaching, where having every reference on one page saves time."
+  ],
+  "notes": [
+   "Covers intervals, scales and modes, chord construction, key signatures, the circle of fifths and common progressions.",
+   "Written as reference material rather than a course, so it assumes you want the answer rather than the lesson."
+  ]
+ },
+ "note-identification": {
+  "intro": "Note Identification is a sight-reading trainer. A note appears on a treble or bass staff and you name it, with three difficulty levels and an option to hear the pitch as well as see it.",
+  "how": [
+   "Choose treble or bass clef.",
+   "Pick a range: Easy for lines only, Medium for lines and spaces, Hard to include ledger lines.",
+   "Name the note shown, and use Hear note to connect the symbol to the sound."
+  ],
+  "method_title": "The mnemonics, and what to do after them",
+  "method": [
+   "Treble clef lines from the bottom are E, G, B, D, F, and the spaces spell FACE. Bass clef lines are G, B, D, F, A and the spaces are A, C, E, G.",
+   "Mnemonics get you started but they are slow, because reciting a sentence takes longer than reading a word. Fluent readers recognise landmark notes on sight (the G that the treble clef curls around, the F between the bass clef dots) and count a step or two from there."
+  ],
+  "uses": [
+   "Building sight-reading speed with short, frequent practice.",
+   "Learning the second clef when you already read one fluently.",
+   "Getting comfortable with ledger lines, which is where most readers stall.",
+   "Connecting written pitch to actual sound through the playback option."
+  ],
+  "mistakes": [
+   "Practising only treble clef. The bass clef is not harder, it is just less practised.",
+   "Skipping ledger lines because they are uncomfortable. That discomfort is the reason to practise them.",
+   "Long rare sessions instead of short daily ones. Sight-reading responds to frequency more than duration."
+  ]
+ },
+ "piano-notes-on-staff": {
+  "intro": "Piano Notes on Staff connects the keyboard to written notation. Click any piano key and the matching note appears on the treble and bass staff, with its name and octave number.",
+  "how": [
+   "Click any key on the piano.",
+   "Watch where the note lands on the grand staff.",
+   "Read the note name and octave number shown alongside."
+  ],
+  "method_title": "How the grand staff maps to the keyboard",
+  "method": [
+   "Piano music uses two staves at once. The treble staff normally carries the right hand and the bass staff the left, and together they cover the keyboard's range without needing endless ledger lines.",
+   "Middle C sits exactly between them, on one ledger line below the treble staff or one ledger line above the bass staff. It is the same key on the piano written two ways, which is the single fact that makes the grand staff click for most beginners."
+  ],
+  "uses": [
+   "Learning to read notation by connecting it to a key you can see.",
+   "Working out where a written note actually is on the keyboard.",
+   "Understanding middle C and why it appears on both staves.",
+   "Checking octave numbering, where C4 is middle C."
+  ],
+  "mistakes": [
+   "Assuming the treble staff always means the right hand. Music crosses staves freely when the writing calls for it.",
+   "Reading ledger lines by counting from the staff every time instead of learning the common ones by sight."
+  ]
+ },
+ "clef-reference": {
+  "intro": "Clef Reference maps every note position on both treble and bass staves, including the ledger lines above and below where most readers lose their footing.",
+  "method_title": "Why there are two clefs at all",
+  "method": [
+   "A staff has only five lines, which covers about an octave and a half before you need ledger lines. Two clefs positioned at different pitches let a piano's full range be written without stacking ledger lines that nobody can read at speed.",
+   "The clef symbol itself is a pointer. The treble clef curls around the line that is G above middle C. The bass clef's two dots sit either side of the line that is F below middle C. Every other note is counted from there."
+  ],
+  "example": {
+   "setup": "Locating the same pitch on both staves:",
+   "given": [
+    [
+     "On treble",
+     "one ledger line below the staff"
+    ],
+    [
+     "On bass",
+     "one ledger line above the staff"
+    ]
+   ],
+   "result": "Both are middle C, the same key on the piano, written from the perspective of each clef."
+  },
+  "uses": [
+   "Looking up a note position without working it out from a mnemonic.",
+   "Learning ledger lines systematically instead of by trial and error.",
+   "Switching between clefs when you play an instrument that uses both.",
+   "Checking a note when transcribing."
+  ],
+  "notes": [
+   "Covers both clefs including ledger lines above and below each staff.",
+   "Shows how the two staves overlap around middle C."
+  ]
+ },
+ "virtual-piano": {
+  "intro": "Virtual Piano is a playable two-octave keyboard that runs entirely in the browser using the Web Audio API. Play with the mouse or your computer keyboard, and shape the sound with waveform, sustain and volume controls.",
+  "how": [
+   "Click the keys, or use your computer keyboard to play.",
+   "Pick a waveform: sine, triangle, square or sawtooth.",
+   "Adjust sustain from 0.3 to 3 seconds and set the volume."
+  ],
+  "method_title": "What the waveform control actually changes",
+  "method": [
+   "Each waveform has a different harmonic content, which is what your ear hears as tone colour. A sine wave is a single pure frequency with no harmonics at all, so it sounds soft and flute-like. A triangle adds quiet odd harmonics and sounds slightly hollow.",
+   "A square wave has strong odd harmonics and sounds buzzy and retro. A sawtooth contains every harmonic and is the brightest and thickest of the four, which is why it is the usual starting point for synth string and brass sounds."
+  ],
+  "uses": [
+   "Trying out a chord or melody when there is no instrument nearby.",
+   "Hearing the difference between waveforms, which is the first lesson in synthesis.",
+   "Checking a pitch or interval while working on something else.",
+   "Teaching keyboard layout without needing hardware."
+  ],
+  "notes": [
+   "Sound is generated live by the Web Audio API rather than played from samples, so nothing is downloaded.",
+   "Longer sustain makes chords ring into each other, which is useful for hearing how voicings blend."
+  ]
+ },
+ "xylophone": {
+  "intro": "Xylophone is a playable two-octave instrument with colour-coded bars. Click a bar or use your keyboard, and choose the waveform and volume that suit the sound you want.",
+  "how": [
+   "Click the bars, or play with your computer keyboard.",
+   "Choose a waveform: triangle, sine or square.",
+   "Set the volume between 0.1 and 0.6."
+  ],
+  "method_title": "Why a xylophone sounds the way it does",
+  "method": [
+   "A real xylophone is a struck idiophone with wooden bars. The sound decays almost immediately, which is what makes it read as percussive rather than sustained, and it is why xylophone parts use repeated notes where a string instrument would hold one.",
+   "The triangle waveform is the default here because its quiet odd harmonics come closest to a struck wooden bar. A sine is purer and softer, a square is harder and more electronic."
+  ],
+  "uses": [
+   "Introducing children to pitch and melody with immediate visual feedback.",
+   "Picking out a simple tune without an instrument.",
+   "Hearing how the same melody changes with different tone colours.",
+   "Classroom use where real instruments are not available."
+  ],
+  "notes": [
+   "Two full octaves of colour-coded bars.",
+   "Keyboard input works as well as clicking, so you can play faster passages."
+  ]
+ },
+ "drum-patterns": {
+  "intro": "Drum Patterns is a reference library and sequencer in one. Browse the patterns that define rock, funk, jazz, reggae, hip-hop and Latin styles, then play them back at any tempo from 50 to 200 BPM.",
+  "how": [
+   "Filter by genre, or view all patterns.",
+   "Select a pattern to see the grid and hear it.",
+   "Drag the BPM slider to hear it at the tempo you are working at."
+  ],
+  "method_title": "The backbeat, and how genres differ from it",
+  "method": [
+   "The standard rock beat puts the kick on beats 1 and 3 and the snare on 2 and 4, with eighth notes on the hi-hat. That snare on 2 and 4 is the backbeat, and it is the backbone of most popular music.",
+   "Genres are largely defined by how they depart from it. Funk keeps the backbeat but crowds the kick into sixteenth-note syncopations. Reggae drops or displaces beat 1 entirely and emphasises 3. Jazz moves the timekeeping to the ride cymbal in a swung triplet feel and uses the snare for comments rather than the pulse."
+  ],
+  "example": {
+   "setup": "The basic rock beat on a 16-step grid:",
+   "given": [
+    [
+     "Kick",
+     "beats 1 and 3"
+    ],
+    [
+     "Snare",
+     "beats 2 and 4"
+    ],
+    [
+     "Hi-hat",
+     "every eighth note"
+    ],
+    [
+     "Tempo",
+     "100 BPM"
+    ]
+   ],
+   "result": "The pattern underneath a very large share of rock and pop recordings."
+  },
+  "uses": [
+   "Learning what actually distinguishes one genre's groove from another.",
+   "Finding a pattern to practise an instrument over.",
+   "Programming drums when you do not play them.",
+   "Hearing a pattern slowly before trying to play it up to tempo."
+  ],
+  "notes": [
+   "Patterns cover rock, funk, jazz, reggae, hip-hop and Latin.",
+   "Tempo is adjustable while a pattern plays."
+  ]
+ },
+ "guitar-tuning-chart": {
+  "intro": "Guitar Tuning Chart lists the string-by-string notes for standard and alternate tunings, grouped into standard, drop, open and modal categories.",
+  "how": [
+   "Filter by category, or view all tunings.",
+   "Read the six string notes from low to high for each tuning."
+  ],
+  "method_title": "What each family of tuning is for",
+  "method": [
+   "Standard is EADGBE from the lowest string up. Drop tunings lower the sixth string only, so Drop D is DADGBE, which lets a power chord be played with one finger across the bottom three strings.",
+   "Open tunings retune the strings so the open guitar sounds a full chord. Open G is DGDGBD, which is why slide players use it: barring any single fret gives a complete major chord. Modal tunings like DADGAD avoid the third entirely, leaving a chord that is neither major nor minor and sits well under folk and Celtic playing."
+  ],
+  "example": {
+   "setup": "Comparing standard with Drop D:",
+   "given": [
+    [
+     "Standard",
+     "E A D G B E"
+    ],
+    [
+     "Drop D",
+     "D A D G B E"
+    ],
+    [
+     "Change",
+     "sixth string down one whole tone"
+    ]
+   ],
+   "result": "One string moves. The low D lets you play a D5 power chord by barring the bottom three strings at one fret."
+  },
+  "uses": [
+   "Retuning correctly for a song written in an alternate tuning.",
+   "Choosing a tuning that suits slide or fingerstyle playing.",
+   "Understanding why a familiar chord shape produces a different chord after retuning.",
+   "Working out how far each string has to move before you start."
+  ],
+  "mistakes": [
+   "Tuning a string up too far. Raising pitch increases tension and is the usual way strings break.",
+   "Expecting standard chord shapes to work in an open tuning. The whole point is that they do not."
+  ]
+ },
+ "rhythm-challenge": {
+  "intro": "Rhythm Challenge is an ear and timing trainer. It shows a rhythm pattern, plays it, and asks you to tap it back, then scores your accuracy in milliseconds against the actual beat positions.",
+  "how": [
+   "Pick a difficulty: quarter notes only, quarter plus eighth, or eighth plus sixteenth.",
+   "Choose a tempo from 60 to 120 BPM.",
+   "Listen to the pattern, use Replay if you need it, then tap it back.",
+   "Read your timing accuracy and press New Pattern to continue."
+  ],
+  "method_title": "What the millisecond score means",
+  "method": [
+   "Your taps are compared to where each note should fall, and the difference is reported in milliseconds. Trained musicians typically land within 20 to 30 ms of the beat, and most listeners cannot hear an error smaller than about 20 ms at all.",
+   "Tempo changes how forgiving the exercise is. At 60 BPM a quarter note lasts a full second and there is room to correct. At 120 BPM a sixteenth note lasts 125 ms, so the same absolute error is a much larger fraction of the note."
+  ],
+  "example": {
+   "setup": "Working out how tight the timing window is at each end of the tempo range:",
+   "given": [
+    [
+     "At 60 BPM",
+     "quarter note = 1000 ms"
+    ],
+    [
+     "At 120 BPM",
+     "quarter note = 500 ms"
+    ],
+    [
+     "Sixteenth at 120 BPM",
+     "125 ms"
+    ]
+   ],
+   "result": "A 30 ms error is 3% of a quarter note at 60 BPM but nearly a quarter of a sixteenth note at 120."
+  },
+  "uses": [
+   "Training timing accuracy with objective feedback instead of guesswork.",
+   "Practising subdivision, which is where most rhythmic errors come from.",
+   "Warming up before a rehearsal or a take.",
+   "Finding out whether you rush or drag, since the error has a direction."
+  ],
+  "mistakes": [
+   "Starting at the hardest difficulty. Sixteenth-note patterns punish an unsteady internal pulse rather than teaching one.",
+   "Tapping along with the playback instead of reproducing the pattern from memory. Copying in real time trains a different skill."
+  ]
  }
 }
