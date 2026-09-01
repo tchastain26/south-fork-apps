@@ -47,7 +47,7 @@ def visible_words(text: str) -> int:
 
 def remove_marked_block(text: str, marker: str) -> str:
     pattern = re.compile(
-        rf"\n?(?:<!--|/\*) {re.escape(marker)}_START(?: -->|\*/).*?(?:<!--|/\*) {re.escape(marker)}_END(?: -->|\*/)\n?",
+        rf"\n?(?:<!--|/\*)\s*{re.escape(marker)}_START\s*(?:-->|\*/).*?(?:<!--|/\*)\s*{re.escape(marker)}_END\s*(?:-->|\*/)\n?",
         re.S,
     )
     return pattern.sub("\n", text)
