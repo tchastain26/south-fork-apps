@@ -13,6 +13,7 @@ BASE_URL = "https://southforkapps.com"
 TODAY = date.today().isoformat()
 
 APP_META = {
+    "detailing-quote-widget": ("Detailing Quote Widget",    "Give detailing customers an instant estimate with a custom-branded quote widget. Live demo and one-time setup with no subscription."),
     "currency-converter":     ("Currency Converter",         "Convert between 30+ world currencies instantly using a built-in rate table. Free online currency converter."),
     "heart-rate-zones":       ("Heart Rate Zones",           "Calculate your 5 aerobic training zones by age or custom max heart rate. Supports Karvonen method. Free online tool."),
     "net-worth-tracker":      ("Net Worth Tracker",          "Add assets and liabilities to calculate your net worth instantly. Free browser-based net worth calculator with visual breakdown."),
@@ -226,6 +227,7 @@ APP_META = {
 # Update this list whenever new apps are pushed. Format:
 # (folder_name, display_title, category, material_icon, short_description)
 LATEST_APPS = [
+    ("detailing-quote-widget", "Detailing Quote Widget",     "Work & Design", "request_quote", "Give detailing customers an instant estimate, then buy a custom-branded version with your prices and booking link."),
     ("meeting-agenda-builder", "Meeting Agenda Builder",      "Productivity & Planning", "event_note",   "Build timed agendas with owners, notes, total meeting length, and copy-ready plain-text or Markdown output."),
     ("decision-matrix", "Decision Matrix",                "Productivity & Planning", "balance",       "Score options against weighted criteria, then rank the results with live totals, percentages, and winning picks."),
     ("unit-circle", "Unit Circle Reference",            "Everyday Tools", "trip_origin",   "Click standard angles to see exact coordinates plus sine, cosine, and tangent values with degree and radian labels."),

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detailing Quote Widget | South Fork Apps</title>
+  <meta name="description" content="Give detailing customers an instant estimate with a custom-branded quote widget. Live demo and one-time setup with no subscription.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111412;
+      --surface: #1a1f1b;
+      --surface-2: #202621;
+      --border: #2a2f2b;
+      --text: #e8e8e8;
+      --muted: #aab3ac;
+      --accent: #7ddb84;
+      --accent-dark: #173b1d;
+      --danger: #ffb4ab;
+      --radius: 18px;
+      font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 4%, rgba(125, 219, 132, 0.12), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    a { color: inherit; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-link {
+      color: var(--accent);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .version {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2.2rem 0 4rem;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0.55rem 0 0.7rem;
+      font-size: clamp(2rem, 6vw, 3.7rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(26, 31, 27, 0.94);
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
+    }
+
+    .controls { padding: 1.25rem; }
+
+    .field + .field { margin-top: 1.15rem; }
+
+    .field-label,
+    legend {
+      display: block;
+      margin-bottom: 0.58rem;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 0 0.85rem;
+      font: inherit;
+    }
+
+    select:focus-visible,
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 3px solid rgba(125, 219, 132, 0.42);
+      outline-offset: 2px;
+    }
+
+    fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .segment {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .segment input,
+    .addon input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segment label,
+    .addon label {
+      display: flex;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .segment label {
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .segment input:checked + label,
+    .addon input:checked + label {
+      border-color: var(--accent);
+      background: var(--accent-dark);
+      color: var(--text);
+    }
+
+    .addons {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .addon { position: relative; }
+
+    .addon label {
+      min-height: 62px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.18rem;
+      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+
+    .addon strong {
+      color: var(--text);
+      font-size: 0.78rem;
+    }
+
+    .result {
+      position: sticky;
+      top: 1rem;
+      overflow: hidden;
+    }
+
+    .result-head {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(125, 219, 132, 0.13), transparent 70%);
+    }
+
+    .business-name {
+      margin: 0 0 0.35rem;
+      color: var(--muted);
+      font-size: 0.83rem;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .range {
+      margin: 0;
+      color: var(--accent);
+      font-size: clamp(2.2rem, 7vw, 3.4rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .estimate-note {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.45;
+    }
+
+    .result-body { padding: 1.25rem; }
+
+    .line-items {
+      display: grid;
+      gap: 0.7rem;
+      margin: 0 0 1.1rem;
+    }
+
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .line-item strong { color: var(--text); }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.72rem 0.9rem;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #0d190f;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .copy-status {
+      min-height: 1.2rem;
+      margin: 0.6rem 0 0;
+      color: var(--accent);
+      font-size: 0.72rem;
+      text-align: center;
+    }
+
+    .offer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 1.35rem;
+      border-color: rgba(125, 219, 132, 0.48);
+      background: linear-gradient(145deg, rgba(29, 54, 33, 0.92), rgba(26, 31, 27, 0.96));
+    }
+
+    .offer h2 {
+      margin: 0 0 0.45rem;
+      font-size: clamp(1.25rem, 4vw, 1.7rem);
+    }
+
+    .offer p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .offer ul {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.4rem 1rem;
+      margin: 0.9rem 0 0;
+      padding: 0;
+      list-style: none;
+      color: var(--text);
+      font-size: 0.8rem;
+    }
+
+    .offer li::before {
+      content: "✓";
+      margin-right: 0.45rem;
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .buy {
+      min-width: 190px;
+    }
+
+    .buy .button {
+      width: 100%;
+      min-height: 52px;
+      font-size: 0.88rem;
+    }
+
+    .buy small {
+      display: block;
+      margin-top: 0.55rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    footer {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1.4rem 0 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 800px) {
+      main { padding-top: 1.5rem; }
+      .app-grid { grid-template-columns: 1fr; }
+      .result { position: static; }
+      .offer { grid-template-columns: 1fr; }
+      .buy { min-width: 0; }
+    }
+
+    @media (max-width: 480px) {
+      .segment { grid-template-columns: 1fr; }
+      .addons { grid-template-columns: 1fr; }
+      .button-row { grid-template-columns: 1fr; }
+      .offer ul { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand-link" href="https://southforkapps.com">South Fork Apps</a>
+    <span class="version">Business demo · v1.0</span>
+  </nav>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow">Instant estimate demo</div>
+      <h1 id="page-title">Detailing Quote Widget</h1>
+      <p>Let customers price a service in seconds. This demo uses sample rates. A custom copy uses your business name, packages, prices, colors, and booking link.</p>
+    </section>
+
+    <section class="app-grid" aria-label="Detailing estimate calculator">
+      <form class="panel controls" id="quote-form">
+        <div class="field">
+          <label class="field-label" for="vehicle">Vehicle type</label>
+          <select id="vehicle" name="vehicle">
+            <option value="car">Car or coupe</option>
+            <option value="suv">SUV or crossover</option>
+            <option value="truck">Pickup truck</option>
+            <option value="van">Van or 3-row SUV</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="package">Service package</label>
+          <select id="package" name="package">
+            <option value="exterior">Exterior refresh</option>
+            <option value="interior">Interior reset</option>
+            <option value="full" selected>Full detail</option>
+            <option value="correction">Paint correction + protection</option>
+          </select>
+        </div>
+
+        <fieldset class="field">
+          <legend>Current condition</legend>
+          <div class="segment">
+            <div>
+              <input type="radio" id="condition-light" name="condition" value="light">
+              <label for="condition-light">Light</label>
+            </div>
+            <div>
+              <input type="radio" id="condition-average" name="condition" value="average" checked>
+              <label for="condition-average">Average</label>
+            </div>
+            <div>
+              <input type="radio" id="condition-heavy" name="condition" value="heavy">
+              <label for="condition-heavy">Heavy</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Add-ons</legend>
+          <div class="addons">
+            <div class="addon">
+              <input type="checkbox" id="pet-hair" value="petHair">
+              <label for="pet-hair"><strong>Pet hair removal</strong><span>+$35</span></label>
+            </div>
+            <div class="addon">
+              <input type="checkbox" id="stains" value="stains">
+              <label for="stains"><strong>Stain extraction</strong><span>+$40</span></label>
+            </div>
+            <div class="addon">
+              <input type="checkbox" id="engine" value="engine">
+              <label for="engine"><strong>Engine bay</strong><span>+$30</span></label>
+            </div>
+            <div class="addon">
+              <input type="checkbox" id="headlights" value="headlights">
+              <label for="headlights"><strong>Headlight restore</strong><span>+$60</span></label>
+            </div>
+            <div class="addon">
+              <input type="checkbox" id="ceramic" value="ceramic">
+              <label for="ceramic"><strong>Ceramic spray</strong><span>+$45</span></label>
+            </div>
+            <div class="addon">
+              <input type="checkbox" id="odor" value="odor">
+              <label for="odor"><strong>Odor treatment</strong><span>+$45</span></label>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="panel result" aria-live="polite">
+        <div class="result-head">
+          <p class="business-name" id="business-name">Your Detailing Business</p>
+          <p class="range" id="estimate-range">$170–$205</p>
+          <p class="estimate-note">Estimated range. Final price may change after an in-person inspection.</p>
+        </div>
+        <div class="result-body">
+          <div class="line-items" id="line-items"></div>
+          <div class="button-row">
+            <button class="button" type="button" id="copy-estimate">Copy estimate</button>
+            <a class="button primary" id="contact-button" href="mailto:tchastain26@gmail.com?subject=Detailing%20Quote%20Widget%20demo">Request booking</a>
+          </div>
+          <p class="copy-status" id="copy-status" role="status"></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel offer" aria-labelledby="offer-title">
+      <div>
+        <div class="eyebrow">Launch offer · first three businesses</div>
+        <h2 id="offer-title">Your branded widget for $49 once</h2>
+        <p>Send your website and price list after payment. Your custom mobile-ready widget is delivered within 24 hours. No subscription and no customer data collection.</p>
+        <ul>
+          <li>Your name, logo, and colors</li>
+          <li>Your packages and add-ons</li>
+          <li>Your booking or contact link</li>
+          <li>Hosted page or HTML file</li>
+        </ul>
+      </div>
+      <div class="buy">
+        <a class="button primary" href="https://paypal.me/tchastain26/49USD" target="_blank" rel="noopener noreferrer">Buy custom setup · $49</a>
+        <small>PayPal checkout. After payment, email your website and current price list to <a href="mailto:tchastain26@gmail.com?subject=My%20$49%20Detailing%20Quote%20Widget">tchastain26@gmail.com</a>.</small>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Estimates run locally in the browser. This demo does not collect, save, or transmit customer information. South Fork Apps is not affiliated with PayPal.
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const vehicleLabels = {
+        car: "Car or coupe",
+        suv: "SUV or crossover",
+        truck: "Pickup truck",
+        van: "Van or 3-row SUV"
+      };
+
+      const packageLabels = {
+        exterior: "Exterior refresh",
+        interior: "Interior reset",
+        full: "Full detail",
+        correction: "Paint correction + protection"
+      };
+
+      const basePrices = {
+        exterior: { car: 49, suv: 59, truck: 69, van: 79 },
+        interior: { car: 99, suv: 119, truck: 129, van: 149 },
+        full: { car: 149, suv: 179, truck: 199, van: 229 },
+        correction: { car: 299, suv: 349, truck: 379, van: 429 }
+      };
+
+      const conditionConfig = {
+        light: { label: "Light condition", multiplier: 0.92 },
+        average: { label: "Average condition", multiplier: 1 },
+        heavy: { label: "Heavy condition", multiplier: 1.28 }
+      };
+
+      const addonConfig = {
+        petHair: { label: "Pet hair removal", price: 35 },
+        stains: { label: "Stain extraction", price: 40 },
+        engine: { label: "Engine bay", price: 30 },
+        headlights: { label: "Headlight restore", price: 60 },
+        ceramic: { label: "Ceramic spray", price: 45 },
+        odor: { label: "Odor treatment", price: 45 }
+      };
+
+      const form = document.getElementById("quote-form");
+      const vehicle = document.getElementById("vehicle");
+      const packageSelect = document.getElementById("package");
+      const range = document.getElementById("estimate-range");
+      const lineItems = document.getElementById("line-items");
+      const businessName = document.getElementById("business-name");
+      const contactButton = document.getElementById("contact-button");
+      const copyButton = document.getElementById("copy-estimate");
+      const copyStatus = document.getElementById("copy-status");
+      let currentSummary = "";
+
+      const safeText = (value, maxLength) => String(value || "").replace(/[<>]/g, "").trim().slice(0, maxLength);
+
+      const safeContact = (value) => {
+        if (!value) return null;
+        try {
+          const parsed = new URL(value, window.location.href);
+          return ["http:", "https:", "mailto:", "tel:"].includes(parsed.protocol) ? parsed.href : null;
+        } catch (_) {
+          return null;
+        }
+      };
+
+      const roundToFive = (value) => Math.max(0, Math.round(value / 5) * 5);
+
+      const addLineItem = (label, amount, strong) => {
+        const row = document.createElement("div");
+        const name = document.createElement(strong ? "strong" : "span");
+        const price = document.createElement("span");
+        row.className = "line-item";
+        name.textContent = label;
+        price.textContent = `$${Math.round(amount)}`;
+        row.append(name, price);
+        lineItems.appendChild(row);
+      };
+
+      const selectedCondition = () => form.querySelector('input[name="condition"]:checked')?.value || "average";
+
+      const selectedAddons = () => Array.from(form.querySelectorAll('.addon input:checked')).map((input) => input.value);
+
+      const updateEstimate = () => {
+        const vehicleKey = vehicle.value;
+        const packageKey = packageSelect.value;
+        const conditionKey = selectedCondition();
+        const condition = conditionConfig[conditionKey];
+        const base = basePrices[packageKey][vehicleKey];
+        const adjustedBase = base * condition.multiplier;
+        const addons = selectedAddons();
+        const addonTotal = addons.reduce((sum, key) => sum + addonConfig[key].price, 0);
+        const subtotal = adjustedBase + addonTotal;
+        const low = roundToFive(subtotal * 0.95);
+        const high = Math.max(low + 10, roundToFive(subtotal * 1.15));
+
+        range.textContent = `$${low}–$${high}`;
+        lineItems.replaceChildren();
+        addLineItem(`${packageLabels[packageKey]} · ${vehicleLabels[vehicleKey]}`, adjustedBase, true);
+        addons.forEach((key) => addLineItem(addonConfig[key].label, addonConfig[key].price, false));
+
+        const detailLines = addons.map((key) => `- ${addonConfig[key].label}: $${addonConfig[key].price}`);
+        currentSummary = [
+          businessName.textContent,
+          `${packageLabels[packageKey]} for ${vehicleLabels[vehicleKey]}`,
+          `Condition: ${condition.label}`,
+          ...detailLines,
+          `Estimated range: $${low}–$${high}`,
+          "Final price is confirmed after inspection."
+        ].join("\n");
+      };
+
+      const applyPreviewParameters = () => {
+        const params = new URLSearchParams(window.location.search);
+        const brand = safeText(params.get("brand"), 60);
+        const contact = safeContact(params.get("contact"));
+        const contactLabel = safeText(params.get("contactLabel"), 28);
+
+        if (brand) {
+          businessName.textContent = brand;
+          document.title = `${brand} Quote Preview | South Fork Apps`;
+        }
+        if (contact) contactButton.href = contact;
+        if (contactLabel) contactButton.textContent = contactLabel;
+      };
+
+      const copyEstimate = async () => {
+        try {
+          await navigator.clipboard.writeText(currentSummary);
+          copyStatus.textContent = "Estimate copied.";
+        } catch (_) {
+          copyStatus.textContent = "Copy was blocked. Select the estimate manually.";
+        }
+        window.setTimeout(() => { copyStatus.textContent = ""; }, 2600);
+      };
+
+      form.addEventListener("change", updateEstimate);
+      copyButton.addEventListener("click", copyEstimate);
+      applyPreviewParameters();
+      updateEstimate();
+    })();
+  </script>
+</body>
+</html>
