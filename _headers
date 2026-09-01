@@ -25,10 +25,11 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000
   Content-Security-Policy: frame-ancestors *; base-uri 'self'; form-action 'self'; object-src 'none'
-  # The sitewide Report-Only policy says frame-ancestors 'self'. Left alone it
-  # logs a violation on every legitimate embed, and would break all of them the
-  # day that policy is promoted to enforcing. Override it on this path too.
-  Content-Security-Policy-Report-Only: frame-ancestors *; base-uri 'self'; form-action 'self'; object-src 'none'
+  # Cloudflare appends same-named headers rather than replacing them, so simply
+  # adding a second Report-Only policy left the restrictive one in force and
+  # still logged a violation on every legitimate embed. Unset it instead; the
+  # enforcing policy above is what governs this path.
+  ! Content-Security-Policy-Report-Only
   Cache-Control: public, max-age=0, s-maxage=3600, must-revalidate
 
 # Cache rules (unchanged)
