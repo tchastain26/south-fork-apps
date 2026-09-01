@@ -5247,6 +5247,230 @@
   }
 }
 /* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-worked{
+  margin-top:.75rem;
+  padding:1rem;
+  border:1px solid rgba(125,219,132,.22);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-worked p{
+  margin:0 0 .6rem;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-given{
+  list-style:none;
+  margin:0 0 .75rem;
+  padding:0;
+  display:grid;
+  gap:.3rem;
+}
+.sfa-given li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.35rem .55rem;
+  border-radius:8px;
+  background:rgba(125,219,132,.06);
+  font-size:.9rem;
+}
+.sfa-given span{color:#aab5ac;}
+.sfa-given strong{color:#e8e8e8;font-weight:600;text-align:right;}
+.sfa-result{
+  margin:0 !important;
+  padding-top:.55rem;
+  border-top:1px solid rgba(125,219,132,.18);
+  color:#cfd8cf !important;
+}
+.sfa-result strong{color:#7ddb84;}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
 </style>
 <!-- SFA_JSONLD_START -->
 <script type="application/ld+json">
@@ -5454,28 +5678,41 @@ generate();
 <section class="sfa-feature" aria-labelledby="sfa-feature-title">
   <div class="sfa-feature-shell">
     <div class="sfa-feature-copy">
-      <div class="sfa-kicker">Why people use this tool</div>
+      <div class="sfa-kicker">About this tool</div>
       <h2 id="sfa-feature-title">Color Palette Generator</h2>
-      <p>Generate structured color palettes from one base color so you can explore usable combinations instead of guessing shades one by one.</p>
+      <p>Color Palette generates complementary, analogous, triadic and square palettes from a base colour, along with a configurable range of shades.</p>
+      <h3 class="sfa-subhead">How to use it</h3>
+      <ol class="sfa-steps">
+        <li>Pick a base colour.</li>
+        <li>Set how many shades you want.</li>
+        <li>Read the generated palettes and shade ramp.</li>
+      </ol>
+      <h3 class="sfa-subhead">Why a shade ramp matters more than a palette</h3>
+      <p>A palette gives you hues. A shade ramp gives you the range of each hue from light to dark, and that is what real interfaces consume: a background, a hover state, a border, a disabled state, and text, all derived from one colour.</p>
+      <p>Ramps generated by evenly stepping lightness look uneven, because perceived brightness does not track lightness linearly. Good ramps usually need manual adjustment in the middle, where the eye is most sensitive.</p>
+      <h3 class="sfa-subhead">When it helps</h3>
       <ul class="sfa-bullets">
-        <li>Build complementary, analogous, triadic, or split-complementary schemes fast.</li>
-        <li>Start a brand, slide, or UI palette from a single color you already trust.</li>
-        <li>Copy the HEX values once you land on a direction that works.</li>
+        <li>Building a design system colour scale from a brand colour.</li>
+        <li>Generating hover and active states that belong to the same family.</li>
+        <li>Producing a chart palette with consistent weight.</li>
+        <li>Starting a theme without picking every colour by hand.</li>
       </ul>
-      <div class="sfa-example">
-        <strong>Typical workflow</strong>
-        <span>Pick a base color, review the generated palette families, then copy the swatches you want into your design tool or CSS.</span>
-      </div>
+      <h3 class="sfa-subhead">Common mistakes</h3>
+      <ul class="sfa-bullets">
+        <li>Using a generated ramp without checking contrast at each step. Only some steps will be usable for text.</li>
+        <li>Assuming an even lightness step looks even. It does not, particularly in the middle range.</li>
+        <li>Generating more colours than the design needs, which produces inconsistency rather than flexibility.</li>
+      </ul>
 
       <div class="sfa-links">
         <a href="https://southforkapps.com/categories/design-media/">More Design &amp; Media</a>
-        <a href="https://southforkapps.com/topics/css-color-tools/">CSS &amp; Color Tools</a>
+        <a href="https://southforkapps.com/about/">About South Fork Apps</a>
         <a href="https://southforkapps.com/privacy/">Privacy</a>
       </div>
     </div>
     <figure class="sfa-preview">
       <img src="screenshot.jpg" alt="Color Palette Generator interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Live interface preview for Color Palette Generator. This screenshot is also the landing image Google can associate with the tool page.</figcaption>
+      <figcaption>Screenshot of the live Color Palette Generator interface.</figcaption>
     </figure>
   </div>
 </section>
@@ -5504,6 +5741,7 @@ generate();
   </div>
 </section>
 <!-- SFA_RELATED_END -->
+
 
 
 

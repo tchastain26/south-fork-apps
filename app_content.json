@@ -4726,5 +4726,599 @@
    "Repeating a symbol more than three times. IIII appears on some clock faces by convention but is not standard notation.",
    "Expecting a zero. Roman numerals have no symbol for zero and no way to express one."
   ]
+ },
+ "color-contrast-checker": {
+  "intro": "Color Contrast Checker measures the contrast ratio between a foreground and background colour and tells you whether it passes WCAG AA and AAA at normal and large text sizes.",
+  "how": [
+   "Set the foreground (text) colour with the picker or by typing a hex value.",
+   "Set the background colour the same way.",
+   "Read the ratio and the pass or fail result for each WCAG level."
+  ],
+  "method_title": "What the thresholds actually are",
+  "method": [
+   "Contrast ratio runs from 1:1 (identical colours) to 21:1 (pure black on pure white). It is computed from the relative luminance of the two colours, not from how different they look, which is why two vivid colours can be visually distinct and still fail.",
+   "WCAG AA requires 4.5:1 for normal text and 3:1 for large text, where large means at least 18pt, or 14pt bold. AAA raises those to 7:1 and 4.5:1. Interface components and meaningful graphics need 3:1 against their surroundings."
+  ],
+  "example": {
+   "setup": "Common results:",
+   "given": [
+    [
+     "Black on white",
+     "21:1, passes everything"
+    ],
+    [
+     "Mid grey #767676 on white",
+     "4.54:1, just passes AA normal"
+    ],
+    [
+     "Light grey #999999 on white",
+     "2.85:1, fails AA at any size"
+    ]
+   ],
+   "result": "The popular light-grey-on-white look for secondary text fails AA, which is why so many redesigns get accessibility complaints."
+  },
+  "uses": [
+   "Checking a colour pair before committing it to a design system.",
+   "Fixing an accessibility audit finding.",
+   "Choosing a text colour that works on a brand background.",
+   "Testing placeholder and disabled states, which are usually the worst offenders."
+  ],
+  "mistakes": [
+   "Testing only body text. Buttons, form borders and icons carry their own 3:1 requirement.",
+   "Assuming a large ratio means readable. Contrast is necessary but does not fix a tiny font or a bad typeface.",
+   "Testing against the wrong background. Text over an image or a gradient has to pass against the worst part of it."
+  ]
+ },
+ "color-blindness-simulator": {
+  "intro": "Color Blindness Simulator shows how a colour appears to viewers with protanopia, deuteranopia, tritanopia and achromatopsia, so you can check a palette against the most common forms of colour vision deficiency.",
+  "how": [
+   "Pick a colour, or type a hex value.",
+   "Compare the simulated versions side by side.",
+   "Test the colours you rely on to carry meaning."
+  ],
+  "method_title": "Which deficiencies matter most",
+  "method": [
+   "Roughly 8% of men and 0.5% of women of Northern European descent have some colour vision deficiency. Deuteranopia and deuteranomaly, affecting green perception, are by far the most common. Protanopia affects red perception, and tritanopia, affecting blue, is rare.",
+   "The practical consequence is that red and green become hard to tell apart for a substantial share of your audience. Any interface using red for error and green for success, with no other distinguishing signal, is unreadable to them."
+  ],
+  "uses": [
+   "Checking whether a chart's series remain distinguishable.",
+   "Testing a status colour scheme before shipping it.",
+   "Choosing a palette that survives colour vision deficiency.",
+   "Making the case for adding icons or labels alongside colour."
+  ],
+  "mistakes": [
+   "Using colour as the only way to convey meaning. Add a shape, an icon, a label or a pattern so the information survives.",
+   "Assuming a red and green pair is fine because they look different to you.",
+   "Testing only full deficiency. Anomalous trichromacy, a partial version, is more common than full dichromacy and shifts colours rather than removing them."
+  ]
+ },
+ "color-converter": {
+  "intro": "Color Converter translates a colour between HEX, RGB, HSL and HSB with a live preview, so you can move between the format your design tool uses and the one your code needs.",
+  "how": [
+   "Enter a colour in any supported format, or use the picker.",
+   "Read the equivalent in every other format.",
+   "Copy the one you need."
+  ],
+  "method_title": "Why HSL and HSB are not the same thing",
+  "method": [
+   "RGB and HEX describe how much red, green and blue light to mix. They are exact and they are also unintuitive: nobody can predict what happens when you nudge the green channel.",
+   "HSL and HSB both use hue, saturation and a third axis, and that third axis is where they differ. In HSL, 50% lightness gives the pure hue and 100% is always white. In HSB, 100% brightness gives the pure hue and there is no way to reach white without dropping saturation. Design tools mostly use HSB; CSS uses HSL. Copying the numbers straight across gives the wrong colour."
+  ],
+  "uses": [
+   "Moving a colour from a design tool into CSS.",
+   "Adjusting lightness or saturation predictably, which RGB cannot do.",
+   "Generating a tint or shade by changing one number.",
+   "Reading a hex value someone gave you in a format you can reason about."
+  ],
+  "mistakes": [
+   "Copying HSB values into an HSL declaration. They share axis names and mean different things.",
+   "Expecting equal lightness values to look equally light across hues. Yellow at 50% lightness looks far brighter than blue at 50%, because perceived brightness is not what HSL measures.",
+   "Using three-digit hex shorthand and forgetting it only expands to paired digits, so #ABC is #AABBCC."
+  ]
+ },
+ "color-harmony": {
+  "intro": "Color Harmony generates complementary, analogous, triadic, split-complementary and tetradic schemes from any base colour.",
+  "how": [
+   "Pick a base colour.",
+   "Read each harmony scheme generated from it.",
+   "Copy the colours you want to use."
+  ],
+  "method_title": "What each relationship is",
+  "method": [
+   "Harmonies are defined by angles on the colour wheel. Complementary is the colour directly opposite, 180 degrees away, which gives maximum contrast and tension. Analogous takes neighbours within about 30 degrees, which is calm and cohesive because the colours share a family.",
+   "Triadic takes three colours 120 degrees apart, giving vibrancy while staying balanced. Split-complementary takes the two neighbours of the complement instead of the complement itself, keeping most of the contrast with less harshness, which is why it is often the safer choice for interfaces."
+  ],
+  "uses": [
+   "Building a palette from a single brand colour.",
+   "Finding an accent colour that will not fight the primary.",
+   "Generating chart colours that stay distinguishable.",
+   "Getting out of a palette rut with a principled starting point."
+  ],
+  "mistakes": [
+   "Using harmony colours at equal weight. Most good palettes are dominated by one colour with the others used sparingly.",
+   "Treating the wheel as the final answer. Harmonies are a starting point and still need contrast checking against your backgrounds.",
+   "Forgetting accessibility. A theoretically harmonious pair can still fail contrast requirements badly."
+  ]
+ },
+ "color-palette": {
+  "intro": "Color Palette generates complementary, analogous, triadic and square palettes from a base colour, along with a configurable range of shades.",
+  "how": [
+   "Pick a base colour.",
+   "Set how many shades you want.",
+   "Read the generated palettes and shade ramp."
+  ],
+  "method_title": "Why a shade ramp matters more than a palette",
+  "method": [
+   "A palette gives you hues. A shade ramp gives you the range of each hue from light to dark, and that is what real interfaces consume: a background, a hover state, a border, a disabled state, and text, all derived from one colour.",
+   "Ramps generated by evenly stepping lightness look uneven, because perceived brightness does not track lightness linearly. Good ramps usually need manual adjustment in the middle, where the eye is most sensitive."
+  ],
+  "uses": [
+   "Building a design system colour scale from a brand colour.",
+   "Generating hover and active states that belong to the same family.",
+   "Producing a chart palette with consistent weight.",
+   "Starting a theme without picking every colour by hand."
+  ],
+  "mistakes": [
+   "Using a generated ramp without checking contrast at each step. Only some steps will be usable for text.",
+   "Assuming an even lightness step looks even. It does not, particularly in the middle range.",
+   "Generating more colours than the design needs, which produces inconsistency rather than flexibility."
+  ]
+ },
+ "color-mixer": {
+  "intro": "Color Mixer blends two colours at any ratio and gives the result as HEX, RGB and HSL, with a slider for the mix proportion.",
+  "how": [
+   "Set colour A and colour B.",
+   "Drag the ratio slider to change the blend.",
+   "Click any output row to copy it."
+  ],
+  "method_title": "Why mixed colours sometimes look muddy",
+  "method": [
+   "Blending happens by interpolating the channel values. In RGB that is a straight numerical average, which is fast and occasionally ugly: mixing a saturated blue and a saturated yellow passes through grey rather than through green, because the path crosses the middle of the colour cube.",
+   "Interpolating in HSL follows the hue around the wheel instead, which keeps saturation up and produces the transition most people expect. Neither is wrong, but knowing which one you are getting explains the muddy midpoint."
+  ],
+  "uses": [
+   "Creating a tint or shade by mixing toward white or black.",
+   "Finding a midpoint colour between two brand colours.",
+   "Generating intermediate steps for a gradient or a scale.",
+   "Softening a colour by mixing in a neutral."
+  ],
+  "mistakes": [
+   "Expecting digital mixing to behave like paint. Screens mix light additively, so blue and yellow do not make green the way pigment does.",
+   "Mixing toward pure black for shades, which kills saturation and looks dead. Mixing toward a very dark version of the hue reads better."
+  ]
+ },
+ "color-name-finder": {
+  "intro": "Color Name Finder identifies the closest CSS named colour to any hex value and lists the five nearest matches.",
+  "how": [
+   "Enter a hex value or use the picker.",
+   "Read the closest CSS named colour and the four runners-up.",
+   "Click a name to copy it."
+  ],
+  "method_title": "How closest is decided",
+  "method": [
+   "Each of the 148 CSS named colours is a fixed RGB point. Finding the closest means measuring distance between your colour and each of them, and the choice of distance measure changes the answer.",
+   "Straight RGB distance is easy and does not match how people see. Two colours the same numerical distance apart can look very different, because the eye is far more sensitive to green than to blue. Perceptual colour spaces exist precisely to fix that, which is why a nearest-name result sometimes looks off even though the arithmetic is right."
+  ],
+  "uses": [
+   "Finding a memorable name for a colour you are using.",
+   "Checking whether a hex value is close to a standard named colour.",
+   "Writing more readable CSS for common colours.",
+   "Describing a colour to someone without giving them a hex code."
+  ],
+  "mistakes": [
+   "Substituting the named colour for your exact value. Closest is not identical, and brand colours need to be exact.",
+   "Assuming CSS colour names are intuitive. Several are historically odd, and both gray and grey are valid spellings."
+  ]
+ },
+ "hex-code-color-generator": {
+  "intro": "Hex Code Color Generator produces random hex colours and converts between formats, with a picker and live preview.",
+  "how": [
+   "Generate a random colour, or enter one with the picker or hex field.",
+   "Read the converted values.",
+   "Copy the format you need."
+  ],
+  "method_title": "How a hex colour is built",
+  "method": [
+   "A hex colour is three pairs of hexadecimal digits for red, green and blue, each running from 00 to FF, which is 0 to 255 in decimal. That gives 256 values per channel and about 16.7 million combinations.",
+   "An eight-digit hex code adds a fourth pair for alpha, where 00 is fully transparent and FF is fully opaque. Three-digit shorthand expands each digit into a pair, so #F0A is #FF00AA, which means shorthand can only express a small subset of colours."
+  ],
+  "uses": [
+   "Getting a starting colour when you have no brief.",
+   "Converting a hex value into RGB for code that needs channels.",
+   "Exploring colour combinations quickly.",
+   "Grabbing a random colour for a placeholder or a test."
+  ],
+  "mistakes": [
+   "Using random colours as a palette. Randomness produces variety, not coherence.",
+   "Forgetting the alpha pair position in eight-digit hex, which some tools order as ARGB rather than RGBA.",
+   "Assuming shorthand works for any colour. Only colours with paired digits can be shortened."
+  ]
+ },
+ "css-gradient-generator": {
+  "intro": "CSS Gradient Generator builds linear, radial and conic gradients visually with a live preview and copyable CSS.",
+  "how": [
+   "Choose the gradient type.",
+   "Set the angle and adjust the colour stops.",
+   "Copy the generated CSS."
+  ],
+  "method_title": "How CSS measures gradient angles",
+  "method": [
+   "In a CSS linear gradient, 0deg points to the top and angles increase clockwise, so 90deg points right and 180deg points down. This trips people up because it differs from the mathematical convention where 0 points right and angles increase counter-clockwise.",
+   "Colour stop positions control where each colour is fully reached. Two stops at the same position create a hard edge rather than a blend, which is how gradients are used to make stripes and split backgrounds."
+  ],
+  "uses": [
+   "Building a background gradient without writing the syntax from memory.",
+   "Creating a subtle two-tone background for a section or card.",
+   "Making stripes or a hard-edged split using coincident stops.",
+   "Producing a conic gradient for a pie chart or a loading indicator."
+  ],
+  "mistakes": [
+   "Using the mathematical angle convention. CSS starts at the top and goes clockwise.",
+   "Putting text over a gradient without checking contrast at both ends. It has to pass against the worst point.",
+   "Using many stops when two would do, which makes the CSS harder to maintain for a barely visible difference."
+  ]
+ },
+ "css-filter-generator": {
+  "intro": "CSS Filter Generator builds a filter string with sliders for blur, brightness, contrast, grayscale, sepia, hue-rotate, saturate, invert and opacity, with a live preview.",
+  "how": [
+   "Adjust the sliders for the effects you want.",
+   "Watch the preview update.",
+   "Copy the generated filter value."
+  ],
+  "method_title": "Filters apply in order",
+  "method": [
+   "The filter property takes a list of functions applied left to right, and the order changes the result. Blurring then increasing contrast is not the same as increasing contrast then blurring, because each operates on the output of the last.",
+   "Filters are also relatively expensive to render, particularly blur. Applying one to a large element, or animating it, can cost real frame rate on lower-powered devices."
+  ],
+  "uses": [
+   "Dimming or desaturating an image behind text.",
+   "Creating hover effects on images without producing separate files.",
+   "Building a disabled state by desaturating and reducing opacity.",
+   "Adjusting an image's appearance without editing the file."
+  ],
+  "mistakes": [
+   "Animating blur. It is one of the most expensive filters and is a common cause of janky animation.",
+   "Using filters to fix a badly exposed image. Editing the source file gives a better result at no runtime cost.",
+   "Forgetting that filter applies to the whole element including its children and text."
+  ]
+ },
+ "css-unit-converter": {
+  "intro": "CSS Unit Converter translates between px, rem, em, vw, vh, pt and cm, using the root font size and viewport dimensions you specify.",
+  "how": [
+   "Set the root font size, and the viewport width and height you are designing for.",
+   "Enter a value in any unit.",
+   "Read the equivalents."
+  ],
+  "method_title": "Which unit to reach for",
+  "method": [
+   "px is absolute. rem is relative to the root font size, which defaults to 16px but changes if the user has increased their browser's base font size. em is relative to the parent element's font size, which is why nested em values compound and become hard to predict.",
+   "The accessibility argument favours rem for font sizes and spacing, because a reader who has raised their default font size gets a proportionally larger layout. Viewport units scale with the window and ignore that setting entirely, which is why pure vw typography is an accessibility problem."
+  ],
+  "uses": [
+   "Converting a design handed over in pixels into rem for implementation.",
+   "Working out what a rem value resolves to at a given root size.",
+   "Checking how a viewport unit behaves at a specific screen width.",
+   "Converting print units for a stylesheet that targets paper."
+  ],
+  "mistakes": [
+   "Using em for font sizes in nested components, where the compounding produces sizes nobody intended.",
+   "Sizing text in pure vw, which breaks user font scaling.",
+   "Assuming the root font size is always 16px. It is the default, not a guarantee."
+  ]
+ },
+ "css-animation-generator": {
+  "intro": "CSS Animation Generator builds keyframe animations visually from presets like fade, slide and bounce, with controls for duration, delay and iteration count.",
+  "how": [
+   "Choose an animation preset.",
+   "Set the duration, delay and how many times it repeats.",
+   "Copy the generated keyframes and animation property."
+  ],
+  "method_title": "What makes an animation feel right",
+  "method": [
+   "Two things matter more than the effect itself: duration and easing. Interface animations generally want 150 to 300 milliseconds. Much faster reads as a jump, much slower makes the interface feel sluggish because the user is waiting on you.",
+   "Easing conveys physical plausibility. Linear motion looks mechanical because nothing in the real world starts and stops instantly. Ease-out, which starts fast and settles, suits things entering the screen and is the safest default."
+  ],
+  "uses": [
+   "Adding entrance animations without hand-writing keyframes.",
+   "Building a loading or attention animation.",
+   "Prototyping a motion idea before implementing it properly.",
+   "Learning keyframe syntax by reading generated output."
+  ],
+  "mistakes": [
+   "Ignoring prefers-reduced-motion. Some users get genuinely unwell from motion, and honouring that media query is a real accessibility requirement, not a nicety.",
+   "Animating layout properties like width, height or top. Animating transform and opacity instead keeps the work on the compositor and stays smooth.",
+   "Setting infinite iterations on anything decorative, which is distracting and burns battery."
+  ]
+ },
+ "box-shadow-generator": {
+  "intro": "Box Shadow Generator builds CSS shadows visually, letting you stack multiple layers and adjust offset, blur, spread and colour with a live preview.",
+  "how": [
+   "Adjust the horizontal and vertical offset, blur and spread.",
+   "Add more layers to build depth.",
+   "Copy the generated box-shadow value."
+  ],
+  "method_title": "Why one shadow rarely looks right",
+  "method": [
+   "The box-shadow syntax is offset-x, offset-y, blur, spread, colour, with an optional inset keyword. A single shadow with a large blur produces the soft grey halo that reads as generic and slightly cheap.",
+   "Real shadows are layered. Combining a tight, darker shadow with a wider, softer one imitates how light actually falls, giving a close contact shadow plus ambient occlusion. That is what separates a considered elevation system from a default drop shadow."
+  ],
+  "uses": [
+   "Building an elevation scale for cards and modals.",
+   "Creating a focus ring using spread with no blur.",
+   "Making an inset shadow for a pressed or recessed control.",
+   "Matching a shadow from a design handover."
+  ],
+  "mistakes": [
+   "Using pure black at high opacity. Shadows read better as a dark, desaturated version of the background hue at low opacity.",
+   "Offsetting horizontally. Most interface lighting is modelled from directly above, so vertical offset alone usually looks more natural.",
+   "Stacking many large blurred shadows, which is a real rendering cost on long lists."
+  ]
+ },
+ "glassmorphism-generator": {
+  "intro": "Glassmorphism Generator produces the frosted-glass effect with controls for blur, background opacity, border opacity and radius, with a live preview.",
+  "how": [
+   "Adjust the blur amount and the background opacity.",
+   "Set the border opacity and corner radius.",
+   "Copy the generated CSS."
+  ],
+  "method_title": "What the effect is made of",
+  "method": [
+   "Glassmorphism is three properties working together: backdrop-filter with a blur, a semi-transparent background colour, and a subtle light border. Remove any one and it stops reading as glass. The border in particular is what suggests an edge catching light.",
+   "backdrop-filter is the expensive part. It forces the browser to sample and blur everything behind the element on every frame, so applying it to several large elements, or to anything that scrolls, has a real performance cost."
+  ],
+  "uses": [
+   "Building a floating panel or navigation bar over rich content.",
+   "Creating a modal overlay that keeps context visible behind it.",
+   "Making a card that sits over a photographic background.",
+   "Prototyping the effect before committing to it."
+  ],
+  "mistakes": [
+   "Putting text on glass without checking contrast. The background is variable by definition, so the text must pass against the lightest and darkest thing that can appear behind it.",
+   "Using it everywhere. The effect depends on contrast with solid surfaces, so it stops reading as special when everything is glass.",
+   "Forgetting a fallback. Without backdrop-filter support the panel is simply translucent, which may be unreadable."
+  ]
+ },
+ "neumorphism-generator": {
+  "intro": "Neumorphism Generator produces soft-UI CSS with controls for background colour, size, shape and whether the element appears raised or inset.",
+  "how": [
+   "Set the background colour. The effect requires the element and its container to share it.",
+   "Choose the shape and whether it is raised or inset.",
+   "Copy the generated CSS."
+  ],
+  "method_title": "How the effect works, and its built-in problem",
+  "method": [
+   "Neumorphism uses two shadows on the same element: a light one offset toward the light source and a dark one offset away. Because the element is the same colour as its background, those two shadows are the only thing defining its edges, which is what produces the extruded look.",
+   "That is also the flaw. With no colour or contrast difference between the control and the background, buttons in this style routinely fail WCAG's 3:1 requirement for interface components, and are difficult to perceive for anyone with low vision. The style is worth knowing and should be used with care."
+  ],
+  "uses": [
+   "Prototyping a soft-UI concept.",
+   "Creating a subtly recessed input or a low-emphasis panel.",
+   "Learning how paired shadows create perceived depth.",
+   "Applying the style to decorative, non-interactive elements where the accessibility cost is lower."
+  ],
+  "mistakes": [
+   "Using it for primary buttons. If a control cannot be distinguished from the background, some users cannot find it.",
+   "Applying it on a pure white or black background, where one of the two shadows has nowhere to go.",
+   "Relying on the effect alone to signal interactivity. Add a label, a border or a focus state that does not depend on subtle shadow."
+  ]
+ },
+ "gradient-text": {
+  "intro": "Gradient Text creates CSS gradient-filled text with a live preview, with controls for the colours, angle, font size and weight.",
+  "how": [
+   "Type your text and set the font size and weight.",
+   "Choose the gradient colours and angle.",
+   "Copy the generated CSS."
+  ],
+  "method_title": "The trick that makes it work",
+  "method": [
+   "There is no CSS property that fills text with a gradient directly. The technique applies a gradient as the element's background, then sets background-clip to text and makes the text colour transparent, so the background shows only through the letter shapes.",
+   "Because the fill comes from the background, it is sized to the element rather than to each letter. A wide element gives a slow gradient across the whole line, and a narrow one repeats the full colour range in every word."
+  ],
+  "uses": [
+   "Styling a hero heading or a logotype.",
+   "Adding emphasis to a single word without changing weight or size.",
+   "Creating a brand-coloured display heading.",
+   "Matching a design that specifies gradient type."
+  ],
+  "mistakes": [
+   "Using it for body text. It reduces legibility and contrast is hard to guarantee across the gradient.",
+   "Forgetting a fallback colour. Where background-clip is unsupported, transparent text is invisible.",
+   "Not checking contrast at both ends of the gradient. The lightest point is what determines readability."
+  ]
+ },
+ "aspect-ratio-calculator": {
+  "intro": "Aspect Ratio Calculator finds the ratio of any dimensions and scales them to a new size, so you can resize without distorting.",
+  "how": [
+   "Enter a width and height to get the simplified ratio.",
+   "Enter one known dimension to get the other at the same ratio.",
+   "Read the scaled values."
+  ],
+  "method_title": "How the ratio is reduced",
+  "method": [
+   "A ratio is simplified by dividing both numbers by their greatest common divisor. 1920 and 1080 share a divisor of 120, which reduces to 16:9. That is why so many different resolutions describe the same shape.",
+   "Ratios worth recognising: 16:9 for video and most screens, 4:3 for older displays and many cameras, 1:1 for square social posts, 9:16 for vertical video, and 21:9 for ultrawide."
+  ],
+  "example": {
+   "setup": "Scaling a 16:9 asset down:",
+   "given": [
+    [
+     "Original",
+     "1920 x 1080"
+    ],
+    [
+     "New width",
+     "1280"
+    ]
+   ],
+   "result": "720 for the height. Same shape, no letterboxing and no stretch."
+  },
+  "uses": [
+   "Resizing an image or video without distorting it.",
+   "Working out the height for a responsive embed at a given width.",
+   "Checking whether an asset matches a required ratio before uploading.",
+   "Converting a design between screen sizes."
+  ],
+  "mistakes": [
+   "Rounding one dimension and not the other, which introduces a slight stretch that is visible on straight lines.",
+   "Assuming a ratio determines quality. 16:9 at 640x360 and at 3840x2160 are the same shape and very different images.",
+   "Forgetting that cropping to a new ratio loses content, while scaling does not."
+  ]
+ },
+ "screen-size-checker": {
+  "intro": "Screen Size Checker reports your browser viewport, screen resolution, device pixel ratio and related display values, updating live as you resize.",
+  "how": [
+   "Open the page and read the values.",
+   "Resize the window to watch the viewport figures change."
+  ],
+  "method_title": "Viewport, screen and device pixel ratio",
+  "method": [
+   "Screen resolution is the whole display. Viewport is the area your page actually gets, which is smaller because of browser chrome, and it is the number that matters for CSS media queries.",
+   "Device pixel ratio is the multiplier between CSS pixels and physical device pixels. A ratio of 2 means each CSS pixel is drawn with four physical pixels, which is why images need to be supplied at twice the nominal size to look sharp on those screens."
+  ],
+  "uses": [
+   "Finding your real viewport size when debugging a media query.",
+   "Checking device pixel ratio to work out what image resolution to supply.",
+   "Confirming what a device actually reports, rather than trusting a spec sheet.",
+   "Testing responsive breakpoints by resizing and watching."
+  ],
+  "mistakes": [
+   "Designing breakpoints around screen resolution instead of viewport width.",
+   "Supplying single-resolution images and wondering why they look soft on modern phones.",
+   "Assuming the viewport is stable on mobile. Browser toolbars appear and disappear on scroll, changing the visible height."
+  ]
+ },
+ "text-to-speech": {
+  "intro": "Text to Speech reads text aloud using the voices already installed in your browser and operating system, with controls for voice, rate, pitch and volume. Nothing is uploaded.",
+  "how": [
+   "Paste your text.",
+   "Choose a voice from the ones your system provides.",
+   "Adjust rate, pitch and volume, then play."
+  ],
+  "method_title": "Why the voice list differs on every machine",
+  "method": [
+   "This uses the Web Speech API, which does not ship voices of its own. It exposes whatever the operating system already has, so the list depends on your platform, your installed language packs, and your browser.",
+   "That means the same page sounds different on macOS, Windows and Android, and a voice you choose will not be available to someone else. It also means the feature works offline for locally installed voices and costs nothing."
+  ],
+  "uses": [
+   "Proofreading by listening, which catches awkward phrasing that reading silently misses.",
+   "Making a document accessible when reading is difficult.",
+   "Checking how a script sounds before recording it.",
+   "Listening to an article while doing something else."
+  ],
+  "mistakes": [
+   "Expecting consistent voices across devices. They are the system's, not the page's.",
+   "Using it to produce audio for publication. Browser voices are not licensed or exportable, and quality is well below dedicated services.",
+   "Feeding it very long text at once. Some browsers cut off after a certain length."
+  ],
+  "notes": [
+   "Runs entirely through your browser's built-in speech engine. No text is transmitted."
+  ]
+ },
+ "gemini-3-1-flash-tts-studio": {
+  "intro": "Gemini TTS Studio converts text to speech using Google's Gemini API, with single-speaker and multi-speaker conversation modes and a choice of voice profiles. It requires your own Gemini API key.",
+  "how": [
+   "Enter your Gemini API key.",
+   "Choose single speaker or multi-speaker conversation mode.",
+   "Pick a voice profile, and assign names and voices to each speaker in multi-speaker mode.",
+   "Generate the audio."
+  ],
+  "method_title": "What multi-speaker mode is for",
+  "method": [
+   "Single-speaker mode reads text in one voice. Multi-speaker mode assigns different voices to named speakers, which is what makes dialogue, interviews and narrated conversations sound like more than one person reading a script.",
+   "Because the synthesis happens through Google's API rather than your browser's built-in voices, quality is considerably higher and consistent across devices. The cost is that it needs network access and an API key."
+  ],
+  "uses": [
+   "Producing narration for a video or a presentation.",
+   "Generating dialogue audio for a prototype or a demo.",
+   "Creating a spoken version of written content.",
+   "Testing how a script sounds with different voice profiles."
+  ],
+  "mistakes": [
+   "Reusing a production API key in a browser tool. Create a separate restricted key for this.",
+   "Forgetting that API calls cost money against your Google account.",
+   "Assuming generated speech is free of licensing considerations. Check Google's terms before publishing commercially."
+  ],
+  "notes": [
+   "Your API key is used to call Google's API directly from your browser and is not stored on any South Fork server. Even so, treat any key you paste into any web page as exposed: use a restricted key and revoke it when you are done."
+  ]
+ },
+ "teleprompter": {
+  "intro": "Teleprompter scrolls your script at an adjustable speed with configurable font size, a mirror mode for beam-splitter rigs, and a light background option.",
+  "how": [
+   "Paste your script.",
+   "Set the font size and scroll speed.",
+   "Turn on Mirror if you are using a beam-splitter teleprompter rig.",
+   "Start scrolling and read."
+  ],
+  "method_title": "Why mirror mode exists",
+  "method": [
+   "A hardware teleprompter puts a half-silvered mirror at 45 degrees in front of the lens. The presenter sees the reflected text while the camera shoots straight through the glass, which is what lets someone look directly down the lens while reading.",
+   "Because the image is reflected, the source text has to be flipped horizontally or it reads backwards. That is all mirror mode does, and you only want it when using such a rig."
+  ],
+  "uses": [
+   "Recording a piece to camera while maintaining eye contact.",
+   "Delivering a rehearsed presentation without looking down at notes.",
+   "Practising a script at the pace you will actually deliver it.",
+   "Recording a voiceover without page-turn noise."
+  ],
+  "mistakes": [
+   "Setting the speed before knowing your pace. Read a paragraph aloud first and adjust, because reading too fast to a script is the most common teleprompter mistake.",
+   "Using a small font. Larger text keeps your eyes still, which is what stops the reading being visible on camera.",
+   "Turning on mirror mode without a beam-splitter, which makes the text unreadable."
+  ]
+ },
+ "noise-generator": {
+  "intro": "Noise Generator plays white, pink or brown noise continuously in your browser, generated live with no download and no streaming.",
+  "how": [
+   "Choose white, pink or brown noise.",
+   "Set the volume.",
+   "Leave it playing for as long as you need."
+  ],
+  "method_title": "How the three colours differ",
+  "method": [
+   "White noise has equal power at every frequency, which makes it sound bright and hissy because human hearing has more resolution at high frequencies. Pink noise reduces power as frequency rises, at about 3 decibels per octave, which sounds balanced and is closer to natural sounds like rain.",
+   "Brown noise drops faster still, around 6 decibels per octave, leaving a deep rumble similar to heavy surf. Which one masks distraction best is personal, but pink and brown are more commonly preferred for long sessions because white noise fatigues the ear."
+  ],
+  "uses": [
+   "Masking office or household noise while concentrating.",
+   "Creating a consistent background for sleep or rest.",
+   "Covering intermittent sounds that break focus more than steady ones do.",
+   "Testing audio equipment across the frequency range."
+  ],
+  "mistakes": [
+   "Playing it too loud. Prolonged loud noise carries real hearing risk, and masking works at modest volumes.",
+   "Expecting it to block speech entirely. It reduces the contrast that makes speech intrusive rather than removing it.",
+   "Using white when pink or brown would be gentler over hours."
+  ],
+  "notes": [
+   "Generated live with the Web Audio API. Nothing is downloaded or streamed."
+  ]
+ },
+ "rain-simulator": {
+  "intro": "Rain Simulator produces animated rain with matching sound, with sliders for rain density, wind and lightning frequency.",
+  "how": [
+   "Adjust the density slider for light drizzle through heavy downpour.",
+   "Add wind to angle the rain.",
+   "Set the lightning frequency, or turn it off."
+  ],
+  "method_title": "Why rain works as background sound",
+  "method": [
+   "Rain is close to pink noise: broadband, steady, and with power falling as frequency rises. That combination masks intermittent sounds well without the harshness of pure white noise.",
+   "The steadiness is what matters. A sound that does not change gets ignored by the brain quickly, while an intermittent noise such as a conversation or a door keeps pulling attention back. Rain covers those without becoming a distraction itself."
+  ],
+  "uses": [
+   "Background ambience for focus or relaxation.",
+   "Masking household noise without wearing headphones.",
+   "A calming backdrop for reading or winding down.",
+   "Sound for a break, without an app or an account."
+  ],
+  "mistakes": [
+   "Turning lightning up high while trying to concentrate. Sudden flashes are exactly the kind of interruption ambience is meant to prevent.",
+   "Playing at high volume for long periods."
+  ],
+  "notes": [
+   "Both the visuals and the audio are generated in your browser. Nothing is streamed."
+  ]
  }
 }
