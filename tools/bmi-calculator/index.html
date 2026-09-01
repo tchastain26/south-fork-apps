@@ -5470,6 +5470,230 @@
   }
 }
 /* SFA_DISCOVERY_END */
+
+/* SFA_DISCOVERY_START */
+.sfa-feature,
+.sfa-related{
+  width:min(1080px,calc(100% - 2rem));
+  margin:2rem auto 0;
+}
+.sfa-feature-shell,
+.sfa-related-shell{
+  border:1px solid rgba(63,73,62,.45);
+  background:rgba(29,32,30,.78);
+  border-radius:16px;
+  padding:1rem;
+  backdrop-filter:blur(12px);
+}
+.sfa-feature-shell{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);
+  gap:1rem;
+  align-items:start;
+}
+.sfa-kicker{
+  color:#7ddb84;
+  font-size:.72rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin:0 0 .55rem;
+}
+.sfa-feature h2{
+  margin:0 0 .65rem;
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1.1;
+  color:#e8e8e8;
+}
+.sfa-feature p{
+  margin:0;
+}
+.sfa-feature-copy > p + p{
+  margin-top:.85rem;
+}
+.sfa-bullets{
+  margin:.95rem 0 0;
+  padding-left:1.15rem;
+  color:#d3dbd4;
+}
+.sfa-bullets li{
+  margin:.5rem 0;
+  line-height:1.55;
+}
+.sfa-subhead{
+  margin:1.4rem 0 .55rem;
+  font-family:"Epilogue",sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  color:#e8efe9;
+}
+.sfa-steps{
+  margin:.55rem 0 0;
+  padding-left:1.25rem;
+  color:#d3dbd4;
+}
+.sfa-steps li{
+  margin:.45rem 0;
+  line-height:1.55;
+}
+.sfa-example{
+  margin-top:1rem;
+  padding:.95rem 1rem;
+  border:1px solid rgba(125,219,132,.18);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-example strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.92rem;
+  margin-bottom:.35rem;
+}
+.sfa-example span{
+  display:block;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-worked{
+  margin-top:.75rem;
+  padding:1rem;
+  border:1px solid rgba(125,219,132,.22);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-worked p{
+  margin:0 0 .6rem;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-given{
+  list-style:none;
+  margin:0 0 .75rem;
+  padding:0;
+  display:grid;
+  gap:.3rem;
+}
+.sfa-given li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.35rem .55rem;
+  border-radius:8px;
+  background:rgba(125,219,132,.06);
+  font-size:.9rem;
+}
+.sfa-given span{color:#aab5ac;}
+.sfa-given strong{color:#e8e8e8;font-weight:600;text-align:right;}
+.sfa-result{
+  margin:0 !important;
+  padding-top:.55rem;
+  border-top:1px solid rgba(125,219,132,.18);
+  color:#cfd8cf !important;
+}
+.sfa-result strong{color:#7ddb84;}
+.sfa-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.7rem;
+  margin-top:1rem;
+}
+.sfa-links a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:2.55rem;
+  padding:0 .95rem;
+  border-radius:999px;
+  border:1px solid rgba(125,219,132,.28);
+  color:#7ddb84;
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:700;
+}
+.sfa-links a:hover{
+  background:rgba(125,219,132,.1);
+}
+.sfa-preview{
+  margin:0;
+}
+.sfa-preview img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(63,73,62,.6);
+  background:#111412;
+}
+.sfa-preview figcaption{
+  margin-top:.7rem;
+  color:#aab5ac;
+  font-size:.82rem;
+  line-height:1.55;
+}
+.sfa-related{
+  padding:1.25rem 0 0;
+  border-top:1px solid rgba(125,219,132,.18);
+}
+.sfa-related-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:.75rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.sfa-related-title{
+  font-size:1rem;
+  font-weight:800;
+  color:#e8e8e8;
+}
+.sfa-related-meta{
+  color:#aab5ac;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:700;
+}
+.sfa-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.85rem;
+}
+.sfa-related-card{
+  display:block;
+  padding:1rem;
+  border:1px solid rgba(63,73,62,.55);
+  border-radius:14px;
+  background:rgba(17,20,18,.88);
+  text-decoration:none;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.sfa-related-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(125,219,132,.45);
+  background:rgba(29,32,30,.96);
+}
+.sfa-related-card strong{
+  display:block;
+  color:#e8e8e8;
+  font-size:.98rem;
+  line-height:1.25;
+  margin-bottom:.45rem;
+}
+.sfa-related-card span{
+  display:block;
+  color:#aab5ac;
+  font-size:.84rem;
+  line-height:1.5;
+}
+@media (max-width:820px){
+  .sfa-feature-shell,
+  .sfa-related-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* SFA_DISCOVERY_END */
 </style>
 <!-- SFA_JSONLD_START -->
 <script type="application/ld+json">
@@ -5642,28 +5866,54 @@ calc();
 <section class="sfa-feature" aria-labelledby="sfa-feature-title">
   <div class="sfa-feature-shell">
     <div class="sfa-feature-copy">
-      <div class="sfa-kicker">Why people use this tool</div>
+      <div class="sfa-kicker">About this tool</div>
       <h2 id="sfa-feature-title">BMI Calculator</h2>
-      <p>Calculate BMI in either imperial or metric units and see the result with a quick category check and healthy range reference.</p>
-      <ul class="sfa-bullets">
-        <li>Check BMI from height and weight without doing the formula by hand.</li>
-        <li>Switch between pounds and inches or kilograms and centimeters instantly.</li>
-        <li>Use the result as a quick reference point during basic health tracking.</li>
-      </ul>
-      <div class="sfa-example">
-        <strong>Typical workflow</strong>
-        <span>Enter height and weight, review the BMI score, then compare it with the healthy range shown beside the result.</span>
+      <p>BMI Calculator works out Body Mass Index in imperial or metric units and places the result against the standard categories.</p>
+      <h3 class="sfa-subhead">How to use it</h3>
+      <ol class="sfa-steps">
+        <li>Choose imperial or metric units.</li>
+        <li>Enter your height and weight.</li>
+        <li>Read your BMI and its category.</li>
+      </ol>
+      <h3 class="sfa-subhead">The formula and its categories</h3>
+      <p>BMI is weight in kilograms divided by height in metres squared. The imperial version multiplies pounds divided by inches squared by 703 to reach the same number.</p>
+      <p>The standard categories are: under 18.5 underweight, 18.5 to 24.9 normal, 25 to 29.9 overweight, and 30 and above obese.</p>
+      <h3 class="sfa-subhead">Worked example</h3>
+      <div class="sfa-worked">
+        <p>The default figures:</p>
+        <ul class="sfa-given">
+          <li><span>Height</span><strong>5 ft 10 in</strong></li>
+          <li><span>Weight</span><strong>166 lbs</strong></li>
+        </ul>
+        <p class="sfa-result"><strong>Result:</strong> A BMI of about 23.8, which falls in the normal range.</p>
       </div>
+      <h3 class="sfa-subhead">When it helps</h3>
+      <ul class="sfa-bullets">
+        <li>Getting a quick population-level reference point.</li>
+        <li>Tracking a broad trend over months rather than days.</li>
+        <li>Filling in a form that asks for BMI.</li>
+        <li>Understanding a figure a clinician has quoted.</li>
+      </ul>
+      <h3 class="sfa-subhead">Common mistakes</h3>
+      <ul class="sfa-bullets">
+        <li>Treating BMI as a measure of health or body composition. It cannot distinguish muscle from fat, which is why many athletes register as overweight or obese while carrying very little fat.</li>
+        <li>Applying adult categories to children, who use age and sex percentile charts instead.</li>
+        <li>Reading a single number as a verdict. Waist measurement, blood markers and fitness all tell you more.</li>
+      </ul>
+      <h3 class="sfa-subhead">What this tool handles</h3>
+      <ul class="sfa-bullets">
+        <li>A general reference, not medical advice. BMI is a population screening tool and says little about any individual. Talk to a doctor about what your numbers mean.</li>
+      </ul>
 
       <div class="sfa-links">
         <a href="https://southforkapps.com/categories/everyday-tools/">More Everyday Tools</a>
-        <a href="https://southforkapps.com/topics/calculators/">Calculators</a>
+        <a href="https://southforkapps.com/about/">About South Fork Apps</a>
         <a href="https://southforkapps.com/privacy/">Privacy</a>
       </div>
     </div>
     <figure class="sfa-preview">
       <img src="screenshot.jpg" alt="BMI Calculator interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Live interface preview for BMI Calculator. This screenshot is also the landing image Google can associate with the tool page.</figcaption>
+      <figcaption>Screenshot of the live BMI Calculator interface.</figcaption>
     </figure>
   </div>
 </section>
@@ -5692,6 +5942,7 @@ calc();
   </div>
 </section>
 <!-- SFA_RELATED_END -->
+
 
 
 

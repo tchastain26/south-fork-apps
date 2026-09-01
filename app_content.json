@@ -5320,5 +5320,806 @@
   "notes": [
    "Both the visuals and the audio are generated in your browser. Nothing is streamed."
   ]
+ },
+ "bmi-calculator": {
+  "intro": "BMI Calculator works out Body Mass Index in imperial or metric units and places the result against the standard categories.",
+  "how": [
+   "Choose imperial or metric units.",
+   "Enter your height and weight.",
+   "Read your BMI and its category."
+  ],
+  "method_title": "The formula and its categories",
+  "method": [
+   "BMI is weight in kilograms divided by height in metres squared. The imperial version multiplies pounds divided by inches squared by 703 to reach the same number.",
+   "The standard categories are: under 18.5 underweight, 18.5 to 24.9 normal, 25 to 29.9 overweight, and 30 and above obese."
+  ],
+  "example": {
+   "setup": "The default figures:",
+   "given": [
+    [
+     "Height",
+     "5 ft 10 in"
+    ],
+    [
+     "Weight",
+     "166 lbs"
+    ]
+   ],
+   "result": "A BMI of about 23.8, which falls in the normal range."
+  },
+  "uses": [
+   "Getting a quick population-level reference point.",
+   "Tracking a broad trend over months rather than days.",
+   "Filling in a form that asks for BMI.",
+   "Understanding a figure a clinician has quoted."
+  ],
+  "mistakes": [
+   "Treating BMI as a measure of health or body composition. It cannot distinguish muscle from fat, which is why many athletes register as overweight or obese while carrying very little fat.",
+   "Applying adult categories to children, who use age and sex percentile charts instead.",
+   "Reading a single number as a verdict. Waist measurement, blood markers and fitness all tell you more."
+  ],
+  "notes": [
+   "A general reference, not medical advice. BMI is a population screening tool and says little about any individual. Talk to a doctor about what your numbers mean."
+  ]
+ },
+ "blood-pressure": {
+  "intro": "Blood Pressure Checker places a systolic and diastolic reading against the American Heart Association categories, so you can see which range a measurement falls into.",
+  "how": [
+   "Enter your systolic (top) number.",
+   "Enter your diastolic (bottom) number.",
+   "Read the category the reading falls into."
+  ],
+  "method_title": "The AHA categories",
+  "method": [
+   "Normal is below 120 systolic and below 80 diastolic. Elevated is 120 to 129 systolic with diastolic still below 80. Stage 1 hypertension is 130 to 139 systolic or 80 to 89 diastolic. Stage 2 is 140 or above, or 90 or above.",
+   "A reading above 180 systolic or above 120 diastolic is a hypertensive crisis and needs immediate medical attention, not a calculator. Note that the categories use or, not and, so a single high number is enough to place a reading in a category."
+  ],
+  "example": {
+   "setup": "The default reading:",
+   "given": [
+    [
+     "Systolic",
+     "118"
+    ],
+    [
+     "Diastolic",
+     "76"
+    ]
+   ],
+   "result": "Both below the thresholds, so the reading falls in the normal range."
+  },
+  "uses": [
+   "Understanding where a home reading sits.",
+   "Tracking readings over time to see a trend.",
+   "Making sense of a category a clinician has mentioned.",
+   "Checking whether a reading warrants a call to a doctor."
+  ],
+  "mistakes": [
+   "Judging by a single reading. Blood pressure varies hour to hour, and diagnosis is based on repeated measurements taken properly.",
+   "Measuring straight after coffee, exercise or stress, all of which raise it temporarily.",
+   "Using the wrong cuff size, which is one of the most common causes of inaccurate home readings."
+  ],
+  "notes": [
+   "Not medical advice and not a diagnosis. If a reading exceeds 180/120, seek immediate medical attention. Discuss any concerning readings with a doctor."
+  ]
+ },
+ "body-fat-calculator": {
+  "intro": "Body Fat Calculator estimates body fat percentage using the US Navy circumference method, in imperial or metric units.",
+  "how": [
+   "Choose your units and sex.",
+   "Enter your height, waist at the navel, and neck circumference.",
+   "Women also enter hip circumference.",
+   "Read the estimated percentage."
+  ],
+  "method_title": "How the Navy method works",
+  "method": [
+   "The method uses circumference measurements rather than calipers or a scan. It works because fat distributes predictably enough across a population that waist, neck and height together correlate with total body fat.",
+   "Accuracy is typically within three or four percentage points against more precise methods, which is respectable for something requiring only a tape measure. It is least accurate at the extremes, for very lean and very heavy people, and for anyone whose build differs markedly from the population it was derived from."
+  ],
+  "uses": [
+   "Getting a more useful figure than BMI, since it attempts to separate fat from lean mass.",
+   "Tracking change over months using a consistent method.",
+   "Setting a realistic target with a number that responds to training.",
+   "Estimating without needing a gym or a clinic."
+  ],
+  "mistakes": [
+   "Measuring inconsistently. Tape position, tension and time of day all move the result, so what matters is measuring the same way every time.",
+   "Pulling the tape tight. It should sit flush without compressing.",
+   "Treating the number as exact. It is an estimate with real error bars, and the trend matters far more than any single reading."
+  ],
+  "notes": [
+   "An estimate for general fitness use, not medical advice or a clinical measurement."
+  ]
+ },
+ "calories-burned": {
+  "intro": "Calories Burned estimates the energy used during exercise using MET values, covering more than fifty activities, from your weight and duration.",
+  "how": [
+   "Enter your weight and how long you exercised.",
+   "Choose the activity from the list.",
+   "Read the estimated calories burned."
+  ],
+  "method_title": "What a MET is",
+  "method": [
+   "A MET, or metabolic equivalent of task, expresses activity intensity as a multiple of resting metabolism. Sitting quietly is 1 MET. An activity rated at 8 METs uses roughly eight times the energy of sitting still.",
+   "The calculation is METs multiplied by weight in kilograms multiplied by hours. That is why a heavier person burns more for the same activity: there is more mass to move."
+  ],
+  "example": {
+   "setup": "The default entry:",
+   "given": [
+    [
+     "Weight",
+     "170 lbs, about 77 kg"
+    ],
+    [
+     "Activity",
+     "Jogging, 5 mph, about 8 METs"
+    ],
+    [
+     "Duration",
+     "30 minutes"
+    ]
+   ],
+   "result": "Roughly 8 x 77 x 0.5, which is about 310 calories."
+  },
+  "uses": [
+   "Comparing the energy cost of different activities.",
+   "Estimating a week's exercise expenditure.",
+   "Sanity-checking a fitness tracker, which often reads high.",
+   "Planning intake around training days."
+  ],
+  "mistakes": [
+   "Treating the number as precise. MET values are population averages and individual variation is large.",
+   "Forgetting that some of the burn would have happened anyway. You were going to burn resting calories during that half hour regardless.",
+   "Eating back every estimated calorie. Estimates skew high, and doing so is a common reason a deficit stalls."
+  ],
+  "notes": [
+   "A general estimate, not medical or nutritional advice."
+  ]
+ },
+ "heart-rate-zones": {
+  "intro": "Heart Rate Zones calculates the five aerobic training zones from your age or a custom maximum heart rate, using either the percentage-of-max method or the Karvonen heart rate reserve method.",
+  "how": [
+   "Enter your age, or a measured maximum heart rate if you have one.",
+   "Add your resting heart rate to use the Karvonen method.",
+   "Choose the method and read your five zones."
+  ],
+  "method_title": "Percentage of max versus Karvonen",
+  "method": [
+   "The simple method takes percentages of your maximum heart rate. Karvonen works from heart rate reserve instead: maximum minus resting, then a percentage of that range added back to resting. Karvonen accounts for fitness, because a fitter person with a lower resting rate gets different zone boundaries.",
+   "Both depend on knowing your true maximum. The familiar 220 minus age formula is a rough population average with a standard deviation of around ten to twelve beats, so for any individual it can easily be out by that much in either direction."
+  ],
+  "example": {
+   "setup": "The default age with the simple method:",
+   "given": [
+    [
+     "Age",
+     "35"
+    ],
+    [
+     "Estimated max HR",
+     "220 - 35 = 185"
+    ],
+    [
+     "Zone 2 (60-70%)",
+     "about 111 to 130 bpm"
+    ]
+   ],
+   "result": "Zone 2 is the easy conversational pace that most endurance training should sit in."
+  },
+  "uses": [
+   "Setting training zones for structured endurance work.",
+   "Checking whether your easy runs are genuinely easy.",
+   "Getting more accurate zones by using a measured max rather than the age formula.",
+   "Understanding zone numbers your watch reports."
+  ],
+  "mistakes": [
+   "Trusting 220 minus age as your actual maximum. A field test or a lab test gives a far better number.",
+   "Training everything in zone 3. The common pattern is easy days too hard and hard days too easy, which produces less adaptation than either done properly.",
+   "Comparing your heart rate to someone else's. Maximum heart rate is individual and is not a fitness measure."
+  ],
+  "notes": [
+   "General fitness information, not medical advice. Check with a doctor before starting intense exercise, especially with any cardiac history."
+  ]
+ },
+ "tdee-calculator": {
+  "intro": "TDEE Calculator estimates your Total Daily Energy Expenditure, the calories you burn in a day including activity, along with targets for maintaining, losing or gaining weight.",
+  "how": [
+   "Choose imperial or metric units and enter your sex, age, height and weight.",
+   "Pick the activity level that honestly matches your week.",
+   "Read your BMR, your TDEE and the intake targets."
+  ],
+  "method_title": "BMR first, then an activity multiplier",
+  "method": [
+   "Basal metabolic rate is what you would burn lying still all day, and it accounts for the majority of daily expenditure for most people. It is estimated from weight, height, age and sex using an established formula.",
+   "TDEE multiplies BMR by an activity factor, ranging from about 1.2 for sedentary up to around 1.9 for very heavy training. That multiplier is the least reliable part of the whole calculation, because self-reported activity level is consistently overestimated."
+  ],
+  "uses": [
+   "Getting a starting intake number for a cut or a bulk.",
+   "Understanding why intake needs to change as weight changes.",
+   "Comparing how much activity level actually shifts daily needs.",
+   "Setting a realistic deficit rather than guessing."
+  ],
+  "mistakes": [
+   "Choosing an activity level that describes your intentions rather than your habits. When in doubt, pick the level below.",
+   "Treating the output as exact. Real expenditure varies by hundreds of calories between people with identical inputs.",
+   "Not adjusting as you go. TDEE falls as you lose weight, so a deficit that worked in month one is smaller by month three."
+  ],
+  "notes": [
+   "An estimate for general fitness planning, not medical or nutritional advice. Speak to a professional before a significant change in intake."
+  ]
+ },
+ "nap-calculator": {
+  "intro": "Nap Calculator works out nap lengths and wake times built around sleep cycles, so you wake at a point that leaves you refreshed rather than groggy.",
+  "how": [
+   "Enter the time you expect to fall asleep.",
+   "Read the suggested nap lengths and wake times."
+  ],
+  "method_title": "Why nap length matters more than nap timing",
+  "method": [
+   "A full sleep cycle runs roughly 90 minutes, moving from light sleep into deep sleep and then into REM. Waking during deep sleep produces sleep inertia, the heavy disoriented feeling that makes a nap feel counterproductive.",
+   "That gives two safe windows. A nap of 10 to 20 minutes stays in light sleep and restores alertness with no grogginess. A full 90 minute cycle completes and ends in light sleep again. The 30 to 60 minute range is the one to avoid, because it wakes you in the middle of deep sleep."
+  ],
+  "example": {
+   "setup": "Falling asleep at 2:00 pm:",
+   "given": [
+    [
+     "Power nap",
+     "wake around 2:20 pm"
+    ],
+    [
+     "Avoid",
+     "2:30 to 3:00 pm"
+    ],
+    [
+     "Full cycle",
+     "wake around 3:30 pm"
+    ]
+   ],
+   "result": "Twenty minutes or ninety. The middle is where the grogginess lives."
+  },
+  "uses": [
+   "Planning a nap that helps rather than leaves you worse.",
+   "Working out when to set an alarm for a short rest.",
+   "Timing rest around a shift or a long drive.",
+   "Understanding why some naps work and others do not."
+  ],
+  "mistakes": [
+   "Napping in the 30 to 60 minute window, which reliably produces grogginess.",
+   "Napping late in the day, which eats into the sleep pressure you need at night.",
+   "Counting on a nap to replace a night of sleep. It restores alertness, not the full function of proper sleep."
+  ],
+  "notes": [
+   "General information, not medical advice. Persistent daytime sleepiness is worth discussing with a doctor."
+  ]
+ },
+ "age-calculator": {
+  "intro": "Age Calculator gives your exact age in years, months and days from any birth date.",
+  "how": [
+   "Enter the birth date.",
+   "Read the exact age broken down by unit."
+  ],
+  "method_title": "Why age arithmetic is fiddly",
+  "method": [
+   "Years and days are well defined, but months are not: they range from 28 to 31 days, so the number of days in a given month span depends on which months you crossed. The convention is to count whole months first and take the leftover days.",
+   "Leap years add the other wrinkle. Anyone born on 29 February has a birthday in only one year out of four, and different systems disagree about whether their legal birthday falls on 28 February or 1 March in other years."
+  ],
+  "uses": [
+   "Working out an exact age for a form or an application.",
+   "Calculating age at a specific past or future date.",
+   "Finding how many days until a milestone birthday.",
+   "Checking eligibility against an age cutoff."
+  ],
+  "mistakes": [
+   "Assuming a year is always 365 days when converting. Leap years mean a person's age in days is not simply years times 365.",
+   "Confusing age in years with years elapsed. Someone is 0 years old for their entire first year."
+  ]
+ },
+ "pace-calculator": {
+  "intro": "Pace Calculator solves for running or walking pace, distance, or time. Enter any two and it produces the third.",
+  "how": [
+   "Enter any two of distance, time and pace.",
+   "The third is calculated for you.",
+   "Time accepts H:MM:SS or M:SS format."
+  ],
+  "method_title": "Pace and speed are inverses",
+  "method": [
+   "Pace is time per unit distance, usually minutes per mile or per kilometre. Speed is distance per unit time. They describe the same thing inverted, which is why a faster pace is a smaller number while a faster speed is a larger one.",
+   "That inversion is why pace improvements get harder. Going from 10:00 to 9:00 per mile saves 60 seconds. Going from 6:00 to 5:00 saves the same minute but demands a far larger jump in speed."
+  ],
+  "example": {
+   "setup": "Working out a marathon finish:",
+   "given": [
+    [
+     "Distance",
+     "26.2 miles"
+    ],
+    [
+     "Pace",
+     "9:00 per mile"
+    ]
+   ],
+   "result": "About 3 hours 55 minutes, which is why 9:00 pace is a common target for runners chasing a sub-four marathon."
+  },
+  "uses": [
+   "Working out the pace needed to hit a goal finish time.",
+   "Converting a training pace between miles and kilometres.",
+   "Predicting a race time from a training pace.",
+   "Checking splits during planning."
+  ],
+  "mistakes": [
+   "Assuming race pace equals training pace. Most training should be slower than race pace, not equal to it.",
+   "Planning even splits on a hilly course, where effort matters more than pace.",
+   "Converting between miles and kilometres by rough approximation, which compounds badly over a long distance."
+  ]
+ },
+ "pay-converter": {
+  "intro": "Pay Converter translates a salary between hourly, daily, weekly, biweekly, monthly and annual figures, using your own hours per day and days per week.",
+  "how": [
+   "Enter the pay amount and select what period it covers.",
+   "Set your hours per day and days per week.",
+   "Read the equivalent at every other period."
+  ],
+  "method_title": "Where the standard numbers come from",
+  "method": [
+   "The usual full-time assumption is 8 hours a day, 5 days a week, 52 weeks a year, which gives 2,080 working hours. Dividing an annual salary by 2,080 is the standard way to reach an hourly equivalent.",
+   "That assumption ignores paid leave. If your salary includes three weeks off, you actually work about 1,960 hours for it, so your true hourly rate is higher than the 2,080 figure suggests. The gap matters when comparing a salaried role to contract work with no paid leave."
+  ],
+  "example": {
+   "setup": "The default salary at standard hours:",
+   "given": [
+    [
+     "Annual",
+     "$75,000"
+    ],
+    [
+     "Hours",
+     "8 per day, 5 days per week"
+    ],
+    [
+     "Working hours",
+     "about 2,080 per year"
+    ]
+   ],
+   "result": "Roughly $36 an hour, or about $6,250 a month."
+  },
+  "uses": [
+   "Comparing a salaried offer against an hourly or contract rate.",
+   "Working out what a raise is worth per hour.",
+   "Converting a job listing's figure into the period you think in.",
+   "Budgeting from an annual figure to a monthly one."
+  ],
+  "mistakes": [
+   "Comparing a salary to a contract rate without adjusting for benefits, paid leave, and self-employment tax. A contract rate needs to be substantially higher to be equivalent.",
+   "Dividing an annual salary by 12 and calling it monthly take-home. That is gross, before tax and deductions.",
+   "Forgetting biweekly means 26 payments a year, not 24."
+  ]
+ },
+ "unit-converter": {
+  "intro": "Unit Converter handles hundreds of units across length, weight, volume, temperature and more, converting between any two in the same category.",
+  "how": [
+   "Choose a category.",
+   "Enter a value and pick the source and target units.",
+   "Read the converted result."
+  ],
+  "method_title": "The conversions that catch people out",
+  "method": [
+   "Most conversions are a single multiplication, which is why they are easy to automate and easy to get wrong by hand. Temperature is the exception, because the scales have different zero points as well as different degree sizes, so it needs an offset as well as a factor.",
+   "Volume is the other trap. A US fluid ounce and an imperial fluid ounce are not the same, and neither is a US gallon and an imperial gallon, which is about 20% larger. Recipes and fuel figures from different countries are not interchangeable."
+  ],
+  "uses": [
+   "Converting measurements in a recipe or a manual from another country.",
+   "Working with scientific units in a different system.",
+   "Checking a specification given in units you do not think in.",
+   "Converting for a form that demands specific units."
+  ],
+  "mistakes": [
+   "Mixing US and imperial units. They share names and differ in value, especially for volume.",
+   "Converting a temperature difference like an absolute temperature. A 10 degree Celsius change is 18 Fahrenheit, with no offset applied.",
+   "Converting weight and mass loosely. They are different quantities, even though everyday use treats pounds and kilograms as interchangeable."
+  ]
+ },
+ "cooking-conversions": {
+  "intro": "Cooking Conversions converts between cups, tablespoons, teaspoons, millilitres, ounces and the other measures recipes use.",
+  "how": [
+   "Enter an amount and choose the unit it is in.",
+   "Read the equivalent across the other cooking units."
+  ],
+  "method_title": "Why cups are the problem",
+  "method": [
+   "A US cup is 240 millilitres, a metric cup is 250, and an imperial cup is about 284. A recipe that simply says one cup is ambiguous unless you know where it was written, and the difference compounds when a recipe calls for several.",
+   "The deeper issue is that cups measure volume while baking depends on weight. A cup of flour can vary by 20% or more depending on whether it was scooped or spooned and how settled it was, which is why serious baking recipes give grams."
+  ],
+  "uses": [
+   "Following a recipe written in units your kitchen does not have.",
+   "Converting a metric recipe for US measuring cups, or the reverse.",
+   "Scaling a measurement that has come out awkward.",
+   "Checking a conversion mid-cook."
+  ],
+  "mistakes": [
+   "Assuming all cups are equal. US, metric and imperial cups all differ.",
+   "Converting flour by volume for baking. Weigh it if the recipe matters.",
+   "Confusing fluid ounces with ounces by weight. They are only equivalent for water, and not exactly even then."
+  ]
+ },
+ "recipe-scaler": {
+  "intro": "Recipe Scaler adjusts every ingredient quantity in a recipe for a different number of servings.",
+  "how": [
+   "Enter the original number of servings.",
+   "Enter how many servings you want.",
+   "Read the scaled ingredient quantities."
+  ],
+  "method_title": "What scales linearly and what does not",
+  "method": [
+   "Ingredient quantities scale directly with servings, which is the easy part. Almost nothing else does.",
+   "Cooking time barely changes for a doubled batch in a wider pan, but changes substantially for a deeper one, because heat has further to travel. Pan size matters more than time: doubling a cake batter into the same tin gives a raw middle and a burnt edge. Salt and strong spices are usually best scaled slightly under, then adjusted by taste at the end."
+  ],
+  "example": {
+   "setup": "The default doubling:",
+   "given": [
+    [
+     "Original servings",
+     "4"
+    ],
+    [
+     "New servings",
+     "8"
+    ],
+    [
+     "Multiplier",
+     "2x"
+    ]
+   ],
+   "result": "Every ingredient doubles. Pan area should roughly double too, and the cooking time will need checking rather than doubling."
+  },
+  "uses": [
+   "Cooking for a different number of people than the recipe assumes.",
+   "Halving a recipe that makes too much.",
+   "Scaling a batch up for a gathering.",
+   "Converting a recipe to fit the tin you actually own."
+  ],
+  "mistakes": [
+   "Scaling the cooking time by the same factor. It does not work that way and is the most common scaling failure.",
+   "Keeping the same pan. Depth changes how the food cooks more than quantity does.",
+   "Scaling salt, chilli and yeast linearly. These are usually better scaled conservatively and adjusted."
+  ]
+ },
+ "bill-splitter": {
+  "intro": "Bill Splitter divides a restaurant bill unevenly, assigning items to specific people and adding tax and tip proportionally.",
+  "how": [
+   "Add each item and assign it to the people sharing it.",
+   "Set the tax and tip percentages.",
+   "Read what each person owes."
+  ],
+  "method_title": "Splitting tax and tip fairly",
+  "method": [
+   "Splitting evenly is easy and often unfair, because the person who had a salad and water subsidises the person who had steak and three drinks. Item-level assignment fixes that for the food.",
+   "Tax and tip then have to be apportioned. Sharing them in proportion to what each person's items cost is the defensible method: someone whose share is 40% of the food pays 40% of the tax and 40% of the tip. Splitting the tip evenly on top of an itemised bill quietly reintroduces the unfairness you just removed."
+  ],
+  "uses": [
+   "Settling a group meal where orders differed a lot.",
+   "Handling shared items like appetisers alongside individual mains.",
+   "Working out what to send someone who paid the whole bill.",
+   "Avoiding the awkward arithmetic at the table."
+  ],
+  "mistakes": [
+   "Splitting tip evenly on an itemised bill, which undoes the fairness.",
+   "Forgetting shared items. Appetisers and bottles need dividing among whoever actually shared them.",
+   "Tipping on the post-tax total, when the convention is to tip on the pre-tax subtotal."
+  ]
+ },
+ "grade-calculator": {
+  "intro": "Grade Calculator computes a weighted average from assignments with individual weights, and works out what you need on remaining work to reach a target grade.",
+  "how": [
+   "Add each assignment or category with its score and weight.",
+   "Read your current weighted average.",
+   "Enter a target grade to see what the remaining work has to produce."
+  ],
+  "method_title": "Why weights change everything",
+  "method": [
+   "A weighted average multiplies each score by its weight, sums those, and divides by the total weight used so far. That last part matters: partway through a course you are averaging over the weight completed, not over 100.",
+   "This is why a bad score on a small assignment barely moves the total while the final exam can move it enormously. Knowing the weights tells you where effort actually pays."
+  ],
+  "uses": [
+   "Working out your current standing mid-semester.",
+   "Finding the score needed on a final to reach a target grade.",
+   "Deciding where to put limited study time.",
+   "Checking a grade the system reported."
+  ],
+  "mistakes": [
+   "Averaging percentages without weights, which treats a 5% quiz as equal to a 40% exam.",
+   "Forgetting to include zeros for missed work. Omitting them inflates the average badly.",
+   "Computing over the full weight before all work is graded, which understates your current position."
+  ]
+ },
+ "statistics-calculator": {
+  "intro": "Statistics Calculator computes mean, median, mode, range, variance and standard deviation from a pasted dataset, with a choice of sample or population variance and configurable decimal places.",
+  "how": [
+   "Paste your dataset.",
+   "Choose sample or population variance.",
+   "Set the decimals and mode handling.",
+   "Read the full summary."
+  ],
+  "method_title": "Sample or population, and why it matters",
+  "method": [
+   "Population variance divides by n. Sample variance divides by n minus 1, which is Bessel's correction. The correction exists because a sample's own mean sits closer to its data than the true population mean does, which systematically underestimates the spread.",
+   "Pick sample when your data is a subset you are using to infer something about a larger group, which is almost always the case in practice. Pick population only when your data genuinely is everything you care about. On small datasets the difference is substantial."
+  ],
+  "uses": [
+   "Summarising a dataset without opening a spreadsheet.",
+   "Checking a calculation done elsewhere.",
+   "Understanding spread, not just the average.",
+   "Teaching or learning descriptive statistics."
+  ],
+  "mistakes": [
+   "Using population variance for sample data, which understates the spread.",
+   "Reporting the mean alone. A mean with no measure of spread hides everything interesting about the data.",
+   "Using the mean on skewed data, where the median describes the typical value far better."
+  ]
+ },
+ "fraction-calculator": {
+  "intro": "Fraction Calculator adds, subtracts, multiplies and divides fractions, simplifies results, and converts between fractions and decimals.",
+  "how": [
+   "Enter the numerator and denominator for each fraction.",
+   "Choose the operation.",
+   "Read the simplified result."
+  ],
+  "method_title": "Why adding is the hard one",
+  "method": [
+   "Multiplication and division of fractions are straightforward: multiply across, or invert the second and multiply. Neither needs a common denominator.",
+   "Addition and subtraction do. The fractions have to be rewritten over a shared denominator before the numerators can be combined, which is where most fraction errors happen. The result is then simplified by dividing both parts by their greatest common divisor."
+  ],
+  "example": {
+   "setup": "The default addition:",
+   "given": [
+    [
+     "Fractions",
+     "1/2 + 1/2"
+    ],
+    [
+     "Common denominator",
+     "already 2"
+    ]
+   ],
+   "result": "2/2, which simplifies to 1."
+  },
+  "uses": [
+   "Combining measurements in a recipe or a woodworking plan.",
+   "Checking homework.",
+   "Converting an awkward fraction to a decimal.",
+   "Simplifying a fraction to its lowest terms."
+  ],
+  "mistakes": [
+   "Adding numerators and denominators separately. One half plus one half is one, not two quarters.",
+   "Forgetting to simplify. 6/8 and 3/4 are the same value, but only one is the expected answer.",
+   "Dividing by inverting the wrong fraction. It is the second one that flips."
+  ]
+ },
+ "prime-factorization": {
+  "intro": "Prime Factorization breaks any number into its prime factors, showing exponents and the full factor tree.",
+  "how": [
+   "Enter a number.",
+   "Read its prime factors with exponents."
+  ],
+  "method_title": "Why the answer is always unique",
+  "method": [
+   "The fundamental theorem of arithmetic states that every integer greater than one has exactly one prime factorisation, ignoring the order of the factors. There is no number with two different sets of prime factors, which is what makes factorisation a definitive answer rather than one of several.",
+   "Finding those factors is easy for small numbers and extremely hard for very large ones. That asymmetry is the foundation of RSA encryption: multiplying two large primes is trivial, and recovering them from the product is not."
+  ],
+  "example": {
+   "setup": "Factorising 360:",
+   "given": [
+    [
+     "Divide by 2",
+     "180, 90, 45"
+    ],
+    [
+     "Divide by 3",
+     "15, 5"
+    ],
+    [
+     "Remaining",
+     "5"
+    ]
+   ],
+   "result": "2^3 x 3^2 x 5, and no other combination of primes produces 360."
+  },
+  "uses": [
+   "Simplifying fractions by finding shared factors.",
+   "Finding a greatest common divisor or least common multiple.",
+   "Checking whether a number is prime.",
+   "Working through number theory problems."
+  ],
+  "mistakes": [
+   "Including 1 as a prime factor. One is not prime, by definition, precisely so that factorisation stays unique.",
+   "Stopping too early. Keep dividing until every remaining factor is prime.",
+   "Expecting instant results for very large numbers. The difficulty is the entire basis of modern cryptography."
+  ]
+ },
+ "gcd-lcm-calculator": {
+  "intro": "GCD and LCM Calculator finds the greatest common divisor and least common multiple of a set of numbers.",
+  "how": [
+   "Enter two or more numbers.",
+   "Read the GCD and LCM."
+  ],
+  "method_title": "How they are computed and how they relate",
+  "method": [
+   "GCD is found with the Euclidean algorithm: repeatedly replace the larger number with the remainder of dividing it by the smaller, until the remainder is zero. It is over two thousand years old and still the standard method because it is fast and needs no factorisation.",
+   "LCM follows from it. For two numbers, the product of the GCD and the LCM equals the product of the numbers, so once you have the GCD the LCM is a single division away."
+  ],
+  "example": {
+   "setup": "For 12 and 18:",
+   "given": [
+    [
+     "GCD",
+     "6"
+    ],
+    [
+     "Product of the numbers",
+     "216"
+    ],
+    [
+     "216 / 6",
+     "36"
+    ]
+   ],
+   "result": "LCM is 36. The relationship holds for any pair."
+  },
+  "uses": [
+   "Finding a common denominator when adding fractions.",
+   "Simplifying a fraction to lowest terms using the GCD.",
+   "Working out when two repeating schedules coincide, which is an LCM problem.",
+   "Solving number theory exercises."
+  ],
+  "mistakes": [
+   "Assuming the GCD times LCM rule extends to three or more numbers. It holds for pairs only.",
+   "Confusing the two. GCD is never larger than the smallest input; LCM is never smaller than the largest.",
+   "Forgetting that the GCD of coprime numbers is 1, which is correct rather than an error."
+  ]
+ },
+ "fibonacci-sequence": {
+  "intro": "Fibonacci Sequence generates the sequence to any length, finds the Nth term, and checks whether a number belongs to it.",
+  "how": [
+   "Set how many terms you want.",
+   "Or ask for a specific term by index.",
+   "Or enter a number to check whether it is a Fibonacci number."
+  ],
+  "method_title": "The sequence and the ratio",
+  "method": [
+   "Each term is the sum of the two before it, starting from 0 and 1: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34. The rule is trivial and the consequences are not.",
+   "Divide any term by the one before it and the result converges on the golden ratio, approximately 1.618. The convergence is quick: by the tenth term it is already accurate to three decimal places, which is why the sequence turns up so often in growth patterns and in design proportion."
+  ],
+  "example": {
+   "setup": "Watching the ratio settle:",
+   "given": [
+    [
+     "8 / 5",
+     "1.6"
+    ],
+    [
+     "21 / 13",
+     "1.6154"
+    ],
+    [
+     "89 / 55",
+     "1.61818"
+    ]
+   ],
+   "result": "Closing on 1.6180339..., the golden ratio."
+  },
+  "uses": [
+   "Generating the sequence for a programming exercise.",
+   "Checking whether a number is a Fibonacci number.",
+   "Exploring the golden ratio numerically.",
+   "Teaching recursion, for which this is the standard example."
+  ],
+  "mistakes": [
+   "Disagreeing about the starting index. Some definitions start at 0 and some at 1, so the Nth term depends on the convention.",
+   "Computing large terms with naive recursion, which recalculates the same values exponentially many times.",
+   "Overstating the golden ratio's appearance in nature. Some cases are real, many popular examples are not."
+  ]
+ },
+ "quadratic-solver": {
+  "intro": "Quadratic Solver solves ax squared plus bx plus c equals zero, handling real and complex roots, showing the working step by step and graphing the parabola.",
+  "how": [
+   "Enter the coefficients a, b and c.",
+   "Read the roots and the step-by-step working.",
+   "Check the graph to see where the parabola meets the x axis."
+  ],
+  "method_title": "The discriminant tells you what to expect",
+  "method": [
+   "The quadratic formula is x equals minus b, plus or minus the square root of b squared minus 4ac, all over 2a. The part under the square root, b squared minus 4ac, is the discriminant, and its sign determines everything before you finish the calculation.",
+   "Positive gives two distinct real roots and a parabola crossing the x axis twice. Zero gives one repeated root, with the parabola touching the axis at its vertex. Negative gives two complex conjugate roots, and the parabola never meets the axis at all."
+  ],
+  "example": {
+   "setup": "The default equation:",
+   "given": [
+    [
+     "Coefficients",
+     "a=1, b=-5, c=6"
+    ],
+    [
+     "Discriminant",
+     "25 - 24 = 1"
+    ]
+   ],
+   "result": "Positive, so two real roots: x = 2 and x = 3."
+  },
+  "uses": [
+   "Solving quadratics for homework or engineering work.",
+   "Checking working step by step rather than just the answer.",
+   "Seeing the relationship between the algebra and the graph.",
+   "Finding where a projectile path crosses a height."
+  ],
+  "mistakes": [
+   "Forgetting the minus sign on b. The formula uses minus b, so a negative b becomes positive.",
+   "Dividing only part of the numerator by 2a. The whole expression is divided.",
+   "Assuming no real roots means no solution. It means the solutions are complex, which matters in engineering contexts."
+  ]
+ },
+ "triangle-solver": {
+  "intro": "Triangle Solver finds every remaining side and angle from three known values, including the ambiguous SSA case where two different triangles can fit the same measurements.",
+  "how": [
+   "Enter any three known values: sides, angles, or a mix.",
+   "Read the remaining sides and angles.",
+   "In an ambiguous case, both valid triangles are shown."
+  ],
+  "method_title": "Which law applies when",
+  "method": [
+   "The law of sines relates each side to the sine of its opposite angle and is used when you have an angle with its opposite side. The law of cosines generalises Pythagoras and is used when you have three sides, or two sides and the angle between them.",
+   "SSA is the awkward one. Two sides and a non-included angle can describe two genuinely different triangles, one triangle, or none at all, depending on the values. This is the ambiguous case, and any solver that reports a single answer without checking is sometimes wrong."
+  ],
+  "uses": [
+   "Solving triangles in trigonometry coursework.",
+   "Working out a distance or angle in surveying or construction.",
+   "Checking whether given measurements can form a triangle at all.",
+   "Understanding the ambiguous case with real numbers."
+  ],
+  "mistakes": [
+   "Ignoring the ambiguous case in SSA and accepting the first answer.",
+   "Using the law of sines when you do not have a matched angle and opposite side.",
+   "Forgetting that three angles alone do not determine a triangle. They fix the shape but not the size."
+  ]
+ },
+ "unit-circle": {
+  "intro": "Unit Circle is an interactive reference for standard angles, showing degrees, radians and exact sine, cosine and tangent values at every clickable point.",
+  "how": [
+   "Click any standard angle on the circle.",
+   "Read its measure in degrees and radians.",
+   "Read the exact sine, cosine and tangent values."
+  ],
+  "method_title": "Why the coordinates are the trig values",
+  "method": [
+   "The unit circle has radius 1 and is centred at the origin. For any angle measured from the positive x axis, the point where the angle's ray meets the circle has coordinates exactly equal to the cosine and the sine of that angle. Cosine is x, sine is y.",
+   "That is what makes the unit circle worth learning rather than memorising a table. The signs of sine and cosine in each quadrant follow from which way x and y point, and the exact values repeat in a pattern, so the whole circle reduces to a handful of facts plus symmetry."
+  ],
+  "example": {
+   "setup": "The 45 degree point:",
+   "given": [
+    [
+     "Degrees",
+     "45"
+    ],
+    [
+     "Radians",
+     "pi/4"
+    ],
+    [
+     "Coordinates",
+     "(root 2 over 2, root 2 over 2)"
+    ]
+   ],
+   "result": "Cosine and sine are both root 2 over 2, which is why tangent is exactly 1 there."
+  },
+  "uses": [
+   "Looking up exact trig values without a table.",
+   "Converting between degrees and radians.",
+   "Understanding why trig functions are periodic.",
+   "Revising for a trigonometry exam."
+  ],
+  "mistakes": [
+   "Mixing up which coordinate is which. Cosine is x and sine is y, in that order, matching the alphabetical order of the axes.",
+   "Working in degrees when the context expects radians. Most programming languages and calculus use radians throughout.",
+   "Memorising the table instead of the quadrant symmetry, which is far more to remember and far easier to forget."
+  ]
  }
 }
