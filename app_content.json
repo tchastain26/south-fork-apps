@@ -6930,5 +6930,801 @@
    "Pasting symbols into contexts that cannot handle them. Some systems and older fonts still mangle anything outside basic Latin.",
    "Using a visually similar character in code. A typographic quote or a minus sign that is not the ASCII hyphen will break a program in ways that are very hard to see."
   ]
+ },
+ "pomodoro-timer": {
+  "intro": "Pomodoro Timer runs 25-minute focus sessions with short breaks between them and a longer break after four, with configurable intervals.",
+  "how": [
+   "Start a 25-minute focus session.",
+   "Take the 5-minute break when it ends.",
+   "After four sessions, take the longer break.",
+   "Adjust the intervals if the defaults do not suit your work."
+  ],
+  "method_title": "Where the technique came from and what it is actually for",
+  "method": [
+   "Francesco Cirillo developed the method as a university student in the late 1980s, named after the tomato-shaped kitchen timer he used. The intervals were chosen because they were long enough to make progress and short enough that starting felt easy.",
+   "The breaks are not a reward, they are the mechanism. Committing to stop after 25 minutes lowers the cost of starting, which is where most procrastination actually lives. The technique targets the difficulty of beginning, not the difficulty of concentrating."
+  ],
+  "uses": [
+   "Getting started on work you have been avoiding.",
+   "Structuring a long stretch so it does not become one shapeless block.",
+   "Building an estimate of how many focused sessions a task really takes.",
+   "Making sure breaks actually happen."
+  ],
+  "mistakes": [
+   "Working through the break. Skipping it removes the recovery that makes the next session work.",
+   "Treating 25 minutes as sacred. Some work needs longer runs, and the interval is a starting point rather than a rule.",
+   "Counting completed pomodoros as productivity. Sessions are units of time, not of progress."
+  ]
+ },
+ "breath-timer": {
+  "intro": "Breath Timer guides paced breathing with animated visual cues, supporting box breathing, 4-7-8 and other patterns.",
+  "how": [
+   "Choose a breathing pattern.",
+   "Follow the animation, breathing in, holding and out as it expands and contracts.",
+   "Continue for several minutes."
+  ],
+  "method_title": "Why the exhale length matters",
+  "method": [
+   "Box breathing uses equal counts, typically four in, four hold, four out, four hold, and is used for steadying under pressure. The 4-7-8 pattern uses a much longer exhale, which is why it is associated with winding down rather than with focus.",
+   "The exhale is the active ingredient. Breathing out slowly increases parasympathetic activity, which lowers heart rate. Any pattern where the exhale is longer than the inhale will tend to calm you, which is the common thread between most breathing techniques."
+  ],
+  "uses": [
+   "Settling before a presentation, an interview or a difficult conversation.",
+   "Winding down before sleep.",
+   "Interrupting a stress response.",
+   "Building a short daily practice with a visual guide."
+  ],
+  "mistakes": [
+   "Forcing a pattern that feels uncomfortable. Shorten the counts rather than straining.",
+   "Doing it standing up on the first try. Some people feel lightheaded with breath holds.",
+   "Expecting one session to fix chronic stress. The effect is immediate but short, and the benefit comes from regularity."
+  ],
+  "notes": [
+   "General wellbeing information, not medical advice. Stop if you feel dizzy, and check with a doctor first if you have a respiratory or cardiac condition."
+  ]
+ },
+ "sleep-cycle-calculator": {
+  "intro": "Sleep Cycle Calculator suggests bedtimes or wake times built around 90-minute sleep cycles, so you wake between cycles rather than in the middle of deep sleep.",
+  "how": [
+   "Enter either when you want to wake up or when you are going to bed.",
+   "Read the suggested times.",
+   "Pick one that gives you five or six complete cycles."
+  ],
+  "method_title": "How the times are worked out",
+  "method": [
+   "A sleep cycle averages about 90 minutes, moving through light sleep, deep sleep and REM. Waking at the end of a cycle, in light sleep, feels far easier than waking mid-cycle, which produces the heavy grogginess of sleep inertia.",
+   "The calculation also allows roughly 14 minutes to fall asleep, which is the population average. Five cycles is 7.5 hours and six is 9, which is why those two figures come up so often in sleep advice."
+  ],
+  "example": {
+   "setup": "Working backwards from a 6:30 am alarm:",
+   "given": [
+    [
+     "Six cycles (9 hours)",
+     "asleep by about 9:30 pm"
+    ],
+    [
+     "Five cycles (7.5 hours)",
+     "asleep by about 11:00 pm"
+    ],
+    [
+     "Plus time to fall asleep",
+     "about 14 minutes earlier to bed"
+    ]
+   ],
+   "result": "Five complete cycles beats six interrupted ones, which is why the timing can matter more than the total."
+  },
+  "uses": [
+   "Choosing a bedtime that fits the alarm you cannot move.",
+   "Deciding between two possible wake times.",
+   "Planning a short night so it is as restorative as possible.",
+   "Understanding why eight hours sometimes feels worse than seven and a half."
+  ],
+  "mistakes": [
+   "Treating 90 minutes as exact. Cycle length varies between people and across the night, so the times are approximate.",
+   "Using cycle timing to justify chronic short sleep. Five well-timed cycles is not equivalent to enough sleep.",
+   "Ignoring consistency. A regular schedule matters more than optimising any single night."
+  ],
+  "notes": [
+   "General information, not medical advice. Persistent sleep problems are worth discussing with a doctor."
+  ]
+ },
+ "countdown-timer": {
+  "intro": "Countdown Timer counts down from any duration you set, running in the browser with no install.",
+  "how": [
+   "Set the duration.",
+   "Start the timer.",
+   "It alerts you when it reaches zero."
+  ],
+  "uses": [
+   "Timing something in the kitchen without an app.",
+   "Boxing a task into a fixed period.",
+   "Running a timed exercise or a presentation segment.",
+   "Limiting time on a task you could otherwise stretch indefinitely."
+  ],
+  "method_title": "Why a visible countdown changes behaviour",
+  "method": [
+   "A visible timer converts an open-ended task into a bounded one, and people work differently against a deadline they can see. This is the mechanism behind timeboxing: the limit is what forces a decision about what actually matters in the task.",
+   "Counting down works better than counting up for this. Elapsed time tells you what you have spent; remaining time tells you what you have left to spend, which is the number that prompts action."
+  ],
+  "mistakes": [
+   "Relying on a browser tab for something critical. Background tabs can be throttled and the machine can sleep.",
+   "Setting a duration you know is unrealistic, which trains you to ignore the alarm.",
+   "Restarting the timer repeatedly rather than accepting what the first run told you about the estimate."
+  ]
+ },
+ "stopwatch": {
+  "intro": "Stopwatch times with lap tracking, highlighting the fastest and slowest laps.",
+  "how": [
+   "Start the stopwatch.",
+   "Record a lap at each interval.",
+   "Read the lap times with fastest and slowest marked."
+  ],
+  "method_title": "Why lap highlighting is the useful part",
+  "method": [
+   "A total time tells you the outcome. Lap times tell you the shape of it, and the fastest and slowest markers surface that immediately without you having to scan a column of numbers.",
+   "The spread between fastest and slowest is usually more informative than the average. Consistent laps suggest a sustainable pace; a wide spread suggests you started too fast, faded, or hit something unexpected."
+  ],
+  "uses": [
+   "Timing intervals in training and comparing them.",
+   "Measuring how long a repeated task takes across attempts.",
+   "Timing a presentation section by section.",
+   "Any measurement where the pattern matters more than the total."
+  ],
+  "mistakes": [
+   "Timing in a background tab, where throttling can affect accuracy.",
+   "Comparing laps recorded under different conditions as though they were equivalent.",
+   "Reading a single fast lap as your capability. The sustainable pace is the one you can repeat."
+  ]
+ },
+ "task-timer": {
+  "intro": "Task Timer measures how long individual tasks actually take, so estimates can be based on data rather than optimism.",
+  "how": [
+   "Name a task and start the timer.",
+   "Stop it when the task is finished.",
+   "Compare the recorded times across tasks."
+  ],
+  "method_title": "The planning fallacy",
+  "method": [
+   "People systematically underestimate how long their own tasks will take, even when they have done the same task before and even when they know about the bias. This is the planning fallacy, and it is one of the most robust findings in the field.",
+   "The reliable correction is not to think harder about the estimate, it is to look at how long the same task took last time. Recorded times beat remembered ones, because memory smooths out the interruptions and false starts that made up much of the real duration."
+  ],
+  "uses": [
+   "Building real data on how long recurring work takes.",
+   "Improving estimates for planning or quoting.",
+   "Finding which tasks quietly consume the most time.",
+   "Checking whether a task is actually as long as it feels."
+  ],
+  "mistakes": [
+   "Only timing the parts that go well. The interruptions and rework are the reason estimates fail.",
+   "Timing one instance and treating it as typical.",
+   "Using the data to judge yourself rather than to estimate better."
+  ]
+ },
+ "interview-timer": {
+  "intro": "Interview Timer helps you practise timed answers, with target durations for different question types.",
+  "how": [
+   "Set the target duration for the question type.",
+   "Start and answer aloud.",
+   "Check whether you landed near the target."
+  ],
+  "method_title": "Why length is a real skill",
+  "method": [
+   "Most interview answers should run between one and two minutes. Under thirty seconds usually reads as unprepared or evasive. Past three minutes the interviewer has stopped listening and started waiting, which costs you regardless of the content.",
+   "Behavioural answers in particular benefit from a structure that fits the time: situation, task, action, result, with the majority of the time on the action and the result. Practising against a clock is what turns that structure into something you can actually deliver under pressure."
+  ],
+  "uses": [
+   "Practising answers to a length you can sustain under pressure.",
+   "Finding which of your prepared answers run long.",
+   "Rehearsing a two-minute introduction.",
+   "Training the instinct to stop when the point is made."
+  ],
+  "mistakes": [
+   "Memorising a script to hit a time. It sounds rehearsed and falls apart when the question is phrased differently.",
+   "Practising silently. Speaking aloud takes noticeably longer than reading in your head.",
+   "Optimising only for length. A tight answer to the wrong question is still the wrong answer."
+  ]
+ },
+ "habit-tracker": {
+  "intro": "Habit Tracker records daily habits with a seven-day completion grid per habit, stored in your browser with no account.",
+  "how": [
+   "Add the habits you want to track.",
+   "Mark each one as you complete it.",
+   "Read the seven-day grid to see the pattern."
+  ],
+  "method_title": "Why the visible record works",
+  "method": [
+   "Tracking works through two mechanisms. The record itself provides feedback that memory does not, since people consistently overestimate how often they did something. And an unbroken run becomes something you are reluctant to break, which is a small but genuine source of motivation.",
+   "The failure mode is well documented: missing one day rarely matters, missing two starts a new pattern. The useful rule is never miss twice, which keeps a lapse from becoming the new default."
+  ],
+  "uses": [
+   "Building a new routine with visible feedback.",
+   "Seeing honestly how often you actually do something.",
+   "Tracking several habits without an app or a subscription.",
+   "Spotting which day of the week you consistently miss."
+  ],
+  "mistakes": [
+   "Tracking too many habits at once. Two or three succeed far more often than ten.",
+   "Abandoning the whole system after one missed day. The record is information, not a verdict.",
+   "Tracking something you cannot do daily, which guarantees gaps and makes the grid meaningless."
+  ],
+  "notes": [
+   "Stored in your browser only. Nothing is uploaded, and clearing site data will clear your history."
+  ]
+ },
+ "kanban-board": {
+  "intro": "Kanban Board is a drag-and-drop board with custom columns, cards and due dates, saved in your browser.",
+  "how": [
+   "Create the columns your workflow needs.",
+   "Add cards and drag them between columns.",
+   "Set due dates, which colour by overdue, today and future."
+  ],
+  "method_title": "The part most boards leave out",
+  "method": [
+   "Kanban came out of Toyota's production system, where a physical card authorised the next piece of work. The board makes work visible, which is genuinely useful on its own.",
+   "But the mechanism that makes kanban work is the work-in-progress limit: a cap on how many cards a column may hold. Without it a board becomes a list of everything you intend to do, and the middle column fills with half-finished work. The limit forces you to finish something before starting the next thing, which is the entire point."
+  ],
+  "uses": [
+   "Tracking personal work without a project management subscription.",
+   "Visualising where work is stuck.",
+   "Managing a small project with clear stages.",
+   "Seeing how much you have genuinely started but not finished."
+  ],
+  "mistakes": [
+   "Not limiting work in progress, which turns the board into a wish list.",
+   "Creating too many columns. Three or four covers most real workflows.",
+   "Letting cards sit in the middle column indefinitely, which is the signal the board exists to surface."
+  ],
+  "notes": [
+   "Saved in your browser only. Clearing site data removes the board."
+  ]
+ },
+ "decision-matrix": {
+  "intro": "Decision Matrix scores competing options against weighted criteria and ranks them, with live totals as you adjust.",
+  "how": [
+   "List the options you are choosing between.",
+   "Add the criteria that matter and give each a weight.",
+   "Score each option against each criterion.",
+   "Read the ranked totals."
+  ],
+  "method_title": "What the matrix is really for",
+  "method": [
+   "The arithmetic is straightforward: each score is multiplied by its criterion's weight and summed. The value is not in the sum, it is in being forced to name the criteria and say how much each one matters before you look at the answer.",
+   "Most people already have a preference and are looking for justification. A matrix is most useful when it disagrees with you, because that disagreement tells you either that a criterion is missing or that your preference is not really about the criteria you listed."
+  ],
+  "uses": [
+   "Comparing job offers, tools, suppliers or apartments.",
+   "Making a group decision where people weight things differently.",
+   "Documenting why a decision was made.",
+   "Surfacing a criterion nobody had said out loud."
+  ],
+  "mistakes": [
+   "Adjusting the weights until the answer matches your preference. That is not analysis, though noticing you want to is genuinely informative.",
+   "Using too many criteria. Beyond about six, everything averages out and the ranking becomes noise.",
+   "Treating the winner as binding. The matrix is an input to a decision, not the decision."
+  ]
+ },
+ "meeting-cost-tracker": {
+  "intro": "Meeting Cost Tracker shows what a meeting is costing in real time, from the number of attendees and their salaries.",
+  "how": [
+   "Enter the attendees and their approximate salaries.",
+   "Start the timer when the meeting begins.",
+   "Watch the running cost."
+  ],
+  "method_title": "The arithmetic nobody does",
+  "method": [
+   "The cost is the sum of each attendee's hourly rate multiplied by the elapsed time. An hourly rate from a salary is roughly the salary divided by 2,080 working hours, though the true loaded cost including benefits and overhead is meaningfully higher.",
+   "The figure is usually startling. Eight people on 75,000 dollar salaries in a one-hour meeting is close to 290 dollars of salary alone, and a weekly recurring version of it is around 15,000 dollars a year."
+  ],
+  "example": {
+   "setup": "A standard recurring meeting:",
+   "given": [
+    [
+     "Attendees",
+     "8"
+    ],
+    [
+     "Average salary",
+     "$75,000"
+    ],
+    [
+     "Duration",
+     "1 hour weekly"
+    ]
+   ],
+   "result": "About $290 per meeting and roughly $15,000 a year in salary cost alone."
+  },
+  "uses": [
+   "Making the case for cutting a recurring meeting.",
+   "Deciding whether everyone genuinely needs to attend.",
+   "Justifying the effort of writing an agenda.",
+   "Giving a team a shared reason to end early."
+  ],
+  "mistakes": [
+   "Displaying the running cost during the meeting, which usually creates resentment rather than efficiency.",
+   "Treating salary as the full cost. Loaded cost including benefits and overhead is considerably higher.",
+   "Concluding all meetings are waste. The comparison is against the cost of not aligning, which is sometimes far larger."
+  ]
+ },
+ "meeting-email": {
+  "intro": "Meeting or Email answers seven quick questions and gives you a blunt verdict on whether the meeting you are planning should be an email instead.",
+  "how": [
+   "Answer the seven questions honestly.",
+   "Read the verdict."
+  ],
+  "method_title": "What actually distinguishes the two",
+  "method": [
+   "A meeting earns its cost when it needs real-time back and forth: a decision with genuine disagreement, a problem nobody has solved yet, or a conversation where tone matters. Those are hard to do asynchronously.",
+   "Everything else is a broadcast. Status updates, information sharing, and decisions already made are all faster and better as written text, because readers can consume them at their own speed, skip what does not apply, and refer back later. The honest test is whether anyone will say something that changes an outcome."
+  ],
+  "uses": [
+   "Checking your own instinct before sending an invitation.",
+   "Giving yourself a defensible reason to cancel something recurring.",
+   "Deciding what a meeting is actually for before scheduling it.",
+   "Reducing a team's meeting load with a consistent rule."
+  ],
+  "mistakes": [
+   "Answering as you wish things were rather than as they are.",
+   "Assuming every recurring meeting has earned its place. Recurring meetings are the ones least often re-examined.",
+   "Turning genuinely difficult conversations into email. Anything with conflict or emotional weight goes badly in writing."
+  ]
+ },
+ "no-list": {
+  "intro": "No List builds a running record of the commitments you have deliberately chosen to decline, so a decision made once does not have to be made again.",
+  "how": [
+   "Add each thing you have decided to say no to.",
+   "Review the list when a similar request arrives.",
+   "Keep it visible."
+  ],
+  "method_title": "Why writing down the no matters",
+  "method": [
+   "A to-do list records what you intend to do. Nothing records what you have decided not to, so the same request arrives repeatedly and gets re-evaluated from scratch every time, often with a different answer depending on how tired you are.",
+   "Writing the decision down converts it from a judgement call into a policy. Declining becomes a matter of consistency rather than of willpower in the moment, which is a much easier thing to sustain."
+  ],
+  "uses": [
+   "Recording standing decisions so they do not need remaking.",
+   "Making it easier to decline without a fresh justification each time.",
+   "Noticing patterns in what you keep being asked for.",
+   "Reviewing periodically to check the decisions still hold."
+  ],
+  "mistakes": [
+   "Treating the list as permanent. Circumstances change and it deserves periodic review.",
+   "Filling it with things you were never going to do anyway. It is only useful for genuine temptations.",
+   "Using it to avoid every commitment. The point is protecting capacity for what matters, not minimising obligations."
+  ],
+  "notes": [
+   "Inspired by David Sparks' No List concept. Stored in your browser only."
+  ]
+ },
+ "flashcard-maker": {
+  "intro": "Flashcard Maker creates and studies flashcards in the browser, with front and back text and shuffling.",
+  "how": [
+   "Add cards with front and back text.",
+   "Shuffle the deck.",
+   "Study, revealing each answer after you have attempted it."
+  ],
+  "method_title": "Retrieval, not recognition",
+  "method": [
+   "Flashcards work because of retrieval practice: the effort of pulling an answer out of memory strengthens it far more than reading the answer again does. That effort is the mechanism, which is why cards feel harder than re-reading and work better.",
+   "The critical discipline is attempting the answer before flipping. Flipping immediately turns the exercise into recognition, which feels productive and produces very little learning. Shuffling matters for the same reason: a fixed order lets you learn the sequence rather than the content."
+  ],
+  "uses": [
+   "Learning vocabulary, terminology or definitions.",
+   "Revising for an exam.",
+   "Memorising anything with a clear question and answer.",
+   "Studying without an account or a subscription."
+  ],
+  "mistakes": [
+   "Flipping before genuinely attempting the answer.",
+   "Putting too much on one card. One fact per card is the rule that makes decks work.",
+   "Studying in a fixed order, which teaches the sequence rather than the material."
+  ],
+  "notes": [
+   "Cards are stored in your browser only."
+  ]
+ },
+ "reading-goals": {
+  "intro": "Reading Goals works out how many pages or books you need to read per day, week or month to hit a target.",
+  "how": [
+   "Enter your target, in books or pages.",
+   "Set the timeframe.",
+   "Read the daily, weekly and monthly pace required."
+  ],
+  "method_title": "Why the daily number is the useful one",
+  "method": [
+   "An annual target is not actionable. Fifty books a year is a number you cannot act on today, which is why such goals are abandoned by February. Broken down it becomes about one book a week, or roughly 25 to 30 pages a day.",
+   "That is the number that changes behaviour, because it is small enough to be obviously achievable and specific enough to check. Twenty-five pages is around half an hour for most readers, which is a realistic thing to protect in a day."
+  ],
+  "example": {
+   "setup": "A common annual target:",
+   "given": [
+    [
+     "Goal",
+     "50 books in a year"
+    ],
+    [
+     "Average length",
+     "about 300 pages"
+    ],
+    [
+     "Total",
+     "15,000 pages"
+    ]
+   ],
+   "result": "About 41 pages a day, or roughly 45 minutes of reading."
+  },
+  "uses": [
+   "Turning a reading target into a daily habit.",
+   "Checking whether a goal is realistic before committing.",
+   "Working out whether you are on pace partway through.",
+   "Setting a pace to finish a specific book by a date."
+  ],
+  "mistakes": [
+   "Setting a number without checking the daily pace it implies.",
+   "Counting books rather than reading. Book count rewards short books and encourages finishing things you are not enjoying.",
+   "Treating a missed day as failure rather than adjusting the pace."
+  ]
+ },
+ "timezone-planner": {
+  "intro": "Timezone Planner finds workable meeting times across multiple time zones by showing where working hours overlap.",
+  "how": [
+   "Add each participant's time zone.",
+   "Read the overlapping working hours.",
+   "Pick a slot that is reasonable for everyone."
+  ],
+  "method_title": "Why some spreads have no good answer",
+  "method": [
+   "Standard working hours give roughly an eight-hour window per person. Two zones a few hours apart overlap generously. Beyond about eight hours apart the overlap disappears entirely, and no slot exists that is inside normal hours for everyone.",
+   "At that point the honest options are to rotate who takes the inconvenient slot, or to stop meeting synchronously. Repeatedly giving the same person the 6 am call because they are the most junior is a real and common failure."
+  ],
+  "uses": [
+   "Scheduling across a distributed team.",
+   "Finding a call time with an overseas client.",
+   "Checking whether a proposed time is unreasonable for someone.",
+   "Planning a recurring meeting that rotates fairly."
+  ],
+  "mistakes": [
+   "Forgetting daylight saving. Regions change on different dates, so a fixed overlap can silently shift twice a year.",
+   "Assuming everyone works 9 to 5. Working hours vary by country and by person.",
+   "Scheduling from your own timezone's convenience without checking what it means for the others."
+  ]
+ },
+ "timezone-converter": {
+  "intro": "Timezone Converter converts a time between any two zones, with a live world clock.",
+  "how": [
+   "Enter a date and time.",
+   "Choose the source and target time zones.",
+   "Read the converted time."
+  ],
+  "method_title": "Why time zone conversion is genuinely hard",
+  "method": [
+   "Zones are not fixed offsets. Most observe daylight saving, they change on different dates, some regions do not observe it at all, and a handful of zones are offset by 30 or 45 minutes rather than whole hours.",
+   "Governments also change the rules. This is why software uses the IANA time zone database, which records the full history of every zone's rules, and why converting a time correctly requires knowing the date as well as the zones."
+  ],
+  "uses": [
+   "Working out what a meeting time means where you are.",
+   "Scheduling a call with someone abroad.",
+   "Converting a deadline given in another zone.",
+   "Checking what time it currently is somewhere else."
+  ],
+  "mistakes": [
+   "Converting with a fixed offset. The offset depends on the date because of daylight saving.",
+   "Using a zone abbreviation like CST, which is ambiguous between several zones worldwide.",
+   "Forgetting the date can change. Converting across enough hours moves you into the previous or next day."
+  ]
+ },
+ "file-size-converter": {
+  "intro": "File Size Converter converts between bytes, KB, MB, GB, TB and PB.",
+  "how": [
+   "Enter a value and choose its unit.",
+   "Read the equivalent in every other unit."
+  ],
+  "method_title": "1000 or 1024, and why your drive looks smaller",
+  "method": [
+   "There are two competing definitions. The SI convention makes a kilobyte 1,000 bytes. The older binary convention makes it 1,024, because computers work in powers of two. To resolve it, the IEC defined separate binary units: kibibyte, mebibyte, gibibyte, using 1,024.",
+   "The practical consequence is the one everybody meets. Drive manufacturers use 1,000, so they can print a larger number. Windows reports using 1,024 while calling it GB. That is why a drive sold as 1 TB shows as about 931 GB, and no storage has gone missing."
+  ],
+  "example": {
+   "setup": "Where the missing space goes:",
+   "given": [
+    [
+     "Advertised",
+     "1 TB = 1,000,000,000,000 bytes"
+    ],
+    [
+     "Reported as GiB",
+     "divide by 1,024 three times"
+    ]
+   ],
+   "result": "About 931. The drive is exactly the size it claims, measured differently."
+  },
+  "uses": [
+   "Understanding why a drive reports less than advertised.",
+   "Converting a file size given in unfamiliar units.",
+   "Estimating how many files fit in a given space.",
+   "Checking a quota or an upload limit."
+  ],
+  "mistakes": [
+   "Assuming both conventions agree. They diverge more at each step, reaching about 10% by terabytes.",
+   "Confusing bits and bytes. Network speeds are in bits, file sizes in bytes, a factor of eight.",
+   "Expecting a drive's full capacity to be usable. Formatting and reserved space take a share."
+  ]
+ },
+ "number-formatter": {
+  "intro": "Number Formatter applies custom decimal places, currency symbols and thousands separators to a number.",
+  "how": [
+   "Enter your number.",
+   "Set decimal places, currency symbol and separator.",
+   "Copy the formatted result."
+  ],
+  "method_title": "Separators are not universal",
+  "method": [
+   "English-speaking countries use a comma for thousands and a full stop for decimals. Much of Europe reverses both, so 1.234,56 there is 1,234.56 here. France and several others use a space for thousands.",
+   "This is why a number copied between locales can be wrong by a factor of a thousand without looking wrong. It is also why data interchange formats like JSON specify a single unambiguous format and leave display formatting to the presentation layer."
+  ],
+  "uses": [
+   "Formatting figures consistently for a report or a document.",
+   "Adding a currency symbol and fixed decimals to a price.",
+   "Making large numbers readable with separators.",
+   "Preparing numbers for an audience in a different locale."
+  ],
+  "mistakes": [
+   "Storing formatted numbers. Store the raw value and format at display time, or you will have to parse it back out.",
+   "Assuming your separator convention is universal, which corrupts data on import.",
+   "Rounding for display and then calculating from the rounded figure."
+  ]
+ },
+ "number-to-words": {
+  "intro": "Number to Words converts numbers into written English, in standard, currency and ordinal formats.",
+  "how": [
+   "Enter a number.",
+   "Choose standard, currency or ordinal.",
+   "Copy the written form."
+  ],
+  "method_title": "Short scale and long scale",
+  "method": [
+   "English-speaking countries use the short scale, where a billion is a thousand million. Much of continental Europe historically used the long scale, where a billion is a million million and the thousand-million is a milliard. The difference is a factor of a thousand and it is not hypothetical.",
+   "Currency format has its own conventions, most notably writing cents as a fraction over 100 on cheques, which exists specifically to make alteration harder."
+  ],
+  "uses": [
+   "Writing an amount on a cheque.",
+   "Producing the written form for a contract or a legal document.",
+   "Generating ordinals for dates and rankings.",
+   "Checking how a large number is properly written."
+  ],
+  "mistakes": [
+   "Assuming billion means the same thing everywhere. In international contexts it is safer to write the figure.",
+   "Forgetting the hyphens. Twenty-one and thirty-five are hyphenated; one hundred is not.",
+   "Using and inconsistently. British English writes one hundred and one, American English usually omits the and."
+  ]
+ },
+ "scientific-notation": {
+  "intro": "Scientific Notation Converter moves numbers between standard form, scientific notation and engineering notation.",
+  "how": [
+   "Enter a number in either decimal or scientific form.",
+   "Read the converted forms."
+  ],
+  "method_title": "Scientific versus engineering notation",
+  "method": [
+   "Scientific notation writes a number as a value between 1 and 10 multiplied by a power of ten, so 4,500 becomes 4.5 x 10^3. It makes very large and very small numbers manageable and makes significant figures explicit.",
+   "Engineering notation restricts the exponent to multiples of three, so it lines up with the metric prefixes: kilo, mega, giga, milli, micro, nano. That is why an engineer writes 45 x 10^3 rather than 4.5 x 10^4, because it maps directly onto kilo-units."
+  ],
+  "example": {
+   "setup": "The same value in three forms:",
+   "given": [
+    [
+     "Standard",
+     "4,500"
+    ],
+    [
+     "Scientific",
+     "4.5 x 10^3"
+    ],
+    [
+     "Engineering",
+     "4.5 x 10^3, read as 4.5 kilo"
+    ]
+   ],
+   "result": "Both agree here; they diverge whenever the exponent is not already a multiple of three."
+  },
+  "uses": [
+   "Working with very large or very small measurements.",
+   "Converting a value into engineering notation for a datasheet.",
+   "Making significant figures explicit.",
+   "Reading a number given in exponent form."
+  ],
+  "mistakes": [
+   "Writing a mantissa outside 1 to 10 and calling it scientific notation.",
+   "Losing track of significant figures. The notation makes them explicit, which is much of the point.",
+   "Confusing the E notation used by calculators and spreadsheets with the exponent itself. 4.5E3 means 4.5 x 10^3."
+  ]
+ },
+ "speed-distance-time": {
+  "intro": "Speed Distance Time solves for whichever of the three you are missing, with multiple unit options.",
+  "how": [
+   "Enter any two of speed, distance and time.",
+   "Choose your units.",
+   "Read the third value."
+  ],
+  "method_title": "One relationship, three rearrangements",
+  "method": [
+   "Speed equals distance divided by time. Rearranged, distance is speed multiplied by time, and time is distance divided by speed. All three questions come from a single relationship.",
+   "The part that causes errors is units. Speed in miles per hour with time in minutes gives a nonsense answer unless one is converted first, and mixing metric and imperial does the same. Keeping units consistent matters more than the arithmetic does."
+  ],
+  "uses": [
+   "Estimating a journey time from a distance and an expected speed.",
+   "Working out an average speed from a completed trip.",
+   "Calculating how far something travels in a given period.",
+   "Checking a physics or homework answer."
+  ],
+  "mistakes": [
+   "Mixing units without converting, which is the single most common source of wrong answers.",
+   "Confusing average speed with instantaneous speed. Average over a trip includes every stop.",
+   "Averaging two speeds directly. The average speed over two equal distances at different speeds is not the mean of the two."
+  ]
+ },
+ "multiplication-table": {
+  "intro": "Multiplication Table generates a table to any size, with optional colour coding by value or by odd and even.",
+  "how": [
+   "Set the start and end values.",
+   "Choose a colour coding mode if you want one.",
+   "Read or print the table."
+  ],
+  "method_title": "What the patterns show",
+  "method": [
+   "The table is symmetric across its diagonal, because multiplication is commutative: 7 times 8 and 8 times 7 occupy mirrored cells. That symmetry immediately halves how many facts there are to learn.",
+   "Colour coding surfaces the structure. Even and odd shading shows that a product is odd only when both factors are odd. Heat shading shows growth accelerating toward the bottom right corner, which is what makes the larger facts feel harder."
+  ],
+  "uses": [
+   "Printing a reference for a child learning times tables.",
+   "Showing the symmetry that halves the memorisation.",
+   "Generating a larger table than the usual 12 by 12.",
+   "Illustrating number patterns visually."
+  ],
+  "mistakes": [
+   "Drilling the table without showing the symmetry, which doubles the perceived workload.",
+   "Stopping at 12 by 12 out of habit. The pattern continues and seeing it helps.",
+   "Treating recall speed as understanding. Both matter and they are not the same thing."
+  ]
+ },
+ "tally-counter": {
+  "intro": "Tally Counter keeps multiple named counters with keyboard shortcuts, saved in your browser.",
+  "how": [
+   "Create a counter and name it.",
+   "Increment it by clicking or with the keyboard.",
+   "Add more counters for parallel counts."
+  ],
+  "uses": [
+   "Counting inventory or stock.",
+   "Keeping attendance or a headcount.",
+   "Counting occurrences during an observation or a survey.",
+   "Tracking several categories at once without losing your place."
+  ],
+  "method_title": "Why a counter beats remembering",
+  "method": [
+   "Counting in your head fails as soon as you are interrupted, and there is no way to recover the number. A counter externalises the state, so an interruption costs nothing.",
+   "Multiple named counters are what make it useful for real work. Counting one thing is easy; counting four categories simultaneously while doing something else is exactly where mental counting breaks down."
+  ],
+  "mistakes": [
+   "Relying on browser storage for something that matters without writing the total down at the end.",
+   "Using one counter for several categories and trying to remember the split.",
+   "Forgetting to reset between sessions."
+  ],
+  "notes": [
+   "Counts are stored in your browser only."
+  ]
+ },
+ "resistor-color-code": {
+  "intro": "Resistor Color Code decodes 4-band and 5-band resistors into a resistance value, or builds the band colours from a value you specify, with tolerance.",
+  "how": [
+   "Select the number of bands.",
+   "Set each band's colour to match your resistor.",
+   "Read the resistance and tolerance, or work backwards from a value."
+  ],
+  "method_title": "Reading the bands",
+  "method": [
+   "The colours encode digits: black 0, brown 1, red 2, orange 3, yellow 4, green 5, blue 6, violet 7, grey 8, white 9. On a 4-band resistor the first two bands are digits, the third is the multiplier as a power of ten, and the fourth is tolerance. A 5-band adds a third digit for greater precision.",
+   "Tolerance has its own colours: gold is 5%, silver 10%, brown 1%, red 2%. The tolerance band is usually gold or silver and slightly separated from the others, which is how you know which end to read from."
+  ],
+  "example": {
+   "setup": "A common 4-band resistor:",
+   "given": [
+    [
+     "Brown, black, red",
+     "1, 0, times 100"
+    ],
+    [
+     "Gold",
+     "5% tolerance"
+    ]
+   ],
+   "result": "1,000 ohms, or 1k, anywhere from 950 to 1,050 ohms in practice."
+  },
+  "uses": [
+   "Identifying a resistor from a drawer of unlabelled parts.",
+   "Finding the band colours for a value you need to pick out.",
+   "Checking a resistor before soldering it.",
+   "Learning the code rather than looking it up every time."
+  ],
+  "mistakes": [
+   "Reading the bands from the wrong end. Start from the end where the bands are closer together, with tolerance last.",
+   "Confusing red and orange, or brown and red, under poor light. Measuring with a meter settles it.",
+   "Forgetting tolerance. A 5% resistor genuinely varies, which matters in precision circuits."
+  ]
+ },
+ "periodic-table": {
+  "intro": "Periodic Table is a clickable reference to all 118 elements with atomic mass, group, period, category and phase, with search and filtering.",
+  "how": [
+   "Click any element for its details.",
+   "Filter by category or phase.",
+   "Search by name or symbol."
+  ],
+  "method_title": "Why the shape is the information",
+  "method": [
+   "Elements are ordered by atomic number, the count of protons, and arranged so that elements in the same column share the same number of outer electrons. That is why a column behaves alike: group 1 metals all react vigorously with water, and group 18 noble gases barely react at all.",
+   "The rows are periods, and each one corresponds to an electron shell being filled. The table's odd shape, with the lanthanides and actinides pulled out below, is a consequence of the order in which electron subshells fill rather than an arbitrary layout choice."
+  ],
+  "uses": [
+   "Looking up an element's mass, symbol or category.",
+   "Understanding why elements in a column behave similarly.",
+   "Revising chemistry with a searchable reference.",
+   "Checking a phase or a category quickly."
+  ],
+  "mistakes": [
+   "Reading atomic mass as a whole number. It is a weighted average across isotopes, which is why chlorine is about 35.45.",
+   "Confusing atomic number with mass number. The first is protons, the second protons plus neutrons.",
+   "Assuming the heaviest elements exist in any usable quantity. Many are synthesised in atom-scale amounts and decay in moments."
+  ]
+ },
+ "dog-poop-tracker": {
+  "intro": "Dog Poop Tracker maps where your dog has gone in the yard using GPS, so cleanup is a route rather than a search. Markers can be added, corrected and cleared, and everything is stored on your device.",
+  "how": [
+   "Calibrate your yard by walking to each corner and capturing it.",
+   "Press Mark when your dog goes, and the position is recorded.",
+   "Clear markers as you pick up.",
+   "Drag or nudge a marker if the fix was poor."
+  ],
+  "method_title": "Why phone GPS needs the extra work",
+  "method": [
+   "Consumer GPS is typically accurate to about three to five metres in the open, and considerably worse near buildings and trees, which is exactly where most yards are. A single raw fix is often not good enough to find a specific spot.",
+   "The tool compensates by buffering multiple samples and combining them, rejecting outliers, and never claiming better accuracy than the device honestly reports. Markers show a confidence radius rather than a false pinpoint, and weak fixes have to be confirmed deliberately."
+  ],
+  "uses": [
+   "Finding everything in a large or overgrown yard.",
+   "Cleaning up after dark, when searching visually does not work.",
+   "Sharing the job with someone who was not there when it happened.",
+   "Keeping track across a few days between cleanups."
+  ],
+  "mistakes": [
+   "Marking before the accuracy indicator settles, which records a poor fix.",
+   "Calibrating corners in a hurry. The yard transform depends on those four points and errors propagate to every marker.",
+   "Expecting pinpoint precision under heavy tree cover, where consumer GPS simply cannot deliver it."
+  ],
+  "notes": [
+   "Location data stays on your device. Nothing is uploaded, and the app needs location permission only while you are using it."
+  ]
+ },
+ "detailing-quote-widget": {
+  "intro": "This is a live, working mobile detailing price calculator. A customer picks a vehicle type, a package, the condition and any add-ons, and gets an itemised estimate with a booking action, without having to call for a price.",
+  "how": [
+   "Choose a vehicle type and a detailing package.",
+   "Set the vehicle's condition and add any extras.",
+   "The estimate updates immediately.",
+   "Copy the quote, or use the booking action."
+  ],
+  "method_title": "Why an instant estimate wins work",
+  "method": [
+   "Most detailing sites make a price enquiry a phone call. That works for the customers who ring, and loses the ones who wanted a number at eleven at night and moved on to the next result. An instant range answers the question at the moment it is being asked.",
+   "The estimate is deliberately a range with a note that a final price follows an in-person inspection. That protects the business from being held to a number sight-unseen while still giving the customer something concrete enough to act on."
+  ],
+  "uses": [
+   "Giving customers a price without a phone call.",
+   "Qualifying enquiries, since people who see the range and still book are ready to pay it.",
+   "Reducing the time spent quoting jobs that were never going to convert.",
+   "Trying the calculation before deciding whether you want one for your own business."
+  ],
+  "notes": [
+   "Estimates run entirely in the browser. This demo does not collect, save or transmit any customer information.",
+   "A version branded with your own business name, colours, packages and prices is available as a one-time setup, delivered as a hosted page or an HTML file with no subscription. Details and pricing are on the page below the calculator."
+  ]
  }
 }

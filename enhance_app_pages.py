@@ -921,6 +921,16 @@ def main() -> None:
     for path in sorted(COLLECTION_DIR.glob("*/index.html")):
         slug = path.parent.name
         app = app_lookup.get(slug)
+        if not app and slug in APP_CONTENT:
+            # Pages deliberately kept out of the tool grid (the service offer)
+            # still get their authored content, using the page's own metadata.
+            text_probe = path.read_text(encoding="utf-8")
+            app = {
+                "slug": slug,
+                "title": extract_page_title(text_probe, slug.replace("-", " ").title()),
+                "description": extract_meta_description(text_probe, ""),
+                "category": APP_CONTENT[slug].get("category", "Everyday Tools"),
+            }
         if not app:
             print(f"SKIP {slug}: not in homepage metadata")
             continue
