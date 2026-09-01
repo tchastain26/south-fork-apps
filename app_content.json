@@ -4105,5 +4105,626 @@
    "Assuming formatting changes performance. It does not, and a badly performing query formats just as prettily.",
    "Reformatting a stored query in place without testing, since some dialects are sensitive to how comments and line breaks fall."
   ]
+ },
+ "ascii-table": {
+  "intro": "ASCII Table is a complete reference for all 128 ASCII characters with their decimal, hexadecimal, octal, binary and HTML entity values, filterable by control characters, printable characters, digits and letter case, with search.",
+  "method_title": "How the table is arranged, and why it is arranged that way",
+  "method": [
+   "ASCII is a 7-bit encoding, so it defines exactly 128 values. Codes 0 to 31 are control characters left over from teleprinters, 32 is the space, 48 to 57 are the digits, 65 to 90 are uppercase letters and 97 to 122 are lowercase.",
+   "The layout is deliberate. Uppercase and lowercase are exactly 32 apart, which is a single bit, so flipping bit 6 changes case. The digits start at 48, which is 0x30, so the numeric value of a digit character is its code minus 48. Both tricks are still used in code today."
+  ],
+  "example": {
+   "setup": "The case bit in practice:",
+   "given": [
+    [
+     "A",
+     "65 = 0x41"
+    ],
+    [
+     "a",
+     "97 = 0x61"
+    ],
+    [
+     "Difference",
+     "32, a single bit"
+    ]
+   ],
+   "result": "Changing case in ASCII is one bitwise operation, which is why the alphabet was placed where it was."
+  },
+  "uses": [
+   "Looking up a character code while debugging.",
+   "Finding the HTML entity for a character.",
+   "Understanding a hex dump or a byte stream.",
+   "Checking which control character a stray byte represents."
+  ],
+  "mistakes": [
+   "Assuming ASCII covers everything. It defines 128 values and nothing else, which is why anything outside English needs Unicode.",
+   "Treating byte 127 as printable. It is DEL, a control character, despite sitting at the end of the printable range.",
+   "Confusing ASCII with Latin-1 or Windows-1252. Those extend it above 127 and disagree with each other."
+  ]
+ },
+ "css-clamp-generator": {
+  "intro": "CSS Clamp Generator produces a fluid clamp() value from a minimum and maximum size and the viewport range they should scale across, so type and spacing grow smoothly instead of jumping at breakpoints.",
+  "how": [
+   "Set the minimum and maximum viewport widths you are designing between.",
+   "Set the size you want at each end.",
+   "Adjust the root font size if it is not the default 16px.",
+   "Copy the generated clamp() value."
+  ],
+  "method_title": "How clamp() interpolates",
+  "method": [
+   "clamp() takes three values: a minimum, a preferred, and a maximum. Below the minimum viewport the value stays fixed at the minimum, above the maximum it stays fixed at the maximum, and between them the preferred value scales linearly.",
+   "The preferred value has to be built from a rem offset plus a vw multiplier, which is the linear equation running through your two points. Getting that arithmetic right by hand is fiddly, which is the entire reason this tool exists."
+  ],
+  "example": {
+   "setup": "Fluid heading type with the default values:",
+   "given": [
+    [
+     "Viewport range",
+     "320px to 1280px"
+    ],
+    [
+     "Size range",
+     "18px to 42px"
+    ]
+   ],
+   "result": "18px at phone width, growing smoothly to 42px at 1280px, then holding steady above that."
+  },
+  "uses": [
+   "Fluid typography that scales without breakpoints.",
+   "Responsive spacing and padding that grows with the viewport.",
+   "Container widths that adapt between two known bounds.",
+   "Removing a stack of media queries that only changed a font size."
+  ],
+  "mistakes": [
+   "Using a pure vw preferred value with no rem component. That breaks browser zoom, because the text no longer responds to the user's font size setting, which is a genuine accessibility failure under WCAG.",
+   "Setting the minimum too small. Text below about 16px on mobile is hard to read regardless of how elegantly it scales.",
+   "Applying clamp everywhere. Fixed values are fine for anything that does not need to scale, and clamp makes the CSS harder to read."
+  ]
+ },
+ "css-specificity": {
+  "intro": "CSS Specificity Calculator scores any selector as an (A, B, C) triple and lets you compare several selectors to see which one wins.",
+  "how": [
+   "Type or paste a CSS selector.",
+   "Press Calculate to see its specificity score.",
+   "Try the example buttons to see how each selector type contributes.",
+   "Compare multiple selectors to see which would apply."
+  ],
+  "method_title": "How the three numbers are compared",
+  "method": [
+   "A counts ID selectors, B counts classes, attribute selectors and pseudo-classes, and C counts element types and pseudo-elements. The universal selector adds nothing.",
+   "The comparison is not a sum. The columns are compared left to right, and a higher A wins regardless of what B and C contain. One ID beats any number of classes, which is why a single #header rule can override a carefully constructed set of class rules and why a hundred classes will not save you."
+  ],
+  "example": {
+   "setup": "Why the second rule loses:",
+   "given": [
+    [
+     "#nav a",
+     "A=1, B=0, C=1"
+    ],
+    [
+     ".menu .item .link",
+     "A=0, B=3, C=0"
+    ]
+   ],
+   "result": "The ID selector wins on the A column before B is even considered, no matter how many classes the other rule stacks up."
+  },
+  "uses": [
+   "Working out why a style is not applying.",
+   "Choosing a selector strong enough without resorting to !important.",
+   "Understanding an inherited stylesheet before changing it.",
+   "Teaching the cascade, which is where most CSS confusion lives."
+  ],
+  "mistakes": [
+   "Reaching for !important to win a specificity fight. It works once and creates a worse problem the next time.",
+   "Raising specificity to fix a problem, which starts an arms race across the stylesheet. Lowering the competing selector is usually the better fix.",
+   "Forgetting that :where() contributes zero specificity while :is() takes the specificity of its most specific argument. That difference is deliberate and useful."
+  ]
+ },
+ "csv-column-extractor": {
+  "intro": "CSV Column Extractor pulls one column out of pasted CSV data, which is the fastest way to get a single field as a plain list.",
+  "how": [
+   "Paste your CSV data.",
+   "Enter the column index you want, counting from zero.",
+   "Copy the extracted column."
+  ],
+  "method_title": "Zero-based indexing",
+  "method": [
+   "Columns are numbered from zero, so the first column is 0 and the third is 2. This matches how most programming languages count and is the most common source of off-by-one confusion when people expect spreadsheet-style numbering.",
+   "Extraction is positional, so it depends on every row having the same number of fields. A row with an unquoted comma inside a value shifts everything after it, and you will get the wrong field from that row only."
+  ],
+  "uses": [
+   "Pulling a list of emails or IDs out of an export.",
+   "Getting one field for a lookup or an import.",
+   "Extracting a column to paste into a query.",
+   "Checking the values in a single field without opening a spreadsheet."
+  ],
+  "mistakes": [
+   "Counting from one. The first column is index 0.",
+   "Extracting from data with unquoted delimiters inside values, which silently returns the wrong field for affected rows.",
+   "Forgetting the header row is included unless you remove it."
+  ]
+ },
+ "html-minifier": {
+  "intro": "HTML Minifier strips comments and collapses whitespace, with optional removal of optional closing tags and unnecessary attributes, and reports the byte savings.",
+  "how": [
+   "Paste your HTML.",
+   "Choose which optimisations to apply.",
+   "Read the byte savings and copy the minified output."
+  ],
+  "method_title": "Where whitespace is actually significant",
+  "method": [
+   "Most whitespace in HTML is collapsible, which is why minification works at all. But whitespace between inline elements is rendered as a space, so removing it joins two words together. That is why aggressive minifiers can silently change how a page reads.",
+   "Whitespace inside a pre or textarea element is fully significant and must never be touched. A minifier that does not special-case those two will corrupt code samples and form contents."
+  ],
+  "uses": [
+   "Reducing page weight before deploying static HTML.",
+   "Stripping developer comments from production output.",
+   "Shrinking an HTML email, where size limits are real and strict.",
+   "Cleaning up generated markup."
+  ],
+  "mistakes": [
+   "Minifying HTML containing pre or textarea content without protecting it.",
+   "Removing whitespace between inline elements and joining words.",
+   "Expecting large savings. Gzip or Brotli compression already removes most of the redundancy, so minification on top of it typically saves only a few percent more."
+  ]
+ },
+ "html-preview": {
+  "intro": "HTML Preview renders your HTML live as you write it, with starter templates for a blank page, basic HTML5, flexbox, CSS grid and a form, plus a fullscreen preview and download.",
+  "how": [
+   "Write or paste HTML in the editor.",
+   "Watch the preview render live beside it.",
+   "Load a template to start from a working example.",
+   "Use Fullscreen for a proper look, or Download to save the file."
+  ],
+  "method_title": "What a live preview is good for",
+  "method": [
+   "The value is the feedback loop. Editing a file, saving, switching to a browser and refreshing costs a few seconds each time, and those seconds are what stop people from experimenting.",
+   "The templates matter as much as the preview. Flexbox and grid are far easier to understand by adjusting a working example than by reading property documentation, because the effect of each change is immediately visible."
+  ],
+  "uses": [
+   "Trying a layout idea without setting up a project.",
+   "Learning flexbox or grid by manipulating a working example.",
+   "Testing a snippet before pasting it into a real page.",
+   "Building a small standalone page and downloading it."
+  ],
+  "mistakes": [
+   "Expecting external resources to always work. The preview is sandboxed and some external requests are blocked.",
+   "Assuming preview rendering matches every browser. It reflects the browser you are currently using.",
+   "Building something substantial here rather than in a real editor with version control."
+  ]
+ },
+ "image-to-data-url": {
+  "intro": "Image to Data URL converts PNG, JPEG, GIF, WebP or SVG files into Base64 data URLs, with output formatted as a raw data URL, a CSS background-image, an HTML img src, or Base64 only. Conversion happens in your browser.",
+  "how": [
+   "Choose an image file.",
+   "Pick the output format you need.",
+   "Copy the result straight into your CSS or HTML."
+  ],
+  "method_title": "The size cost, and when it is worth paying",
+  "method": [
+   "Base64 encodes three bytes as four characters, so a data URL is always about 33% larger than the original file. In exchange you remove one network request, because the image travels inside the document.",
+   "That trade only pays for small images. For an icon of a few hundred bytes, avoiding a round trip is clearly worth 33% more bytes. For a photograph it is a bad deal twice over: the file balloons, and the image can no longer be cached separately, so every page load re-downloads it inside the HTML."
+  ],
+  "uses": [
+   "Embedding a small icon or logo without a separate request.",
+   "Making a single-file HTML page that works with no external assets.",
+   "Inlining an image into an email template.",
+   "Avoiding a request for an image used once, above the fold."
+  ],
+  "mistakes": [
+   "Inlining large images. Past a few kilobytes the caching loss outweighs the request saved.",
+   "Data-URLing an image used on every page. As a separate file it would be cached once; inlined it is re-sent with every page.",
+   "Forgetting Content Security Policy. A strict policy may block data: URIs in img-src, and the image will silently fail."
+  ],
+  "notes": [
+   "Conversion happens locally. Your image is never uploaded anywhere."
+  ]
+ },
+ "svg-to-data-url": {
+  "intro": "SVG to Data URL converts raw SVG markup into a URL-encoded data URL plus a ready-to-paste CSS background-image rule, with options to strip XML declarations and comments and collapse whitespace.",
+  "how": [
+   "Paste your SVG markup, or load the sample.",
+   "Turn on the cleanup options to shrink the output.",
+   "Press Convert and copy the data URL or the CSS rule."
+  ],
+  "method_title": "Why SVG should be URL-encoded rather than Base64",
+  "method": [
+   "SVG is text, not binary, so Base64 encoding it is wasteful: it adds a third to the size for no benefit. URL encoding only escapes the handful of characters that would break the CSS, leaving the rest readable.",
+   "A URL-encoded SVG data URL is typically smaller than the Base64 equivalent and stays human-readable, so you can spot a problem in the markup without decoding it. This is why the CSS community settled on URL encoding for inline SVG."
+  ],
+  "uses": [
+   "Inlining an icon as a CSS background without a separate file.",
+   "Embedding a custom bullet, chevron or checkbox in a stylesheet.",
+   "Shipping an SVG inside a single-file page.",
+   "Avoiding a network request for a small vector asset."
+  ],
+  "mistakes": [
+   "Base64-encoding SVG out of habit. URL encoding is smaller and clearer for text formats.",
+   "Leaving the XML declaration in. It is unnecessary in a data URL and adds bytes to every use.",
+   "Forgetting to encode the hash character in fill colours, which terminates the URL early and breaks the rule."
+  ]
+ },
+ "keycode-tester": {
+  "intro": "Keycode Tester shows the JavaScript event properties for any key you press: key, code, keyCode, charCode and the modifier states.",
+  "how": [
+   "Click into the page and press any key.",
+   "Read the event properties for that keypress.",
+   "Press Clear to reset."
+  ],
+  "method_title": "key, code, and the deprecated ones",
+  "method": [
+   "event.key is the character produced, which depends on the keyboard layout and the modifiers held. Pressing the same physical key gives a different key value on a French keyboard than an American one.",
+   "event.code is the physical key position and does not change with layout. That is what you want for game controls, where WASD should be the same four physical keys regardless of layout. keyCode and charCode are both deprecated, inconsistent across browsers, and should not be used in new code."
+  ],
+  "uses": [
+   "Finding the right property to check when adding a keyboard shortcut.",
+   "Debugging a shortcut that works on one keyboard layout and not another.",
+   "Checking what an unusual key or a media key actually reports.",
+   "Verifying modifier detection."
+  ],
+  "mistakes": [
+   "Using keyCode in new code. It is deprecated and behaves differently across browsers.",
+   "Using event.key for game movement keys, which breaks for anyone not on a QWERTY layout.",
+   "Assuming every key produces an event. Some are intercepted by the operating system before the browser sees them."
+  ]
+ },
+ "millisecond-converter": {
+  "intro": "Millisecond Converter turns a millisecond value into seconds, minutes, hours, days and weeks at once.",
+  "how": [
+   "Enter a value in milliseconds.",
+   "Read the equivalent across every unit.",
+   "Copy whichever you need."
+  ],
+  "method_title": "The conversions worth memorising",
+  "method": [
+   "One second is 1,000 milliseconds, one minute is 60,000, one hour is 3,600,000 and one day is 86,400,000. Those four cover almost everything you will meet in code.",
+   "Milliseconds are the default time unit in JavaScript, which is why durations, timeouts and timestamps all arrive in them, and why a value copied from JavaScript into a system expecting seconds is out by a factor of a thousand."
+  ],
+  "uses": [
+   "Reading a duration out of a performance log.",
+   "Setting a timeout to a sensible human value.",
+   "Converting an API rate limit window.",
+   "Checking how long a cache TTL actually is."
+  ],
+  "mistakes": [
+   "Confusing a millisecond timestamp with a second-based Unix timestamp. Ten digits is seconds, thirteen is milliseconds.",
+   "Assuming a day is always 86,400,000 milliseconds. Daylight saving transitions make some days longer or shorter in local time."
+  ]
+ },
+ "quote-escaper": {
+  "intro": "Quote Escaper adds or removes backslash escaping on quotes so a string can be pasted safely into code.",
+  "how": [
+   "Paste your text.",
+   "Copy the escaped or unescaped result."
+  ],
+  "method_title": "Why escaping is needed",
+  "method": [
+   "A string literal is delimited by quote characters, so a quote inside the text ends the string early and everything after it becomes a syntax error. A backslash before the quote tells the parser to treat it as content rather than a delimiter.",
+   "The alternative is often better: use a quote character the text does not contain. If your text has double quotes, wrapping it in single quotes needs no escaping at all, and the result is far easier to read."
+  ],
+  "uses": [
+   "Pasting text containing quotes into a string literal.",
+   "Preparing a JSON string value by hand.",
+   "Escaping a value for a shell command.",
+   "Unescaping a string copied out of source code to read it plainly."
+  ],
+  "mistakes": [
+   "Escaping a string that is already escaped, which produces literal backslashes in the output.",
+   "Forgetting the backslash itself needs escaping. A single backslash in a string literal must be doubled.",
+   "Escaping for the wrong context. Shell, JSON and SQL escaping rules differ, and using one for another is a classic injection vector."
+  ]
+ },
+ "robots-txt-builder": {
+  "intro": "Robots.txt Builder assembles a valid robots.txt from allow and disallow paths, sitemap lines, an optional crawl delay and host directive, with presets for a starter file and for hiding admin paths.",
+  "how": [
+   "Enter your site URL.",
+   "Add disallow paths, one per line, and any allow exceptions.",
+   "Add your sitemap URLs.",
+   "Copy the file or download it, then place it at the root of your domain."
+  ],
+  "method_title": "What robots.txt does not do",
+  "method": [
+   "Robots.txt controls crawling, not indexing, and the difference matters enormously. Disallowing a path tells well-behaved crawlers not to fetch it. It does not remove the URL from search results, and a disallowed page that other sites link to can still be indexed, listed with no description because the crawler was never allowed to read it.",
+   "To keep a page out of the index you need a noindex meta tag or header, and the crawler has to be allowed to fetch the page to see it. Disallowing a page you have also marked noindex is self-defeating, because the crawler never reads the noindex."
+  ],
+  "uses": [
+   "Blocking crawlers from admin, search result and duplicate paths.",
+   "Pointing search engines at your sitemap.",
+   "Reducing crawl load on a large or slow site.",
+   "Blocking specific bots while allowing others."
+  ],
+  "mistakes": [
+   "Using robots.txt to hide sensitive content. The file is public, readable by anyone, and effectively advertises the paths you did not want found.",
+   "Disallowing a page you want deindexed, which prevents the crawler from seeing the noindex tag.",
+   "Setting a crawl delay and expecting Google to honour it. Google ignores the directive; crawl rate is set in Search Console.",
+   "Disallowing CSS or JavaScript, which stops Google rendering the page as users see it."
+  ]
+ },
+ "tab-space-converter": {
+  "intro": "Tab and Space Converter switches indentation between tabs and spaces at a tab width of 2, 4 or 8.",
+  "how": [
+   "Paste your code.",
+   "Choose the tab width.",
+   "Convert tabs to spaces or spaces to tabs, then copy."
+  ],
+  "method_title": "The argument, and the part that is not an argument",
+  "method": [
+   "Tabs versus spaces is largely a matter of taste, with one substantive point on each side. Tabs let each developer choose their own display width, which is a genuine accessibility benefit for anyone who needs wider indentation to read code. Spaces render identically everywhere, which matters when alignment must be exact.",
+   "What is not a matter of taste is mixing them. A file with both is the usual cause of code that looks correctly indented in one editor and wrong in another, and in Python it is a hard error. Pick one per project and enforce it."
+  ],
+  "uses": [
+   "Matching a project's indentation style before submitting a change.",
+   "Fixing a file that has picked up mixed indentation.",
+   "Converting code pasted from a source that used the other convention.",
+   "Preparing code for a system that requires one or the other."
+  ],
+  "mistakes": [
+   "Converting inside string literals, where the whitespace is data rather than indentation.",
+   "Converting alignment as though it were indentation. Code aligned into columns breaks when the tab width changes.",
+   "Reindenting a whole file in a shared repository, which turns every line into a diff and buries real changes."
+  ]
+ },
+ "token-usage-calculator": {
+  "intro": "Token Usage Calculator estimates how many tokens a piece of text uses and what it would cost across common large language model APIs, with an output multiplier for estimating a full request and response.",
+  "how": [
+   "Paste your prompt text.",
+   "Set the output multiplier to estimate the response length relative to the input.",
+   "Read the estimated token count and cost per model."
+  ],
+  "method_title": "What a token is, roughly",
+  "method": [
+   "Models do not read characters or words, they read tokens, which are frequent character sequences. For ordinary English, a useful rule of thumb is about four characters per token, or roughly three quarters of a word.",
+   "That ratio degrades for anything unusual. Code, rare words, non-English text and long numbers all tokenize less efficiently, sometimes using a token per character. Any estimate based on the four-character rule is therefore a floor, and the real count for code or non-English input can be considerably higher."
+  ],
+  "uses": [
+   "Estimating the cost of a prompt before running it at scale.",
+   "Checking whether a document will fit a model's context window.",
+   "Comparing model pricing on the same workload.",
+   "Budgeting an automation that makes many calls."
+  ],
+  "mistakes": [
+   "Counting only the input. Output tokens are usually priced higher than input, sometimes several times higher.",
+   "Applying the four-character rule to code or non-English text, where it undercounts.",
+   "Forgetting the system prompt and any conversation history, which are re-sent and re-charged on every turn."
+  ],
+  "notes": [
+   "Estimates only. Actual tokenization depends on the specific model, and published prices change."
+  ]
+ },
+ "whitespace-visualizer": {
+  "intro": "Whitespace Visualizer makes invisible characters visible, showing spaces, tabs, line breaks and the unusual whitespace characters that cause problems you cannot see.",
+  "how": [
+   "Paste the text you are investigating.",
+   "Read the marked-up version showing every whitespace character.",
+   "Copy the annotated result if you need it."
+  ],
+  "method_title": "The characters that cause real trouble",
+  "method": [
+   "Trailing spaces are invisible and break exact-match comparisons, deduplication and lookup keys. Mixed tabs and spaces make indentation look right in one editor and wrong in another.",
+   "The genuinely nasty one is the non-breaking space, U+00A0. It looks exactly like a space, is inserted automatically by word processors and by some web pages, and is not a space as far as any parser is concerned. Code containing one fails to compile with an error that points at a line looking perfectly normal."
+  ],
+  "uses": [
+   "Finding why two apparently identical strings do not match.",
+   "Diagnosing indentation problems in code.",
+   "Spotting non-breaking spaces pasted in from a document or a web page.",
+   "Checking data for trailing whitespace before an import."
+  ],
+  "mistakes": [
+   "Assuming a trim will remove non-breaking spaces. Many trim implementations do not treat U+00A0 as whitespace.",
+   "Fixing the symptom in one file rather than the source that keeps producing it.",
+   "Ignoring zero-width characters, which are invisible even here unless specifically marked."
+  ]
+ },
+ "code-viewer": {
+  "intro": "Code Viewer applies syntax highlighting to pasted code across more than thirty languages, with automatic language detection and the option to open a local file.",
+  "how": [
+   "Paste your code, or use Open File to load one.",
+   "Leave the language on Auto-Detect or pick it explicitly.",
+   "Read the highlighted output, and copy it if you need it."
+  ],
+  "method_title": "Why highlighting helps and where detection fails",
+  "method": [
+   "Syntax highlighting works because colour separates categories at a glance: keywords, strings, comments and numbers. The most practical benefit is spotting an unterminated string, because everything after it turns the wrong colour immediately.",
+   "Automatic detection works from characteristic patterns and is reliable for distinctive languages. It struggles with short snippets and with languages that share syntax, so a handful of lines that could be JavaScript, TypeScript or JSON may be guessed wrongly. Setting the language explicitly always beats guessing."
+  ],
+  "uses": [
+   "Reading unfamiliar code more easily.",
+   "Checking a snippet before pasting it somewhere.",
+   "Spotting an unclosed string or comment.",
+   "Viewing a code file without opening an editor."
+  ],
+  "mistakes": [
+   "Relying on auto-detection for short snippets, where there is not enough signal.",
+   "Assuming highlighting means the code is valid. It is a lexical view, not a compiler."
+  ]
+ },
+ "password-generator": {
+  "intro": "Password Generator creates strong random passwords with configurable length and character sets, generating several at a time so you can pick one.",
+  "how": [
+   "Set the length. The default is 20.",
+   "Choose which character sets to include: uppercase, lowercase, numbers, symbols.",
+   "Generate and copy the one you want."
+  ],
+  "method_title": "Why length beats complexity",
+  "method": [
+   "Password strength is measured in entropy, which is the number of characters in your alphabet raised to the power of the length, expressed in bits. Adding character types widens the alphabet a little; adding length multiplies the possibilities.",
+   "With all four character sets the alphabet is around 94 characters, giving roughly 6.5 bits per character. A 20-character password is therefore about 130 bits, which is far beyond any brute force attack. Dropping to 8 characters gives about 52 bits, which is not."
+  ],
+  "example": {
+   "setup": "How length dominates:",
+   "given": [
+    [
+     "8 characters, all sets",
+     "about 52 bits"
+    ],
+    [
+     "12 characters, all sets",
+     "about 79 bits"
+    ],
+    [
+     "20 characters, all sets",
+     "about 130 bits"
+    ]
+   ],
+   "result": "Each extra character adds more strength than adding another character type does."
+  },
+  "uses": [
+   "Creating a unique password for a new account.",
+   "Replacing a password that has appeared in a breach.",
+   "Generating a random API key or secret.",
+   "Producing a password that meets a site's character requirements."
+  ],
+  "mistakes": [
+   "Reusing a generated password across sites. Uniqueness is the entire point, and a password manager is what makes it practical.",
+   "Choosing a short password because a site allows it. The site's minimum is not a recommendation.",
+   "Typing a strong random password by hand repeatedly, which is what drives people back to weak memorable ones."
+  ],
+  "notes": [
+   "Passwords are generated in your browser and never transmitted."
+  ]
+ },
+ "passphrase-generator": {
+  "intro": "Passphrase Generator builds memorable passphrases from a word list, with configurable word count, separator, capitalisation and an optional trailing number.",
+  "how": [
+   "Choose how many words you want, from 3 to 8.",
+   "Pick a separator: space, dash, dot or none.",
+   "Optionally capitalise each word or add a random number.",
+   "Regenerate until you get one you can remember, then copy it."
+  ],
+  "method_title": "Where passphrase strength comes from",
+  "method": [
+   "Entropy depends on the size of the word list and the number of words, not on how obscure the words look. Each word contributes log2 of the list size in bits, and the words must be chosen randomly, not by you.",
+   "This tool draws from a list of about 200 words, which gives roughly 7.6 bits per word. That is meaningfully less than the classic Diceware list of 7,776 words at 12.9 bits each, so compensate with length: six words here is around 46 bits, and you should treat four words as a minimum rather than a target."
+  ],
+  "uses": [
+   "Creating a password you actually have to type from memory, like a device login or a password manager master password.",
+   "Generating a memorable but random wifi passphrase.",
+   "Replacing a weak password with something both stronger and easier to recall.",
+   "Teaching why random words beat a substituted word."
+  ],
+  "mistakes": [
+   "Choosing the words yourself instead of accepting random ones. Human choice collapses the entropy almost completely.",
+   "Using three words for anything important. That is not enough with a short word list.",
+   "Assuming word substitution adds strength. Password crackers handle leet substitutions as standard."
+  ],
+  "notes": [
+   "Generated locally in your browser. For high-value accounts a longer randomly generated password stored in a password manager is stronger than any memorable phrase."
+  ]
+ },
+ "password-strength": {
+  "intro": "Password Strength Checker estimates entropy and gives a rough time-to-crack figure, entirely in your browser. Nothing you type is sent anywhere.",
+  "how": [
+   "Type or paste a password.",
+   "Read the entropy estimate and the time-to-crack figure.",
+   "Use the reveal button to check what you actually typed."
+  ],
+  "method_title": "What a time-to-crack number really means",
+  "method": [
+   "Entropy measures how many possibilities an attacker would have to search. Time-to-crack converts that into a duration by assuming a guessing rate, and that assumption is doing all the work. An online login attempt might allow a few guesses per second; an offline attack against a stolen database with modern hardware can run billions.",
+   "Treat the figure as a comparison between passwords rather than a prediction. A password showing centuries is meaningfully better than one showing hours, but neither number is a promise."
+  ],
+  "uses": [
+   "Comparing two candidate passwords.",
+   "Demonstrating why length matters more than substitutions.",
+   "Checking whether an existing password is worth replacing.",
+   "Teaching password security with immediate feedback."
+  ],
+  "mistakes": [
+   "Typing a real password you currently use into any checker, including this one. Use a similar-but-different password to test the pattern.",
+   "Trusting a high score for a password built from a common phrase. Entropy calculations assume randomness, and crackers use dictionaries and known password lists first.",
+   "Believing that meeting a site's complexity rules means a password is strong. Those rules produce predictable patterns."
+  ],
+  "notes": [
+   "Runs entirely in your browser with no network requests. Even so, the safest habit is never to type a live password into any website."
+  ]
+ },
+ "credit-card-validator": {
+  "intro": "Credit Card Validator checks a card number against the Luhn algorithm and identifies the card type from its prefix. It runs entirely in your browser.",
+  "how": [
+   "Enter a card number. Spaces and hyphens are ignored.",
+   "Read whether the checksum passes and which network the prefix indicates."
+  ],
+  "method_title": "How the Luhn check works",
+  "method": [
+   "Starting from the rightmost digit, every second digit is doubled. If doubling gives a number above nine, nine is subtracted. All the digits are then summed, and the number is valid if the total divides evenly by ten.",
+   "Card networks are identified by the leading digits: 4 for Visa, 51 to 55 and 2221 to 2720 for Mastercard, 34 and 37 for American Express, 6011 and 65 for Discover."
+  ],
+  "uses": [
+   "Catching a typo in a card number before submitting a form.",
+   "Validating card input on the client side to give immediate feedback.",
+   "Generating valid-format test numbers for a payment integration.",
+   "Understanding how checksum digits catch transcription errors."
+  ],
+  "mistakes": [
+   "Thinking a passing Luhn check means the card is real. It only proves the digits are internally consistent. It says nothing about whether the account exists, is open, or has funds.",
+   "Using it as fraud prevention. Only the payment processor can authorise a card.",
+   "Entering a real card number into any web page you do not have to. Use a test number instead."
+  ],
+  "notes": [
+   "Validation is local and nothing is transmitted. Even so, do not enter a live card number here or anywhere it is not required."
+  ]
+ },
+ "isbn-validator": {
+  "intro": "ISBN Validator checks ISBN-10 and ISBN-13 numbers, formats them with hyphens, and converts between the two.",
+  "how": [
+   "Enter an ISBN. Hyphens and spaces are ignored.",
+   "Read whether the check digit is valid.",
+   "Copy the formatted or converted version."
+  ],
+  "method_title": "Two checksum schemes",
+  "method": [
+   "ISBN-10 multiplies each digit by a descending weight from 10 down to 1 and requires the total to divide evenly by 11. Because the check value can be ten, ISBN-10 uses the letter X for that case, which is why some ISBNs end in a letter.",
+   "ISBN-13 alternates weights of 1 and 3 and requires the total to divide by 10, the same scheme used by EAN barcodes. Converting a 10 to a 13 means dropping the old check digit, prefixing 978, and recomputing, which is why the two forms of the same book differ in more than just length."
+  ],
+  "uses": [
+   "Checking an ISBN before ordering or cataloguing a book.",
+   "Converting between the 10 and 13 digit forms.",
+   "Catching a transcription error from a printed page.",
+   "Formatting an ISBN correctly with hyphens."
+  ],
+  "mistakes": [
+   "Treating the X as an error. In ISBN-10 it is a legitimate check digit meaning ten.",
+   "Assuming a valid ISBN means the book exists. The checksum only proves internal consistency.",
+   "Expecting hyphen positions to be uniform. They vary by registration group and publisher, and are not fixed."
+  ]
+ },
+ "roman-numerals": {
+  "intro": "Roman Numeral Converter goes both ways between numbers and Roman numerals, handling values from 1 up to 3,999,999.",
+  "how": [
+   "Enter a number to convert to Roman numerals.",
+   "Or enter Roman numerals to get the number.",
+   "Copy whichever result you need."
+  ],
+  "method_title": "The subtractive rule",
+  "method": [
+   "The seven symbols are I=1, V=5, X=10, L=50, C=100, D=500 and M=1000. Ordinarily values are written largest first and added together, so MMXXIV builds up from 1000+1000+10+10+(5-1).",
+   "The subtractive rule is the exception: a smaller symbol before a larger one is subtracted, giving IV for 4 and IX for 9 rather than IIII and VIIII. Only six subtractive pairs are valid (IV, IX, XL, XC, CD, CM), which is why IL is not a legal way to write 49. It is XLIX."
+  ],
+  "example": {
+   "setup": "Reading a year:",
+   "given": [
+    [
+     "MMXXIV",
+     "M+M+X+X+IV"
+    ],
+    [
+     "Arithmetic",
+     "1000+1000+10+10+4"
+    ]
+   ],
+   "result": "2024. The IV at the end is the subtractive pair, not a mistake."
+  },
+  "uses": [
+   "Reading a copyright date or a cornerstone inscription.",
+   "Numbering chapters, appendices or outline sections.",
+   "Converting a clock face or a monarch's regnal number.",
+   "Checking a numeral before engraving or printing it."
+  ],
+  "mistakes": [
+   "Inventing subtractive pairs. Only six are valid, so 99 is XCIX and never IC.",
+   "Repeating a symbol more than three times. IIII appears on some clock faces by convention but is not standard notation.",
+   "Expecting a zero. Roman numerals have no symbol for zero and no way to express one."
+  ]
  }
 }
