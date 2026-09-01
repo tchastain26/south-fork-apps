@@ -1,0 +1,191 @@
+{
+"tip-calculator": {
+ "kicker": "About this tool",
+ "intro": "Tip Calculator works out the tip, the new total, and each person's share from three numbers: the bill, the tip percentage, and how many people are splitting it. The four preset buttons cover the percentages people actually use in US restaurants, and every figure updates as you type.",
+ "how": [
+  "Enter the bill amount before tip.",
+  "Type a tip percentage, or tap one of the 15%, 18%, 20%, or 25% presets.",
+  "Set how many people are splitting the bill. One is fine.",
+  "Read the tip, the total, and the per-person amount."
+ ],
+ "method_title": "The math behind it",
+ "method": [
+  "The tip is the bill multiplied by the percentage divided by 100. The total is the bill plus the tip. The per-person figure is the total divided by the number of people.",
+  "Nothing is rounded until it is displayed, so splitting an awkward bill across three or seven people will not quietly lose or invent a cent."
+ ],
+ "example": {
+  "setup": "The tool opens with a typical dinner for two already filled in.",
+  "given": [["Bill amount", "$48.50"], ["Tip percent", "20%"], ["People", "2"]],
+  "result": "Tip $9.70, total $58.20, and $29.10 per person."
+ },
+ "uses": [
+  "Splitting a restaurant bill without doing arithmetic at the table.",
+  "Checking whether a suggested tip on a card terminal is what you actually meant to leave.",
+  "Working out a per-head figure before you ask everyone for cash.",
+  "Budgeting a meal out by working backwards from what you want the total to be."
+ ],
+ "mistakes": [
+  "Tipping on the post-tax total. US convention is to tip on the pre-tax subtotal, which is usually a dollar or two less.",
+  "Tipping on the pre-discount amount after a coupon. If a voucher covered half the meal, most people still tip on what the food would have cost.",
+  "Forgetting that some restaurants add gratuity automatically for large parties, which means an extra tip on top is a second tip."
+ ]
+},
+
+"mortgage-calculator": {
+ "kicker": "About this tool",
+ "intro": "Mortgage Calculator estimates a full monthly housing payment, not just principal and interest. It folds in property tax, home insurance, and PMI, then shows the amortization schedule so you can see how the split between interest and principal changes over the life of the loan.",
+ "how": [
+  "Enter the home price and your down payment. The dollar and percentage fields stay in sync, so you can drive it from either one.",
+  "Set the interest rate and pick a term: 30, 15, 10, or 7 years.",
+  "Adjust the property tax rate, annual insurance, and PMI rate if you know your real numbers.",
+  "Read the monthly payment breakdown and scroll the amortization schedule."
+ ],
+ "method_title": "The amortization formula",
+ "method": [
+  "Principal and interest come from the standard amortizing loan formula: M = P x r x (1 + r)^n / ((1 + r)^n - 1), where P is the amount borrowed, r is the monthly interest rate (the annual rate divided by 12), and n is the number of monthly payments.",
+  "Property tax and insurance are annual figures divided by 12 and added on. PMI is charged as a percentage of the loan amount per year and only applies while the down payment is under 20%, which is why it disappears from the total the moment you cross that line."
+ ],
+ "example": {
+  "setup": "Using the values the calculator loads with:",
+  "given": [["Home price", "$350,000"], ["Down payment", "$70,000 (20%)"], ["Interest rate", "6.75%"], ["Term", "30 years"], ["Property tax", "1.1% / year"], ["Insurance", "$1,200 / year"]],
+  "result": "Borrowing $280,000 gives roughly $1,816 a month in principal and interest, plus about $321 in tax and $100 in insurance, for a total near $2,237. At 20% down there is no PMI."
+ },
+ "uses": [
+  "Checking what a listing price actually costs per month before you tour the house.",
+  "Comparing a 30-year and a 15-year term on the same loan to see the real trade between payment size and total interest.",
+  "Working out how much extra down payment it takes to clear 20% and drop PMI.",
+  "Sanity-checking a lender's quote against an independent calculation."
+ ],
+ "mistakes": [
+  "Budgeting on principal and interest alone. Tax and insurance often add several hundred dollars a month and are usually collected in the same payment through escrow.",
+  "Assuming PMI is permanent. It normally falls away once you have 20% equity, which happens sooner if home values rise.",
+  "Using the advertised rate instead of your quoted rate. Advertised rates usually assume excellent credit and discount points."
+ ],
+ "notes": [
+  "The down payment dollar and percent fields update each other, so changing one corrects the other.",
+  "PMI is applied only when the down payment is below 20%.",
+  "The amortization schedule shows every month, so you can see the exact point where you start paying more principal than interest."
+ ]
+},
+
+"ohms-law": {
+ "kicker": "About this tool",
+ "intro": "Ohm's Law Calculator solves for voltage, current, resistance, and power. Enter any two of the four and it works out the other two, so you do not have to remember which rearrangement of the formula you need.",
+ "how": [
+  "Type any two known values into the voltage, current, resistance, or power fields.",
+  "The remaining two are calculated as soon as there is enough information.",
+  "Press Clear All to start a new calculation."
+ ],
+ "method_title": "The four relationships",
+ "method": [
+  "Ohm's Law itself is V = I x R: voltage equals current times resistance. Power adds a second relationship, P = V x I.",
+  "Combining them gives the two forms people forget: P = I squared x R, and P = V squared / R. Those are what let the calculator finish from any pair of inputs rather than only from voltage and current."
+ ],
+ "example": {
+  "setup": "A 12 volt supply feeding a 4 ohm load:",
+  "given": [["Voltage (V)", "12 V"], ["Resistance (R)", "4 ohm"]],
+  "result": "Current is 12 / 4 = 3 A, and power is 12 x 3 = 36 W."
+ },
+ "uses": [
+  "Sizing a series resistor for an LED so it gets the current it is rated for.",
+  "Checking whether a resistor's wattage rating is high enough for the power it will actually dissipate.",
+  "Working out how much current a load will pull before you choose a power supply or a fuse.",
+  "Checking a measured reading against what the circuit should theoretically be doing."
+ ],
+ "mistakes": [
+  "Mixing milliamps and amps. A 20 mA LED current is 0.02 A, and entering 20 gives an answer that is off by a thousand.",
+  "Confusing a resistor's power rating with the power it dissipates. A quarter-watt resistor asked to dissipate half a watt will run hot and eventually fail.",
+  "Applying Ohm's Law directly to non-ohmic parts. Diodes, LEDs, and transistors do not have a fixed resistance, so the law applies to the resistor in the circuit, not to the semiconductor."
+ ]
+},
+
+"base64-encoder": {
+ "kicker": "About this tool",
+ "intro": "Base64 Encoder converts text into Base64, the encoding used whenever binary or awkward data has to travel through something that only reliably handles plain text. Encoding happens in the page as you type, and the result can be copied in one click.",
+ "how": [
+  "Paste or type the text you want to encode.",
+  "The Base64 output appears immediately below.",
+  "Use Copy Result to put it on the clipboard, or Clear to start over."
+ ],
+ "method_title": "How Base64 works",
+ "method": [
+  "Base64 takes three bytes at a time (24 bits) and re-cuts them into four groups of six bits. Each six-bit group becomes one character from a 64-character alphabet of A-Z, a-z, 0-9, plus, and slash.",
+  "When the input does not divide evenly into three bytes, the output is padded with one or two equals signs so the length is always a multiple of four. Because four characters carry three bytes, Base64 output is always about 33% larger than the input."
+ ],
+ "example": {
+  "setup": "Encoding the two-character string Hi:",
+  "given": [["Input", "Hi"], ["Bytes", "0x48 0x69"], ["Six-bit groups", "010010 000110 1001 + padding"]],
+  "result": "SGk= - three characters of data plus one equals sign, because two bytes is not a whole three-byte group."
+ },
+ "uses": [
+  "Embedding a small image or font directly in CSS or HTML as a data URI, removing a network request.",
+  "Building an HTTP Basic Authentication header, which is the Base64 of username:password.",
+  "Moving configuration or a certificate through a form, a JSON field, or a chat message that would otherwise mangle it.",
+  "Inspecting the payload of a JSON Web Token, whose segments are Base64url."
+ ],
+ "mistakes": [
+  "Treating Base64 as encryption. It is an encoding, not a cipher. Anyone can decode it instantly, so it hides nothing.",
+  "Pasting Base64 into a URL without converting it. Standard Base64 uses plus and slash, which have their own meaning in URLs. The URL-safe variant swaps them for minus and underscore.",
+  "Assuming it saves space. It costs roughly a third more than the original, so it is a compatibility tool, not a compression one."
+ ]
+},
+
+"lil-beat-maker": {
+ "kicker": "About this tool",
+ "intro": "Lil Beat Maker is an eight-track step sequencer that runs in the browser using the Web Audio API. You switch steps on and off in a grid, set the tempo, and it loops. There is no signup, no download, and no sample pack to install.",
+ "how": [
+  "Click cells in the grid to turn steps on. Each row is one drum sound and each column is one step in time.",
+  "Choose 16 or 32 steps depending on whether you want a one-bar or two-bar loop.",
+  "Drag the BPM slider anywhere from 60 to 200.",
+  "Press Play to loop it, Randomize for a starting point, or Load Groove for a preset pattern."
+ ],
+ "method_title": "How the grid maps to time",
+ "method": [
+  "A 16-step grid is one bar of 4/4 counted in sixteenth notes. Columns 1, 5, 9, and 13 are the four downbeats, and everything between them is a subdivision.",
+  "Step length follows directly from the tempo. At 120 BPM a quarter note is half a second, so a sixteenth note is 125 milliseconds and the whole 16-step bar loops every 2 seconds. Halve the tempo and every step doubles in length."
+ ],
+ "example": {
+  "setup": "The classic four-on-the-floor house pattern on a 16-step grid at the default tempo:",
+  "given": [["Kick", "steps 1, 5, 9, 13"], ["Snare or clap", "steps 5 and 13"], ["Closed hat", "every odd step"], ["BPM", "120"]],
+  "result": "A two-second loop with a kick on every beat, a backbeat on 2 and 4, and eighth-note hats running underneath."
+ },
+ "uses": [
+  "Sketching a drum pattern before you commit to opening a full DAW.",
+  "Making a quick loop to practice an instrument over.",
+  "Teaching or learning how a beat is actually built, one subdivision at a time.",
+  "Testing whether an idea in your head works before you spend an hour producing it."
+ ],
+ "notes": [
+  "Everything runs client-side through the Web Audio API, so nothing is uploaded and the page works offline once loaded.",
+  "The 32-step mode gives you two bars, which is enough room for a fill or a variation on the second half.",
+  "Tempo can be changed while the loop is playing."
+ ]
+},
+
+"hangman": {
+ "kicker": "About this game",
+ "intro": "Hangman is the classic word guessing game with category hints, selectable difficulty, full keyboard input, and stats that persist between sessions. Guess the hidden word one letter at a time before you run out of attempts.",
+ "how": [
+  "Pick a category, or leave it on the default for a mixed word list.",
+  "Type a letter or click it on the on-screen keyboard.",
+  "Correct letters fill into the word. Wrong letters cost you one of your remaining attempts.",
+  "Press New Word to start again. Your win and loss record carries over."
+ ],
+ "method_title": "Strategy that actually works",
+ "method": [
+  "Open with vowels. E, A, and O appear in the overwhelming majority of English words, and knowing the vowel skeleton narrows the possibilities faster than anything else.",
+  "Then go after the common consonants in roughly the order R, S, T, L, N. After that, use the pattern rather than frequency: a word ending in double letters, or a visible -ING or -TION, tells you far more than the next most common letter would."
+ ],
+ "uses": [
+  "A short break that does not need an account or an install.",
+  "Vocabulary and spelling practice for kids, with categories to keep it on topic.",
+  "A no-setup classroom or waiting-room game.",
+  "Passing a few minutes without an app store download."
+ ],
+ "notes": [
+  "Stats are stored in your browser only, so they survive a refresh but never leave your device.",
+  "Both the physical keyboard and the on-screen letters work, so it plays the same on phone and desktop.",
+  "Letters already tried are marked, so you cannot waste a guess by repeating one."
+ ]
+}
+}

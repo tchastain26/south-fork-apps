@@ -330,6 +330,44 @@ DISCOVERY_CSS = """
   font-size:.92rem;
   line-height:1.55;
 }
+.sfa-worked{
+  margin-top:.75rem;
+  padding:1rem;
+  border:1px solid rgba(125,219,132,.22);
+  border-radius:14px;
+  background:rgba(17,20,18,.82);
+}
+.sfa-worked p{
+  margin:0 0 .6rem;
+  color:#aab5ac;
+  font-size:.92rem;
+  line-height:1.55;
+}
+.sfa-given{
+  list-style:none;
+  margin:0 0 .75rem;
+  padding:0;
+  display:grid;
+  gap:.3rem;
+}
+.sfa-given li{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.35rem .55rem;
+  border-radius:8px;
+  background:rgba(125,219,132,.06);
+  font-size:.9rem;
+}
+.sfa-given span{color:#aab5ac;}
+.sfa-given strong{color:#e8e8e8;font-weight:600;text-align:right;}
+.sfa-result{
+  margin:0 !important;
+  padding-top:.55rem;
+  border-top:1px solid rgba(125,219,132,.18);
+  color:#cfd8cf !important;
+}
+.sfa-result strong{color:#7ddb84;}
 .sfa-links{
   display:flex;
   flex-wrap:wrap;
@@ -690,9 +728,93 @@ def insert_before_related_or_footer(text: str, block: str) -> str:
     return insert_before_footerish(text, block)
 
 
+CONTENT_PATH = ROOT / "app_content.json"
+APP_CONTENT = json.loads(CONTENT_PATH.read_text(encoding="utf-8")) if CONTENT_PATH.exists() else {}
+
+
+def _esc(v: str) -> str:
+    return html.escape(str(v))
+
+
+def render_rich_content(app: dict[str, str], c: dict) -> str:
+    """Render per-tool content from app_content.json.
+
+    Sections are all optional and are only emitted when that tool actually has
+    something true to say, so a converter, a calculator and a game do not end up
+    with the same headings. That variety is deliberate: identical structure on
+    250 pages is what "low value content" means.
+    """
+    out = []
+    if c.get("intro"):
+        out.append(f"      <p>{_esc(c['intro'])}</p>")
+
+    if c.get("how"):
+        steps = "\n".join(f"        <li>{_esc(x)}</li>" for x in c["how"])
+        out.append(f'      <h3 class="sfa-subhead">How to use it</h3>\n      <ol class="sfa-steps">\n{steps}\n      </ol>')
+
+    if c.get("method"):
+        body = "\n".join(f"      <p>{_esc(x)}</p>" for x in c["method"])
+        out.append(f'      <h3 class="sfa-subhead">{_esc(c.get("method_title", "How it works"))}</h3>\n{body}')
+
+    ex = c.get("example")
+    if ex:
+        rows = "\n".join(
+            f"          <li><span>{_esc(k)}</span><strong>{_esc(v)}</strong></li>" for k, v in ex.get("given", [])
+        )
+        out.append(
+            f'      <h3 class="sfa-subhead">Worked example</h3>\n'
+            f'      <div class="sfa-worked">\n        <p>{_esc(ex["setup"])}</p>\n'
+            f'        <ul class="sfa-given">\n{rows}\n        </ul>\n'
+            f'        <p class="sfa-result"><strong>Result:</strong> {_esc(ex["result"])}</p>\n      </div>'
+        )
+
+    if c.get("uses"):
+        items = "\n".join(f"        <li>{_esc(x)}</li>" for x in c["uses"])
+        out.append(f'      <h3 class="sfa-subhead">When it helps</h3>\n      <ul class="sfa-bullets">\n{items}\n      </ul>')
+
+    if c.get("mistakes"):
+        items = "\n".join(f"        <li>{_esc(x)}</li>" for x in c["mistakes"])
+        out.append(f'      <h3 class="sfa-subhead">Common mistakes</h3>\n      <ul class="sfa-bullets">\n{items}\n      </ul>')
+
+    if c.get("notes"):
+        items = "\n".join(f"        <li>{_esc(x)}</li>" for x in c["notes"])
+        out.append(f'      <h3 class="sfa-subhead">What this tool handles</h3>\n      <ul class="sfa-bullets">\n{items}\n      </ul>')
+
+    for qa in c.get("faq", []):
+        out.append(f'      <h3 class="sfa-subhead">{_esc(qa["q"])}</h3>\n      <p>{_esc(qa["a"])}</p>')
+
+    return "\n".join(out)
+
+
 def inject_feature_section(text: str, app: dict[str, str]) -> str:
     text = remove_marked_block(text, "SFA_FEATURE")
+    content = APP_CONTENT.get(app["slug"])
     hero = HERO_CONTENT.get(app["slug"])
+
+    if content:
+        links = f"""
+      <div class="sfa-links">
+        <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>
+        <a href="{BASE_URL}/about/">About South Fork Apps</a>
+        <a href="{BASE_URL}/privacy/">Privacy</a>
+      </div>""".rstrip()
+        block = f"""<!-- SFA_FEATURE_START -->
+<section class="sfa-feature" aria-labelledby="sfa-feature-title">
+  <div class="sfa-feature-shell">
+    <div class="sfa-feature-copy">
+      <div class="sfa-kicker">{html.escape(content.get("kicker", "About this tool"))}</div>
+      <h2 id="sfa-feature-title">{html.escape(content.get("heading", app["title"]))}</h2>
+{render_rich_content(app, content)}
+{links}
+    </div>
+    <figure class="sfa-preview">
+      <img src="screenshot.jpg" alt="{html.escape(app['title'], quote=True)} interface preview" loading="lazy" decoding="async" width="1600" height="900">
+      <figcaption>Screenshot of the live {html.escape(app['title'])} interface.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- SFA_FEATURE_END -->"""
+        return insert_before_related_or_footer(text, block)
 
     if hero:
         bullets = "\n".join(f"        <li>{html.escape(item)}</li>" for item in hero["uses"])
