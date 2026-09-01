@@ -3069,5 +3069,485 @@
   "notes": [
    "Data is parsed in your browser and never uploaded anywhere."
   ]
+ },
+ "compound-interest": {
+  "intro": "Compound Interest Calculator projects what a starting balance grows to over time, with regular monthly contributions, a choice of compounding frequency, a growth chart and a year-by-year breakdown.",
+  "how": [
+   "Enter your starting principal and annual interest rate.",
+   "Set the time period and how often interest compounds: annually, quarterly, monthly or daily.",
+   "Add a monthly contribution if you plan to keep paying in.",
+   "Read the projection and the year-by-year table."
+  ],
+  "method_title": "Why compounding pulls away from simple interest",
+  "method": [
+   "Simple interest pays only on the original principal. Compound interest pays on the principal plus everything it has already earned, so each period starts from a larger base. That is why the curve bends upward instead of running straight.",
+   "Compounding frequency matters less than people expect. Going from annual to monthly compounding at the same rate adds a fraction of a percent. What actually dominates the result is the rate, the time, and how much you keep adding."
+  ],
+  "example": {
+   "setup": "Using the values the calculator loads with:",
+   "given": [
+    [
+     "Starting principal",
+     "$10,000"
+    ],
+    [
+     "Annual rate",
+     "7%"
+    ],
+    [
+     "Monthly contribution",
+     "$200"
+    ],
+    [
+     "Time period",
+     "20 years"
+    ]
+   ],
+   "result": "About $137,000. Of that, $58,000 is money you put in and roughly $79,000 is growth. The growth overtakes the contributions somewhere around year twelve."
+  },
+  "uses": [
+   "Projecting a retirement or index fund balance over a long horizon.",
+   "Seeing what raising a monthly contribution by $50 does over twenty years.",
+   "Comparing two savings rates over the same period.",
+   "Understanding why starting five years earlier beats contributing more later."
+  ],
+  "mistakes": [
+   "Using a nominal return and forgetting inflation. A 7% return with 3% inflation is about 4% in real buying power.",
+   "Assuming a steady rate. Real markets do not deliver 7% every year, and the order of good and bad years matters once you start withdrawing.",
+   "Confusing APR with APY. APY already includes compounding, APR does not."
+  ],
+  "notes": [
+   "This is a projection tool, not financial advice. Past returns do not predict future ones."
+  ]
+ },
+ "debt-snowball": {
+  "intro": "Debt Snowball Calculator plans a payoff schedule across all your debts, using either the snowball method or the avalanche method, and shows what an extra monthly payment does to your payoff date and total interest.",
+  "how": [
+   "Add each debt with its name, balance, minimum payment and APR.",
+   "Enter the extra amount you can put toward debt each month.",
+   "Switch between Snowball and Avalanche to compare.",
+   "Read the payoff order, the date, and the total interest for each strategy."
+  ],
+  "method_title": "Snowball versus avalanche",
+  "method": [
+   "Both methods pay the minimum on everything and throw all spare money at one debt. They differ only in which one. Snowball targets the smallest balance first. Avalanche targets the highest interest rate first.",
+   "Avalanche always costs less in total interest, sometimes by a lot. Snowball clears individual debts sooner, which produces visible wins early and is why studies of real behaviour find people stick with it more often. The best method is the one you will actually finish, so compare both and be honest about which you will keep doing in month fourteen."
+  ],
+  "example": {
+   "setup": "The debt the calculator loads with:",
+   "given": [
+    [
+     "Balance",
+     "$2,400"
+    ],
+    [
+     "Minimum payment",
+     "$75"
+    ],
+    [
+     "APR",
+     "19.99%"
+    ],
+    [
+     "Extra payment",
+     "$100"
+    ]
+   ],
+   "result": "Paying $175 instead of $75 clears the card in well under half the time and cuts the interest paid dramatically, because at 20% APR most of a minimum payment is interest."
+  },
+  "uses": [
+   "Choosing between snowball and avalanche with your real numbers instead of arguing about it in the abstract.",
+   "Seeing what an extra $50 a month actually buys in months saved.",
+   "Getting a concrete payoff date rather than an open-ended feeling of debt.",
+   "Deciding which card to attack first."
+  ],
+  "mistakes": [
+   "Paying minimums on everything and nothing extra. Minimum payments on a high-APR card are designed to keep the balance alive for years.",
+   "Ignoring the APR entirely. A 6% car loan and a 24% credit card are not the same problem.",
+   "Adding new debt while paying off old debt, which resets the whole plan."
+  ],
+  "notes": [
+   "A planning tool, not financial advice. Check any consolidation or refinancing offer against these figures before accepting it."
+  ]
+ },
+ "savings-goal-planner": {
+  "intro": "Savings Goal Planner answers the two questions people actually have about a savings target: how long it will take at your current rate, or how much you need to save monthly to hit a deadline. Interest is included.",
+  "how": [
+   "Enter your goal amount and what you have saved already.",
+   "For a timeline, enter your monthly contribution and press How long?",
+   "For a required amount, enter your target months and press How much per month?",
+   "Add your account's APY so interest is counted."
+  ],
+  "method_title": "Why interest shortens the timeline",
+  "method": [
+   "Each month your balance earns interest and you add a contribution, so the balance grows from both directions. Over short horizons the interest is small. Over several years it starts to carry real weight.",
+   "At current savings account rates the effect is modest but not nothing, and it is the difference between hitting a goal a month or two early and hitting it late."
+  ],
+  "example": {
+   "setup": "The defaults, saving toward $10,000:",
+   "given": [
+    [
+     "Goal",
+     "$10,000"
+    ],
+    [
+     "Already saved",
+     "$1,500"
+    ],
+    [
+     "Monthly contribution",
+     "$400"
+    ],
+    [
+     "APY",
+     "4.5%"
+    ]
+   ],
+   "result": "About 20 months. Without any interest the same plan takes about 22, so the account is worth roughly two months."
+  },
+  "uses": [
+   "Setting a realistic date for an emergency fund or a down payment.",
+   "Working out the monthly figure needed to hit a fixed deadline.",
+   "Comparing what a higher-yield account actually saves you in time.",
+   "Checking whether a savings goal is achievable before committing to it."
+  ],
+  "mistakes": [
+   "Ignoring the difference between APY and the advertised rate. APY is the one that includes compounding.",
+   "Planning to the last dollar with no slack. Goals that assume zero unexpected expenses fail on the first unexpected expense.",
+   "Forgetting that promotional rates expire, often after twelve months."
+  ],
+  "notes": [
+   "Projections only, not financial advice. Rates change and are not guaranteed."
+  ]
+ },
+ "budget-planner": {
+  "intro": "Budget Planner lets you add your own income and expense categories and shows the totals, the balance left over, and how your spending is distributed.",
+  "how": [
+   "Add each income source with its monthly amount.",
+   "Add each expense category.",
+   "Read the totals and the remaining balance."
+  ],
+  "method_title": "A useful starting split",
+  "method": [
+   "A widely used starting framework is 50/30/20: roughly half of take-home pay to needs (housing, food, transport, minimum debt payments), thirty percent to wants, twenty percent to savings and extra debt repayment.",
+   "It is a benchmark rather than a rule, and it breaks in expensive housing markets where rent alone can exceed fifty percent. Its real value is as a diagnostic: if needs are at seventy percent, the problem is structural and no amount of trimming the wants column will fix it."
+  ],
+  "uses": [
+   "Seeing where the money actually goes rather than estimating.",
+   "Finding the categories that have quietly grown.",
+   "Checking whether a planned expense fits before committing to it.",
+   "Working out how much is genuinely available for savings or debt."
+  ],
+  "mistakes": [
+   "Forgetting irregular expenses. Insurance, car registration and annual subscriptions wreck budgets built only from monthly bills.",
+   "Budgeting from gross pay instead of take-home. Only what lands in the account is spendable.",
+   "Building a budget and never revisiting it. It reflects one month's assumptions and those change."
+  ],
+  "notes": [
+   "Everything stays in your browser. Nothing is uploaded or stored on a server."
+  ]
+ },
+ "tax-bracket": {
+  "intro": "Tax Bracket Calculator works out US federal income tax bracket by bracket for any income and filing status, and shows both the marginal rate and the effective rate. The difference between those two is the point of the tool.",
+  "how": [
+   "Enter your income.",
+   "Choose your filing status: single, married filing jointly, married filing separately, or head of household.",
+   "Pick the tax year.",
+   "Read the tax owed per bracket, plus your marginal and effective rates."
+  ],
+  "method_title": "Marginal is not what you pay on everything",
+  "method": [
+   "US federal income tax is progressive, which means the brackets apply to slices of income rather than all of it. Being in the 22% bracket does not mean 22% of your income goes to federal tax. It means the portion above that bracket's threshold is taxed at 22%, while the income below it is taxed at 10% and 12%.",
+   "Your effective rate is total tax divided by total income, and it is always lower than your marginal rate. This is why the widespread belief that a raise can leave you worse off is false: only the dollars above the threshold are taxed at the higher rate."
+  ],
+  "example": {
+   "setup": "Tax on $75,000 of taxable income, filing single:",
+   "given": [
+    [
+     "First $11,600 at 10%",
+     "$1,160"
+    ],
+    [
+     "Next $35,550 at 12%",
+     "$4,266"
+    ],
+    [
+     "Remaining $27,850 at 22%",
+     "$6,127"
+    ]
+   ],
+   "result": "About $11,553 total. Marginal rate 22%, but effective rate roughly 15.4%."
+  },
+  "uses": [
+   "Understanding what a raise actually costs you in tax.",
+   "Estimating federal tax before filing.",
+   "Comparing filing statuses.",
+   "Working out whether a pre-tax contribution is worth making, which depends on your marginal rate."
+  ],
+  "mistakes": [
+   "Believing a raise into a higher bracket can reduce take-home pay. It cannot, under a progressive system.",
+   "Confusing gross income with taxable income. Deductions come off first, and the standard deduction alone is substantial.",
+   "Forgetting this is federal only. State income tax, FICA and local taxes are all separate."
+  ],
+  "notes": [
+   "An estimate for federal income tax only, and not tax advice. It does not model credits, itemised deductions, capital gains, self-employment tax or state tax. Consult a tax professional for anything that matters."
+  ]
+ },
+ "inflation-calculator": {
+  "intro": "Inflation Calculator shows what an amount of money from one year is worth in another, using an annual inflation rate you can set yourself.",
+  "how": [
+   "Enter the amount and the year it comes from.",
+   "Set the year you want to compare to.",
+   "Adjust the annual inflation rate if you want a different assumption.",
+   "Read the adjusted value."
+  ],
+  "method_title": "How the adjustment is calculated",
+  "method": [
+   "Inflation compounds like interest. An amount is multiplied by one plus the rate, once for every year between the two dates. Over long spans that compounding produces figures that surprise people.",
+   "The rate you choose drives everything. US inflation has averaged somewhere near 3% over the long run, but individual years have ranged from negative to over 8%, so a single average smooths over periods that felt very different to live through."
+  ],
+  "example": {
+   "setup": "The default comparison:",
+   "given": [
+    [
+     "Amount",
+     "$1,000"
+    ],
+    [
+     "From",
+     "2000"
+    ],
+    [
+     "To",
+     "2024"
+    ],
+    [
+     "Annual rate",
+     "3.1%"
+    ]
+   ],
+   "result": "About $2,081. You would need roughly twice as many dollars in 2024 to buy what $1,000 bought in 2000."
+  },
+  "uses": [
+   "Understanding whether a raise actually kept pace with the cost of living.",
+   "Comparing a historical price or salary to today's money.",
+   "Checking whether an investment return beat inflation in real terms.",
+   "Putting an old figure in a document into modern context."
+  ],
+  "mistakes": [
+   "Treating the average rate as what you personally experienced. Housing, healthcare and education have risen far faster than the general index, and electronics have fallen.",
+   "Comparing nominal returns across decades without adjusting. A 5% return in a 9% inflation year is a real loss.",
+   "Assuming a single national figure applies to your city."
+  ],
+  "notes": [
+   "Uses a flat annual rate that you set, not official year-by-year index data. Change the rate to model different assumptions."
+  ]
+ },
+ "roi-calculator": {
+  "intro": "ROI Calculator works out return on investment, total profit, and the annualized return, which is the number that actually lets you compare investments of different lengths.",
+  "how": [
+   "Enter your initial investment and the final value.",
+   "Enter the duration in years.",
+   "Add any additional costs, which are subtracted from the return.",
+   "Read the total ROI and the annualized figure."
+  ],
+  "method_title": "Why annualized return is the number that matters",
+  "method": [
+   "Total ROI is simply the gain divided by what you put in. It is easy to calculate and useless for comparison, because it says nothing about how long the money was tied up.",
+   "Annualized return solves that by expressing the result as a constant yearly rate. A 45% total return sounds impressive until you learn it took three years, at which point it is about 13% a year. Comparing a two-year investment to a ten-year one on total ROI alone will lead you to the wrong conclusion every time."
+  ],
+  "example": {
+   "setup": "The default figures:",
+   "given": [
+    [
+     "Initial investment",
+     "$10,000"
+    ],
+    [
+     "Final value",
+     "$14,500"
+    ],
+    [
+     "Duration",
+     "3 years"
+    ]
+   ],
+   "result": "$4,500 profit, 45% total ROI, and about 13.2% annualized."
+  },
+  "uses": [
+   "Comparing investments that ran for different lengths of time.",
+   "Evaluating a business project or a marketing spend.",
+   "Checking whether a return beat what an index fund would have done.",
+   "Including transaction costs and fees, which is where real returns quietly erode."
+  ],
+  "mistakes": [
+   "Comparing total ROI across different time periods. It is the most common way to talk yourself into a worse investment.",
+   "Leaving out costs. Fees, commissions and taxes are the difference between the headline return and what you keep.",
+   "Ignoring risk. A 13% return from an index fund and a 13% return from a single speculative bet are not the same result."
+  ],
+  "notes": [
+   "A calculation tool, not investment advice."
+  ]
+ },
+ "break-even-calculator": {
+  "intro": "Break-Even Calculator finds how many units you need to sell before you stop losing money, from your fixed costs, variable cost per unit and selling price. It also handles a target profit, and has presets for startup, retail and consulting shapes.",
+  "how": [
+   "Enter your fixed costs: rent, salaries, software, anything that does not change with volume.",
+   "Enter the variable cost per unit and your selling price.",
+   "Add a target profit if you want the volume needed to reach it, not just to break even.",
+   "Try the Startup, Retail or Consulting presets to see typical shapes."
+  ],
+  "method_title": "Contribution margin is the whole calculation",
+  "method": [
+   "Every sale contributes its selling price minus its variable cost toward covering the fixed costs. That difference is the contribution margin, and break-even is simply fixed costs divided by it.",
+   "This is why raising price and cutting variable cost are so much more powerful than raising volume. A one dollar price rise adds a full dollar of contribution per unit, straight to the margin, while selling more units only adds one margin at a time."
+  ],
+  "example": {
+   "setup": "The default business:",
+   "given": [
+    [
+     "Fixed costs",
+     "$12,000"
+    ],
+    [
+     "Variable cost per unit",
+     "$18"
+    ],
+    [
+     "Selling price",
+     "$42"
+    ],
+    [
+     "Contribution margin",
+     "$24"
+    ]
+   ],
+   "result": "500 units to break even. To also make the $5,000 target profit you need 709 units, because ($12,000 + $5,000) / $24."
+  },
+  "uses": [
+   "Checking whether a business idea can work before committing money to it.",
+   "Working out the minimum volume a price point requires.",
+   "Seeing how much a price increase reduces the volume you need.",
+   "Deciding whether a fixed-cost commitment like a lease or a hire is supportable."
+  ],
+  "mistakes": [
+   "Misclassifying costs. A cost that scales with sales is variable, not fixed, and putting it in the wrong column moves break-even substantially.",
+   "Forgetting your own salary. If the plan does not pay you, it has not broken even.",
+   "Treating break-even as the goal. It is the point where you stop losing money, not the point where the business works."
+  ]
+ },
+ "loan-comparison": {
+  "intro": "Loan Comparison puts two loans side by side, with different rates, terms, amounts or extra payments, and shows the monthly cost and the total cost of each.",
+  "how": [
+   "Enter the amount, rate, term and any extra monthly payment for Loan A.",
+   "Do the same for Loan B.",
+   "Compare the monthly payments and, more importantly, the totals."
+  ],
+  "method_title": "Monthly payment is the wrong comparison",
+  "method": [
+   "Lenders compete on monthly payment because it is the number borrowers react to, and it is the easiest number to make look good. Extending the term lowers the monthly payment on any loan while increasing what you pay overall.",
+   "Total cost over the life of the loan is the honest comparison. Compare monthly payment only when the two loans have identical terms, and even then check the total, because fees and rate differences show up there."
+  ],
+  "example": {
+   "setup": "The default comparison, same amount and term, 0.6 points of rate apart:",
+   "given": [
+    [
+     "Loan A",
+     "$25,000 at 6.5% over 5 years"
+    ],
+    [
+     "Loan B",
+     "$25,000 at 5.9% over 5 years"
+    ],
+    [
+     "Monthly",
+     "about $489 versus about $482"
+    ]
+   ],
+   "result": "Roughly $7 a month, which looks trivial, but about $416 over the life of the loan."
+  },
+  "uses": [
+   "Comparing two real offers before signing.",
+   "Seeing what a rate difference is worth in dollars rather than percentage points.",
+   "Testing whether a shorter term is affordable.",
+   "Modelling what overpaying does to each option."
+  ],
+  "mistakes": [
+   "Comparing loans with different terms on monthly payment. The longer one always looks cheaper and usually is not.",
+   "Ignoring fees. Origination and arrangement fees do not appear in the rate but do appear in what you pay.",
+   "Comparing an advertised rate to a quoted one. Advertised rates assume the best credit profile."
+  ]
+ },
+ "currency-converter": {
+  "intro": "Currency Converter converts between more than thirty world currencies using a built-in rate table, with a quick view of one US dollar against every supported currency.",
+  "how": [
+   "Enter an amount.",
+   "Choose the source and target currencies, or use the swap button to reverse them.",
+   "Read the converted amount, or use the quick convert view for a full comparison."
+  ],
+  "method_title": "Why exchange rates are never one number",
+  "method": [
+   "There is no single true exchange rate. The mid-market rate is the midpoint between what buyers and sellers are offering, and it is the figure quoted in news reports. It is not the rate you will get.",
+   "Banks, card networks and exchange bureaux all add a margin, typically anywhere from under one percent to several percent, and some add a fixed fee as well. The mid-market rate is the benchmark to measure an offer against, not a prediction of what you will receive."
+  ],
+  "uses": [
+   "Getting a quick sense of what a foreign price is worth.",
+   "Checking a quoted exchange rate against the benchmark to see the margin.",
+   "Comparing prices across countries when shopping online.",
+   "Estimating a travel budget."
+  ],
+  "mistakes": [
+   "Expecting to receive the quoted rate. Every provider takes a margin somewhere.",
+   "Comparing providers on rate alone while ignoring a fixed transfer fee, which dominates on small amounts.",
+   "Using card conversion at the point of sale when offered the choice. Paying in the local currency is almost always cheaper than letting the terminal convert."
+  ],
+  "notes": [
+   "Uses a built-in rate table rather than a live feed, so figures are indicative and will drift from the market. Check a live source before making a financial decision."
+  ]
+ },
+ "rule-of-72": {
+  "intro": "Rule of 72 tells you roughly how many years it takes to double your money at a given rate of return. Type a rate or drag the slider, with presets for typical savings, index and aggressive returns.",
+  "how": [
+   "Type an annual return rate, or drag the slider anywhere from 0.1% to 30%.",
+   "Use the presets for common cases: savings at 3%, index at 7%, aggressive at 10%.",
+   "Read the years to double."
+  ],
+  "method_title": "Why 72, and where it stops working",
+  "method": [
+   "Divide 72 by the annual percentage return and you get the approximate years to double. At 8% that is 9 years, and the true answer from the compounding formula is 9.01, so the shortcut is remarkably close.",
+   "The approximation is most accurate between about 6% and 10%. It drifts outside that band: at 2% the rule says 36 years and the real figure is 35, while at 20% the rule says 3.6 years and the real figure is closer to 3.8. It is a mental-arithmetic tool, not a precise calculation."
+  ],
+  "example": {
+   "setup": "Three common return rates:",
+   "given": [
+    [
+     "Savings at 3%",
+     "72 / 3 = 24 years"
+    ],
+    [
+     "Index at 7%",
+     "72 / 7 = about 10.3 years"
+    ],
+    [
+     "Aggressive at 10%",
+     "72 / 10 = 7.2 years"
+    ]
+   ],
+   "result": "The gap between 3% and 7% is not twice as fast, it is more than twice, which is the intuition the rule is good at delivering."
+  },
+  "uses": [
+   "Getting a fast sense of a return rate without a calculator.",
+   "Comparing the long-run impact of two rates in your head.",
+   "Understanding what inflation does, by applying the same rule to how fast prices double.",
+   "Explaining compounding to someone quickly."
+  ],
+  "mistakes": [
+   "Using it for precise planning. It is an approximation and drifts at the extremes.",
+   "Applying it to volatile returns as though they were steady. Markets do not deliver the average every year.",
+   "Forgetting it works on inflation too. At 3% inflation, prices double in 24 years."
+  ],
+  "notes": [
+   "A rule of thumb, not financial advice or a guarantee of any return."
+  ]
  }
 }
