@@ -3549,5 +3549,561 @@
   "notes": [
    "A rule of thumb, not financial advice or a guarantee of any return."
   ]
+ },
+ "json-formatter": {
+  "intro": "JSON Formatter beautifies, validates and minifies JSON with syntax highlighting and a choice of 2-space, 4-space or tab indentation. Invalid JSON is reported rather than silently mangled.",
+  "how": [
+   "Paste your JSON, or use Paste to pull it from the clipboard.",
+   "Choose an indent width, then press Format.",
+   "Use Minify to strip whitespace for transport.",
+   "Copy the result."
+  ],
+  "method_title": "What JSON does not allow",
+  "method": [
+   "JSON is defined by RFC 8259 and is stricter than most people remember. Keys must be double-quoted strings. Single quotes are not valid. Trailing commas are not allowed. Comments do not exist in JSON at all.",
+   "Those four rules cause most validation failures, and JavaScript is why: object literals in JavaScript permit all of them, so code that works in a source file fails the moment it is treated as JSON."
+  ],
+  "uses": [
+   "Making an API response readable before you try to understand it.",
+   "Finding the exact position of a syntax error in a config file.",
+   "Minifying JSON before embedding it or sending it over the wire.",
+   "Checking that generated JSON is actually valid before shipping it."
+  ],
+  "mistakes": [
+   "Adding comments to a JSON config. Use JSON5, JSONC or YAML if you need them, because strict parsers will reject the file.",
+   "Leaving a trailing comma after the last element, which is the single most common JSON error.",
+   "Assuming key order is preserved or meaningful. Objects are unordered by specification, even though most parsers keep insertion order in practice."
+  ]
+ },
+ "json-yaml-converter": {
+  "intro": "JSON to YAML Converter translates in both directions, with formatting on either side. YAML is a superset of JSON, so anything valid as JSON converts cleanly, and the interesting direction is the other one.",
+  "how": [
+   "Paste JSON on one side or YAML on the other.",
+   "The conversion runs in the opposite panel.",
+   "Format tidies the output, and Copy takes it."
+  ],
+  "method_title": "Why YAML has more traps than JSON",
+  "method": [
+   "YAML uses indentation for structure, which makes it pleasant to read and unforgiving to edit. Tabs are not permitted for indentation at all, and a single misaligned space changes which parent a key belongs to without producing an error.",
+   "The other trap is type inference. YAML 1.1 interprets a surprising set of unquoted words as booleans, which is how the country code NO becomes false and a version number like 1.10 becomes a float that loses its trailing zero. YAML 1.2 narrowed this, but many parsers still follow the older behaviour, so quote anything that could be misread."
+  ],
+  "uses": [
+   "Converting a JSON config into YAML for a tool that expects it, like Docker Compose or a CI pipeline.",
+   "Turning a YAML config into JSON for a program that only parses JSON.",
+   "Checking what a YAML file actually resolves to, which is not always what it looks like.",
+   "Debugging an indentation problem by seeing the JSON equivalent."
+  ],
+  "mistakes": [
+   "Using tabs to indent YAML. The specification forbids it and the error message is rarely helpful.",
+   "Leaving values like yes, no, on, off and version numbers unquoted, where type inference will change them.",
+   "Assuming a converted YAML file keeps its comments. Comments do not exist in JSON, so a round trip through it destroys them."
+  ]
+ },
+ "csv-json-converter": {
+  "intro": "CSV to JSON Converter goes both ways, with configurable delimiters (comma, tab, semicolon, pipe) and a header row option that turns the first line into object keys.",
+  "how": [
+   "Paste CSV or JSON into the input.",
+   "Set the delimiter and whether the first row is a header.",
+   "Press CSV to JSON or JSON to CSV.",
+   "Copy the result."
+  ],
+  "method_title": "The shape mismatch between the two formats",
+  "method": [
+   "CSV is flat and rectangular: rows and columns, one value per cell. JSON is a tree that can nest objects and arrays to any depth. Converting a flat CSV up into JSON is straightforward. Converting nested JSON down into CSV is lossy by nature, because there is nowhere for the nesting to go.",
+   "A header row is what makes CSV to JSON useful, because the column names become the object keys. Without it you get positional arrays, which are valid but far harder to work with downstream."
+  ],
+  "uses": [
+   "Turning a spreadsheet export into JSON for an API or a script.",
+   "Flattening a JSON API response into something a spreadsheet can open.",
+   "Converting between two systems that each insist on their own format.",
+   "Inspecting tabular data as objects to check the field names."
+  ],
+  "mistakes": [
+   "Converting deeply nested JSON to CSV and expecting the structure to survive. It will be flattened or dropped.",
+   "Forgetting that CSV has no types. Every value arrives as a string, so numbers and booleans need converting explicitly.",
+   "Choosing a delimiter that appears inside the data without quoting, which shifts every column after it."
+  ]
+ },
+ "regex-tester": {
+  "intro": "Regex Tester runs a regular expression against your text in real time, highlighting every match and showing the capture groups, so you can build a pattern by watching it work rather than by guessing.",
+  "how": [
+   "Enter your regular expression.",
+   "Paste the text to test it against.",
+   "Watch matches highlight as you type, and read the capture groups for each match."
+  ],
+  "method_title": "Greedy and lazy quantifiers",
+  "method": [
+   "By default quantifiers are greedy: they match as much as possible and then give characters back only if the rest of the pattern fails. That is why matching an HTML tag with an angle bracket, dot-star, angle bracket swallows everything from the first opening bracket to the last closing one.",
+   "Adding a question mark makes a quantifier lazy, so it matches as little as possible. That single character is the fix for the majority of patterns that match far more than intended."
+  ],
+  "uses": [
+   "Building a pattern incrementally with live feedback instead of trial and error in code.",
+   "Testing a pattern against real sample data before deploying it.",
+   "Understanding an inherited regex by watching what it actually matches.",
+   "Extracting fields from log lines or semi-structured text."
+  ],
+  "mistakes": [
+   "Nesting quantifiers, which can cause catastrophic backtracking. A pattern like nested repetition can run for effectively forever on a non-matching input, and this is a real denial-of-service vector.",
+   "Parsing HTML with regex. HTML is not a regular language and the approach fails on any nontrivial document.",
+   "Forgetting to anchor a pattern. Without a start and end anchor, a validation regex passes any string that merely contains a match."
+  ]
+ },
+ "hash-generator": {
+  "intro": "Hash Generator produces SHA-256, SHA-512, SHA-1 and SHA-384 digests from any text, in hex or Base64, computed in your browser using the Web Crypto API.",
+  "how": [
+   "Type or paste your input text.",
+   "All four digests are computed immediately.",
+   "Switch the output encoding between hex and Base64.",
+   "Copy the hash you need."
+  ],
+  "method_title": "Hashing is not encryption",
+  "method": [
+   "A hash is one-way. It turns input of any size into a fixed-length fingerprint, and there is no operation that recovers the original from the digest. Encryption is two-way by definition. Confusing the two leads people to hash something they later need back.",
+   "The same input always gives the same digest, and changing a single character changes the entire output. That is what makes hashes useful for verifying that a file or a message has not been altered."
+  ],
+  "uses": [
+   "Verifying a downloaded file against a published checksum.",
+   "Checking whether two files or two blocks of text are identical.",
+   "Generating a deterministic key or cache identifier from content.",
+   "Comparing a value against a stored digest."
+  ],
+  "mistakes": [
+   "Using SHA-1 for anything security-related. A practical collision was demonstrated in 2017, so it is fine for non-adversarial checksums and unfit for signatures.",
+   "Hashing passwords with a raw SHA function. Fast hashes are exactly wrong for passwords, which need a deliberately slow algorithm like bcrypt, scrypt or Argon2 with a per-user salt.",
+   "Assuming a hash hides data. Short or predictable inputs are trivially recovered from a lookup table."
+  ],
+  "notes": [
+   "Everything is computed locally with the Web Crypto API. Nothing you type is transmitted."
+  ]
+ },
+ "jwt-decoder": {
+  "intro": "JWT Decoder splits a JSON Web Token into its header, payload and signature, decodes the claims, and shows the expiry in readable form. Decoding happens entirely in your browser.",
+  "how": [
+   "Paste the token.",
+   "Read the decoded header and payload.",
+   "Check the expiry and the standard claims."
+  ],
+  "method_title": "A JWT is signed, not encrypted",
+  "method": [
+   "A token is three Base64url segments separated by dots: header, payload, signature. The first two are merely encoded, not encrypted, which means anyone holding the token can read every claim inside it without any key at all.",
+   "The signature proves the token was issued by someone holding the signing key and has not been altered. It does not keep the contents private. This is the single most consequential misunderstanding about JWTs, and it is why a token must never carry anything you would not be willing to hand to the bearer."
+  ],
+  "uses": [
+   "Checking what claims a token actually carries while debugging auth.",
+   "Reading the expiry to work out whether a token has lapsed.",
+   "Confirming which issuer and audience a token names.",
+   "Inspecting a token returned by an API you are integrating with."
+  ],
+  "mistakes": [
+   "Putting secrets in the payload. It is readable by anyone with the token.",
+   "Treating a decoded token as verified. Decoding does not check the signature, and only server-side verification with the key proves anything.",
+   "Accepting the alg header from the token itself. Allowing alg to be none, or letting the token choose the algorithm, is a well-known authentication bypass."
+  ],
+  "notes": [
+   "Decoding happens locally. Tokens are not sent anywhere, which matters because a token is a live credential."
+  ]
+ },
+ "uuid-generator": {
+  "intro": "UUID Generator produces v4 or v7 identifiers in batches, with formatting options for uppercase, braces, and hyphen removal.",
+  "how": [
+   "Choose UUID v4 (random) or v7 (time-ordered).",
+   "Set how many you want.",
+   "Toggle uppercase, braces or hyphen removal to match the format your system expects.",
+   "Generate and copy."
+  ],
+  "method_title": "v4 versus v7, and why v7 exists",
+  "method": [
+   "A v4 UUID is 122 bits of randomness. Collisions are effectively impossible, and the values are entirely unordered, which is exactly the problem. Used as a primary key, random UUIDs scatter inserts across a database index, causing page splits and poor cache behaviour at scale.",
+   "A v7 UUID, standardised in RFC 9562, puts a millisecond timestamp in the leading bits and fills the rest with randomness. It keeps the uniqueness while sorting roughly in creation order, so inserts land together in the index. If you are choosing a UUID for a database key today, v7 is usually the better default."
+  ],
+  "uses": [
+   "Generating primary keys that can be created without asking a central server.",
+   "Creating correlation IDs for tracing a request across services.",
+   "Producing unique filenames or object keys.",
+   "Seeding test data with realistic identifiers."
+  ],
+  "mistakes": [
+   "Using v4 as a clustered primary key in a large table, where the random distribution hurts insert performance.",
+   "Assuming a UUID is secret. It is unique, not unguessable in any security sense, and v7 leaks its creation time.",
+   "Storing UUIDs as 36-character strings when the database has a native 16-byte type, which more than doubles the storage and index size."
+  ]
+ },
+ "base-converter": {
+  "intro": "Base Converter converts numbers between any base from 2 to 36, covering binary, octal, decimal, hexadecimal, base 32 and base 36, with click-to-copy output for every common base at once.",
+  "how": [
+   "Enter a number and select the base it is currently in.",
+   "Read the conversions across all common bases.",
+   "Set a custom output base anywhere from 2 to 36 if you need one that is not listed."
+  ],
+  "method_title": "Why 36 is the ceiling",
+  "method": [
+   "Positional notation needs one distinct symbol per digit value. Base 10 uses 0 to 9. Bases above that borrow letters: a is 10, b is 11, and so on. Once you have used all ten digits and all twenty-six letters you have thirty-six symbols, and that is the limit without inventing new characters or becoming case sensitive.",
+   "Base 16 dominates in computing because one hex digit maps to exactly four bits, so two hex digits are precisely one byte. That clean alignment is why memory addresses, colour codes and byte dumps are all written in hex rather than decimal."
+  ],
+  "uses": [
+   "Converting a hex colour or memory address to decimal.",
+   "Reading binary flag values as a decimal number.",
+   "Working with base 36 identifiers, which pack more value per character than hex.",
+   "Checking a value across several bases while debugging."
+  ],
+  "mistakes": [
+   "Forgetting a base prefix when pasting into code. 0x means hex, 0b means binary, and a leading 0 means octal in some languages.",
+   "Assuming letters are case sensitive. In base 36 they are conventionally not, but some systems disagree.",
+   "Converting a floating point number and expecting an exact result. Fractions that terminate in one base often repeat forever in another."
+  ]
+ },
+ "binary-hex-converter": {
+  "intro": "Binary Hex Converter moves a value between binary, hexadecimal, decimal and octal at once, with copy buttons on each representation.",
+  "how": [
+   "Type a value into whichever base you have.",
+   "The other three update immediately.",
+   "Copy whichever representation you need."
+  ],
+  "method_title": "How the four bases line up",
+  "method": [
+   "Binary, octal and hex are all powers of two, which is why converting between them requires no arithmetic. One octal digit is exactly three bits, one hex digit is exactly four. You can convert by grouping bits rather than dividing.",
+   "Decimal is the odd one out. It is not a power of two, so decimal conversion requires real division and is the only one of the four you cannot do by regrouping digits."
+  ],
+  "example": {
+   "setup": "One byte across the four bases:",
+   "given": [
+    [
+     "Binary",
+     "11111111"
+    ],
+    [
+     "Hex",
+     "FF"
+    ],
+    [
+     "Decimal",
+     "255"
+    ],
+    [
+     "Octal",
+     "377"
+    ]
+   ],
+   "result": "Two hex digits cover one byte exactly, which is why byte dumps are written in hex."
+  },
+  "uses": [
+   "Reading bitmask and flag values while debugging.",
+   "Converting a hex colour component to decimal.",
+   "Working with file permissions or network masks.",
+   "Checking a value from a hex dump."
+  ],
+  "mistakes": [
+   "Dropping leading zeros in binary, which changes the bit width even though the value is the same.",
+   "Mixing up octal and decimal when a value has a leading zero, which some languages read as octal."
+  ]
+ },
+ "timestamp-converter": {
+  "intro": "Unix Timestamp Converter goes both ways between epoch timestamps and readable dates, with a Set to Now button and copy buttons on every output format.",
+  "how": [
+   "Enter a Unix timestamp to get a readable date.",
+   "Or enter a date and time to get the timestamp.",
+   "Press Set to Now for the current moment.",
+   "Copy whichever format you need."
+  ],
+  "method_title": "Seconds, milliseconds, and 2038",
+  "method": [
+   "A Unix timestamp counts seconds since midnight UTC on 1 January 1970. JavaScript, however, counts milliseconds, which is why a timestamp pasted from a browser is a thousand times larger and lands in the year 55,000 if read as seconds. Ten digits is seconds, thirteen is milliseconds.",
+   "The other well-known limit is 2038. A signed 32-bit integer overflows on 19 January 2038, which will break any system still storing timestamps that way. Most modern systems use 64-bit values and are unaffected, but the problem persists in embedded and legacy code."
+  ],
+  "uses": [
+   "Reading timestamps out of a log file or a database row.",
+   "Converting a date into the epoch value an API expects.",
+   "Checking a token or cookie expiry.",
+   "Debugging a timezone problem by comparing UTC to local time."
+  ],
+  "mistakes": [
+   "Confusing seconds with milliseconds. Count the digits before assuming.",
+   "Forgetting that epoch time is always UTC. Displaying it in local time without converting shifts everything by your offset.",
+   "Assuming timestamps are unique. Two events in the same second share one, which matters when sorting."
+  ]
+ },
+ "cron-builder": {
+  "intro": "Cron Builder assembles a cron expression from five plain fields and explains in English what it will actually do, with presets for the common schedules.",
+  "how": [
+   "Fill in the minute, hour, day of month, month, and day of week fields.",
+   "Read the plain-English description of what it means.",
+   "Use a preset for a common schedule, then adjust from there.",
+   "Copy the finished expression."
+  ],
+  "method_title": "The trap in the two day fields",
+  "method": [
+   "Cron has five fields in order: minute, hour, day of month, month, day of week. An asterisk means every value, and a slash sets a step, so slash-five in the minute field means every five minutes.",
+   "The genuine trap is that day-of-month and day-of-week are combined with OR, not AND, whenever both are restricted. An expression asking for the 1st of the month and Monday does not mean the first Monday. It fires on the 1st and on every Monday. If you want the first Monday, cron cannot express it and you have to check the date inside your job."
+  ],
+  "example": {
+   "setup": "A common schedule:",
+   "given": [
+    [
+     "Expression",
+     "0 9 * * 1-5"
+    ],
+    [
+     "Fields",
+     "minute 0, hour 9, any day, any month, weekdays 1-5"
+    ]
+   ],
+   "result": "Nine o'clock every weekday morning."
+  },
+  "uses": [
+   "Writing a schedule without looking up the field order again.",
+   "Checking that an inherited cron line does what someone claims.",
+   "Building a step or range expression correctly.",
+   "Understanding why a job is firing more often than expected."
+  ],
+  "mistakes": [
+   "Restricting both day fields and expecting an AND. It is an OR, and this catches almost everyone once.",
+   "Forgetting that cron runs in the server's timezone, which may not be yours and may not observe daylight saving the way you expect.",
+   "Using both 0 and 7 for Sunday inconsistently. Most implementations accept either, which is fine until one does not."
+  ]
+ },
+ "chmod-calculator": {
+  "intro": "Chmod Calculator converts between a checkbox grid of Unix permissions, the octal number, and the symbolic notation, so you can see all three representations of the same permission set.",
+  "how": [
+   "Tick the read, write and execute boxes for owner, group and others.",
+   "Or type an octal value directly.",
+   "Read the symbolic notation and the matching chmod command."
+  ],
+  "method_title": "Why the numbers are 4, 2 and 1",
+  "method": [
+   "Each permission is one bit: read is 4, write is 2, execute is 1. Because they are powers of two, adding them can only produce one combination for each total, so 7 is unambiguously read plus write plus execute, and 5 is read plus execute.",
+   "The three digits are owner, group and others in that order. 755 means the owner can do everything while everyone else can read and execute, which is the normal setting for a program or a directory. 644 is the usual setting for a plain file."
+  ],
+  "example": {
+   "setup": "The two settings you will use most:",
+   "given": [
+    [
+     "755",
+     "rwxr-xr-x, owner full, others read and execute"
+    ],
+    [
+     "644",
+     "rw-r--r--, owner read and write, others read only"
+    ]
+   ],
+   "result": "Directories need the execute bit to be entered at all, which is why a directory is 755 and not 644."
+  },
+  "uses": [
+   "Setting permissions correctly on a web server without guessing.",
+   "Understanding what an existing permission string means.",
+   "Fixing a permission-denied error.",
+   "Converting between the octal and symbolic forms."
+  ],
+  "mistakes": [
+   "Using 777. It grants write access to everyone and is almost never the right answer, though it is the most commonly suggested fix online.",
+   "Removing execute from a directory, which makes it impossible to enter even with read permission.",
+   "Forgetting that permissions on a symlink are generally irrelevant, since the target's permissions are what apply."
+  ]
+ },
+ "http-status-codes": {
+  "intro": "HTTP Status Codes is a complete reference with descriptions, common causes and fix notes, filterable by class from 1xx through 5xx.",
+  "method_title": "What each class means",
+  "method": [
+   "The first digit tells you who has the problem. 1xx is informational, 2xx means it worked, 3xx means the resource is somewhere else, 4xx means the client sent something wrong, and 5xx means the server failed while handling a request that was fine.",
+   "That 4xx and 5xx split is the one that matters operationally. A wave of 4xx responses points at a client, an integration or a bad link. A wave of 5xx points at your own server and is always your problem."
+  ],
+  "example": {
+   "setup": "Pairs that are routinely confused:",
+   "given": [
+    [
+     "301 vs 302",
+     "permanent versus temporary redirect"
+    ],
+    [
+     "401 vs 403",
+     "not authenticated versus authenticated but not allowed"
+    ],
+    [
+     "404 vs 410",
+     "not found versus deliberately gone"
+    ]
+   ],
+   "result": "301 is cached hard by browsers and search engines, so using it for a temporary move is very difficult to undo."
+  },
+  "uses": [
+   "Diagnosing an API response you have not seen before.",
+   "Choosing the correct status to return from your own endpoint.",
+   "Explaining an error to someone without the jargon.",
+   "Checking whether a redirect should be permanent or temporary."
+  ],
+  "mistakes": [
+   "Returning 200 with an error body. It tells every client and cache that the request succeeded.",
+   "Using 301 for a temporary move. Browsers cache it aggressively and users may not reach the original again.",
+   "Using 403 when you mean 401. The distinction is whether the request lacked credentials or had credentials that were insufficient."
+  ]
+ },
+ "url-encoder": {
+  "intro": "URL Encoder converts text into percent-encoded form so it can travel safely inside a URL.",
+  "how": [
+   "Paste the text you want to encode.",
+   "The percent-encoded output appears immediately.",
+   "Copy it into your URL."
+  ],
+  "method_title": "Why certain characters have to be escaped",
+  "method": [
+   "A URL uses specific characters as structure. A question mark starts the query string, an ampersand separates parameters, an equals sign splits a name from its value, and a hash starts the fragment. If your data contains any of them, it will be read as structure rather than content.",
+   "Percent encoding replaces the character with a percent sign and its hexadecimal byte value, so a space becomes %20 and an ampersand becomes %26. Note that the two JavaScript functions differ: encodeURIComponent escapes the reserved characters and is what you want for a single parameter value, while encodeURI leaves them alone because it expects a whole URL."
+  ],
+  "uses": [
+   "Putting a value containing spaces or symbols into a query parameter.",
+   "Encoding a URL that is being passed as a parameter inside another URL.",
+   "Fixing a link that breaks at the first ampersand.",
+   "Preparing a search term for an API call."
+  ],
+  "mistakes": [
+   "Encoding an entire URL when you meant to encode one parameter, which escapes the slashes and colons and breaks it.",
+   "Double encoding. Running an already-encoded string through again turns %20 into %2520.",
+   "Assuming a plus sign means a space everywhere. It does in form-encoded bodies, but in a URL path a plus is a literal plus."
+  ]
+ },
+ "url-decoder": {
+  "intro": "URL Decoder turns percent-encoded strings back into readable text.",
+  "how": [
+   "Paste the encoded string.",
+   "The decoded text appears immediately.",
+   "Copy the result."
+  ],
+  "method_title": "Reading an encoded URL",
+  "method": [
+   "Each percent sign is followed by two hexadecimal digits giving a byte value. %20 is a space, %2F is a slash, %3A is a colon. For non-ASCII characters, UTF-8 means one character can become several percent sequences, which is why an accented letter appears as two.",
+   "Decoding once is almost always correct. If the result still contains percent sequences, the string was double encoded somewhere upstream, and that is worth fixing at the source rather than decoding twice forever."
+  ],
+  "uses": [
+   "Reading a long tracking or redirect URL to see where it actually points.",
+   "Understanding a parameter value in a log entry.",
+   "Debugging a link that is not resolving to what you expected.",
+   "Recovering readable text from an encoded form submission."
+  ],
+  "mistakes": [
+   "Decoding repeatedly until nothing changes, which hides a double-encoding bug rather than fixing it.",
+   "Decoding a URL and then following it without reading it. Encoded redirect parameters are a standard phishing technique.",
+   "Treating a plus as a literal plus in a form-encoded string, where it means a space."
+  ]
+ },
+ "base64-decoder": {
+  "intro": "Base64 Decoder converts Base64 back into readable text, in your browser.",
+  "how": [
+   "Paste the Base64 string.",
+   "The decoded text appears immediately.",
+   "Copy the result."
+  ],
+  "method_title": "What decoding can and cannot tell you",
+  "method": [
+   "Base64 packs three bytes into four characters, so valid input is always a multiple of four characters, padded with one or two equals signs where needed. A string whose length is not a multiple of four is either truncated or is a URL-safe variant.",
+   "The URL-safe variant replaces plus with minus and slash with underscore so the value survives being placed in a URL. JWT segments use it, which is why a token segment sometimes fails a strict Base64 decoder."
+  ],
+  "uses": [
+   "Reading an encoded value out of a config file or a header.",
+   "Decoding a JWT segment to inspect its claims.",
+   "Recovering text from a data URI.",
+   "Checking what an encoded API payload actually contains."
+  ],
+  "mistakes": [
+   "Assuming Base64 is encryption. It is an encoding and offers no protection whatsoever.",
+   "Failing on URL-safe input without recognising it. Convert minus and underscore back to plus and slash first.",
+   "Decoding binary content as text, which produces unreadable output because it was never text to begin with."
+  ]
+ },
+ "caesar-cipher": {
+  "intro": "Caesar Cipher shifts each letter by a fixed number of positions, with a ROT13 preset. It encodes and decodes, since a shift cipher is reversed by shifting the other way.",
+  "how": [
+   "Enter your text and set the rotation amount.",
+   "Press ROT13 for the classic 13-position shift.",
+   "Copy either the encoded or decoded output."
+  ],
+  "method_title": "Why ROT13 is its own inverse",
+  "method": [
+   "A Caesar cipher shifts every letter a fixed distance through the alphabet, wrapping from Z back to A. Julius Caesar reportedly used a shift of three.",
+   "ROT13 shifts by exactly half of the 26-letter alphabet, so applying it twice returns the original text. That self-inverse property is why it became the convention for hiding spoilers and punchlines in early internet forums: one function both encodes and decodes."
+  ],
+  "uses": [
+   "Hiding a spoiler or a puzzle answer from casual reading.",
+   "Teaching how substitution ciphers work and why they fail.",
+   "Solving a Caesar-shifted puzzle by trying each rotation.",
+   "Light obfuscation where the goal is preventing accidental reading, not security."
+  ],
+  "mistakes": [
+   "Using it for anything that needs to stay secret. With only 25 possible shifts, brute force takes a fraction of a second, and letter frequency analysis breaks it instantly.",
+   "Assuming it obscures non-letter characters. Numbers, punctuation and spaces pass through unchanged, which leaks the structure of the message."
+  ]
+ },
+ "vigenere-cipher": {
+  "intro": "Vigenere Cipher encodes and decodes using a repeating keyword, which shifts each letter by a different amount depending on its position.",
+  "how": [
+   "Enter your message and a keyword.",
+   "Choose encode or decode.",
+   "Copy the result. The same keyword is needed to reverse it."
+  ],
+  "method_title": "Polyalphabetic, and why that mattered",
+  "method": [
+   "A Caesar cipher applies one shift to every letter, so letter frequencies survive and give it away. Vigenere uses a keyword where each letter specifies a different shift, cycling as it goes, so the same plaintext letter encodes differently depending on where it falls.",
+   "That flattening of letter frequency made it genuinely strong for three centuries, and it was known as le chiffre indechiffrable. Kasiski published a general break in 1863: repeated sequences in the ciphertext reveal the key length, after which the message splits into several Caesar ciphers that each fall to frequency analysis."
+  ],
+  "uses": [
+   "Learning how classical cryptography advanced beyond simple substitution.",
+   "Solving a Vigenere puzzle in a game or a CTF.",
+   "Teaching why key length and key reuse matter.",
+   "Historical or recreational encoding."
+  ],
+  "mistakes": [
+   "Using it for real security. It has been broken since 1863 and offers nothing against modern analysis.",
+   "Using a short keyword, which shortens the cycle and makes the break easier.",
+   "Assuming a long message is safer. Longer ciphertext gives an attacker more repetitions to work with, not fewer."
+  ]
+ },
+ "encrypt-decrypt": {
+  "intro": "Encrypt / Decrypt secures a message with a passphrase using AES-256 in your browser. The message and the passphrase never leave your device.",
+  "how": [
+   "Type your message and choose a passphrase.",
+   "Press Encrypt Message and copy the encrypted output.",
+   "To reverse it, paste the encrypted text with the same passphrase and press Decrypt Message."
+  ],
+  "method_title": "What AES-256 does and what it depends on",
+  "method": [
+   "AES-256 is a symmetric cipher, meaning the same passphrase both encrypts and decrypts. It is the standard used for classified government data and is not the weak point in any realistic attack.",
+   "Your passphrase is. The key is derived from what you type, so a short or common passphrase can be attacked directly regardless of how strong the cipher is. A long random passphrase is the whole of your security here."
+  ],
+  "uses": [
+   "Encrypting a note before storing it somewhere you do not fully trust.",
+   "Sending sensitive text through a channel that is not end-to-end encrypted, with the passphrase shared separately.",
+   "Keeping a private note inside an otherwise readable document.",
+   "Learning how symmetric encryption behaves."
+  ],
+  "mistakes": [
+   "Sending the passphrase through the same channel as the message. If both travel together, the encryption achieves nothing.",
+   "Choosing a memorable passphrase. Memorable means guessable, and the cipher cannot save you from that.",
+   "Losing the passphrase. There is no recovery. The message is gone permanently."
+  ],
+  "notes": [
+   "Encryption happens locally in your browser. Nothing is uploaded. This is a convenience tool, not a substitute for a properly audited system when the stakes are high."
+  ]
+ },
+ "sql-pretty-printer": {
+  "intro": "SQL Pretty Printer reformats messy SQL into indented, readable form, with optional keyword uppercasing and a choice of 2 or 4 space indentation.",
+  "how": [
+   "Paste your SQL query.",
+   "Choose the indent width and whether to uppercase keywords.",
+   "Press Format and copy the result."
+  ],
+  "method_title": "Why formatting matters more in SQL than most languages",
+  "method": [
+   "SQL queries arrive as a single line far more often than other code, because they are generated by ORMs, copied out of logs, or pasted from application source. A three-hundred-character line with four nested joins is effectively unreadable.",
+   "The conventional layout puts each major clause on its own line and indents the joins and conditions beneath it. Uppercasing keywords is a long-standing convention that separates the language from your table and column names at a glance, which is the fastest way to find where a clause begins."
+  ],
+  "uses": [
+   "Making a query from an application log readable before debugging it.",
+   "Tidying generated SQL to understand what an ORM produced.",
+   "Formatting a query before committing it to source control.",
+   "Reviewing someone else's query without reformatting it by hand."
+  ],
+  "mistakes": [
+   "Reformatting a query with string literals containing SQL keywords, which a naive formatter may uppercase inside the string.",
+   "Assuming formatting changes performance. It does not, and a badly performing query formats just as prettily.",
+   "Reformatting a stored query in place without testing, since some dialects are sensitive to how comments and line breaks fall."
+  ]
  }
 }
