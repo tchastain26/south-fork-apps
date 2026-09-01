@@ -1992,7 +1992,25 @@
   "mistakes": [
    "Optimising for a score. Readability formulas measure sentence and word length, not clarity, and you can score well while making no sense.",
    "Applying general readability targets to technical writing, where necessary terminology is long by nature."
-  ]
+  ],
+  "example": {
+   "setup": "Reading vocabulary richness:",
+   "given": [
+    [
+     "Total words",
+     "1,000"
+    ],
+    [
+     "Unique words",
+     "300"
+    ],
+    [
+     "Ratio",
+     "0.3"
+    ]
+   ],
+   "result": "A low ratio means heavy repetition. Sometimes deliberate, often a draft that needs editing."
+  }
  },
  "reading-time-calculator": {
   "intro": "Reading Time Calculator estimates how long a piece takes to read, with an adjustable reading speed so you can model a fast skim or a careful read.",
@@ -2227,7 +2245,25 @@
   "mistakes": [
    "Assuming character length equals visual width. In a proportional font an i and a w are very different widths.",
    "Counting trailing whitespace as content. Trim first if the trailing spaces are not meaningful."
-  ]
+  ],
+  "example": {
+   "setup": "Finding malformed rows in an export:",
+   "given": [
+    [
+     "Typical row",
+     "about 60 characters"
+    ],
+    [
+     "Shortest rows",
+     "8 characters, truncated"
+    ],
+    [
+     "Longest row",
+     "240 characters, a failed split"
+    ]
+   ],
+   "result": "Sorting by length puts both kinds of broken row at the ends where you can see them."
+  }
  },
  "dedupe-lines": {
   "intro": "Duplicate Line Remover strips repeated lines from a list, leaving one of each. The original order of the first occurrences is preserved.",
@@ -2251,7 +2287,25 @@
    "Not trimming first. Invisible trailing whitespace is the single most common reason duplicates survive.",
    "Ignoring case differences when they are not meaningful, leaving Apple and apple as two entries.",
    "Deduplicating data where the repeats were meaningful, such as counts or transaction records."
-  ]
+  ],
+  "example": {
+   "setup": "Why duplicates survive deduplication:",
+   "given": [
+    [
+     "apple",
+     "kept"
+    ],
+    [
+     "apple (trailing space)",
+     "kept, not a match"
+    ],
+    [
+     "Apple",
+     "kept, different case"
+    ]
+   ],
+   "result": "Trim first, and fold case if case is not meaningful, then deduplicate."
+  }
  },
  "trim-lines": {
   "intro": "Line Trimmer removes leading and trailing whitespace from every line, leaving the content and the line structure intact.",
@@ -2274,7 +2328,25 @@
   "mistakes": [
    "Trimming code where leading whitespace is the indentation and carries meaning. Python in particular will break.",
    "Assuming trimming fixes non-breaking spaces. A non-breaking space is a different character and often survives a trim."
-  ]
+  ],
+  "example": {
+   "setup": "Why two identical-looking values fail to match:",
+   "given": [
+    [
+     "Value A",
+     "\"apple\""
+    ],
+    [
+     "Value B",
+     "\"apple \" (trailing space)"
+    ],
+    [
+     "Comparison",
+     "not equal"
+    ]
+   ],
+   "result": "After trimming both, they match. This is the single most common cause of a failed lookup."
+  }
  },
  "remove-empty-lines": {
   "intro": "Empty Line Remover deletes blank lines from a block of text, closing up the gaps and leaving the content lines in order.",
@@ -2297,7 +2369,25 @@
   "mistakes": [
    "Removing blank lines from Markdown, where a blank line is what separates paragraphs. Strip them and the whole document becomes one block.",
    "Doing this to poetry or formatted text where the spacing is deliberate."
-  ]
+  ],
+  "example": {
+   "setup": "Why some gaps survive removal:",
+   "given": [
+    [
+     "Truly empty line",
+     "removed"
+    ],
+    [
+     "Line with one space",
+     "not empty, kept"
+    ],
+    [
+     "Line with a tab",
+     "not empty, kept"
+    ]
+   ],
+   "result": "Trim the text first to turn whitespace-only lines into genuinely empty ones, then remove."
+  }
  },
  "reverse-lines": {
   "intro": "Reverse Lines flips the order of lines in a block of text so the last line becomes the first. The lines themselves are unchanged.",
@@ -2320,7 +2410,25 @@
   "mistakes": [
    "Expecting character reversal. Line order and character order are separate things.",
    "Reversing text that has a header row, which ends up at the bottom."
-  ]
+  ],
+  "example": {
+   "setup": "Reading a log file newest first:",
+   "given": [
+    [
+     "Input order",
+     "oldest entry at the top"
+    ],
+    [
+     "Operation",
+     "reverse line order"
+    ],
+    [
+     "Line contents",
+     "unchanged"
+    ]
+   ],
+   "result": "Newest entry first, without needing a tool that understands timestamps."
+  }
  },
  "join-lines": {
   "intro": "Join Lines collapses multiple lines into a single line, separated by whatever delimiter you choose: a comma, a space, a pipe, or anything else.",
@@ -2343,7 +2451,25 @@
   "mistakes": [
    "Using a separator that appears in the data, producing output that cannot be reliably split again.",
    "Forgetting that the join removes the line structure permanently. Keep the original if you need it back."
-  ]
+  ],
+  "example": {
+   "setup": "Why the separator has to be absent from the data:",
+   "given": [
+    [
+     "Values",
+     "Smith, John and Doe, Jane"
+    ],
+    [
+     "Joined with a comma",
+     "four items, not two"
+    ],
+    [
+     "Joined with a pipe",
+     "two items, unambiguous"
+    ]
+   ],
+   "result": "Pick a character your data does not contain, or the result cannot be split back."
+  }
  },
  "split-text": {
   "intro": "Split Text breaks a block of text into chunks by character count, word count, or a delimiter you specify.",
@@ -2366,7 +2492,25 @@
   "mistakes": [
    "Splitting on a comma when the data contains quoted commas. That needs a real CSV parser, not a plain split.",
    "Splitting by character count for anything a human will read, which chops words mid-syllable."
-  ]
+  ],
+  "example": {
+   "setup": "Choosing the split mode:",
+   "given": [
+    [
+     "Text has real structure",
+     "split on the delimiter"
+    ],
+    [
+     "Fitting a character limit",
+     "split by words, not characters"
+    ],
+    [
+     "Splitting by characters",
+     "can cut a word in half"
+    ]
+   ],
+   "result": "Word splitting gives slightly uneven chunks and never breaks a word, which readers prefer."
+  }
  },
  "word-wrap": {
   "intro": "Word Wrap Formatter rewraps text at a column width you choose, with hard or soft wrapping and the option to preserve blank lines.",
@@ -2433,6 +2577,9 @@
    "Changing a slug after publishing. The old URL breaks unless you add a redirect, and any accumulated links point at nothing.",
    "Letting slugs get long. Search results truncate them and they become unreadable.",
    "Assuming accent folding suits every language. Some scripts have no sensible ASCII equivalent and need transliteration rules of their own."
+  ],
+  "notes": [
+   "Slugs should be treated as permanent once published. Changing one breaks every existing link to that page unless you add a redirect."
   ]
  },
  "smart-quotes-converter": {
@@ -2578,7 +2725,25 @@
   "notes": [
    "Every example shows the raw syntax next to the rendered result.",
    "Covers both core Markdown and the common GitHub Flavored extensions."
-  ]
+  ],
+  "example": {
+   "setup": "The rules that catch people out:",
+   "given": [
+    [
+     "New paragraph",
+     "needs a blank line"
+    ],
+    [
+     "Line break",
+     "two trailing spaces"
+    ],
+    [
+     "Accidental code block",
+     "four spaces of indent"
+    ]
+   ],
+   "result": "Most Markdown confusion is about blank lines and indentation rather than about syntax."
+  }
  },
  "markdown-link-cleaner": {
   "intro": "Markdown Link Cleaner takes messy pasted links and turns them into tidy Markdown, optionally stripping tracking parameters, fetching the real page titles, and formatting the result as a bulleted or numbered list.",
@@ -2628,7 +2793,25 @@
   "mistakes": [
    "Mixing tabs and spaces for indentation, which is the single most common cause of a list rendering as code.",
    "Assuming ordered list numbers must be sequential in the source. Most parsers renumber automatically, so 1. 1. 1. renders as 1. 2. 3."
-  ]
+  ],
+  "example": {
+   "setup": "Why a nested list renders as a code block:",
+   "given": [
+    [
+     "Indent used",
+     "a tab, or four spaces"
+    ],
+    [
+     "Markdown reads four spaces as",
+     "a code block"
+    ],
+    [
+     "Correct nesting indent",
+     "two spaces"
+    ]
+   ],
+   "result": "The list looks nested in your editor and renders as preformatted code."
+  }
  },
  "markdown-frontmatter": {
   "intro": "Frontmatter Generator builds the YAML or TOML metadata block that sits at the top of a post in a static site generator, with fields for title, date, slug, author and tags, plus any custom fields you add.",
@@ -2743,7 +2926,25 @@
    "Applying title case to a sentence and getting proper nouns wrong. No automatic rule knows that iPhone and eBay keep their lowercase first letter.",
    "Uppercasing text for comparison instead of using a case fold, which breaks on several languages.",
    "Sentence-casing text containing acronyms, which turns NASA into Nasa."
-  ]
+  ],
+  "example": {
+   "setup": "Why title case cannot be fully automatic:",
+   "given": [
+    [
+     "Input",
+     "the rise of ebay and the iphone"
+    ],
+    [
+     "Naive title case",
+     "The Rise Of EBay And The IPhone"
+    ],
+    [
+     "Correct",
+     "The Rise of eBay and the iPhone"
+    ]
+   ],
+   "result": "No rule knows that eBay and iPhone keep a lowercase first letter, or that of stays lowercase."
+  }
  },
  "tag-stripper": {
   "intro": "Tag Stripper removes HTML and XML tags, Markdown formatting, or both, leaving plain text. It can also decode HTML entities and collapse the extra whitespace that stripping leaves behind.",
@@ -2833,7 +3034,25 @@
   "mistakes": [
    "Decoding untrusted content and then inserting it into a page, which can reintroduce active markup. Decode for display as text, not for injection into HTML.",
    "Decoding repeatedly until nothing changes. One pass is usually correct, and repeated passes can turn escaped content into live markup."
-  ]
+  ],
+  "example": {
+   "setup": "Why ampersands decode last:",
+   "given": [
+    [
+     "Encoded",
+     "&amp;lt;"
+    ],
+    [
+     "Decode ampersand first",
+     "&lt; then <, one level too far"
+    ],
+    [
+     "Decode ampersand last",
+     "&lt; stays as literal text"
+    ]
+   ],
+   "result": "Order matters in both directions, and getting it wrong can turn escaped text back into live markup."
+  }
  },
  "url-extractor": {
   "intro": "URL Extractor pulls every link out of a block of text or HTML and lists them, so you can get a clean set of URLs from messy source material.",
@@ -2881,7 +3100,25 @@
    "Treating extraction as validation. A well-formed address can still be undeliverable.",
    "Missing addresses that have been obfuscated as name at domain dot com, which is deliberate and will not match.",
    "Using extracted addresses for unsolicited mail, which is unlawful in most jurisdictions."
-  ]
+  ],
+  "example": {
+   "setup": "What a practical pattern will and will not find:",
+   "given": [
+    [
+     "ana@example.com",
+     "found"
+    ],
+    [
+     "ana.smith+tag@sub.example.co.uk",
+     "found"
+    ],
+    [
+     "ana at example dot com",
+     "not found, deliberately obfuscated"
+    ]
+   ],
+   "result": "Extraction finds addresses that are written as addresses. It cannot un-obfuscate."
+  }
  },
  "number-extractor": {
   "intro": "Number Extractor pulls all the numbers out of a block of text, which is the quickest way to get figures out of a report, an invoice, or a paragraph of prose into a usable list.",
@@ -2928,7 +3165,25 @@
   "mistakes": [
    "Numbering text that will be pasted back into a file or a compiler. The numbers become content and break it.",
    "Numbering before removing blank lines, which numbers the gaps too."
-  ]
+  ],
+  "example": {
+   "setup": "Why numbers are padded:",
+   "given": [
+    [
+     "Unpadded",
+     "9. content then 10. content"
+    ],
+    [
+     "Effect",
+     "every line after 9 shifts one character right"
+    ],
+    [
+     "Padded",
+     "columns stay straight"
+    ]
+   ],
+   "result": "Alignment is what makes a numbered block scannable."
+  }
  },
  "strip-line-numbers": {
   "intro": "Strip Line Numbers removes leading line numbers from text, which is what you need after copying a code sample out of a documentation page or a terminal that numbers its output.",
@@ -2951,7 +3206,25 @@
   "mistakes": [
    "Stripping numbers from content where the leading numbers are the data, such as a numbered list or a CSV whose first column is an ID.",
    "Losing indentation along with the numbers, which breaks indentation-sensitive languages."
-  ]
+  ],
+  "example": {
+   "setup": "What has to survive the strip:",
+   "given": [
+    [
+     "Input",
+     "  12 |     if x:"
+    ],
+    [
+     "Remove",
+     "the number and its separator"
+    ],
+    [
+     "Keep",
+     "the code's own leading indentation"
+    ]
+   ],
+   "result": "Stripping the indentation along with the number breaks Python and YAML."
+  }
  },
  "add-prefix-suffix": {
   "intro": "Add Prefix / Suffix puts custom text at the start of every line, the end of every line, or both. It turns a plain list into formatted output in one step.",
@@ -3040,7 +3313,25 @@
   "mistakes": [
    "Generating an enormous repetition and pasting it somewhere that cannot handle it. Browsers and editors both struggle past a few megabytes.",
    "Forgetting that a trailing separator is usually left on the end and may need removing."
-  ]
+  ],
+  "example": {
+   "setup": "How the separator changes what you get:",
+   "given": [
+    [
+     "Newline separator",
+     "one item per line, a list"
+    ],
+    [
+     "Comma separator",
+     "a series ready for code"
+    ],
+    [
+     "Empty separator",
+     "one solid block"
+    ]
+   ],
+   "result": "The separator decides whether the output is rows, an array body, or a fixed-width rule."
+  }
  },
  "csv-viewer": {
   "intro": "CSV Viewer renders pasted CSV as a formatted, sortable table. It supports comma, tab, semicolon, pipe and custom delimiters, and can treat the first row as a header.",
@@ -3982,7 +4273,25 @@
    "Decoding repeatedly until nothing changes, which hides a double-encoding bug rather than fixing it.",
    "Decoding a URL and then following it without reading it. Encoded redirect parameters are a standard phishing technique.",
    "Treating a plus as a literal plus in a form-encoded string, where it means a space."
-  ]
+  ],
+  "example": {
+   "setup": "Recognising double encoding:",
+   "given": [
+    [
+     "Single encoded space",
+     "%20"
+    ],
+    [
+     "Double encoded space",
+     "%2520"
+    ],
+    [
+     "After one decode",
+     "%20 remains"
+    ]
+   ],
+   "result": "If one pass leaves percent sequences behind, something upstream encoded it twice. Fix that rather than decoding again."
+  }
  },
  "base64-decoder": {
   "intro": "Base64 Decoder converts Base64 back into readable text, in your browser.",
@@ -4006,7 +4315,25 @@
    "Assuming Base64 is encryption. It is an encoding and offers no protection whatsoever.",
    "Failing on URL-safe input without recognising it. Convert minus and underscore back to plus and slash first.",
    "Decoding binary content as text, which produces unreadable output because it was never text to begin with."
-  ]
+  ],
+  "example": {
+   "setup": "Spotting the URL-safe variant:",
+   "given": [
+    [
+     "Standard Base64",
+     "uses + and /"
+    ],
+    [
+     "URL-safe Base64",
+     "uses - and _"
+    ],
+    [
+     "JWT segments",
+     "URL-safe"
+    ]
+   ],
+   "result": "A strict decoder rejects URL-safe input until you convert - and _ back to + and /."
+  }
  },
  "caesar-cipher": {
   "intro": "Caesar Cipher shifts each letter by a fixed number of positions, with a ROT13 preset. It encodes and decodes, since a shift cipher is reversed by shifting the other way.",
@@ -4243,7 +4570,25 @@
    "Counting from one. The first column is index 0.",
    "Extracting from data with unquoted delimiters inside values, which silently returns the wrong field for affected rows.",
    "Forgetting the header row is included unless you remove it."
-  ]
+  ],
+  "example": {
+   "setup": "Counting columns:",
+   "given": [
+    [
+     "First column",
+     "index 0"
+    ],
+    [
+     "Second column",
+     "index 1"
+    ],
+    [
+     "Third column",
+     "index 2"
+    ]
+   ],
+   "result": "Zero-based indexing, which is where most off-by-one confusion with this tool comes from."
+  }
  },
  "html-minifier": {
   "intro": "HTML Minifier strips comments and collapses whitespace, with optional removal of optional closing tags and unnecessary attributes, and reports the byte savings.",
@@ -4390,7 +4735,29 @@
   "mistakes": [
    "Confusing a millisecond timestamp with a second-based Unix timestamp. Ten digits is seconds, thirteen is milliseconds.",
    "Assuming a day is always 86,400,000 milliseconds. Daylight saving transitions make some days longer or shorter in local time."
-  ]
+  ],
+  "example": {
+   "setup": "The four conversions worth knowing:",
+   "given": [
+    [
+     "1 second",
+     "1,000 ms"
+    ],
+    [
+     "1 minute",
+     "60,000 ms"
+    ],
+    [
+     "1 hour",
+     "3,600,000 ms"
+    ],
+    [
+     "1 day",
+     "86,400,000 ms"
+    ]
+   ],
+   "result": "JavaScript works in milliseconds, which is why values copied from it are a thousand times larger than a Unix timestamp."
+  }
  },
  "quote-escaper": {
   "intro": "Quote Escaper adds or removes backslash escaping on quotes so a string can be pasted safely into code.",
@@ -4413,7 +4780,25 @@
    "Escaping a string that is already escaped, which produces literal backslashes in the output.",
    "Forgetting the backslash itself needs escaping. A single backslash in a string literal must be doubled.",
    "Escaping for the wrong context. Shell, JSON and SQL escaping rules differ, and using one for another is a classic injection vector."
-  ]
+  ],
+  "example": {
+   "setup": "The alternative to escaping:",
+   "given": [
+    [
+     "Text",
+     "she said \"hello\""
+    ],
+    [
+     "Escaped in double quotes",
+     "backslash before each inner quote"
+    ],
+    [
+     "Wrapped in single quotes",
+     "no escaping needed at all"
+    ]
+   ],
+   "result": "Choosing a delimiter the text does not contain is usually cleaner than escaping."
+  }
  },
  "robots-txt-builder": {
   "intro": "Robots.txt Builder assembles a valid robots.txt from allow and disallow paths, sitemap lines, an optional crawl delay and host directive, with presets for a starter file and for hiding admin paths.",
@@ -5319,7 +5704,25 @@
   ],
   "notes": [
    "Both the visuals and the audio are generated in your browser. Nothing is streamed."
-  ]
+  ],
+  "example": {
+   "setup": "Why steady sound masks better than silence:",
+   "given": [
+    [
+     "Silence",
+     "every noise stands out"
+    ],
+    [
+     "Intermittent noise",
+     "keeps pulling attention"
+    ],
+    [
+     "Steady broadband sound",
+     "ignored within minutes"
+    ]
+   ],
+   "result": "Rain covers interruptions without becoming one itself."
+  }
  },
  "bmi-calculator": {
   "intro": "BMI Calculator works out Body Mass Index in imperial or metric units and places the result against the standard categories.",
@@ -6429,7 +6832,29 @@
    "Asking open questions. It only answers yes or no.",
    "Re-shaking until you get the answer you wanted, which is itself a useful signal about what you wanted.",
    "Taking it seriously."
-  ]
+  ],
+  "example": {
+   "setup": "What is inside:",
+   "given": [
+    [
+     "Faces",
+     "20, on an icosahedron"
+    ],
+    [
+     "Affirmative",
+     "10"
+    ],
+    [
+     "Non-committal",
+     "5"
+    ],
+    [
+     "Negative",
+     "5"
+    ]
+   ],
+   "result": "Half the answers are positive, which is much of why it stays fun."
+  }
  },
  "rock-paper-scissors": {
   "intro": "Rock Paper Scissors plays against the computer, keeping scores, streaks and a running record between sessions.",
@@ -6632,7 +7057,25 @@
    "Displaying it in a proportional font, which destroys the alignment.",
    "Making it wider than 80 characters, which wraps in most terminals and ruins it.",
    "Using it where a screen reader will encounter it, since it reads as meaningless character noise."
-  ]
+  ],
+  "example": {
+   "setup": "Where it still belongs:",
+   "given": [
+    [
+     "Terminal output",
+     "yes, no image support"
+    ],
+    [
+     "README and code comments",
+     "yes, plain text only"
+    ],
+    [
+     "Font required",
+     "monospaced"
+    ]
+   ],
+   "result": "In a proportional font the character grid becomes uneven and the shape collapses."
+  }
  },
  "random-picker": {
   "intro": "Random Picker selects one item at random from a pasted list.",
@@ -6655,7 +7098,25 @@
    "Re-rolling until you like the answer, which makes the process decorative rather than random.",
    "Expecting no repeats across multiple picks. Without removal, repeats are expected.",
    "Using randomness for a decision that deserves thought. Randomness is for when the options are genuinely equivalent."
-  ]
+  ],
+  "example": {
+   "setup": "Why repeats are expected:",
+   "given": [
+    [
+     "Options",
+     "4"
+    ],
+    [
+     "Chance of the same pick twice running",
+     "1 in 4"
+    ],
+    [
+     "Over 20 picks",
+     "a repeat is near certain"
+    ]
+   ],
+   "result": "A repeat is evidence the picker is working, not that it is broken."
+  }
  },
  "list-randomizer": {
   "intro": "List Randomizer shuffles a list into a random order.",
@@ -6678,7 +7139,25 @@
   "mistakes": [
    "Assuming a shuffled list looks random. Real shuffles produce apparent clusters, and a result that looks too evenly spread is more suspicious than one that does not.",
    "Shuffling repeatedly to get an order you prefer, which discards the fairness you shuffled for."
-  ]
+  ],
+  "example": {
+   "setup": "Why sorting by a random comparator is not a shuffle:",
+   "given": [
+    [
+     "Fisher-Yates",
+     "every ordering equally likely"
+    ],
+    [
+     "Random comparator sort",
+     "some orderings far more likely"
+    ],
+    [
+     "Looks correct",
+     "yes, which is why the bug persists"
+    ]
+   ],
+   "result": "Both produce a jumbled list. Only one is actually uniform."
+  }
  },
  "decision-spinner": {
   "intro": "Decision Spinner puts your options on a wheel and spins it, with an animation and a result.",
@@ -6701,7 +7180,25 @@
   "mistakes": [
    "Spinning again because you did not like the result. If you do that, you had a preference and should act on it instead.",
    "Adding options you would refuse to accept. Only put things on the wheel you can live with."
-  ]
+  ],
+  "example": {
+   "setup": "Why the wheel is accepted more readily than a list:",
+   "given": [
+    [
+     "Outcome odds",
+     "identical to random selection"
+    ],
+    [
+     "Process",
+     "visible and takes time to settle"
+    ],
+    [
+     "Perceived fairness",
+     "higher"
+    ]
+   ],
+   "result": "Same mathematics, different social result, which is the only reason to prefer it."
+  }
  },
  "bingo-maker": {
   "intro": "Bingo Maker creates printable bingo cards from your own words or phrases.",
@@ -6747,7 +7244,25 @@
   "mistakes": [
    "Treating the heart and breath figures as measurements. They are averages, and your actual rates vary constantly with activity and sleep.",
    "Comparing your numbers to someone else's as though they meant something. They are functions of age."
-  ]
+  ],
+  "example": {
+   "setup": "Where the totals come from:",
+   "given": [
+    [
+     "Resting heart rate",
+     "about 70 per minute"
+    ],
+    [
+     "Per day",
+     "about 100,000 beats"
+    ],
+    [
+     "Per year",
+     "about 36 million"
+    ]
+   ],
+   "result": "Small rates accumulate into numbers that are hard to picture, which is the point of the tool."
+  }
  },
  "hype-machine": {
   "intro": "Hype Machine rewrites something mundane as if it were extraordinary.",
@@ -6769,7 +7284,25 @@
   "mistakes": [
    "Using the output as actual marketing copy. The reason it is funny is the reason it does not work.",
    "Expecting it to improve writing. It does the opposite, deliberately."
-  ]
+  ],
+  "example": {
+   "setup": "What the exaggeration removes:",
+   "given": [
+    [
+     "Plain",
+     "I replied to an email"
+    ],
+    [
+     "Inflated",
+     "revolutionary breakthrough in async communication"
+    ],
+    [
+     "Information added",
+     "none"
+    ]
+   ],
+   "result": "The inflated version would read identically whether the underlying thing was remarkable or trivial, which is the point."
+  }
  },
  "virtual-pop": {
   "intro": "Virtual Pop is browser-based bubble wrap. Click the bubbles to pop them.",
@@ -6792,7 +7325,25 @@
   "mistakes": [
    "Doing it on an unmuted call.",
    "Expecting it to replace a real break. Stepping away from the screen does more."
-  ]
+  ],
+  "example": {
+   "setup": "An accidental product:",
+   "given": [
+    [
+     "Invented",
+     "1957"
+    ],
+    [
+     "Intended use",
+     "textured wallpaper"
+    ],
+    [
+     "Actual market",
+     "protective packaging"
+    ]
+   ],
+   "result": "The popping was an unintended side effect that turned out to be the memorable part."
+  }
  },
  "word-clock": {
   "intro": "Word Clock spells out the current time in words on a glowing letter grid, lighting only the letters that make up the current phrase.",
@@ -6814,7 +7365,25 @@
   "mistakes": [
    "Using it when you need exact time. It rounds by design.",
    "Expecting it to be legible at a glance from across a room. The camouflage that makes it attractive also makes it slower to read."
-  ]
+  ],
+  "example": {
+   "setup": "Why it rounds:",
+   "given": [
+    [
+     "Actual time",
+     "4:17"
+    ],
+    [
+     "Displayed",
+     "quarter past four"
+    ],
+    [
+     "Reason",
+     "it shows time the way people say it"
+    ]
+   ],
+   "result": "The imprecision is the design, not a limitation."
+  }
  },
  "flip-clock": {
   "intro": "Flip Clock is an animated clock with card-flip transitions and a date display.",
@@ -6836,7 +7405,25 @@
   "mistakes": [
    "Running it on a laptop on battery. Continuous animation is not free.",
    "Expecting the sound. This is the visual half only."
-  ]
+  ],
+  "example": {
+   "setup": "Where the format comes from:",
+   "given": [
+    [
+     "Era",
+     "1950s onward"
+    ],
+    [
+     "Mechanism",
+     "hinged cards advanced by a motor"
+    ],
+    [
+     "Power use",
+     "only when changing"
+    ]
+   ],
+   "result": "Split-flap boards held a display indefinitely without power, which is why stations used them for decades."
+  }
  },
  "star-wars-crawl": {
   "intro": "Star Wars Crawl creates a scrolling opening crawl with your own text.",
@@ -6883,7 +7470,25 @@
    "Not checking the output. A shuffle can occasionally return the original word unchanged.",
    "Scrambling proper nouns without a hint, which makes them nearly unsolvable.",
    "Assuming longer means harder. Often it means easier."
-  ]
+  ],
+  "example": {
+   "setup": "Why short can be harder than long:",
+   "given": [
+    [
+     "Three letters",
+     "few constraints, many possibilities"
+    ],
+    [
+     "Seven letters",
+     "heavily constrained by English spelling"
+    ],
+    [
+     "Accidental cluster",
+     "leaving -ing intact makes it much easier"
+    ]
+   ],
+   "result": "Length is a poor proxy for difficulty; letter combinations matter more."
+  }
  },
  "random-quote": {
   "intro": "Random Quote shows a quotation from a curated collection, filterable by category such as wisdom, technology and creativity.",
@@ -6906,7 +7511,25 @@
   "mistakes": [
    "Repeating an attribution without checking it.",
    "Treating a quotation as an argument. A memorable line is evidence that someone phrased something well, not that it is true."
-  ]
+  ],
+  "example": {
+   "setup": "Checking an attribution before you use it:",
+   "given": [
+    [
+     "Step 1",
+     "search the exact wording in quotes"
+    ],
+    [
+     "Step 2",
+     "look for a primary source, not a quote site"
+    ],
+    [
+     "Step 3",
+     "if only quote sites cite it, treat it as unverified"
+    ]
+   ],
+   "result": "Einstein, Twain and Churchill are credited with far more lines than they ever said."
+  }
  },
  "symbol-pad": {
   "intro": "Symbol Pad is a click-to-copy keyboard for special characters, symbols, arrows and Unicode, with a pinned favourites section for the ones you use constantly.",
@@ -7050,7 +7673,21 @@
    "Relying on a browser tab for something critical. Background tabs can be throttled and the machine can sleep.",
    "Setting a duration you know is unrealistic, which trains you to ignore the alarm.",
    "Restarting the timer repeatedly rather than accepting what the first run told you about the estimate."
-  ]
+  ],
+  "example": {
+   "setup": "Timeboxing in practice:",
+   "given": [
+    [
+     "Open-ended task",
+     "expands to fill available time"
+    ],
+    [
+     "Same task, 25 minute box",
+     "forces a decision about what matters"
+    ]
+   ],
+   "result": "The limit is the mechanism. What you cut is the useful output."
+  }
  },
  "stopwatch": {
   "intro": "Stopwatch times with lap tracking, highlighting the fastest and slowest laps.",
@@ -7074,7 +7711,25 @@
    "Timing in a background tab, where throttling can affect accuracy.",
    "Comparing laps recorded under different conditions as though they were equivalent.",
    "Reading a single fast lap as your capability. The sustainable pace is the one you can repeat."
-  ]
+  ],
+  "example": {
+   "setup": "Reading the spread rather than the total:",
+   "given": [
+    [
+     "Laps",
+     "42s, 44s, 43s, 58s"
+    ],
+    [
+     "Fastest",
+     "42s"
+    ],
+    [
+     "Slowest",
+     "58s"
+    ]
+   ],
+   "result": "A 16 second spread on a 40 second lap says the pace was not sustainable, which the total time alone would hide."
+  }
  },
  "task-timer": {
   "intro": "Task Timer measures how long individual tasks actually take, so estimates can be based on data rather than optimism.",
@@ -7098,7 +7753,25 @@
    "Only timing the parts that go well. The interruptions and rework are the reason estimates fail.",
    "Timing one instance and treating it as typical.",
    "Using the data to judge yourself rather than to estimate better."
-  ]
+  ],
+  "example": {
+   "setup": "The planning fallacy in one line:",
+   "given": [
+    [
+     "Remembered duration",
+     "smooths out interruptions and rework"
+    ],
+    [
+     "Recorded duration",
+     "includes them"
+    ],
+    [
+     "Better estimate",
+     "the recorded one"
+    ]
+   ],
+   "result": "Look at how long it took last time rather than thinking harder about the estimate."
+  }
  },
  "interview-timer": {
   "intro": "Interview Timer helps you practise timed answers, with target durations for different question types.",
@@ -7410,7 +8083,25 @@
    "Converting with a fixed offset. The offset depends on the date because of daylight saving.",
    "Using a zone abbreviation like CST, which is ambiguous between several zones worldwide.",
    "Forgetting the date can change. Converting across enough hours moves you into the previous or next day."
-  ]
+  ],
+  "example": {
+   "setup": "Why a fixed offset is wrong:",
+   "given": [
+    [
+     "New York in January",
+     "UTC-5"
+    ],
+    [
+     "New York in July",
+     "UTC-4"
+    ],
+    [
+     "Same zone",
+     "yes"
+    ]
+   ],
+   "result": "The offset depends on the date, which is why conversion needs the date as well as the two zones."
+  }
  },
  "file-size-converter": {
   "intro": "File Size Converter converts between bytes, KB, MB, GB, TB and PB.",
@@ -7611,7 +8302,25 @@
   ],
   "notes": [
    "Counts are stored in your browser only."
-  ]
+  ],
+  "example": {
+   "setup": "Why counting in your head fails:",
+   "given": [
+    [
+     "Uninterrupted count",
+     "reliable"
+    ],
+    [
+     "After an interruption",
+     "unrecoverable"
+    ],
+    [
+     "Counting four categories at once",
+     "breaks down quickly"
+    ]
+   ],
+   "result": "Externalising the count makes an interruption cost nothing."
+  }
  },
  "resistor-color-code": {
   "intro": "Resistor Color Code decodes 4-band and 5-band resistors into a resistance value, or builds the band colours from a value you specify, with tolerance.",
@@ -7717,14 +8426,37 @@
    "The estimate is deliberately a range with a note that a final price follows an in-person inspection. That protects the business from being held to a number sight-unseen while still giving the customer something concrete enough to act on."
   ],
   "uses": [
-   "Giving customers a price without a phone call.",
+   "Giving customers a price at the moment they ask, including outside business hours.",
    "Qualifying enquiries, since people who see the range and still book are ready to pay it.",
-   "Reducing the time spent quoting jobs that were never going to convert.",
-   "Trying the calculation before deciding whether you want one for your own business."
+   "Cutting time spent quoting jobs that were never going to convert.",
+   "Trying the calculation before deciding whether you want a branded version for your own business."
   ],
   "notes": [
    "Estimates run entirely in the browser. This demo does not collect, save or transmit any customer information.",
    "A version branded with your own business name, colours, packages and prices is available as a one-time setup, delivered as a hosted page or an HTML file with no subscription. Details and pricing are on the page below the calculator."
+  ],
+  "example": {
+   "setup": "How the estimate is built up:",
+   "given": [
+    [
+     "Base package",
+     "by vehicle type"
+    ],
+    [
+     "Condition",
+     "light, average or heavy"
+    ],
+    [
+     "Add-ons",
+     "pet hair, stain extraction, engine bay, headlights, ceramic, odour"
+    ]
+   ],
+   "result": "An itemised range rather than a single number, so the customer sees what drives the price."
+  },
+  "mistakes": [
+   "Publishing a single fixed price sight-unseen. A range with an inspection caveat protects you from a job that turns out to be far worse than described.",
+   "Setting the add-on prices below what the work actually costs you in time.",
+   "Hiding pricing entirely, which loses every customer who wanted a number before calling."
   ]
  }
 }

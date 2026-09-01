@@ -693,8 +693,14 @@ def inject_discovery_css(text: str) -> str:
     return text.replace("</style>", "\n" + DISCOVERY_CSS + "\n</style>", 1)
 
 
-def related_apps(all_apps: list[dict[str, str]], slug: str) -> list[dict[str, str]]:
-    current = next(app for app in all_apps if app["slug"] == slug)
+def related_apps(all_apps: list[dict[str, str]], slug: str, category: str | None = None) -> list[dict[str, str]]:
+    current = next((app for app in all_apps if app["slug"] == slug), None)
+    if current is None:
+        # A page kept out of the tool grid (the service offer) still gets
+        # related links, chosen from its category rather than from itself.
+        siblings = [app for app in all_apps if app["category"] == category]
+        siblings.sort(key=lambda item: item["title"].lower())
+        return siblings[:3]
     siblings = [app for app in all_apps if app["category"] == current["category"]]
     siblings.sort(key=lambda item: item["title"].lower())
     current_index = next(index for index, item in enumerate(siblings) if item["slug"] == slug)
@@ -954,7 +960,7 @@ def main() -> None:
         text = inject_breadcrumb(text, page_app)
         text = inject_discovery_css(text)
         text = inject_feature_section(text, page_app)
-        text = inject_related_section(text, page_app, related_apps(apps, slug))
+        text = inject_related_section(text, page_app, related_apps(apps, slug, page_app["category"]))
         path.write_text(text, encoding="utf-8")
         print(f"UPDATED {slug}")
 
