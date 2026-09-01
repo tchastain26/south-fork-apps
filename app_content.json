@@ -1,191 +1,695 @@
 {
-"tip-calculator": {
- "kicker": "About this tool",
- "intro": "Tip Calculator works out the tip, the new total, and each person's share from three numbers: the bill, the tip percentage, and how many people are splitting it. The four preset buttons cover the percentages people actually use in US restaurants, and every figure updates as you type.",
- "how": [
-  "Enter the bill amount before tip.",
-  "Type a tip percentage, or tap one of the 15%, 18%, 20%, or 25% presets.",
-  "Set how many people are splitting the bill. One is fine.",
-  "Read the tip, the total, and the per-person amount."
- ],
- "method_title": "The math behind it",
- "method": [
-  "The tip is the bill multiplied by the percentage divided by 100. The total is the bill plus the tip. The per-person figure is the total divided by the number of people.",
-  "Nothing is rounded until it is displayed, so splitting an awkward bill across three or seven people will not quietly lose or invent a cent."
- ],
- "example": {
-  "setup": "The tool opens with a typical dinner for two already filled in.",
-  "given": [["Bill amount", "$48.50"], ["Tip percent", "20%"], ["People", "2"]],
-  "result": "Tip $9.70, total $58.20, and $29.10 per person."
+ "tip-calculator": {
+  "kicker": "About this tool",
+  "intro": "Tip Calculator works out the tip, the new total, and each person's share from three numbers: the bill, the tip percentage, and how many people are splitting it. The four preset buttons cover the percentages people actually use in US restaurants, and every figure updates as you type.",
+  "how": [
+   "Enter the bill amount before tip.",
+   "Type a tip percentage, or tap one of the 15%, 18%, 20%, or 25% presets.",
+   "Set how many people are splitting the bill. One is fine.",
+   "Read the tip, the total, and the per-person amount."
+  ],
+  "method_title": "The math behind it",
+  "method": [
+   "The tip is the bill multiplied by the percentage divided by 100. The total is the bill plus the tip. The per-person figure is the total divided by the number of people.",
+   "Nothing is rounded until it is displayed, so splitting an awkward bill across three or seven people will not quietly lose or invent a cent."
+  ],
+  "example": {
+   "setup": "The tool opens with a typical dinner for two already filled in.",
+   "given": [
+    [
+     "Bill amount",
+     "$48.50"
+    ],
+    [
+     "Tip percent",
+     "20%"
+    ],
+    [
+     "People",
+     "2"
+    ]
+   ],
+   "result": "Tip $9.70, total $58.20, and $29.10 per person."
+  },
+  "uses": [
+   "Splitting a restaurant bill without doing arithmetic at the table.",
+   "Checking whether a suggested tip on a card terminal is what you actually meant to leave.",
+   "Working out a per-head figure before you ask everyone for cash.",
+   "Budgeting a meal out by working backwards from what you want the total to be."
+  ],
+  "mistakes": [
+   "Tipping on the post-tax total. US convention is to tip on the pre-tax subtotal, which is usually a dollar or two less.",
+   "Tipping on the pre-discount amount after a coupon. If a voucher covered half the meal, most people still tip on what the food would have cost.",
+   "Forgetting that some restaurants add gratuity automatically for large parties, which means an extra tip on top is a second tip."
+  ]
  },
- "uses": [
-  "Splitting a restaurant bill without doing arithmetic at the table.",
-  "Checking whether a suggested tip on a card terminal is what you actually meant to leave.",
-  "Working out a per-head figure before you ask everyone for cash.",
-  "Budgeting a meal out by working backwards from what you want the total to be."
- ],
- "mistakes": [
-  "Tipping on the post-tax total. US convention is to tip on the pre-tax subtotal, which is usually a dollar or two less.",
-  "Tipping on the pre-discount amount after a coupon. If a voucher covered half the meal, most people still tip on what the food would have cost.",
-  "Forgetting that some restaurants add gratuity automatically for large parties, which means an extra tip on top is a second tip."
- ]
-},
-
-"mortgage-calculator": {
- "kicker": "About this tool",
- "intro": "Mortgage Calculator estimates a full monthly housing payment, not just principal and interest. It folds in property tax, home insurance, and PMI, then shows the amortization schedule so you can see how the split between interest and principal changes over the life of the loan.",
- "how": [
-  "Enter the home price and your down payment. The dollar and percentage fields stay in sync, so you can drive it from either one.",
-  "Set the interest rate and pick a term: 30, 15, 10, or 7 years.",
-  "Adjust the property tax rate, annual insurance, and PMI rate if you know your real numbers.",
-  "Read the monthly payment breakdown and scroll the amortization schedule."
- ],
- "method_title": "The amortization formula",
- "method": [
-  "Principal and interest come from the standard amortizing loan formula: M = P x r x (1 + r)^n / ((1 + r)^n - 1), where P is the amount borrowed, r is the monthly interest rate (the annual rate divided by 12), and n is the number of monthly payments.",
-  "Property tax and insurance are annual figures divided by 12 and added on. PMI is charged as a percentage of the loan amount per year and only applies while the down payment is under 20%, which is why it disappears from the total the moment you cross that line."
- ],
- "example": {
-  "setup": "Using the values the calculator loads with:",
-  "given": [["Home price", "$350,000"], ["Down payment", "$70,000 (20%)"], ["Interest rate", "6.75%"], ["Term", "30 years"], ["Property tax", "1.1% / year"], ["Insurance", "$1,200 / year"]],
-  "result": "Borrowing $280,000 gives roughly $1,816 a month in principal and interest, plus about $321 in tax and $100 in insurance, for a total near $2,237. At 20% down there is no PMI."
+ "mortgage-calculator": {
+  "kicker": "About this tool",
+  "intro": "Mortgage Calculator estimates a full monthly housing payment, not just principal and interest. It folds in property tax, home insurance, and PMI, then shows the amortization schedule so you can see how the split between interest and principal changes over the life of the loan.",
+  "how": [
+   "Enter the home price and your down payment. The dollar and percentage fields stay in sync, so you can drive it from either one.",
+   "Set the interest rate and pick a term: 30, 15, 10, or 7 years.",
+   "Adjust the property tax rate, annual insurance, and PMI rate if you know your real numbers.",
+   "Read the monthly payment breakdown and scroll the amortization schedule."
+  ],
+  "method_title": "The amortization formula",
+  "method": [
+   "Principal and interest come from the standard amortizing loan formula: M = P x r x (1 + r)^n / ((1 + r)^n - 1), where P is the amount borrowed, r is the monthly interest rate (the annual rate divided by 12), and n is the number of monthly payments.",
+   "Property tax and insurance are annual figures divided by 12 and added on. PMI is charged as a percentage of the loan amount per year and only applies while the down payment is under 20%, which is why it disappears from the total the moment you cross that line."
+  ],
+  "example": {
+   "setup": "Using the values the calculator loads with:",
+   "given": [
+    [
+     "Home price",
+     "$350,000"
+    ],
+    [
+     "Down payment",
+     "$70,000 (20%)"
+    ],
+    [
+     "Interest rate",
+     "6.75%"
+    ],
+    [
+     "Term",
+     "30 years"
+    ],
+    [
+     "Property tax",
+     "1.1% / year"
+    ],
+    [
+     "Insurance",
+     "$1,200 / year"
+    ]
+   ],
+   "result": "Borrowing $280,000 gives roughly $1,816 a month in principal and interest, plus about $321 in tax and $100 in insurance, for a total near $2,237. At 20% down there is no PMI."
+  },
+  "uses": [
+   "Checking what a listing price actually costs per month before you tour the house.",
+   "Comparing a 30-year and a 15-year term on the same loan to see the real trade between payment size and total interest.",
+   "Working out how much extra down payment it takes to clear 20% and drop PMI.",
+   "Sanity-checking a lender's quote against an independent calculation."
+  ],
+  "mistakes": [
+   "Budgeting on principal and interest alone. Tax and insurance often add several hundred dollars a month and are usually collected in the same payment through escrow.",
+   "Assuming PMI is permanent. It normally falls away once you have 20% equity, which happens sooner if home values rise.",
+   "Using the advertised rate instead of your quoted rate. Advertised rates usually assume excellent credit and discount points."
+  ],
+  "notes": [
+   "The down payment dollar and percent fields update each other, so changing one corrects the other.",
+   "PMI is applied only when the down payment is below 20%.",
+   "The amortization schedule shows every month, so you can see the exact point where you start paying more principal than interest."
+  ]
  },
- "uses": [
-  "Checking what a listing price actually costs per month before you tour the house.",
-  "Comparing a 30-year and a 15-year term on the same loan to see the real trade between payment size and total interest.",
-  "Working out how much extra down payment it takes to clear 20% and drop PMI.",
-  "Sanity-checking a lender's quote against an independent calculation."
- ],
- "mistakes": [
-  "Budgeting on principal and interest alone. Tax and insurance often add several hundred dollars a month and are usually collected in the same payment through escrow.",
-  "Assuming PMI is permanent. It normally falls away once you have 20% equity, which happens sooner if home values rise.",
-  "Using the advertised rate instead of your quoted rate. Advertised rates usually assume excellent credit and discount points."
- ],
- "notes": [
-  "The down payment dollar and percent fields update each other, so changing one corrects the other.",
-  "PMI is applied only when the down payment is below 20%.",
-  "The amortization schedule shows every month, so you can see the exact point where you start paying more principal than interest."
- ]
-},
-
-"ohms-law": {
- "kicker": "About this tool",
- "intro": "Ohm's Law Calculator solves for voltage, current, resistance, and power. Enter any two of the four and it works out the other two, so you do not have to remember which rearrangement of the formula you need.",
- "how": [
-  "Type any two known values into the voltage, current, resistance, or power fields.",
-  "The remaining two are calculated as soon as there is enough information.",
-  "Press Clear All to start a new calculation."
- ],
- "method_title": "The four relationships",
- "method": [
-  "Ohm's Law itself is V = I x R: voltage equals current times resistance. Power adds a second relationship, P = V x I.",
-  "Combining them gives the two forms people forget: P = I squared x R, and P = V squared / R. Those are what let the calculator finish from any pair of inputs rather than only from voltage and current."
- ],
- "example": {
-  "setup": "A 12 volt supply feeding a 4 ohm load:",
-  "given": [["Voltage (V)", "12 V"], ["Resistance (R)", "4 ohm"]],
-  "result": "Current is 12 / 4 = 3 A, and power is 12 x 3 = 36 W."
+ "ohms-law": {
+  "kicker": "About this tool",
+  "intro": "Ohm's Law Calculator solves for voltage, current, resistance, and power. Enter any two of the four and it works out the other two, so you do not have to remember which rearrangement of the formula you need.",
+  "how": [
+   "Type any two known values into the voltage, current, resistance, or power fields.",
+   "The remaining two are calculated as soon as there is enough information.",
+   "Press Clear All to start a new calculation."
+  ],
+  "method_title": "The four relationships",
+  "method": [
+   "Ohm's Law itself is V = I x R: voltage equals current times resistance. Power adds a second relationship, P = V x I.",
+   "Combining them gives the two forms people forget: P = I squared x R, and P = V squared / R. Those are what let the calculator finish from any pair of inputs rather than only from voltage and current."
+  ],
+  "example": {
+   "setup": "A 12 volt supply feeding a 4 ohm load:",
+   "given": [
+    [
+     "Voltage (V)",
+     "12 V"
+    ],
+    [
+     "Resistance (R)",
+     "4 ohm"
+    ]
+   ],
+   "result": "Current is 12 / 4 = 3 A, and power is 12 x 3 = 36 W."
+  },
+  "uses": [
+   "Sizing a series resistor for an LED so it gets the current it is rated for.",
+   "Checking whether a resistor's wattage rating is high enough for the power it will actually dissipate.",
+   "Working out how much current a load will pull before you choose a power supply or a fuse.",
+   "Checking a measured reading against what the circuit should theoretically be doing."
+  ],
+  "mistakes": [
+   "Mixing milliamps and amps. A 20 mA LED current is 0.02 A, and entering 20 gives an answer that is off by a thousand.",
+   "Confusing a resistor's power rating with the power it dissipates. A quarter-watt resistor asked to dissipate half a watt will run hot and eventually fail.",
+   "Applying Ohm's Law directly to non-ohmic parts. Diodes, LEDs, and transistors do not have a fixed resistance, so the law applies to the resistor in the circuit, not to the semiconductor."
+  ]
  },
- "uses": [
-  "Sizing a series resistor for an LED so it gets the current it is rated for.",
-  "Checking whether a resistor's wattage rating is high enough for the power it will actually dissipate.",
-  "Working out how much current a load will pull before you choose a power supply or a fuse.",
-  "Checking a measured reading against what the circuit should theoretically be doing."
- ],
- "mistakes": [
-  "Mixing milliamps and amps. A 20 mA LED current is 0.02 A, and entering 20 gives an answer that is off by a thousand.",
-  "Confusing a resistor's power rating with the power it dissipates. A quarter-watt resistor asked to dissipate half a watt will run hot and eventually fail.",
-  "Applying Ohm's Law directly to non-ohmic parts. Diodes, LEDs, and transistors do not have a fixed resistance, so the law applies to the resistor in the circuit, not to the semiconductor."
- ]
-},
-
-"base64-encoder": {
- "kicker": "About this tool",
- "intro": "Base64 Encoder converts text into Base64, the encoding used whenever binary or awkward data has to travel through something that only reliably handles plain text. Encoding happens in the page as you type, and the result can be copied in one click.",
- "how": [
-  "Paste or type the text you want to encode.",
-  "The Base64 output appears immediately below.",
-  "Use Copy Result to put it on the clipboard, or Clear to start over."
- ],
- "method_title": "How Base64 works",
- "method": [
-  "Base64 takes three bytes at a time (24 bits) and re-cuts them into four groups of six bits. Each six-bit group becomes one character from a 64-character alphabet of A-Z, a-z, 0-9, plus, and slash.",
-  "When the input does not divide evenly into three bytes, the output is padded with one or two equals signs so the length is always a multiple of four. Because four characters carry three bytes, Base64 output is always about 33% larger than the input."
- ],
- "example": {
-  "setup": "Encoding the two-character string Hi:",
-  "given": [["Input", "Hi"], ["Bytes", "0x48 0x69"], ["Six-bit groups", "010010 000110 1001 + padding"]],
-  "result": "SGk= - three characters of data plus one equals sign, because two bytes is not a whole three-byte group."
+ "base64-encoder": {
+  "kicker": "About this tool",
+  "intro": "Base64 Encoder converts text into Base64, the encoding used whenever binary or awkward data has to travel through something that only reliably handles plain text. Encoding happens in the page as you type, and the result can be copied in one click.",
+  "how": [
+   "Paste or type the text you want to encode.",
+   "The Base64 output appears immediately below.",
+   "Use Copy Result to put it on the clipboard, or Clear to start over."
+  ],
+  "method_title": "How Base64 works",
+  "method": [
+   "Base64 takes three bytes at a time (24 bits) and re-cuts them into four groups of six bits. Each six-bit group becomes one character from a 64-character alphabet of A-Z, a-z, 0-9, plus, and slash.",
+   "When the input does not divide evenly into three bytes, the output is padded with one or two equals signs so the length is always a multiple of four. Because four characters carry three bytes, Base64 output is always about 33% larger than the input."
+  ],
+  "example": {
+   "setup": "Encoding the two-character string Hi:",
+   "given": [
+    [
+     "Input",
+     "Hi"
+    ],
+    [
+     "Bytes",
+     "0x48 0x69"
+    ],
+    [
+     "Six-bit groups",
+     "010010 000110 1001 + padding"
+    ]
+   ],
+   "result": "SGk= - three characters of data plus one equals sign, because two bytes is not a whole three-byte group."
+  },
+  "uses": [
+   "Embedding a small image or font directly in CSS or HTML as a data URI, removing a network request.",
+   "Building an HTTP Basic Authentication header, which is the Base64 of username:password.",
+   "Moving configuration or a certificate through a form, a JSON field, or a chat message that would otherwise mangle it.",
+   "Inspecting the payload of a JSON Web Token, whose segments are Base64url."
+  ],
+  "mistakes": [
+   "Treating Base64 as encryption. It is an encoding, not a cipher. Anyone can decode it instantly, so it hides nothing.",
+   "Pasting Base64 into a URL without converting it. Standard Base64 uses plus and slash, which have their own meaning in URLs. The URL-safe variant swaps them for minus and underscore.",
+   "Assuming it saves space. It costs roughly a third more than the original, so it is a compatibility tool, not a compression one."
+  ]
  },
- "uses": [
-  "Embedding a small image or font directly in CSS or HTML as a data URI, removing a network request.",
-  "Building an HTTP Basic Authentication header, which is the Base64 of username:password.",
-  "Moving configuration or a certificate through a form, a JSON field, or a chat message that would otherwise mangle it.",
-  "Inspecting the payload of a JSON Web Token, whose segments are Base64url."
- ],
- "mistakes": [
-  "Treating Base64 as encryption. It is an encoding, not a cipher. Anyone can decode it instantly, so it hides nothing.",
-  "Pasting Base64 into a URL without converting it. Standard Base64 uses plus and slash, which have their own meaning in URLs. The URL-safe variant swaps them for minus and underscore.",
-  "Assuming it saves space. It costs roughly a third more than the original, so it is a compatibility tool, not a compression one."
- ]
-},
-
-"lil-beat-maker": {
- "kicker": "About this tool",
- "intro": "Lil Beat Maker is an eight-track step sequencer that runs in the browser using the Web Audio API. You switch steps on and off in a grid, set the tempo, and it loops. There is no signup, no download, and no sample pack to install.",
- "how": [
-  "Click cells in the grid to turn steps on. Each row is one drum sound and each column is one step in time.",
-  "Choose 16 or 32 steps depending on whether you want a one-bar or two-bar loop.",
-  "Drag the BPM slider anywhere from 60 to 200.",
-  "Press Play to loop it, Randomize for a starting point, or Load Groove for a preset pattern."
- ],
- "method_title": "How the grid maps to time",
- "method": [
-  "A 16-step grid is one bar of 4/4 counted in sixteenth notes. Columns 1, 5, 9, and 13 are the four downbeats, and everything between them is a subdivision.",
-  "Step length follows directly from the tempo. At 120 BPM a quarter note is half a second, so a sixteenth note is 125 milliseconds and the whole 16-step bar loops every 2 seconds. Halve the tempo and every step doubles in length."
- ],
- "example": {
-  "setup": "The classic four-on-the-floor house pattern on a 16-step grid at the default tempo:",
-  "given": [["Kick", "steps 1, 5, 9, 13"], ["Snare or clap", "steps 5 and 13"], ["Closed hat", "every odd step"], ["BPM", "120"]],
-  "result": "A two-second loop with a kick on every beat, a backbeat on 2 and 4, and eighth-note hats running underneath."
+ "lil-beat-maker": {
+  "kicker": "About this tool",
+  "intro": "Lil Beat Maker is an eight-track step sequencer that runs in the browser using the Web Audio API. You switch steps on and off in a grid, set the tempo, and it loops. There is no signup, no download, and no sample pack to install.",
+  "how": [
+   "Click cells in the grid to turn steps on. Each row is one drum sound and each column is one step in time.",
+   "Choose 16 or 32 steps depending on whether you want a one-bar or two-bar loop.",
+   "Drag the BPM slider anywhere from 60 to 200.",
+   "Press Play to loop it, Randomize for a starting point, or Load Groove for a preset pattern."
+  ],
+  "method_title": "How the grid maps to time",
+  "method": [
+   "A 16-step grid is one bar of 4/4 counted in sixteenth notes. Columns 1, 5, 9, and 13 are the four downbeats, and everything between them is a subdivision.",
+   "Step length follows directly from the tempo. At 120 BPM a quarter note is half a second, so a sixteenth note is 125 milliseconds and the whole 16-step bar loops every 2 seconds. Halve the tempo and every step doubles in length."
+  ],
+  "example": {
+   "setup": "The classic four-on-the-floor house pattern on a 16-step grid at the default tempo:",
+   "given": [
+    [
+     "Kick",
+     "steps 1, 5, 9, 13"
+    ],
+    [
+     "Snare or clap",
+     "steps 5 and 13"
+    ],
+    [
+     "Closed hat",
+     "every odd step"
+    ],
+    [
+     "BPM",
+     "120"
+    ]
+   ],
+   "result": "A two-second loop with a kick on every beat, a backbeat on 2 and 4, and eighth-note hats running underneath."
+  },
+  "uses": [
+   "Sketching a drum pattern before you commit to opening a full DAW.",
+   "Making a quick loop to practice an instrument over.",
+   "Teaching or learning how a beat is actually built, one subdivision at a time.",
+   "Testing whether an idea in your head works before you spend an hour producing it."
+  ],
+  "notes": [
+   "Everything runs client-side through the Web Audio API, so nothing is uploaded and the page works offline once loaded.",
+   "The 32-step mode gives you two bars, which is enough room for a fill or a variation on the second half.",
+   "Tempo can be changed while the loop is playing."
+  ]
  },
- "uses": [
-  "Sketching a drum pattern before you commit to opening a full DAW.",
-  "Making a quick loop to practice an instrument over.",
-  "Teaching or learning how a beat is actually built, one subdivision at a time.",
-  "Testing whether an idea in your head works before you spend an hour producing it."
- ],
- "notes": [
-  "Everything runs client-side through the Web Audio API, so nothing is uploaded and the page works offline once loaded.",
-  "The 32-step mode gives you two bars, which is enough room for a fill or a variation on the second half.",
-  "Tempo can be changed while the loop is playing."
- ]
-},
-
-"hangman": {
- "kicker": "About this game",
- "intro": "Hangman is the classic word guessing game with category hints, selectable difficulty, full keyboard input, and stats that persist between sessions. Guess the hidden word one letter at a time before you run out of attempts.",
- "how": [
-  "Pick a category, or leave it on the default for a mixed word list.",
-  "Type a letter or click it on the on-screen keyboard.",
-  "Correct letters fill into the word. Wrong letters cost you one of your remaining attempts.",
-  "Press New Word to start again. Your win and loss record carries over."
- ],
- "method_title": "Strategy that actually works",
- "method": [
-  "Open with vowels. E, A, and O appear in the overwhelming majority of English words, and knowing the vowel skeleton narrows the possibilities faster than anything else.",
-  "Then go after the common consonants in roughly the order R, S, T, L, N. After that, use the pattern rather than frequency: a word ending in double letters, or a visible -ING or -TION, tells you far more than the next most common letter would."
- ],
- "uses": [
-  "A short break that does not need an account or an install.",
-  "Vocabulary and spelling practice for kids, with categories to keep it on topic.",
-  "A no-setup classroom or waiting-room game.",
-  "Passing a few minutes without an app store download."
- ],
- "notes": [
-  "Stats are stored in your browser only, so they survive a refresh but never leave your device.",
-  "Both the physical keyboard and the on-screen letters work, so it plays the same on phone and desktop.",
-  "Letters already tried are marked, so you cannot waste a guess by repeating one."
- ]
-}
+ "hangman": {
+  "kicker": "About this game",
+  "intro": "Hangman is the classic word guessing game with category hints, selectable difficulty, full keyboard input, and stats that persist between sessions. Guess the hidden word one letter at a time before you run out of attempts.",
+  "how": [
+   "Pick a category, or leave it on the default for a mixed word list.",
+   "Type a letter or click it on the on-screen keyboard.",
+   "Correct letters fill into the word. Wrong letters cost you one of your remaining attempts.",
+   "Press New Word to start again. Your win and loss record carries over."
+  ],
+  "method_title": "Strategy that actually works",
+  "method": [
+   "Open with vowels. E, A, and O appear in the overwhelming majority of English words, and knowing the vowel skeleton narrows the possibilities faster than anything else.",
+   "Then go after the common consonants in roughly the order R, S, T, L, N. After that, use the pattern rather than frequency: a word ending in double letters, or a visible -ING or -TION, tells you far more than the next most common letter would."
+  ],
+  "uses": [
+   "A short break that does not need an account or an install.",
+   "Vocabulary and spelling practice for kids, with categories to keep it on topic.",
+   "A no-setup classroom or waiting-room game.",
+   "Passing a few minutes without an app store download."
+  ],
+  "notes": [
+   "Stats are stored in your browser only, so they survive a refresh but never leave your device.",
+   "Both the physical keyboard and the on-screen letters work, so it plays the same on phone and desktop.",
+   "Letters already tried are marked, so you cannot waste a guess by repeating one."
+  ]
+ },
+ "guitar-fretboard": {
+  "intro": "Guitar Fretboard shows the note name at every position across all six strings and twelve frets. Pick a root and a scale and the notes in that scale light up, so you can see the shape rather than memorise it position by position.",
+  "how": [
+   "Choose a root note, or leave it on None to see every note name.",
+   "Pick a scale or mode to highlight only its notes.",
+   "Switch tuning if you are not in standard. Drop D, Open G, DADGAD and E flat standard are all supported.",
+   "Read the shapes across the neck and find the same scale in more than one position."
+  ],
+  "method_title": "Why the shapes repeat",
+  "method": [
+   "Standard tuning is EADGBE from the low string up. Every string is a perfect fourth above the one below it, except the B string, which is a major third above the G. That single exception is why chord and scale shapes shift by one fret once they cross to the top two strings.",
+   "Because the guitar is tuned in mostly even intervals, one scale shape works for every root. Move the shape up two frets and you have moved the key up a whole tone, which is why guitarists talk about positions instead of note names."
+  ],
+  "example": {
+   "setup": "Finding the A minor pentatonic box, the first shape most players learn:",
+   "given": [
+    [
+     "Root Note",
+     "A"
+    ],
+    [
+     "Scale",
+     "Minor Pentatonic"
+    ],
+    [
+     "Tuning",
+     "Standard (EADGBE)"
+    ]
+   ],
+   "result": "The highlighted notes cluster at the fifth fret, giving the familiar two-note-per-string box that runs A C D E G."
+  },
+  "uses": [
+   "Learning where a scale actually sits instead of memorising one box shape.",
+   "Finding the same notes higher up the neck so you can solo past the fifth fret.",
+   "Checking which notes change when you drop to an alternate tuning.",
+   "Working out the note under your finger when you are reading a chord chart."
+  ],
+  "mistakes": [
+   "Assuming a shape transposes cleanly across the G and B strings. That major third breaks the pattern and shifts everything one fret.",
+   "Learning only one pentatonic box. The same five notes exist in five positions and the neck opens up when you connect them.",
+   "Forgetting that changing tuning changes every note name on the neck, not just the string you retuned."
+  ]
+ },
+ "bass-fretboard": {
+  "intro": "Bass Fretboard maps note names across four strings and a full twenty-four frets, which is double the range most fretboard charts show. Select a root and a scale and only those notes stay lit.",
+  "how": [
+   "Pick a root note, or leave it on None to see every note.",
+   "Choose a scale or mode from major and natural minor through the pentatonics, blues, Dorian and Mixolydian.",
+   "Switch tuning to Drop D, E flat standard, or five-string BEADG.",
+   "Read the highlighted notes across all twenty-four frets."
+  ],
+  "method_title": "How the bass neck is laid out",
+  "method": [
+   "Standard bass tuning is EADG, the same as the lowest four strings of a guitar but an octave down. Every string is a perfect fourth above the one below, with no exception, which is why bass shapes transpose cleanly across the whole neck.",
+   "Twelve frets is one octave, so the note at fret 12 on any string is the open string an octave higher. Everything above fret 12 repeats the pattern below it."
+  ],
+  "example": {
+   "setup": "Locating the E minor pentatonic, the workhorse scale for rock and blues bass lines:",
+   "given": [
+    [
+     "Root Note",
+     "E"
+    ],
+    [
+     "Scale",
+     "Minor Pentatonic"
+    ],
+    [
+     "Tuning",
+     "Standard (EADG)"
+    ]
+   ],
+   "result": "Notes light up on the open E and around the twelfth fret, showing the same five notes (E G A B D) in two playable positions an octave apart."
+  },
+  "uses": [
+   "Finding a scale in the upper register where most charts stop at fret 12.",
+   "Checking what a five-string low B adds before you buy one.",
+   "Working out a walking line that stays in key.",
+   "Seeing which notes move when you drop to D."
+  ],
+  "notes": [
+   "The four-fourths tuning means every shape transposes without the fret shift guitarists deal with.",
+   "Twenty-four frets covers two full octaves per string.",
+   "Five-string BEADG adds a low B, extending the range down a fourth below the E."
+  ]
+ },
+ "ukulele-fretboard": {
+  "intro": "Ukulele Fretboard shows every note across four strings and twelve frets, with scale highlighting and support for standard, D, and low-G tunings. It is the fastest way to see why the ukulele fingers differently from a guitar.",
+  "how": [
+   "Pick a root note or leave it on None for all note names.",
+   "Choose a scale to highlight, from major and minor through pentatonics, blues and the modes.",
+   "Switch tuning between standard GCEA, D tuning, and low G.",
+   "Read the highlighted notes across the neck."
+  ],
+  "method_title": "Reentrant tuning, and why it matters",
+  "method": [
+   "Standard ukulele tuning is GCEA, but the G is normally reentrant, meaning it is tuned above the C rather than below it. The strings do not run low to high in pitch order, which is what gives the instrument its bright, chiming sound.",
+   "Low G tuning drops that string an octave so the instrument runs in pitch order like a guitar. The fingerings are identical, but scale runs and bass notes sound completely different."
+  ],
+  "example": {
+   "setup": "Mapping C major, the friendliest key on a ukulele:",
+   "given": [
+    [
+     "Root Note",
+     "C"
+    ],
+    [
+     "Scale",
+     "Major"
+    ],
+    [
+     "Tuning",
+     "Standard (GCEA)"
+    ]
+   ],
+   "result": "The scale highlights on the open C string and across the first three frets, which is why so many beginner ukulele songs sit in C."
+  },
+  "uses": [
+   "Understanding why a guitar shape does not transfer directly to a ukulele.",
+   "Deciding whether low G is worth restringing for.",
+   "Finding scale notes for a melody rather than only strumming chords.",
+   "Learning the neck past the third fret."
+  ],
+  "mistakes": [
+   "Treating the top four guitar strings as identical. Ukulele is tuned a fourth higher, so the same shape gives a different chord name.",
+   "Expecting the open G to be the lowest note in standard tuning. In reentrant tuning it is not."
+  ]
+ },
+ "guitar-chords": {
+  "intro": "Guitar Chords is a diagram browser for open and barre chord fingerings. Filter by root and chord type and read the fingering straight off the grid, including which strings to mute and which to play open.",
+  "how": [
+   "Pick a root, or leave it on All Roots to browse everything.",
+   "Pick a chord type, or leave it on All Types.",
+   "Read the diagram: numbers are fingers, O is an open string, X is a string you do not play."
+  ],
+  "method_title": "How to read a chord diagram",
+  "method": [
+   "The six vertical lines are the strings, low E on the left through high E on the right. The horizontal lines are frets, with the top line being the nut unless a fret number is marked beside the grid.",
+   "A barre chord shows one finger covering several strings at the same fret. Because it uses no open strings, the whole shape can slide up the neck: the same shape two frets higher is the same chord type a whole tone higher."
+  ],
+  "uses": [
+   "Looking up a chord you have never played in the middle of a song.",
+   "Finding an easier voicing when a barre chord is out of reach.",
+   "Learning the four movable shapes that cover most of the neck.",
+   "Checking which strings should be muted so the chord sounds clean."
+  ],
+  "mistakes": [
+   "Strumming muted strings. An X means that string must not ring, and letting it sound changes the chord.",
+   "Pressing behind the fret instead of just behind the fret wire, which is the usual cause of buzzing.",
+   "Learning only open chords. Barre shapes are harder at first but give you every key from four shapes."
+  ]
+ },
+ "ukulele-chords": {
+  "intro": "Ukulele Chords is a fingering diagram browser for standard GCEA tuning. Filter by root and chord type and read the shape off the grid, including open strings and any string that should not ring.",
+  "how": [
+   "Choose a root, or All Roots to browse.",
+   "Choose a chord type, or All Types.",
+   "Read the four-string diagram: numbers are fingers, O is open, X is muted."
+  ],
+  "method_title": "Why ukulele chords are easier",
+  "method": [
+   "Four strings instead of six means most chords need only one, two or three fingers. C major is a single finger on the third fret of the A string.",
+   "Because the ukulele has only four strings, chords often leave out the fifth of the chord. That is why a ukulele chord can sound thinner than the same chord on guitar, and why the voicings are not simply guitar shapes moved across."
+  ],
+  "uses": [
+   "Learning a song quickly, since most ukulele songs use four or five chords.",
+   "Finding a simpler voicing for a chord that looks awkward.",
+   "Checking a chord you know on guitar to see what it becomes on ukulele.",
+   "Building a first chord vocabulary: C, F, G and A minor cover a huge amount of repertoire."
+  ],
+  "notes": [
+   "All diagrams assume standard GCEA tuning.",
+   "Shapes without open strings can be moved up the neck to change key."
+  ]
+ },
+ "piano-chords": {
+  "intro": "Piano Chords shows any chord on an interactive keyboard and plays it back, so you can see the shape and hear whether you have the right voicing. Pick a root, a chord type and an octave.",
+  "how": [
+   "Select a root note.",
+   "Select a chord type.",
+   "Choose an octave: 3 for low, 4 for middle C, 5 for high.",
+   "Read the highlighted keys and listen to the chord."
+  ],
+  "method_title": "Chords as stacked intervals",
+  "method": [
+   "Every chord here is built by counting semitones up from the root. A major triad is the root, four semitones, then three more (0, 4, 7). A minor triad flips that to 0, 3, 7. Diminished is 0, 3, 6 and augmented is 0, 4, 8.",
+   "Seventh chords add a fourth note. A dominant seventh is 0, 4, 7, 10. A major seventh raises that top note to 11, which is the single semitone that separates a bluesy sound from a dreamy one."
+  ],
+  "example": {
+   "setup": "Building C major in the middle of the keyboard:",
+   "given": [
+    [
+     "Root Note",
+     "C"
+    ],
+    [
+     "Chord Type",
+     "Major"
+    ],
+    [
+     "Octave",
+     "4 (middle C)"
+    ]
+   ],
+   "result": "C, E and G light up. Counting from C: E is four semitones up, G is three above E."
+  },
+  "uses": [
+   "Checking a chord symbol you have never played before.",
+   "Hearing the difference between major seventh and dominant seventh rather than reading about it.",
+   "Teaching chord construction visually.",
+   "Finding a voicing in a comfortable octave for singing."
+  ],
+  "mistakes": [
+   "Confusing a major seventh with a dominant seventh. Cmaj7 and C7 differ by one semitone and sound nothing alike.",
+   "Always playing chords in root position. Inversions move more smoothly between chords."
+  ]
+ },
+ "chord-finder": {
+  "intro": "Chord Finder works backwards. Click the notes you are holding down on the piano keyboard and it tells you what chord that is, including every alternative name and which inversion you are playing.",
+  "how": [
+   "Click the notes on the keyboard, in any order.",
+   "Read the matching chord names.",
+   "Check the inversion label to see whether the lowest note is the root."
+  ],
+  "method_title": "Why one set of notes has several names",
+  "method": [
+   "A chord is identified by the intervals between its notes, not by the order you played them. The same three notes can be described from different roots, which is why C, E and G is C major but E, G and C is C major in first inversion.",
+   "Some note sets are genuinely ambiguous. A diminished seventh chord stacks four notes each three semitones apart, so it has four equally valid names depending on which note you call the root. The tool lists all matches rather than guessing."
+  ],
+  "uses": [
+   "Naming a chord you found by ear on the keyboard.",
+   "Working out what a chord in sheet music actually is.",
+   "Checking whether a voicing you like is a standard chord or something more unusual.",
+   "Understanding inversions by hearing them named as you move the bass note."
+  ],
+  "mistakes": [
+   "Assuming there is one right answer. Ambiguous chords legitimately have several names, and context decides which is correct.",
+   "Ignoring the bass note. The lowest note determines the inversion and often changes how the chord functions."
+  ]
+ },
+ "chords-in-keys": {
+  "intro": "Chords in Keys lists all seven diatonic chords for any key and mode, with Roman numerals. It answers the question every songwriter asks early: which chords are allowed to go together.",
+  "how": [
+   "Pick a root note.",
+   "Pick a mode: major, natural minor, or one of Dorian, Phrygian, Lydian, Mixolydian and Locrian.",
+   "Read the seven chords with their Roman numerals and qualities."
+  ],
+  "method_title": "Where the seven chords come from",
+  "method": [
+   "Take the seven notes of the scale, then build a chord on each one by stacking every other note. What quality you get is decided by the scale itself, not by choice.",
+   "In any major key the pattern is fixed: I major, ii minor, iii minor, IV major, V major, vi minor, and vii diminished. Natural minor uses the same seven chords starting from the sixth degree, giving i, ii diminished, III, iv, v, VI, VII."
+  ],
+  "example": {
+   "setup": "The diatonic chords of C major:",
+   "given": [
+    [
+     "Root Note",
+     "C"
+    ],
+    [
+     "Mode",
+     "Major (Ionian)"
+    ]
+   ],
+   "result": "C, Dm, Em, F, G, Am and B diminished. No sharps or flats, which is why C major is where most people start."
+  },
+  "uses": [
+   "Writing a progression that stays in key.",
+   "Working out the key of a song from the chords it uses.",
+   "Finding a substitute chord that still fits.",
+   "Understanding why the vi chord is minor in every major key."
+  ],
+  "mistakes": [
+   "Expecting the V chord to be minor in a minor key. Most minor-key songs raise the seventh degree to make V major, which is what creates the pull back to the tonic.",
+   "Treating the diminished vii as unusable. It works well as a passing chord even though it rarely gets its own bar."
+  ]
+ },
+ "common-chord-progressions": {
+  "intro": "Common Chord Progressions is a reference library of the progressions that actually get used, filtered by genre and transposed into any key. Each one is shown as Roman numerals and as real chord names.",
+  "how": [
+   "Pick a key and a mode.",
+   "Filter by genre: pop, rock, blues, jazz, folk or classical.",
+   "Read each progression as Roman numerals and as chords in your chosen key."
+  ],
+  "method_title": "Why Roman numerals instead of chord names",
+  "method": [
+   "Roman numerals describe a progression by scale degree rather than by key, so I-V-vi-IV is the same progression whether you play it in C or in E. Uppercase means major, lowercase means minor.",
+   "That is what makes progressions portable. Once you know I-V-vi-IV, you can play it in any of the twelve keys by reading off the diatonic chords for that key."
+  ],
+  "example": {
+   "setup": "The four-chord progression behind a large share of pop music, in C:",
+   "given": [
+    [
+     "Progression",
+     "I - V - vi - IV"
+    ],
+    [
+     "Key",
+     "C major"
+    ]
+   ],
+   "result": "C, G, Am, F. The same four numerals in G give G, D, Em, C."
+  },
+  "uses": [
+   "Starting a song when a blank page is the problem.",
+   "Recognising why two songs sound alike.",
+   "Finding a genre-appropriate progression to practise over.",
+   "Transposing a progression into a key that suits a singer."
+  ],
+  "notes": [
+   "Every progression is shown in both Roman numerals and real chord names for the selected key.",
+   "Major and minor mode both have their own progression sets."
+  ]
+ },
+ "chord-transposer": {
+  "intro": "Chord Transposer moves a whole chord sheet from one key to another. Paste the sheet, choose the original and target keys, and every chord symbol shifts while your lyrics and layout stay exactly where they were.",
+  "how": [
+   "Paste a chord sheet, or press Load example to see the format.",
+   "Set the original key and the target key.",
+   "Choose whether the output prefers sharps or flats.",
+   "Press Copy to take the transposed sheet."
+  ],
+  "method_title": "How transposition works",
+  "method": [
+   "Transposing means moving every chord by the same number of semitones. Going from C to D is up two semitones, so every chord in the sheet moves up two: C becomes D, Am becomes Bm, F becomes G.",
+   "The sharps or flats choice matters because the same pitch has two names. B flat and A sharp are the same note, but keys are conventionally written one way or the other, and mixing them makes a sheet hard to read."
+  ],
+  "example": {
+   "setup": "Moving a song down to suit a lower voice:",
+   "given": [
+    [
+     "Original Key",
+     "G"
+    ],
+    [
+     "Target Key",
+     "E"
+    ],
+    [
+     "Chords in",
+     "G, D, Em, C"
+    ]
+   ],
+   "result": "E, B, C sharp minor, A. Every chord moved down three semitones and the lyrics are untouched."
+  },
+  "uses": [
+   "Dropping a song into a range a singer can actually reach.",
+   "Moving a piece into a key with easier guitar shapes.",
+   "Matching a chord sheet to a recording in a different key.",
+   "Preparing the same song in two keys for different players."
+  ],
+  "mistakes": [
+   "Transposing by ear halfway and losing track. Every chord has to move by the same interval or the song stops working.",
+   "Ignoring the sharps and flats preference and ending up with a sheet mixing both, which is technically correct and genuinely hard to read."
+  ]
+ },
+ "chord-formulas": {
+  "intro": "Chord Formulas is a reference chart for how chords are built, from basic triads through seventh chords and extensions. Each entry gives the interval formula so you can construct the chord from any root.",
+  "method_title": "Reading a chord formula",
+  "method": [
+   "A formula lists scale degrees relative to the major scale of the root. 1-3-5 is a major triad. Flattening the third gives 1-b3-5, a minor triad. Flattening the fifth as well gives 1-b3-b5, diminished.",
+   "Seventh chords add a fourth degree. 1-3-5-7 is a major seventh, 1-3-5-b7 is a dominant seventh, and 1-b3-5-b7 is a minor seventh. Extensions past the seventh (9, 11, 13) continue stacking thirds beyond the octave."
+  ],
+  "example": {
+   "setup": "Building an A dominant seventh from the formula:",
+   "given": [
+    [
+     "Formula",
+     "1 - 3 - 5 - b7"
+    ],
+    [
+     "A major scale",
+     "A B C# D E F# G#"
+    ],
+    [
+     "Applying it",
+     "1=A, 3=C#, 5=E, b7=G"
+    ]
+   ],
+   "result": "A, C sharp, E, G. The flattened seventh is what makes it sound like blues rather than a resolved major seventh."
+  },
+  "uses": [
+   "Constructing a chord on any instrument when you know the root.",
+   "Understanding what a chord symbol is actually asking for.",
+   "Working out which note to alter when a chart says something like 7#9.",
+   "Learning why some chords sound tense and others resolved."
+  ],
+  "mistakes": [
+   "Reading the numbers as scale steps of the key rather than of the chord's own root. Formulas are always relative to the root's major scale.",
+   "Assuming a 9 chord contains a 7. By convention it does, and a chord with a 9 but no 7 is written add9."
+  ]
+ },
+ "key-signatures": {
+  "intro": "Key Signatures is a complete reference for all thirty major and minor key signatures, showing the sharps or flats in each and how every major key pairs with its relative minor.",
+  "how": [
+   "Filter by major, minor, sharps, flats, or no accidentals.",
+   "Read the accidentals in each key signature and the relative key it shares them with."
+  ],
+  "method_title": "The order of sharps and flats",
+  "method": [
+   "Sharps always appear in the same order: F, C, G, D, A, E, B. Flats appear in exactly the reverse order: B, E, A, D, G, C, F. That order never changes, so a signature with three sharps is always F sharp, C sharp and G sharp.",
+   "To name a sharp key, take the last sharp and go up one semitone. Three sharps ends on G sharp, so the key is A major. For flat keys, the second-to-last flat is the key name, which is why four flats (B, E, A, D) is A flat major."
+  ],
+  "example": {
+   "setup": "Identifying a key signature with two sharps:",
+   "given": [
+    [
+     "Sharps present",
+     "F sharp, C sharp"
+    ],
+    [
+     "Last sharp",
+     "C sharp"
+    ],
+    [
+     "Up one semitone",
+     "D"
+    ]
+   ],
+   "result": "D major, or its relative minor B minor. Both share the same two sharps."
+  },
+  "uses": [
+   "Naming a key from the signature at the start of a piece.",
+   "Finding the relative minor when a piece sounds minor but has a major signature.",
+   "Checking which notes are sharpened or flattened before you sight-read.",
+   "Learning the circle of fifths in a way that sticks."
+  ],
+  "mistakes": [
+   "Reading a signature as major without listening. A major key and its relative minor share an identical signature, and only the music tells you which it is.",
+   "Forgetting that a key signature applies to every octave, not just the line or space where the symbol sits."
+  ]
+ }
 }
