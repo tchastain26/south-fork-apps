@@ -2495,5 +2495,579 @@
    "Spelling Alfa as Alpha and Juliett with one t. Both are officially spelled the irregular way for a reason.",
    "Using it for letters that are already unambiguous, which slows the exchange down without helping."
   ]
+ },
+ "markdown-to-html": {
+  "intro": "Markdown to HTML converts Markdown into clean HTML with a live preview, so you can see the rendered result and copy the markup side by side.",
+  "how": [
+   "Paste or type your Markdown.",
+   "Switch between HTML and Preview to see the output either way.",
+   "Copy the HTML when it looks right."
+  ],
+  "method_title": "What Markdown actually is",
+  "method": [
+   "Markdown was designed by John Gruber in 2004 with one goal: a plain-text format readable as-is, that converts cleanly to HTML. That is why the syntax mirrors how people already marked up plain-text email, with asterisks for emphasis and hashes for headings.",
+   "There is no single Markdown. CommonMark is the strict specification, and GitHub Flavored Markdown adds tables, task lists and strikethrough. Two converters can legitimately produce different HTML from the same input where the original spec was ambiguous."
+  ],
+  "uses": [
+   "Turning notes into HTML for a page or an email.",
+   "Checking how your Markdown will render before committing it.",
+   "Producing HTML for a CMS that does not accept Markdown.",
+   "Learning what each piece of Markdown syntax becomes."
+  ],
+  "mistakes": [
+   "Expecting tables to work everywhere. Tables are a GitHub Flavored extension, not part of original Markdown.",
+   "Relying on a single line break for a new line. Markdown needs a blank line for a new paragraph, or two trailing spaces for a line break.",
+   "Indenting text by four spaces without meaning to, which turns it into a code block."
+  ]
+ },
+ "markdown-table-maker": {
+  "intro": "Markdown Table Maker builds a properly formatted Markdown table from plain text or CSV, handling the column alignment and the separator row so you do not have to line up pipes by hand.",
+  "how": [
+   "Paste your data as plain text or CSV.",
+   "The formatted Markdown table appears below.",
+   "Copy it into your document."
+  ],
+  "method_title": "How a Markdown table is structured",
+  "method": [
+   "A table is three parts: a header row of cells separated by pipes, a separator row of dashes, and the data rows. The separator row is what tells the parser this is a table at all, and it must have the same number of columns as the header.",
+   "Alignment is set with colons in that separator row. A colon on the left aligns left, on the right aligns right, and on both sides centres the column. Without a colon the renderer picks its own default."
+  ],
+  "example": {
+   "setup": "The minimum structure a table needs:",
+   "given": [
+    [
+     "Header row",
+     "| Name | Score |"
+    ],
+    [
+     "Separator",
+     "| :--- | ----: |"
+    ],
+    [
+     "Data row",
+     "| Ana | 42 |"
+    ]
+   ],
+   "result": "Name aligns left, Score aligns right. Getting the separator row wrong is why most hand-written tables fail to render."
+  },
+  "uses": [
+   "Building a table for a README or a wiki page without counting pipes.",
+   "Converting a spreadsheet column selection into Markdown.",
+   "Reformatting a table someone pasted in as loose text.",
+   "Producing documentation tables that stay readable in the raw file."
+  ],
+  "mistakes": [
+   "Mismatching the column count between the header and the separator row, which stops it rendering as a table at all.",
+   "Using a pipe character inside a cell without escaping it, which splits the cell in two.",
+   "Assuming tables work in every Markdown renderer. They are an extension, and some strict parsers ignore them."
+  ]
+ },
+ "markdown-cheatsheet": {
+  "intro": "Markdown Cheatsheet is a complete syntax reference with live examples: headings, emphasis, links, images, lists, code, blockquotes, tables and more, each shown as source and as rendered output.",
+  "method_title": "The syntax worth memorising",
+  "method": [
+   "Most of Markdown is six or seven patterns. Hashes for headings, asterisks or underscores for emphasis, square brackets and parentheses for links, hyphens or numbers for lists, backticks for code, and a greater-than sign for quotes.",
+   "The rules that catch people out are about blank lines. A paragraph ends at a blank line, a list needs one before it in many parsers, and a fenced code block needs its opening and closing fences on their own lines."
+  ],
+  "uses": [
+   "Looking up syntax you use rarely, like reference-style links or nested lists.",
+   "Learning Markdown by seeing source and output together.",
+   "Checking which features are core Markdown and which are extensions.",
+   "Keeping a reference open while writing documentation."
+  ],
+  "notes": [
+   "Every example shows the raw syntax next to the rendered result.",
+   "Covers both core Markdown and the common GitHub Flavored extensions."
+  ]
+ },
+ "markdown-link-cleaner": {
+  "intro": "Markdown Link Cleaner takes messy pasted links and turns them into tidy Markdown, optionally stripping tracking parameters, fetching the real page titles, and formatting the result as a bulleted or numbered list.",
+  "how": [
+   "Paste your links, one per line or mixed into text.",
+   "Turn on Strip UTM tracking parameters to remove campaign junk from the URLs.",
+   "Optionally fetch live page titles, which takes longer but produces properly named links.",
+   "Choose a list format and copy the output."
+  ],
+  "method_title": "What UTM parameters are and why to remove them",
+  "method": [
+   "UTM parameters are the query fields marketers append to track where a click came from: utm_source, utm_medium, utm_campaign, utm_term and utm_content. They are added by the sender, mean nothing to the destination page, and often make a URL two or three times longer than it needs to be.",
+   "Stripping them almost always leaves a working link to the same page, and it stops you passing someone else's campaign tracking on to your readers when you share a link."
+  ],
+  "uses": [
+   "Turning a pile of copied URLs into a clean reference list.",
+   "Cleaning links before publishing them, so readers do not inherit tracking parameters.",
+   "Building a linked bibliography with real page titles rather than bare URLs.",
+   "Tidying links pasted out of a newsletter, which are usually the worst offenders."
+  ],
+  "mistakes": [
+   "Stripping query parameters indiscriminately. Some parameters are functional and the page will break without them, so only tracking parameters should go.",
+   "Fetching titles for a long list and expecting it to be instant. Each one is a separate network request."
+  ],
+  "notes": [
+   "Fetching live page titles requires a network request per link, so it is slower than the offline options."
+  ]
+ },
+ "markdown-list-cleaner": {
+  "intro": "Markdown List Cleaner normalises messy lists: inconsistent bullet characters, ragged indentation, and numbering that has drifted out of sequence.",
+  "how": [
+   "Paste your list.",
+   "The cleaned version appears immediately.",
+   "Copy it back into your document."
+  ],
+  "method_title": "Why lists break in Markdown",
+  "method": [
+   "Markdown accepts hyphen, asterisk and plus as bullet characters, and mixing them within one list can split it into several lists in some parsers. Standardising on one character avoids the whole problem.",
+   "Indentation is the other common failure. Nesting requires a consistent indent, and a list pasted from another editor often arrives with a mix of tabs and spaces that renders as a code block instead of a nested list."
+  ],
+  "uses": [
+   "Fixing a list pasted from a document or an email.",
+   "Standardising bullet characters across a file.",
+   "Repairing nesting that renders wrongly.",
+   "Renumbering an ordered list that has gone out of sequence."
+  ],
+  "mistakes": [
+   "Mixing tabs and spaces for indentation, which is the single most common cause of a list rendering as code.",
+   "Assuming ordered list numbers must be sequential in the source. Most parsers renumber automatically, so 1. 1. 1. renders as 1. 2. 3."
+  ]
+ },
+ "markdown-frontmatter": {
+  "intro": "Frontmatter Generator builds the YAML or TOML metadata block that sits at the top of a post in a static site generator, with fields for title, date, slug, author and tags, plus any custom fields you add.",
+  "how": [
+   "Fill in the title, date, author and tags. The slug is generated from the title automatically.",
+   "Add any custom fields your site needs.",
+   "Switch between YAML and TOML output.",
+   "Copy the block to the top of your post file."
+  ],
+  "method_title": "YAML or TOML, and where each is used",
+  "method": [
+   "Frontmatter is a metadata block at the very top of a content file, separated from the body by delimiters. YAML frontmatter is fenced by three hyphens and is the default in Jekyll, Eleventy, Astro and most of the ecosystem. TOML frontmatter is fenced by three plus signs and is common in Hugo.",
+   "The format has to match what your generator expects, and the opening delimiter must be the first line of the file. A single blank line above it and the generator will treat the whole block as body text."
+  ],
+  "example": {
+   "setup": "A minimal YAML block:",
+   "given": [
+    [
+     "Opening",
+     "---"
+    ],
+    [
+     "Fields",
+     "title, date, slug, tags"
+    ],
+    [
+     "Closing",
+     "---"
+    ]
+   ],
+   "result": "Three hyphens, the fields, three hyphens, then the post body. The opening delimiter must be line one."
+  },
+  "uses": [
+   "Starting a new blog post with correctly formed metadata.",
+   "Adding a custom field consistently across posts.",
+   "Switching a site between YAML and TOML conventions.",
+   "Avoiding the YAML quoting errors that break a build."
+  ],
+  "mistakes": [
+   "Leaving a colon unquoted inside a title. YAML reads it as a key separator and the build fails.",
+   "Putting a blank line before the opening delimiter, which stops it being recognised as frontmatter.",
+   "Using the wrong date format. Most generators want ISO 8601, and a locale-formatted date will either fail or sort wrongly."
+  ]
+ },
+ "lorem-ipsum-generator": {
+  "intro": "Lorem Ipsum Generator produces placeholder text by paragraph, sentence or word count, with the option to open with the traditional Lorem ipsum line.",
+  "how": [
+   "Choose paragraphs, sentences or words.",
+   "Set the count.",
+   "Decide whether to start with the classic opening line.",
+   "Generate and copy."
+  ],
+  "method_title": "Where Lorem Ipsum comes from",
+  "method": [
+   "The text is scrambled Latin taken from Cicero's De Finibus Bonorum et Malorum, written in 45 BC. It has been used as typesetting filler since at least the 1500s, when a printer scrambled a passage to make a type specimen book.",
+   "It survives because it is deliberately meaningless. Readable placeholder text pulls attention to the words, and a client reviewing a layout starts editing the copy instead of assessing the design. Latin-looking nonsense with roughly English word-length distribution keeps the focus on the layout."
+  ],
+  "uses": [
+   "Filling a design mockup before real copy exists.",
+   "Testing how a layout handles different text lengths.",
+   "Checking line height, measure and typography with realistic word shapes.",
+   "Populating a database or a template for testing."
+  ],
+  "mistakes": [
+   "Shipping it to production. Lorem ipsum appearing on a live site is a classic and very visible mistake.",
+   "Using it to test text that will be much shorter or longer in reality, which hides layout problems until launch.",
+   "Forgetting it is Latin-shaped. If your real content is in a language with much longer words or a different script, it will not stress the layout the same way."
+  ]
+ },
+ "lorem-ipsum-blocks": {
+  "intro": "Lorem Ipsum Blocks generates placeholder text in five different voices: classic Lorem Ipsum, random English, hipster ipsum, office speak, and nature and science vocabulary.",
+  "how": [
+   "Choose a style.",
+   "Set how many paragraphs and how many sentences each.",
+   "Regenerate until you have something that fits, then copy."
+  ],
+  "method_title": "Why the style of placeholder matters",
+  "method": [
+   "Classic Lorem Ipsum is deliberately unreadable, which keeps reviewers focused on layout. That is a strength when presenting a design and a weakness when you need to know how real English will look, because Latin word lengths and letter frequencies differ from English.",
+   "English-based placeholder gives a more honest preview of line breaks, hyphenation and rag. Themed styles like office speak or nature vocabulary are useful when the design is for a specific context and you want the texture to feel right without writing real copy."
+  ],
+  "uses": [
+   "Presenting a layout where the placeholder should feel plausible rather than obviously fake.",
+   "Testing typography with realistic English word lengths.",
+   "Filling a themed mockup where Latin would look out of place.",
+   "Generating varied test content for a template."
+  ],
+  "mistakes": [
+   "Using readable English placeholder in a client review, where it invites copy edits instead of design feedback.",
+   "Leaving joke placeholder text in a file that later ships."
+  ]
+ },
+ "text-case-converter": {
+  "intro": "Text Case Converter switches text between uppercase, lowercase, title case and sentence case.",
+  "how": [
+   "Paste your text.",
+   "Choose the case you want.",
+   "Copy the result."
+  ],
+  "method_title": "Title case is not one rule",
+  "method": [
+   "Uppercase, lowercase and sentence case are mechanical. Title case is not, because style guides disagree about which words to leave lowercase. Most lowercase short articles, conjunctions and prepositions (a, an, the, and, of, in) unless they are the first or last word, but the length threshold for prepositions varies between guides.",
+   "Case conversion also has language traps. In Turkish, the uppercase of a dotless i is a dotless I, and applying English rules produces the wrong letter. Any conversion done for machine comparison rather than display should use a locale-independent fold."
+  ],
+  "uses": [
+   "Fixing a heading that was typed in all caps.",
+   "Normalising imported data where capitalisation is inconsistent.",
+   "Converting a title to your publication's house style.",
+   "Rescuing text from a caps lock accident."
+  ],
+  "mistakes": [
+   "Applying title case to a sentence and getting proper nouns wrong. No automatic rule knows that iPhone and eBay keep their lowercase first letter.",
+   "Uppercasing text for comparison instead of using a case fold, which breaks on several languages.",
+   "Sentence-casing text containing acronyms, which turns NASA into Nasa."
+  ]
+ },
+ "tag-stripper": {
+  "intro": "Tag Stripper removes HTML and XML tags, Markdown formatting, or both, leaving plain text. It can also decode HTML entities and collapse the extra whitespace that stripping leaves behind.",
+  "how": [
+   "Paste your marked-up text.",
+   "Tick what to strip: HTML/XML tags, Markdown formatting, or both.",
+   "Optionally decode entities and collapse whitespace.",
+   "Press Strip and copy the output."
+  ],
+  "method_title": "Why stripping leaves a mess without the extra options",
+  "method": [
+   "Removing tags alone gives you text littered with entities like &amp; and &nbsp;, because those are not tags. Decoding entities turns them back into the characters they represent.",
+   "Stripping also leaves whitespace behind. Block-level tags were providing the visual separation, and once they are gone you get either everything jammed together or long runs of blank lines. Collapsing whitespace fixes that, which is why these three options belong together."
+  ],
+  "uses": [
+   "Getting plain text out of a copied web page for use elsewhere.",
+   "Extracting readable content from an HTML email.",
+   "Converting Markdown to plain text for a system that cannot render it.",
+   "Cleaning scraped content before analysing it."
+  ],
+  "mistakes": [
+   "Stripping tags from content you need to keep structured. This is a one-way operation and the structure is not recoverable.",
+   "Forgetting to decode entities, leaving &amp; scattered through the output.",
+   "Using tag stripping as a security measure. Sanitising untrusted HTML properly needs a real parser, not a strip."
+  ]
+ },
+ "html-entity-encoder": {
+  "intro": "HTML Entity Encoder converts characters that have special meaning in HTML into their entity form, so they display as text instead of being interpreted as markup.",
+  "how": [
+   "Paste the text you want to encode.",
+   "The encoded output appears immediately.",
+   "Copy it into your HTML."
+  ],
+  "method_title": "The five that matter, and the order they go in",
+  "method": [
+   "Five characters need encoding in HTML: ampersand becomes &amp;, less-than becomes &lt;, greater-than becomes &gt;, double quote becomes &quot;, and single quote becomes &#39;.",
+   "The ampersand must be encoded first. If you encode the angle brackets before the ampersands, you then encode the ampersands inside the entities you just created, and &lt; becomes &amp;lt;, which displays as literal text rather than a less-than sign. Getting this order wrong is the classic double-encoding bug."
+  ],
+  "example": {
+   "setup": "Encoding a snippet so it displays as text:",
+   "given": [
+    [
+     "Input",
+     "<b>Tom & Jerry</b>"
+    ],
+    [
+     "Ampersand first",
+     "&amp;"
+    ],
+    [
+     "Then angle brackets",
+     "&lt; and &gt;"
+    ]
+   ],
+   "result": "&lt;b&gt;Tom &amp; Jerry&lt;/b&gt; renders on the page as the literal tag text."
+  },
+  "uses": [
+   "Displaying code examples on a web page without them being parsed as markup.",
+   "Escaping user-supplied text before inserting it into HTML.",
+   "Fixing content where a stray angle bracket is breaking the layout.",
+   "Preparing text for an XML document, which has the same rules."
+  ],
+  "mistakes": [
+   "Encoding in the wrong order and producing double-encoded output.",
+   "Encoding text that is already encoded, which has the same effect.",
+   "Treating entity encoding as complete XSS protection. It is the right tool for text content, but attribute values and inline script contexts need their own escaping rules."
+  ]
+ },
+ "html-entity-decoder": {
+  "intro": "HTML Entity Decoder turns entities like &amp;, &lt; and &#39; back into the characters they represent, recovering readable plain text.",
+  "how": [
+   "Paste text containing HTML entities.",
+   "The decoded output appears immediately.",
+   "Copy the plain text."
+  ],
+  "method_title": "Named and numeric entities",
+  "method": [
+   "Entities come in two forms. Named entities like &amp; and &nbsp; are readable but only a fixed set exists. Numeric entities like &#39; and &#x27; reference a Unicode code point directly in decimal or hexadecimal, and can represent any character.",
+   "Decoding runs the encoding order in reverse, so ampersands are decoded last. Decode them first and &amp;lt; turns into &lt; and then into a real less-than sign, which is one level of decoding too many and can reintroduce markup you did not intend."
+  ],
+  "uses": [
+   "Reading text extracted from HTML source or an API response.",
+   "Cleaning content that has been double-encoded somewhere in a pipeline.",
+   "Recovering plain text from a scraped page.",
+   "Debugging why a page displays &amp; instead of an ampersand."
+  ],
+  "mistakes": [
+   "Decoding untrusted content and then inserting it into a page, which can reintroduce active markup. Decode for display as text, not for injection into HTML.",
+   "Decoding repeatedly until nothing changes. One pass is usually correct, and repeated passes can turn escaped content into live markup."
+  ]
+ },
+ "url-extractor": {
+  "intro": "URL Extractor pulls every link out of a block of text or HTML and lists them, so you can get a clean set of URLs from messy source material.",
+  "how": [
+   "Paste text, HTML, or anything containing links.",
+   "The extracted URLs are listed below.",
+   "Copy the list."
+  ],
+  "method_title": "Why URL extraction is harder than it looks",
+  "method": [
+   "Finding URLs by pattern means deciding where one ends, and that is genuinely ambiguous. A URL at the end of a sentence is usually not meant to include the full stop, but a full stop is legal inside a URL path, so any rule will occasionally be wrong.",
+   "Closing brackets have the same problem. A link inside parentheses usually should not include the closing bracket, but Wikipedia URLs legitimately contain them. Extraction tools apply heuristics that are right most of the time rather than a rule that is right always."
+  ],
+  "uses": [
+   "Collecting every link from a page or an email for review.",
+   "Building a list of references from a document.",
+   "Auditing which external sites a piece of content points to.",
+   "Pulling links out of a chat export or a plain-text file."
+  ],
+  "mistakes": [
+   "Assuming the list is exhaustive. Links built by JavaScript at runtime do not exist in the source text.",
+   "Not checking for trailing punctuation before using the URLs.",
+   "Extracting from rendered text rather than HTML, which loses the href of any link whose visible text is not the URL."
+  ]
+ },
+ "email-extractor": {
+  "intro": "Email Extractor pulls every email address out of a block of text and lists them cleanly.",
+  "how": [
+   "Paste text containing email addresses.",
+   "The extracted addresses appear below.",
+   "Copy the list."
+  ],
+  "method_title": "Why no pattern matches every valid address",
+  "method": [
+   "The formal definition of an email address in RFC 5322 permits quoted strings, comments, and characters most people never see, and a regular expression that matches it correctly runs to thousands of characters. No practical tool implements it.",
+   "So extraction uses a pragmatic pattern that matches the addresses that actually occur. It will miss exotic but technically valid forms, and the only way to truly validate an address is to send mail to it."
+  ],
+  "uses": [
+   "Collecting contact addresses from a document you have been given.",
+   "Auditing a page or a file for exposed addresses before publishing it.",
+   "Pulling addresses out of a pasted email header block.",
+   "Building a distribution list from meeting notes."
+  ],
+  "mistakes": [
+   "Treating extraction as validation. A well-formed address can still be undeliverable.",
+   "Missing addresses that have been obfuscated as name at domain dot com, which is deliberate and will not match.",
+   "Using extracted addresses for unsolicited mail, which is unlawful in most jurisdictions."
+  ]
+ },
+ "number-extractor": {
+  "intro": "Number Extractor pulls all the numbers out of a block of text, which is the quickest way to get figures out of a report, an invoice, or a paragraph of prose into a usable list.",
+  "how": [
+   "Paste text containing numbers.",
+   "The extracted numbers appear below.",
+   "Copy them out."
+  ],
+  "method_title": "What counts as a number",
+  "method": [
+   "Extraction has to decide about decimal points, thousands separators and signs. In most of the English-speaking world a comma groups thousands and a full stop is the decimal point, but much of Europe reverses the two, so 1.234 is a thousand-something in Berlin and one-point-something in Boston.",
+   "That ambiguity cannot be resolved from the digits alone, only from context. Check the output against the source when the text might have come from a different locale."
+  ],
+  "uses": [
+   "Getting figures out of a pasted report into a spreadsheet.",
+   "Extracting quantities or prices from a block of prose.",
+   "Pulling reference or order numbers out of an email.",
+   "Collecting measurements from notes."
+  ],
+  "mistakes": [
+   "Assuming the locale. A comma might be a decimal separator, and the difference is a factor of a thousand.",
+   "Losing the association between a number and what it referred to. Extraction gives you values without labels.",
+   "Extracting from text with phone numbers or dates mixed in, which produces figures that are not quantities at all."
+  ]
+ },
+ "add-line-numbers": {
+  "intro": "Add Line Numbers prefixes every line of a block of text with its number, which is what you need when you are about to talk to someone about specific lines.",
+  "how": [
+   "Paste your text.",
+   "The numbered version appears immediately.",
+   "Copy it out."
+  ],
+  "method_title": "Why numbering is worth doing",
+  "method": [
+   "Numbered lines give you a shared reference. Saying line 47 is unambiguous in a way that quoting a snippet is not, particularly when the same text appears more than once in a file.",
+   "Numbers are padded so they align, which keeps the content in a straight column. Without padding, the jump from line 9 to line 10 shifts every following line one character to the right and makes the text harder to scan."
+  ],
+  "uses": [
+   "Preparing a code or config excerpt for a code review comment.",
+   "Referring to specific lines in a document during a discussion.",
+   "Producing numbered output for a bug report.",
+   "Making a long list easier to count and reference."
+  ],
+  "mistakes": [
+   "Numbering text that will be pasted back into a file or a compiler. The numbers become content and break it.",
+   "Numbering before removing blank lines, which numbers the gaps too."
+  ]
+ },
+ "strip-line-numbers": {
+  "intro": "Strip Line Numbers removes leading line numbers from text, which is what you need after copying a code sample out of a documentation page or a terminal that numbers its output.",
+  "how": [
+   "Paste the numbered text.",
+   "The numbers are removed and the content is left intact.",
+   "Copy the clean result."
+  ],
+  "method_title": "The formats it has to handle",
+  "method": [
+   "Numbering appears in several conventions: a bare number and a space, a number and a colon, a number and a pipe, or a right-aligned number padded with spaces. All of them have to go while leaving the code's own indentation untouched.",
+   "That last part is the difficult bit. Stripping too aggressively takes the leading whitespace with the number, and for Python or YAML that destroys the meaning of the file."
+  ],
+  "uses": [
+   "Cleaning a code sample copied from documentation or a blog post.",
+   "Removing numbering from terminal output before reusing it.",
+   "Recovering usable code from a screenshot transcription.",
+   "Undoing numbering you added earlier."
+  ],
+  "mistakes": [
+   "Stripping numbers from content where the leading numbers are the data, such as a numbered list or a CSV whose first column is an ID.",
+   "Losing indentation along with the numbers, which breaks indentation-sensitive languages."
+  ]
+ },
+ "add-prefix-suffix": {
+  "intro": "Add Prefix / Suffix puts custom text at the start of every line, the end of every line, or both. It turns a plain list into formatted output in one step.",
+  "how": [
+   "Paste your list, one item per line.",
+   "Enter a prefix, a suffix, or both.",
+   "Copy the result."
+  ],
+  "method_title": "What this is really for",
+  "method": [
+   "Most uses are about converting a plain list into some syntax. Wrapping each line in quotes and a comma turns a column of values into an array literal. Adding a hyphen and a space turns it into a Markdown list. Adding a tag turns it into HTML.",
+   "It is the fastest path from data you have to the format something else demands, without writing a script or reaching for a spreadsheet formula."
+  ],
+  "example": {
+   "setup": "Turning a list of IDs into a SQL clause:",
+   "given": [
+    [
+     "Prefix",
+     "'"
+    ],
+    [
+     "Suffix",
+     "',"
+    ],
+    [
+     "Input line",
+     "A123"
+    ]
+   ],
+   "result": "'A123', which pasted together forms the body of an IN clause."
+  },
+  "uses": [
+   "Quoting a list of values for code or SQL.",
+   "Turning a plain list into Markdown bullets.",
+   "Wrapping lines in HTML tags.",
+   "Adding a common path or domain to a list of filenames."
+  ],
+  "mistakes": [
+   "Forgetting the last line still gets the suffix, so a trailing comma may need removing by hand.",
+   "Adding quotes to values that already contain quotes, which needs escaping rather than wrapping."
+  ]
+ },
+ "text-alignment": {
+  "intro": "Text Alignment formats text to a fixed column width, aligned left, right, centred or justified, with the option to preserve paragraph breaks.",
+  "how": [
+   "Paste your text and set the column width.",
+   "Choose left, right, centre or justify.",
+   "Turn on Preserve paragraph breaks to keep the structure.",
+   "Copy the formatted output."
+  ],
+  "method_title": "How justification works in plain text",
+  "method": [
+   "Left, right and centre alignment just add padding spaces on one side or both. Justification is different: it stretches the gaps between words so each line reaches the full width on both edges.",
+   "This only works in a monospaced context, because it counts characters rather than measuring pixel widths. Paste justified plain text into a proportional font and the careful spacing collapses into an uneven mess."
+  ],
+  "uses": [
+   "Formatting text for a terminal, a code comment, or a README.",
+   "Producing fixed-width output for a system that expects it.",
+   "Centring a heading in a plain-text document or an ASCII banner.",
+   "Making a plain-text email look deliberately laid out."
+  ],
+  "mistakes": [
+   "Justifying text that will be displayed in a proportional font, where the added spaces make it worse rather than better.",
+   "Choosing too narrow a width, which forces large gaps between words in justified text.",
+   "Aligning content that will be rewrapped later, which discards the work entirely."
+  ]
+ },
+ "text-repeater": {
+  "intro": "Text Repeater repeats a string a set number of times with a separator of your choosing.",
+  "how": [
+   "Enter the text to repeat.",
+   "Set the number of repetitions and the separator.",
+   "Copy the result."
+  ],
+  "uses": [
+   "Generating test data of a specific length or row count.",
+   "Building a repeated pattern for a template or a placeholder.",
+   "Creating a separator line of a set width.",
+   "Producing repeated markup rows to paste into a document."
+  ],
+  "method_title": "The separator is the useful part",
+  "method": [
+   "Repetition alone is trivial. The separator is what makes the output usable, because it decides whether you get one long string, a list of lines, or a comma-separated series ready to paste into code.",
+   "Choosing a newline gives you rows. Choosing a comma gives you an array body. Choosing an empty separator gives you a solid block, which is what you want for building a fixed-width rule or padding test input."
+  ],
+  "mistakes": [
+   "Generating an enormous repetition and pasting it somewhere that cannot handle it. Browsers and editors both struggle past a few megabytes.",
+   "Forgetting that a trailing separator is usually left on the end and may need removing."
+  ]
+ },
+ "csv-viewer": {
+  "intro": "CSV Viewer renders pasted CSV as a formatted, sortable table. It supports comma, tab, semicolon, pipe and custom delimiters, and can treat the first row as a header.",
+  "how": [
+   "Paste your CSV data.",
+   "Choose the delimiter, or enter a custom one.",
+   "Tick First row is header if it applies.",
+   "Press Render Table, then click column headers to sort."
+  ],
+  "method_title": "Why CSV is less standard than it sounds",
+  "method": [
+   "RFC 4180 describes the common format, but plenty of real files ignore it. A field containing a comma has to be wrapped in double quotes, and a field containing a double quote has to double it up. Files produced by hand or by naive code routinely get this wrong.",
+   "The delimiter itself is not fixed either. Many European locales export with semicolons, because the comma is already in use as the decimal separator. That is why a spreadsheet exported in one country can arrive as a single unparsed column in another."
+  ],
+  "uses": [
+   "Reading a CSV file without opening a spreadsheet application.",
+   "Checking an export looks right before importing it somewhere.",
+   "Sorting a data set quickly to spot outliers.",
+   "Inspecting data with an unusual delimiter that a spreadsheet guesses wrongly."
+  ],
+  "mistakes": [
+   "Choosing the wrong delimiter and getting one wide column, which usually means the file is semicolon-separated.",
+   "Assuming quoted fields will always parse. Malformed quoting is common and shifts every subsequent column.",
+   "Forgetting the header setting, which either loses the first row of data or labels columns with a data row."
+  ],
+  "notes": [
+   "Data is parsed in your browser and never uploaded anywhere."
+  ]
  }
 }
