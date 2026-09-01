@@ -1,0 +1,32 @@
+{
+  "name": "south-fork-apps",
+  "version": "1.0.0",
+  "description": "Public web app directory for [southforkapps.com](https://southforkapps.com). A solo-built home for vibe-coded web apps out of Bluff City, TN.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tchastain26/south-fork-apps.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tchastain26/south-fork-apps/issues"
+  },
+  "homepage": "https://github.com/tchastain26/south-fork-apps#readme",
+  "dependencies": {
+    "playwright": "^1.62.1",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.10",
+    "tailwindcss": "^3.4.17"
+  }
+}

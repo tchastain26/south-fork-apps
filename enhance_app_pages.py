@@ -476,6 +476,16 @@ def app_url(slug: str) -> str:
     return f"{BASE_URL}/tools/{slug}/"
 
 
+def has_asset(slug: str, filename: str) -> bool:
+    """104 of the 250 tools were published without their generated images.
+
+    Emitting <img>, og:image or JSON-LD pointing at a file that 404s gives a
+    visibly broken page, a dead social preview, and a structured-data error, so
+    every reference is conditional on the file actually being there.
+    """
+    return (COLLECTION_DIR / slug / filename).exists()
+
+
 def asset_url(slug: str, filename: str) -> str:
     return f"{app_url(slug)}{filename}"
 
@@ -584,6 +594,18 @@ def normalize_hero_intro(text: str, intro: str) -> str:
 
 
 def inject_social_block(text: str, app: dict[str, str]) -> str:
+    share = asset_url(app["slug"], "share.jpg")
+    if has_asset(app["slug"], "share.jpg"):
+        image_tags = (
+            f'<meta property="og:image" content="{share}">\n'
+            f'<meta property="og:image:alt" content="{html.escape(app["title"], quote=True)} preview image">\n'
+        )
+        twitter_card = "summary_large_image"
+        twitter_image = f'<meta name="twitter:image" content="{share}">\n'
+    else:
+        image_tags = ""
+        twitter_card = "summary"
+        twitter_image = ""
     social = f"""
 <!-- SFA_SOCIAL_START -->
 <link rel="canonical" href="{app_url(app['slug'])}">
@@ -592,13 +614,10 @@ def inject_social_block(text: str, app: dict[str, str]) -> str:
 <meta property="og:title" content="{html.escape(app['title'], quote=True)}">
 <meta property="og:description" content="{html.escape(app['description'], quote=True)}">
 <meta property="og:url" content="{app_url(app['slug'])}">
-<meta property="og:image" content="{asset_url(app['slug'], 'share.jpg')}">
-<meta property="og:image:alt" content="{html.escape(app['title'], quote=True)} preview image">
-<meta name="twitter:card" content="summary_large_image">
+{image_tags}<meta name="twitter:card" content="{twitter_card}">
 <meta name="twitter:title" content="{html.escape(app['title'], quote=True)}">
 <meta name="twitter:description" content="{html.escape(app['description'], quote=True)}">
-<meta name="twitter:image" content="{asset_url(app['slug'], 'share.jpg')}">
-<!-- SFA_SOCIAL_END -->
+{twitter_image}<!-- SFA_SOCIAL_END -->
 """.strip()
     text = remove_marked_block(text, "SFA_SOCIAL")
     desc_match = re.search(r'<meta name="description" content="[^"]*">\s*', text)
@@ -670,14 +689,17 @@ def inject_jsonld(text: str, app: dict[str, str]) -> str:
         "applicationCategory": schema_info["applicationCategory"],
         "operatingSystem": "Any",
         "url": app_url(app["slug"]),
-        "image": asset_url(app["slug"], "share.jpg"),
-        "screenshot": asset_url(app["slug"], "screenshot.jpg"),
         "isAccessibleForFree": True,
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
         "author": {"@type": "Person", "name": "Tucker Chastain"},
         "publisher": {"@type": "Organization", "name": "South Fork Apps", "url": BASE_URL},
         "mainEntityOfPage": app_url(app["slug"]),
     }
+
+    if has_asset(app["slug"], "share.jpg"):
+        payload["image"] = asset_url(app["slug"], "share.jpg")
+    if has_asset(app["slug"], "screenshot.jpg"):
+        payload["screenshot"] = asset_url(app["slug"], "screenshot.jpg")
 
     hero = HERO_CONTENT.get(app["slug"])
     if hero:
@@ -792,10 +814,25 @@ def render_rich_content(app: dict[str, str], c: dict) -> str:
     return "\n".join(out)
 
 
+def preview_figure_for(app: dict[str, str]) -> str:
+    """Only render the preview figure when the screenshot file is actually there."""
+    if not has_asset(app["slug"], "screenshot.jpg"):
+        return ""
+    title = html.escape(app["title"])
+    return (
+        '    <figure class="sfa-preview">\n'
+        f'      <img src="screenshot.jpg" alt="{html.escape(app["title"], quote=True)} interface preview"'
+        ' loading="lazy" decoding="async" width="1600" height="900">\n'
+        f'      <figcaption>Screenshot of the live {title} interface.</figcaption>\n'
+        '    </figure>\n'
+    )
+
+
 def inject_feature_section(text: str, app: dict[str, str]) -> str:
     text = remove_marked_block(text, "SFA_FEATURE")
     content = APP_CONTENT.get(app["slug"])
     hero = HERO_CONTENT.get(app["slug"])
+    preview_figure = preview_figure_for(app)
 
     if content:
         links = f"""
@@ -813,11 +850,7 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
 {render_rich_content(app, content)}
 {links}
     </div>
-    <figure class="sfa-preview">
-      <img src="screenshot.jpg" alt="{html.escape(app['title'], quote=True)} interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Screenshot of the live {html.escape(app['title'])} interface.</figcaption>
-    </figure>
-  </div>
+{preview_figure}  </div>
 </section>
 <!-- SFA_FEATURE_END -->"""
         return insert_before_related_or_footer(text, block)
@@ -848,11 +881,7 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
       </div>
 {links}
     </div>
-    <figure class="sfa-preview">
-      <img src="screenshot.jpg" alt="{html.escape(app['title'], quote=True)} interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Live interface preview for {html.escape(app['title'])}. This screenshot is also the landing image Google can associate with the tool page.</figcaption>
-    </figure>
-  </div>
+{preview_figure}  </div>
 </section>
 <!-- SFA_FEATURE_END -->"""
     else:
@@ -884,11 +913,7 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
         <a href="{BASE_URL}/privacy/">Privacy</a>
       </div>
     </div>
-    <figure class="sfa-preview">
-      <img src="screenshot.jpg" alt="{html.escape(app['title'], quote=True)} interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Screenshot of the live {title_esc} interface.</figcaption>
-    </figure>
-  </div>
+{preview_figure}  </div>
 </section>
 <!-- SFA_FEATURE_END -->"""
 

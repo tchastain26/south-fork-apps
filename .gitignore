@@ -19,3 +19,5 @@ __pycache__/
 # Mockup source (not shipped)
 South-Fork-Apps Stitch.zip
 /stitch/
+node_modules/
+package-lock.json

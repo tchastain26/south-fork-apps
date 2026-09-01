@@ -9,7 +9,7 @@ const { chromium } = require("playwright");
 const ROOT = path.resolve(__dirname);
 const COLLECTION_DIR = path.join(ROOT, "tools");
 const INDEX_PATH = path.join(ROOT, "index.html");
-const PORT = 8766;
+const PORT = Number(process.env.RENDER_PORT || 8766); // loopback only
 
 function escapeHtml(value) {
   return value
@@ -165,6 +165,22 @@ async function renderShareImage(app, screenshotPath, sharePath) {
 
 async function main() {
   const apps = parseApps();
+
+  // Pages deliberately kept out of the homepage grid (the service offer) still
+  // need a share image, or they get no social preview when someone links them.
+  const contentPath = path.join(ROOT, "app_content.json");
+  if (fs.existsSync(contentPath)) {
+    const known = new Set(apps.map((a) => a.slug));
+    for (const slug of Object.keys(JSON.parse(fs.readFileSync(contentPath, "utf8")))) {
+      if (known.has(slug)) continue;
+      const page = path.join(COLLECTION_DIR, slug, "index.html");
+      if (!fs.existsSync(page)) continue;
+      const html = fs.readFileSync(page, "utf8");
+      const title = (html.match(/<title>(.*?)\s*\|/s) || [, slug])[1].trim();
+      const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [, ""])[1];
+      apps.push({ slug, title, description: desc, category: "Everyday Tools" });
+    }
+  }
   const server = createServer();
   await new Promise((resolve) => server.listen(PORT, "127.0.0.1", resolve));
 
@@ -177,14 +193,34 @@ async function main() {
     permissions: ["geolocation", "clipboard-read", "clipboard-write"],
   });
 
-  for (const [index, app] of apps.entries()) {
+  // Ad and font requests never settle, so networkidle would stall, and any ad
+  // that did paint would end up baked into the screenshot. Block them.
+  await context.route("**/*", (route) => {
+    const url = route.request().url();
+    if (/googlesyndication|doubleclick|googleads|adtrafficquality|google-analytics|\/ads\?/.test(url)) {
+      return route.abort();
+    }
+    return route.continue();
+  });
+
+  // ONLY_MISSING=1 fills the gaps instead of re-rendering all 250.
+  const onlyMissing = process.env.ONLY_MISSING === "1";
+  const queue = onlyMissing
+    ? apps.filter((a) => {
+        const d = path.join(COLLECTION_DIR, a.slug);
+        return !fs.existsSync(path.join(d, "screenshot.jpg")) || !fs.existsSync(path.join(d, "share.jpg"));
+      })
+    : apps;
+  console.log(`rendering ${queue.length} of ${apps.length} apps${onlyMissing ? " (missing only)" : ""}`);
+
+  for (const [index, app] of queue.entries()) {
     const page = await context.newPage();
     const url = `http://127.0.0.1:${PORT}/tools/${app.slug}/`;
     const appDir = path.join(COLLECTION_DIR, app.slug);
     const screenshotPath = path.join(appDir, "screenshot.jpg");
     const sharePath = path.join(appDir, "share.jpg");
 
-    await page.goto(url, { waitUntil: "networkidle", timeout: 120000 });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(600);
     await page.screenshot({
@@ -195,7 +231,7 @@ async function main() {
     });
     await renderShareImage(app, screenshotPath, sharePath);
     await page.close();
-    console.log(`[${index + 1}/${apps.length}] ${app.slug}`);
+    console.log(`[${index + 1}/${queue.length}] ${app.slug}`);
   }
 
   await browser.close();
