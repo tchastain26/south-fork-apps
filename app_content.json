@@ -1915,5 +1915,585 @@
    "Inverting the colours. Most scanners expect a dark code on a light background, and a light-on-dark code fails on many readers.",
    "Choosing low contrast. Pale colours look nicer and scan far worse."
   ]
+ },
+ "word-counter": {
+  "intro": "Word Counter reports words, characters, sentences and paragraphs as you type or paste. It is the quickest way to check a draft against a limit before you submit it.",
+  "method_title": "What counts as a word",
+  "method": [
+   "Words are counted by splitting on whitespace, which is the same rule word processors use. Hyphenated compounds count as one word, and a number counts as a word.",
+   "Sentence counting looks for terminal punctuation, so abbreviations like Dr. and e.g. can inflate the count slightly. Paragraph counting splits on blank lines, which is why a document using single line breaks between paragraphs will report fewer paragraphs than you see."
+  ],
+  "uses": [
+   "Checking an essay or article against a word limit before submitting.",
+   "Trimming copy to fit a fixed space in a layout.",
+   "Measuring a draft against a target length while writing.",
+   "Comparing two versions of the same piece for bloat."
+  ],
+  "mistakes": [
+   "Assuming every word counter agrees. Different tools handle hyphens, numbers and em dashes differently, so check against the counter your marker or editor uses when a hard limit matters.",
+   "Counting a draft that still contains notes and placeholders."
+  ]
+ },
+ "character-counter": {
+  "intro": "Character Counter reports characters, bytes, Unicode code points, words, lines and spaces, and lets you set a limit so you can see how much room is left. The distinction between characters, code points and bytes is the reason this tool exists.",
+  "how": [
+   "Paste or type your text.",
+   "Set a character limit to see the remaining count.",
+   "Read the separate counts for characters, bytes and code points."
+  ],
+  "method_title": "Characters, code points and bytes are three different numbers",
+  "method": [
+   "For plain English they are all the same. For anything else they diverge. An accented letter is one character you see, possibly two code points, and two or more bytes in UTF-8.",
+   "Emoji are the extreme case. A single emoji is often several code points joined together, and can be four bytes or many more. That is why a tweet with emoji hits the limit sooner than the visible character count suggests, and why a database field sized in bytes overflows before it looks full."
+  ],
+  "example": {
+   "setup": "Common limits worth checking against:",
+   "given": [
+    [
+     "Post on X",
+     "280 characters"
+    ],
+    [
+     "Single SMS",
+     "160 characters, or 70 with any non-GSM character"
+    ],
+    [
+     "Meta description",
+     "about 155 to 160 characters"
+    ]
+   ],
+   "result": "One emoji in an SMS drops the limit from 160 to 70, because the whole message switches encoding."
+  },
+  "uses": [
+   "Fitting a social post or a meta description inside a hard limit.",
+   "Checking whether a string will fit a database column sized in bytes.",
+   "Debugging why text that looks short is being rejected as too long.",
+   "Counting lines and spaces in fixed-format data."
+  ],
+  "mistakes": [
+   "Assuming characters equal bytes. Only true for pure ASCII.",
+   "Forgetting that one non-GSM character reprices an entire SMS.",
+   "Counting trailing whitespace out of the total. Most systems count it."
+  ]
+ },
+ "text-statistics": {
+  "intro": "Text Statistics runs a deeper analysis than a word count: readability scores, vocabulary richness, sentence complexity, and paragraph structure, all from a block of pasted text.",
+  "method_title": "What the measures mean",
+  "method": [
+   "Vocabulary richness is the ratio of unique words to total words. A low ratio means heavy repetition, which is sometimes deliberate and often a sign of a draft that needs editing.",
+   "Sentence complexity comes mostly from average sentence length. Long sentences are not automatically bad, but a document where every sentence is long is tiring to read, and one where they are all short reads as choppy. The useful signal is variation, not a single target number."
+  ],
+  "uses": [
+   "Diagnosing why a draft feels heavy without being able to say why.",
+   "Checking that writing matches the reading level of its audience.",
+   "Finding paragraphs that have quietly grown to twice the length of their neighbours.",
+   "Comparing your own writing across pieces to spot habits."
+  ],
+  "mistakes": [
+   "Optimising for a score. Readability formulas measure sentence and word length, not clarity, and you can score well while making no sense.",
+   "Applying general readability targets to technical writing, where necessary terminology is long by nature."
+  ]
+ },
+ "reading-time-calculator": {
+  "intro": "Reading Time Calculator estimates how long a piece takes to read, with an adjustable reading speed so you can model a fast skim or a careful read.",
+  "how": [
+   "Paste your text.",
+   "Set the reading speed in words per minute.",
+   "Read the estimated time."
+  ],
+  "method_title": "Choosing a words-per-minute figure",
+  "method": [
+   "Reading time is the word count divided by a words-per-minute rate. The whole estimate hinges on which rate you pick, which is why the tool lets you change it rather than hiding a fixed assumption.",
+   "Adult silent reading of general prose runs about 200 to 250 words per minute. Careful reading of technical material is much slower, often 100 to 150. Reading aloud is slower still, around 130 to 150, which is the figure to use for a script or a speech."
+  ],
+  "example": {
+   "setup": "A 1,500 word article at different rates:",
+   "given": [
+    [
+     "Skimming (300 wpm)",
+     "5 minutes"
+    ],
+    [
+     "Average silent reading (238 wpm)",
+     "about 6.3 minutes"
+    ],
+    [
+     "Reading aloud (140 wpm)",
+     "about 10.7 minutes"
+    ]
+   ],
+   "result": "The same text is a 5 minute read or an 11 minute talk depending entirely on the rate you assume."
+  },
+  "uses": [
+   "Adding an honest reading time estimate to an article.",
+   "Timing a speech or a video script before you record it.",
+   "Checking whether a document fits the attention you can realistically expect.",
+   "Planning how much material a training session needs."
+  ],
+  "mistakes": [
+   "Using a silent reading rate for a script. Speaking is much slower and the estimate will be badly short.",
+   "Ignoring figures, tables and code. Readers slow right down or stop at them, and word count does not capture that."
+  ]
+ },
+ "reading-level-analyzer": {
+  "intro": "Reading Level Analyzer scores text with the Flesch reading ease and Flesch-Kincaid grade level formulas, giving you a US school grade estimate for how demanding a piece is.",
+  "method_title": "The formulas, and what they actually measure",
+  "method": [
+   "Flesch reading ease is 206.835 minus 1.015 times the average words per sentence, minus 84.6 times the average syllables per word. Higher is easier. Flesch-Kincaid grade level rearranges the same two inputs to output a US grade instead.",
+   "Both formulas only see two things: how long your sentences are and how many syllables your words have. They know nothing about logic, structure or whether a sentence makes sense. A well-argued paragraph and a grammatically identical piece of nonsense score the same."
+  ],
+  "example": {
+   "setup": "How the scale reads:",
+   "given": [
+    [
+     "90 to 100",
+     "very easy, around 5th grade"
+    ],
+    [
+     "60 to 70",
+     "plain English, 8th to 9th grade"
+    ],
+    [
+     "30 to 50",
+     "difficult, college level"
+    ],
+    [
+     "Below 30",
+     "very difficult, graduate level"
+    ]
+   ],
+   "result": "General audience writing usually targets 60 to 70, the range most newspapers sit in."
+  },
+  "uses": [
+   "Checking that public-facing writing is accessible.",
+   "Meeting a plain-language requirement for a policy or a form.",
+   "Comparing a draft against published writing you consider clear.",
+   "Spotting sections where sentence length has crept up."
+  ],
+  "mistakes": [
+   "Chasing a lower grade by chopping every sentence short. That produces choppy writing that scores well and reads badly.",
+   "Applying the formulas to technical documents. Necessary domain terms are long and the score punishes them unfairly.",
+   "Treating the grade as a verdict on quality. It measures surface complexity only."
+  ]
+ },
+ "word-frequency": {
+  "intro": "Word Frequency Analyzer ranks the most common words in a block of text, with optional stop word removal, case folding, and a configurable list length. Results export to CSV.",
+  "how": [
+   "Paste your text.",
+   "Turn on Remove stop words to hide the, and, of and their kin.",
+   "Set case-insensitive if The and the should count together.",
+   "Choose how many results to show, and export to CSV if you need them elsewhere."
+  ],
+  "method_title": "Why stop words matter",
+  "method": [
+   "Without filtering, the top of any English frequency list is always the same: the, of, and, to, a. Those function words carry grammar rather than meaning, so they tell you nothing about the text.",
+   "Removing them surfaces the words that actually characterise the document. That is the same first step used in search indexing and text classification, for exactly the same reason."
+  ],
+  "uses": [
+   "Finding the words you overuse in your own writing.",
+   "Pulling likely keywords out of a document.",
+   "Comparing two pieces of writing by their vocabulary.",
+   "Checking whether an article actually covers the topic it claims to."
+  ],
+  "mistakes": [
+   "Reading frequency as importance. A word repeated because of a formatting quirk will top the list without meaning anything.",
+   "Leaving case sensitivity on when you did not mean to, which splits The and the into two entries.",
+   "Removing stop words when studying writing style. For that question the function words are the interesting part."
+  ]
+ },
+ "typing-test": {
+  "intro": "Typing Test measures words per minute and accuracy over 30, 60 or 120 seconds, with word lists, quotes, or your own custom text to type.",
+  "how": [
+   "Choose a mode: Words, Quotes, or Custom text.",
+   "Pick a duration of 30, 60 or 120 seconds.",
+   "Start typing. Errors are marked as you go.",
+   "Read your WPM and accuracy at the end."
+  ],
+  "method_title": "How WPM is actually calculated",
+  "method": [
+   "A word in typing measurement is defined as five characters, including spaces. Your gross WPM is the number of characters typed divided by five, divided by the minutes elapsed. That standard exists so that typing hello and typing internationalisation are scored proportionately.",
+   "Net WPM subtracts errors. This is why accuracy matters more than raw speed: at 90 percent accuracy you are spending a tenth of your effort producing text that has to be fixed, and in real work the correction costs more time than the typing saved."
+  ],
+  "example": {
+   "setup": "Working out a score:",
+   "given": [
+    [
+     "Characters typed",
+     "300"
+    ],
+    [
+     "Divided by 5",
+     "60 words"
+    ],
+    [
+     "Time",
+     "60 seconds"
+    ]
+   ],
+   "result": "60 WPM gross. Average adult typing is about 40 WPM, and professional typists run 70 to 90."
+  },
+  "uses": [
+   "Measuring a baseline before practising.",
+   "Tracking improvement over weeks.",
+   "Practising on your own text, which is more useful than random word lists.",
+   "Preparing for a job that tests typing speed."
+  ],
+  "mistakes": [
+   "Practising speed at the expense of accuracy. Speed built on errors does not transfer to real work.",
+   "Testing for 30 seconds only. Short tests flatter you, because everyone can sprint briefly.",
+   "Looking at the keyboard. It caps your ceiling permanently, however fast you get in the short term."
+  ]
+ },
+ "text-diff": {
+  "intro": "Text Diff compares two blocks of text and highlights what changed, line by line, with options to ignore case and leading whitespace.",
+  "how": [
+   "Paste the original into the first box and the new version into the second.",
+   "Turn on Ignore case or Ignore leading whitespace if those differences are noise for your purpose.",
+   "Press Compare and read the highlighted result."
+  ],
+  "method_title": "Why diffs are line-based",
+  "method": [
+   "A diff finds the longest sequence of lines the two versions share, then reports everything else as added or removed. Working line by line is what makes the output readable, which is why version control systems do the same.",
+   "The consequence is that changing one word marks the whole line as changed. That is not a flaw, it is the trade: a character-level diff is more precise and much harder to read at a glance."
+  ],
+  "uses": [
+   "Finding what changed between two drafts of a document.",
+   "Checking a config file against a known-good version.",
+   "Comparing exported data before and after a process ran.",
+   "Spotting an unintended edit in copy you have handed round for review."
+  ],
+  "mistakes": [
+   "Comparing files with different line endings without normalising first. Windows CRLF against Unix LF makes every single line look changed.",
+   "Leaving whitespace sensitivity on when comparing indented code or data, which buries the real changes in noise.",
+   "Diffing reformatted text. If a reflow changed every line break, the diff cannot tell you anything useful."
+  ]
+ },
+ "sort-lines-alpha": {
+  "intro": "Sort Lines Alphabetically puts any list into A to Z or Z to A order. Paste the list, pick a direction, copy the result.",
+  "how": [
+   "Paste your list, one item per line.",
+   "Choose A to Z or Z to A.",
+   "Copy the sorted result."
+  ],
+  "method_title": "Why sorted output sometimes looks wrong",
+  "method": [
+   "Naive alphabetical sorting compares character codes, and in that scheme every uppercase letter comes before every lowercase one. Z sorts before a, so a mixed-case list can look shuffled rather than sorted.",
+   "Numbers inside text cause the other surprise. Character-by-character comparison puts item10 before item2, because it compares the 1 against the 2 and stops there. That is correct lexicographic ordering and almost never what you wanted."
+  ],
+  "example": {
+   "setup": "A mixed list sorted by character code:",
+   "given": [
+    [
+     "Input",
+     "banana, Apple, cherry, Date"
+    ],
+    [
+     "Result",
+     "Apple, Date, banana, cherry"
+    ]
+   ],
+   "result": "All capitalised entries sort ahead of all lowercase ones, which surprises most people the first time."
+  },
+  "uses": [
+   "Alphabetising a list of names, tags or references.",
+   "Putting an import or export file in a predictable order.",
+   "Making two lists comparable before diffing them.",
+   "Tidying a bibliography or glossary."
+  ],
+  "mistakes": [
+   "Sorting a list with inconsistent capitalisation and expecting dictionary order.",
+   "Sorting numbered items and expecting numeric order. Ten will land next to one.",
+   "Sorting data that has a header line, which gets sorted into the middle with everything else."
+  ]
+ },
+ "sort-lines-length": {
+  "intro": "Sort Lines by Length orders a list by how many characters each line has, shortest first or longest first.",
+  "how": [
+   "Paste your list, one item per line.",
+   "Choose shortest to longest or longest to shortest.",
+   "Copy the result."
+  ],
+  "method_title": "What length sorting is good for",
+  "method": [
+   "Length is a proxy for several things that are otherwise hard to spot. In a list of records, unusually short lines are often truncated or empty, and unusually long ones often contain a delimiter that failed to split.",
+   "Lines of equal length keep their original relative order, so the sort is stable. That means you can sort by length and still see the input sequence within each length group."
+  ],
+  "uses": [
+   "Finding malformed rows in exported data by spotting outliers at both ends.",
+   "Ordering a list for visual layout, where a length ramp reads better.",
+   "Finding the longest entry to size a column or a field.",
+   "Spotting truncated values in a dump."
+  ],
+  "mistakes": [
+   "Assuming character length equals visual width. In a proportional font an i and a w are very different widths.",
+   "Counting trailing whitespace as content. Trim first if the trailing spaces are not meaningful."
+  ]
+ },
+ "dedupe-lines": {
+  "intro": "Duplicate Line Remover strips repeated lines from a list, leaving one of each. The original order of the first occurrences is preserved.",
+  "how": [
+   "Paste your list.",
+   "The deduplicated result appears immediately.",
+   "Copy it out."
+  ],
+  "method_title": "What counts as a duplicate",
+  "method": [
+   "Two lines are duplicates only if they match exactly. A trailing space, a different capitalisation, or a stray tab makes two lines distinct even though they look identical on screen.",
+   "That is why deduplication so often appears not to work. The fix is to trim whitespace first, and to normalise case if case is not meaningful in your data. Running the trim tool before this one solves the large majority of cases."
+  ],
+  "uses": [
+   "Cleaning a mailing list or a list of IDs before import.",
+   "Removing repeats after merging two lists together.",
+   "Finding the distinct set of values in a column pasted from a spreadsheet.",
+   "Tidying a tag or keyword list."
+  ],
+  "mistakes": [
+   "Not trimming first. Invisible trailing whitespace is the single most common reason duplicates survive.",
+   "Ignoring case differences when they are not meaningful, leaving Apple and apple as two entries.",
+   "Deduplicating data where the repeats were meaningful, such as counts or transaction records."
+  ]
+ },
+ "trim-lines": {
+  "intro": "Line Trimmer removes leading and trailing whitespace from every line, leaving the content and the line structure intact.",
+  "how": [
+   "Paste your text.",
+   "The trimmed result appears immediately.",
+   "Copy it out."
+  ],
+  "method_title": "Why trailing whitespace causes so much trouble",
+  "method": [
+   "Trailing spaces are invisible, and almost every system treats them as content. They break exact-match comparisons, defeat deduplication, corrupt lookup keys, and produce mystifying bugs where two apparently identical values are not equal.",
+   "Trimming removes spaces and tabs from both ends of each line. It does not touch whitespace inside a line, so words stay separated and internal formatting survives."
+  ],
+  "uses": [
+   "Cleaning data copied out of a PDF or a web page, which routinely carries stray spaces.",
+   "Preparing a list for deduplication or comparison.",
+   "Fixing indentation that came along with pasted text.",
+   "Normalising values before importing into a database."
+  ],
+  "mistakes": [
+   "Trimming code where leading whitespace is the indentation and carries meaning. Python in particular will break.",
+   "Assuming trimming fixes non-breaking spaces. A non-breaking space is a different character and often survives a trim."
+  ]
+ },
+ "remove-empty-lines": {
+  "intro": "Empty Line Remover deletes blank lines from a block of text, closing up the gaps and leaving the content lines in order.",
+  "how": [
+   "Paste your text.",
+   "Blank lines are removed immediately.",
+   "Copy the compacted result."
+  ],
+  "method_title": "Blank is not always empty",
+  "method": [
+   "A truly empty line contains nothing. A line containing only spaces or a tab looks identical on screen but is not empty, and a naive removal leaves it behind.",
+   "That is the usual explanation when gaps survive the process. Trimming the text first turns whitespace-only lines into genuinely empty ones, after which they are removed cleanly."
+  ],
+  "uses": [
+   "Compacting a list that picked up gaps when it was copied.",
+   "Cleaning text pasted out of a PDF, where double spacing is common.",
+   "Preparing a list where each line must be a real record.",
+   "Tightening output before pasting it somewhere space-constrained."
+  ],
+  "mistakes": [
+   "Removing blank lines from Markdown, where a blank line is what separates paragraphs. Strip them and the whole document becomes one block.",
+   "Doing this to poetry or formatted text where the spacing is deliberate."
+  ]
+ },
+ "reverse-lines": {
+  "intro": "Reverse Lines flips the order of lines in a block of text so the last line becomes the first. The lines themselves are unchanged.",
+  "how": [
+   "Paste your text.",
+   "The reversed order appears immediately.",
+   "Copy the result."
+  ],
+  "method_title": "Reversing order, not reversing text",
+  "method": [
+   "This reverses the sequence of lines. It does not reverse the characters within a line, which is a different operation and rarely what people want.",
+   "The most common real use is log files. Most logs append newest entries at the bottom, so reversing gives you newest first without needing a tool that understands timestamps."
+  ],
+  "uses": [
+   "Reading a log file newest first.",
+   "Flipping a chronological list into reverse chronological order.",
+   "Reversing a ranked list to run from lowest to highest.",
+   "Undoing a reversal someone else applied."
+  ],
+  "mistakes": [
+   "Expecting character reversal. Line order and character order are separate things.",
+   "Reversing text that has a header row, which ends up at the bottom."
+  ]
+ },
+ "join-lines": {
+  "intro": "Join Lines collapses multiple lines into a single line, separated by whatever delimiter you choose: a comma, a space, a pipe, or anything else.",
+  "how": [
+   "Paste your list, one item per line.",
+   "Set the separator you want between items.",
+   "Copy the joined result."
+  ],
+  "method_title": "Choosing a separator",
+  "method": [
+   "The separator has to be a character that does not appear inside your data. Joining a list of full names with a comma is fine until one entry is Smith, John, at which point the result is ambiguous and cannot be split back.",
+   "Comma and space suit prose. Pipe or tab suit data, because they rarely occur naturally. If your values might contain the separator, they need quoting, which is exactly the problem CSV formats exist to solve."
+  ],
+  "uses": [
+   "Turning a column copied from a spreadsheet into a comma-separated list.",
+   "Building an SQL IN clause from a list of IDs.",
+   "Converting a list into a single line for a config value or a command argument.",
+   "Making a list of tags into a single field."
+  ],
+  "mistakes": [
+   "Using a separator that appears in the data, producing output that cannot be reliably split again.",
+   "Forgetting that the join removes the line structure permanently. Keep the original if you need it back."
+  ]
+ },
+ "split-text": {
+  "intro": "Split Text breaks a block of text into chunks by character count, word count, or a delimiter you specify.",
+  "how": [
+   "Paste your text.",
+   "Choose how to split: by characters, by words, or on a delimiter.",
+   "Set the size or the delimiter and copy the chunks."
+  ],
+  "method_title": "Which split mode to use",
+  "method": [
+   "Splitting by delimiter is the right choice when the text has real structure, such as comma-separated values or paragraphs separated by blank lines. The boundaries already exist and you are just honouring them.",
+   "Splitting by character or word count is for when you need to fit a limit, such as breaking a long message into posts. Character splitting can cut a word in half, so word splitting is usually kinder to the reader even though the chunks come out slightly uneven."
+  ],
+  "uses": [
+   "Breaking a long message into pieces that fit a character limit.",
+   "Splitting a delimited string back into records.",
+   "Chunking text for processing in fixed batches.",
+   "Dividing a long document into sections of even length."
+  ],
+  "mistakes": [
+   "Splitting on a comma when the data contains quoted commas. That needs a real CSV parser, not a plain split.",
+   "Splitting by character count for anything a human will read, which chops words mid-syllable."
+  ]
+ },
+ "word-wrap": {
+  "intro": "Word Wrap Formatter rewraps text at a column width you choose, with hard or soft wrapping and the option to preserve blank lines.",
+  "how": [
+   "Paste your text and set the wrap column.",
+   "Choose hard wrap if long words should be broken rather than allowed to overhang.",
+   "Turn on Preserve blank lines to keep paragraph breaks.",
+   "Press Wrap and copy the output."
+  ],
+  "method_title": "Hard wrap, soft wrap, and why 72 columns",
+  "method": [
+   "Soft wrapping breaks between words, so a word longer than the column width overhangs. Hard wrapping breaks inside the word to guarantee no line exceeds the limit, which matters for fixed-width output but looks worse.",
+   "The traditional widths come from real constraints. Punched cards were 80 columns, and email settled on 72 so that quoted replies could add their angle brackets without pushing past 80. Both conventions survive in plain-text formats and commit messages."
+  ],
+  "uses": [
+   "Formatting a git commit message body to the conventional width.",
+   "Preparing plain-text email that will not wrap raggedly in someone else's client.",
+   "Fitting text into a fixed-width terminal display.",
+   "Reflowing a paragraph after editing broke the line lengths."
+  ],
+  "mistakes": [
+   "Hard wrapping prose that will be displayed in a variable-width window. The reader's own wrapping will fight your line breaks.",
+   "Wrapping code or Markdown tables, where the line structure is meaningful.",
+   "Wrapping at 80 when the content will be quoted in a reply, which pushes it over."
+  ]
+ },
+ "slugify-text": {
+  "intro": "Slugify Text converts any string into a clean, URL-safe slug: lowercase, hyphen-separated, with punctuation and accents removed.",
+  "how": [
+   "Paste your title or phrase.",
+   "The slug appears immediately.",
+   "Copy it into your URL, filename or ID."
+  ],
+  "method_title": "What slugifying does, step by step",
+  "method": [
+   "The text is lowercased, accented characters are folded to their plain equivalents, punctuation is stripped, and runs of whitespace become single hyphens. Leading and trailing hyphens are removed.",
+   "Lowercase matters more than people expect. URL paths are case-sensitive on most servers, so Page and page are different addresses. Forcing lowercase removes an entire class of broken link."
+  ],
+  "example": {
+   "setup": "A messy title becoming a slug:",
+   "given": [
+    [
+     "Input",
+     "Café Reviews: The 10 Best!"
+    ],
+    [
+     "Accents folded",
+     "Cafe"
+    ],
+    [
+     "Punctuation stripped, spaces hyphenated",
+     ""
+    ]
+   ],
+   "result": "cafe-reviews-the-10-best"
+  },
+  "uses": [
+   "Generating a URL path from an article title.",
+   "Creating safe filenames from user-supplied names.",
+   "Making stable IDs for anchors and fragments.",
+   "Normalising a title into a database key."
+  ],
+  "mistakes": [
+   "Changing a slug after publishing. The old URL breaks unless you add a redirect, and any accumulated links point at nothing.",
+   "Letting slugs get long. Search results truncate them and they become unreadable.",
+   "Assuming accent folding suits every language. Some scripts have no sensible ASCII equivalent and need transliteration rules of their own."
+  ]
+ },
+ "smart-quotes-converter": {
+  "intro": "Smart Quotes Converter switches between curly typographic quotes and straight ASCII quotes, in either direction. It is the fix for text that has been through a word processor and is now breaking something.",
+  "how": [
+   "Paste your text.",
+   "Convert curly quotes to straight, or straight to curly.",
+   "Copy the result."
+  ],
+  "method_title": "Why curly quotes break things",
+  "method": [
+   "Straight quotes are the ASCII characters at code points 34 and 39. Curly quotes are separate Unicode characters: the left and right single marks and the left and right double marks. They look better in prose and are what typesetting has always used.",
+   "The trouble starts when text is pasted into something that expects ASCII. Code will not compile, because a curly quote is not a string delimiter. CSV files break. Search fails, because a search for don't will not match don with a curly apostrophe. Word processors substitute curly quotes automatically, which is why this problem usually arrives without anyone choosing it."
+  ],
+  "uses": [
+   "Fixing code that was pasted through a word processor or a chat client.",
+   "Cleaning text before importing it as CSV or JSON.",
+   "Converting straight quotes to curly for print or a designed layout.",
+   "Making search and comparison work on text with mixed quote styles."
+  ],
+  "mistakes": [
+   "Converting code comments and strings indiscriminately. Straight to curly will break code that currently works.",
+   "Forgetting apostrophes. The curly right single quote is the same character used for apostrophes, so it appears far more often than quotation marks do.",
+   "Assuming a find and replace handles it. There are four curly characters, not one."
+  ]
+ },
+ "nato-alphabet": {
+  "intro": "NATO Alphabet Converter turns text into the NATO phonetic alphabet, spelling each letter as Alfa, Bravo, Charlie and so on, so it can be read aloud without being misheard.",
+  "how": [
+   "Type or paste the text you need to spell out.",
+   "Read the phonetic version, and copy it if you need it in writing."
+  ],
+  "method_title": "Why these particular words",
+  "method": [
+   "The alphabet was chosen after extensive testing to find words that stay distinguishable over poor radio links and across accents. The whole point is that no two code words sound alike, even when the signal is bad.",
+   "Two spellings are deliberately irregular. Alfa is spelled with an f rather than ph, and Juliett has a double t, both so that speakers of languages where ph or a final t is silent still pronounce them correctly. They are not typos."
+  ],
+  "example": {
+   "setup": "Spelling a booking reference over the phone:",
+   "given": [
+    [
+     "Input",
+     "B7K"
+    ],
+    [
+     "Output",
+     "Bravo Seven Kilo"
+    ]
+   ],
+   "result": "Unambiguous where B and V, or K and A, would otherwise be confused."
+  },
+  "uses": [
+   "Reading a reference number, postcode or serial over the phone.",
+   "Confirming a spelling in a noisy environment.",
+   "Aviation, maritime and emergency radio use, where it is standard.",
+   "Dictating an email address or a password reset code without errors."
+  ],
+  "mistakes": [
+   "Inventing your own words. A for Apple works until the other person expects Alfa and mishears.",
+   "Spelling Alfa as Alpha and Juliett with one t. Both are officially spelled the irregular way for a reason.",
+   "Using it for letters that are already unambiguous, which slows the exchange down without helping."
+  ]
  }
 }
