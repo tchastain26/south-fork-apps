@@ -1247,5 +1247,673 @@
    "Starting at the hardest difficulty. Sixteenth-note patterns punish an unsteady internal pulse rather than teaching one.",
    "Tapping along with the playback instead of reproducing the pattern from memory. Copying in real time trains a different skill."
   ]
+ },
+ "loan-calculator": {
+  "intro": "Loan Calculator works out the monthly payment, the total interest, and a full amortization schedule for any fixed-rate loan. It also handles extra monthly payments, and shows how much interest and time they actually save. The schedule exports to CSV.",
+  "how": [
+   "Enter the loan amount, annual interest rate, and term in years.",
+   "Add an extra monthly payment if you plan to overpay. Leave it at zero if not.",
+   "Read the monthly payment, total interest and total cost.",
+   "Scroll the amortization schedule, or use Export CSV to open it in a spreadsheet."
+  ],
+  "method_title": "The amortization formula",
+  "method": [
+   "The monthly payment comes from M = P x r x (1 + r)^n / ((1 + r)^n - 1), where P is the amount borrowed, r is the monthly rate (annual rate divided by 12) and n is the total number of payments.",
+   "Every payment is split between interest and principal. Interest is charged on the balance that is still outstanding, so early payments are mostly interest and later ones are mostly principal. That is why an extra payment made in year one saves far more than the same payment made in year four."
+  ],
+  "example": {
+   "setup": "Using the values the calculator loads with:",
+   "given": [
+    [
+     "Loan amount",
+     "$25,000"
+    ],
+    [
+     "Annual rate",
+     "6.5%"
+    ],
+    [
+     "Term",
+     "5 years (60 payments)"
+    ]
+   ],
+   "result": "About $489 a month, roughly $29,345 paid in total, of which about $4,345 is interest."
+  },
+  "uses": [
+   "Comparing car loan offers where the rate and term both differ.",
+   "Seeing what an extra $50 a month actually saves over the life of a loan.",
+   "Checking a lender's quoted payment against an independent calculation.",
+   "Deciding between a shorter term with higher payments and a longer one with more total interest."
+  ],
+  "mistakes": [
+   "Comparing loans on monthly payment alone. A longer term always looks cheaper monthly and usually costs far more overall.",
+   "Confusing the interest rate with the APR. APR folds in fees, so it is the fairer number for comparing offers.",
+   "Assuming overpayments always reduce the term. Some lenders apply them to the next payment instead of the principal unless you specify."
+  ]
+ },
+ "transfer-time-estimator": {
+  "intro": "Transfer Time Estimator tells you how long a file will take to move at a given connection speed, and shows the same file at a range of common speeds so you can see what upgrading would actually buy you.",
+  "how": [
+   "Enter the file size and pick its unit: KB, MB, GB or TB.",
+   "Enter the transfer speed and pick its unit. Both bit rates (Kbps, Mbps, Gbps) and byte rates (KB/s, MB/s, GB/s) are supported.",
+   "Read the estimated time, and the comparison table of the same file at common speeds."
+  ],
+  "method_title": "Bits, bytes, and the factor of eight",
+  "method": [
+   "The single biggest source of confusion is that connection speeds are quoted in bits per second while file sizes are given in bytes. There are eight bits in a byte, so a 100 Mbps connection moves at most about 12.5 MB per second.",
+   "Real transfers never hit the theoretical figure. Protocol overhead, latency, disk speed and contention with other traffic typically cost 10 to 20 percent, so treat the result as a floor rather than a promise."
+  ],
+  "example": {
+   "setup": "The default case, a 1 GB file on a 100 Mbps connection:",
+   "given": [
+    [
+     "File size",
+     "1 GB = 8,000 megabits"
+    ],
+    [
+     "Speed",
+     "100 Mbps"
+    ],
+    [
+     "Calculation",
+     "8,000 / 100"
+    ]
+   ],
+   "result": "About 80 seconds at the theoretical maximum. Expect closer to 90 to 100 seconds in practice."
+  },
+  "uses": [
+   "Deciding whether to wait for an upload or start it and walk away.",
+   "Checking whether a faster internet plan would meaningfully change your workflow.",
+   "Estimating a backup or sync window before you start one.",
+   "Explaining to someone why their 100 Mbps connection does not download a 1 GB file in ten seconds."
+  ],
+  "mistakes": [
+   "Reading Mbps as megabytes per second. It is megabits, and the difference is a factor of eight.",
+   "Forgetting that upload speed is usually much slower than download on home connections.",
+   "Assuming the bottleneck is the network. On fast connections the hard drive or the far-end server is often the limit."
+  ]
+ },
+ "meeting-agenda-builder": {
+  "intro": "Meeting Agenda Builder turns a list of topics into a timed agenda with owners and a running total, then copies it out as clean plain text or Markdown ready to paste into a calendar invite or a document.",
+  "how": [
+   "Fill in the meeting title, the date or context, and the goal.",
+   "Add agenda items with a duration and an owner for each.",
+   "Watch the total length update so you can see when you have overbooked the slot.",
+   "Copy as plain text or Markdown, whichever your destination handles better."
+  ],
+  "method_title": "Why timing each item changes the meeting",
+  "method": [
+   "An untimed agenda is a wish list. Assigning minutes to each item forces the trade-off out into the open before the meeting rather than in the last five minutes of it, when the final item silently gets dropped.",
+   "Naming an owner per item does the same for responsibility. An item with no owner has no one preparing for it, which is the usual reason a topic gets deferred to the next meeting."
+  ],
+  "example": {
+   "setup": "A 30-minute team sync, built from the example the tool loads:",
+   "given": [
+    [
+     "Title",
+     "Weekly Team Sync"
+    ],
+    [
+     "Goal",
+     "Align on priorities and blockers"
+    ],
+    [
+     "Items",
+     "each with minutes and an owner"
+    ]
+   ],
+   "result": "A running total that tells you immediately whether the agenda fits the half hour or needs cutting."
+  },
+  "uses": [
+   "Preparing an agenda to paste into a calendar invite before sending it.",
+   "Keeping a recurring meeting from expanding to fill its slot.",
+   "Making it obvious when a 30-minute meeting has 45 minutes of content.",
+   "Producing a Markdown agenda for a wiki or a pull request description."
+  ],
+  "mistakes": [
+   "Scheduling every minute. Leave slack, because discussion never lands exactly on the estimate.",
+   "Writing a goal that is really a topic. Align on priorities is a goal; Q3 planning is a subject heading.",
+   "Putting the most important item last, where it is the one that gets cut."
+  ]
+ },
+ "unit-price-calculator": {
+  "intro": "Unit Price Calculator compares products by cost per unit so you can tell which package is actually cheaper. Add as many products as you want and set the unit label to whatever you are measuring in.",
+  "how": [
+   "Set the unit label to match what you are comparing: oz, kg, sheets, litres, whatever fits.",
+   "Add each product with its price and its size.",
+   "Read the cost per unit for each and compare directly."
+  ],
+  "method_title": "Why bigger is not always cheaper",
+  "method": [
+   "Unit price is simply the total price divided by the quantity. It is the only number that lets you compare a 12 ounce jar against an 18 ounce jar at different prices.",
+   "Retailers know shoppers assume the large size is better value, and it often is not. Comparing per unit is the only reliable check, and shelf labels frequently use inconsistent units between competing brands to make it harder."
+  ],
+  "uses": [
+   "Grocery shopping where the same product comes in three sizes.",
+   "Comparing bulk purchases against buying as you go.",
+   "Checking whether a multi-buy offer is genuinely cheaper per item.",
+   "Comparing two brands that package in different quantities."
+  ],
+  "mistakes": [
+   "Comparing across different units without converting. A price per litre and a price per fluid ounce cannot be compared directly.",
+   "Ignoring waste. The cheapest unit price is not a saving if you throw half of it away.",
+   "Trusting the shelf unit price without checking. They are frequently wrong or use a different unit than the product beside them."
+  ]
+ },
+ "calorie-deficit": {
+  "intro": "Calorie Deficit Calculator works backwards from a goal. Enter your current weight, your target weight, and the date you want to reach it, and it tells you the daily calorie deficit that implies, along with a daily intake target.",
+  "how": [
+   "Enter your current weight and your goal weight. Switch between lbs and kg with the toggle.",
+   "Set the target date.",
+   "Enter your maintenance calories (TDEE) if you know it.",
+   "Read the required daily deficit and the resulting daily intake."
+  ],
+  "method_title": "Where the numbers come from",
+  "method": [
+   "The standard estimate is that a pound of body fat represents roughly 3,500 calories. Losing a set number of pounds by a set date gives a total deficit, and dividing it by the number of days gives the daily figure.",
+   "This is a planning estimate, not a physical law. Metabolic rate falls as you lose weight, water weight moves the scale by several pounds independently of fat, and the 3,500 figure is an approximation. Treat the output as a starting point to adjust from, not a prescription."
+  ],
+  "example": {
+   "setup": "Using the values the calculator loads with:",
+   "given": [
+    [
+     "Current weight",
+     "185 lbs"
+    ],
+    [
+     "Goal weight",
+     "170 lbs"
+    ],
+    [
+     "To lose",
+     "15 lbs, about 52,500 calories"
+    ],
+    [
+     "Maintenance (TDEE)",
+     "2,200 / day"
+    ]
+   ],
+   "result": "Spread over 12 weeks that is roughly a 625 calorie daily deficit, meaning about 1,575 calories a day."
+  },
+  "uses": [
+   "Checking whether a goal date is realistic before committing to it.",
+   "Seeing what moving the deadline out by a month does to the daily target.",
+   "Turning a vague intention into a specific daily number.",
+   "Sanity-checking a target someone else has set for you."
+  ],
+  "mistakes": [
+   "Setting a deadline that requires an extreme deficit. Very large deficits are hard to sustain and cost muscle as well as fat.",
+   "Treating TDEE as fixed. It falls as you lose weight, so the same intake produces a smaller deficit over time.",
+   "Reading day-to-day scale movement as fat change. Most of it is water and food in transit."
+  ],
+  "notes": [
+   "This is a general fitness estimate and not medical advice. Talk to a doctor before starting a significant calorie deficit, particularly if you have any medical condition."
+  ]
+ },
+ "daily-water-intake": {
+  "intro": "Daily Water Intake Calculator estimates how much water to aim for based on your body weight, activity level and climate, then lets you track what you have actually drunk through the day.",
+  "how": [
+   "Enter your weight and choose lbs/oz or kg/ml units.",
+   "Pick your activity level, from sedentary through athlete.",
+   "Pick your climate: temperate, hot or humid, or cool.",
+   "Read the target and log glasses as you drink them."
+  ],
+  "method_title": "How the estimate is built",
+  "method": [
+   "The common starting point is roughly half your body weight in pounds, expressed in fluid ounces. At 170 pounds that is about 85 ounces before adjustments.",
+   "Activity and climate then adjust it. Exercise adds fluid loss through sweat and breathing, and hot or humid conditions add more. Cold climates reduce the requirement slightly but not as much as people expect, because cold air is dry and you still lose water breathing."
+  ],
+  "example": {
+   "setup": "The default profile:",
+   "given": [
+    [
+     "Weight",
+     "170 lbs"
+    ],
+    [
+     "Baseline",
+     "about 85 oz"
+    ],
+    [
+     "Activity",
+     "adjusted upward with training load"
+    ],
+    [
+     "Climate",
+     "adjusted upward in heat"
+    ]
+   ],
+   "result": "A daily target in ounces, with the tracker counting what you have logged against it."
+  },
+  "uses": [
+   "Setting a concrete target instead of guessing.",
+   "Adjusting intake on training days or in hot weather.",
+   "Tracking through the day so you notice a shortfall before the evening.",
+   "Building a habit with a visible count."
+  ],
+  "mistakes": [
+   "Treating the target as a hard requirement. Food contributes a meaningful share of daily fluid, and thirst is a reasonable guide for most healthy people.",
+   "Drinking a very large volume in a short time rather than spreading it out.",
+   "Counting only plain water. Tea, coffee and most drinks contribute too."
+  ],
+  "notes": [
+   "This is a general guideline, not medical advice. Anyone with a kidney, heart or fluid-restriction condition should follow their doctor's guidance instead."
+  ]
+ },
+ "wind-chill": {
+  "intro": "Wind Chill Calculator gives the feels-like temperature in both directions: wind chill for cold conditions and heat index for hot ones. Enter the actual temperature plus wind speed or humidity and it does the rest, in Fahrenheit or Celsius.",
+  "how": [
+   "Choose Wind Chill for cold weather or Heat Index for hot.",
+   "Enter the air temperature, then the wind speed for chill or the relative humidity for heat index.",
+   "Switch between Fahrenheit and Celsius as needed."
+  ],
+  "method_title": "Two different formulas for two different problems",
+  "method": [
+   "Wind chill uses the 2001 US and Canadian standard: 35.74 + 0.6215T - 35.75V^0.16 + 0.4275T x V^0.16, with T in Fahrenheit and V in miles per hour. It models how fast moving air strips the thin layer of warm air off exposed skin.",
+   "Heat index solves the opposite problem. In hot weather the danger is that high humidity stops sweat evaporating, so the body cannot shed heat. It is a function of temperature and relative humidity, and wind speed barely matters."
+  ],
+  "example": {
+   "setup": "A cold, windy day using the default inputs:",
+   "given": [
+    [
+     "Air temperature",
+     "30 F"
+    ],
+    [
+     "Wind speed",
+     "15 mph"
+    ]
+   ],
+   "result": "A wind chill of about 19 F. The air is 30 degrees, but exposed skin loses heat as if it were 19."
+  },
+  "uses": [
+   "Deciding what to wear before going out in wind.",
+   "Judging frostbite risk, which depends on wind chill rather than air temperature.",
+   "Checking whether outdoor work or exercise is safe.",
+   "Understanding why a still 20 degree day feels warmer than a windy 30 degree one."
+  ],
+  "mistakes": [
+   "Applying wind chill outside its valid range. The formula is defined for temperatures at or below 50 F and wind above 3 mph.",
+   "Using wind chill for objects. It describes heat loss from exposed skin. A parked car cools to the air temperature, not to the wind chill.",
+   "Ignoring humidity in heat. At 95 F the difference between dry and humid air is the difference between uncomfortable and dangerous."
+  ]
+ },
+ "date-calculator": {
+  "intro": "Date Calculator does the two date jobs people actually need: how far apart two dates are, and what date falls a given distance from another. It can count weekdays only, which is what most deadlines really mean.",
+  "how": [
+   "For a difference, set a start and end date and read the gap.",
+   "Switch between All days and Weekdays only depending on what you are counting.",
+   "To project forward or back, set a base date, an amount, and a unit of days, weeks, months or years."
+  ],
+  "method_title": "Why date arithmetic is harder than it looks",
+  "method": [
+   "Days and weeks are fixed lengths, so adding them is simple. Months and years are not. Adding one month to 31 January has no obvious answer, and different systems resolve it differently.",
+   "Leap years add another wrinkle. A year is 365 days except when it is 366, and the rule is that a year divisible by 4 is a leap year unless it is divisible by 100, unless it is also divisible by 400. That is why 2000 was a leap year and 1900 was not."
+  ],
+  "uses": [
+   "Counting business days to a deadline, where weekends do not count.",
+   "Working out a date 90 days from now for a contract or notice period.",
+   "Finding how many days until an event.",
+   "Calculating an age or a tenure in exact days."
+  ],
+  "mistakes": [
+   "Counting calendar days when the deadline means business days, or the reverse. The difference on a 30 day period is about nine days.",
+   "Forgetting whether the start day itself counts. Inclusive and exclusive counting differ by one, which matters for legal notice periods.",
+   "Assuming weekdays only means working days. It does not remove public holidays."
+  ]
+ },
+ "percentage-calculator": {
+  "intro": "Percentage Calculator handles the four percentage questions people actually ask, each in its own box: what is X percent of Y, X is what percent of Y, percentage change between two numbers, and adding or subtracting a percentage from a number. Every result copies with one click.",
+  "how": [
+   "Pick the box that matches your question.",
+   "Enter the two numbers.",
+   "Read the answer and press Copy if you need it elsewhere."
+  ],
+  "method_title": "The four calculations",
+  "method": [
+   "Percent of: multiply the number by the percentage and divide by 100. 15 percent of 200 is 200 x 15 / 100 = 30.",
+   "Is what percent: divide the part by the whole and multiply by 100. Percentage change: subtract the old value from the new, divide by the old value, multiply by 100. Add or subtract: multiply by (100 plus or minus the percentage) divided by 100."
+  ],
+  "example": {
+   "setup": "The default values, showing the first two calculations are inverses of each other:",
+   "given": [
+    [
+     "15% of 200",
+     "30"
+    ],
+    [
+     "30 is what % of 200",
+     "15%"
+    ]
+   ],
+   "result": "The same relationship read in both directions, which is the check most percentage errors fail."
+  },
+  "uses": [
+   "Working out a discount or a tax amount.",
+   "Calculating percentage growth between two figures.",
+   "Adding a markup or taking off a discount.",
+   "Checking a figure someone else has quoted."
+  ],
+  "mistakes": [
+   "Assuming a percentage increase and decrease cancel out. Add 10% then subtract 10% and you land at 99% of where you started, not 100%.",
+   "Confusing percentage points with percent. Going from 5% to 7% is a rise of 2 percentage points but a 40% increase.",
+   "Using the wrong base for percentage change. The change is always measured against the original value."
+  ]
+ },
+ "temperature-converter": {
+  "intro": "Temperature Converter moves between Fahrenheit, Celsius and Kelvin. Type into any of the three fields and the other two follow.",
+  "how": [
+   "Type a value into whichever scale you have.",
+   "Read the other two scales immediately."
+  ],
+  "method_title": "The conversions",
+  "method": [
+   "Celsius to Fahrenheit multiplies by 9/5 and adds 32. Fahrenheit to Celsius subtracts 32 first, then multiplies by 5/9. The subtraction has to come first because the two scales have different zero points as well as different degree sizes.",
+   "Kelvin is Celsius shifted so that zero is absolute zero, the point where molecular motion stops. Kelvin equals Celsius plus 273.15, and there are no negative Kelvin values."
+  ],
+  "example": {
+   "setup": "Three temperatures worth knowing:",
+   "given": [
+    [
+     "Water freezes",
+     "0 C = 32 F = 273.15 K"
+    ],
+    [
+     "Water boils",
+     "100 C = 212 F = 373.15 K"
+    ],
+    [
+     "The two scales meet",
+     "-40 C = -40 F"
+    ]
+   ],
+   "result": "Minus 40 is the one temperature where Celsius and Fahrenheit give the same number."
+  },
+  "uses": [
+   "Converting a recipe oven temperature between conventions.",
+   "Reading a weather forecast from another country.",
+   "Converting scientific data, which is usually in Celsius or Kelvin.",
+   "Checking a fever reading against a scale you are unfamiliar with."
+  ],
+  "mistakes": [
+   "Multiplying before subtracting when going from Fahrenheit to Celsius. The 32 must come off first.",
+   "Writing degrees Kelvin. Kelvin has no degree symbol, it is just kelvin.",
+   "Converting a temperature difference the same way as a temperature. A change of 10 C is a change of 18 F, with no offset applied."
+  ]
+ },
+ "net-worth-tracker": {
+  "intro": "Net Worth Tracker adds up what you own and subtracts what you owe. Enter assets and liabilities with your own labels and it keeps a running total, entirely in your browser.",
+  "how": [
+   "Add each asset with a name and a value.",
+   "Add each liability the same way.",
+   "Read the net worth figure, which updates as you go."
+  ],
+  "method_title": "What counts on each side",
+  "method": [
+   "Net worth is assets minus liabilities. Assets are things you own that have value: cash, savings, investments, retirement accounts, property, vehicles. Liabilities are what you owe: mortgage, car loans, student loans, credit card balances.",
+   "A house belongs on both sides. The property's market value is an asset and the outstanding mortgage is a liability. Listing only one of the two is the most common way people get a wildly wrong figure."
+  ],
+  "uses": [
+   "Getting a single number for your financial position rather than a scatter of account balances.",
+   "Tracking progress over time, which matters more than any single snapshot.",
+   "Seeing the effect of paying down debt versus saving.",
+   "Preparing figures before a mortgage or loan application."
+  ],
+  "mistakes": [
+   "Valuing assets optimistically. Use what something would actually sell for, not what you paid or hope to get.",
+   "Forgetting depreciating assets. A car loses value every year and the loan does not shrink as fast.",
+   "Panicking at a negative number. Early in a career, with student debt and no equity, negative net worth is normal and temporary."
+  ],
+  "notes": [
+   "Everything stays in your browser. No account, no upload, and nothing is transmitted anywhere."
+  ]
+ },
+ "haiku-checker": {
+  "intro": "Haiku Checker counts syllables line by line and tells you whether your poem matches the 5-7-5 pattern. Type each line into its own field and the counts update as you write.",
+  "how": [
+   "Type the first line and watch the syllable count.",
+   "Fill in the second and third lines.",
+   "Adjust wording until the counts read 5, 7 and 5."
+  ],
+  "method_title": "How syllables are counted, and why it is imperfect",
+  "method": [
+   "Syllable counting works by finding vowel groups in a word, then correcting for the common English exceptions: a silent final e, the -le ending that adds a syllable, and vowel pairs that form one sound rather than two.",
+   "English defeats any purely mechanical rule. Fire and flower are one or two syllables depending on your accent, and words like every are routinely compressed in speech. Treat the count as a strong guide and trust your ear where they disagree."
+  ],
+  "example": {
+   "setup": "The classic structure:",
+   "given": [
+    [
+     "Line 1",
+     "5 syllables"
+    ],
+    [
+     "Line 2",
+     "7 syllables"
+    ],
+    [
+     "Line 3",
+     "5 syllables"
+    ]
+   ],
+   "result": "Seventeen syllables total, the English convention adapted from the Japanese form."
+  },
+  "uses": [
+   "Writing haiku without counting on your fingers.",
+   "Teaching syllables and meter in a classroom.",
+   "Checking a line quickly while drafting other poetry.",
+   "Tightening prose, since syllable count is a decent proxy for how heavy a sentence reads."
+  ],
+  "mistakes": [
+   "Treating 5-7-5 as the definition of haiku. Traditional Japanese haiku counts on, which are not the same as English syllables, and many respected English haiku deliberately do not use 5-7-5.",
+   "Trusting the counter over your own ear on ambiguous words like fire, hour and every."
+  ]
+ },
+ "anagram-solver": {
+  "intro": "Anagram Solver finds words that can be made from the letters you give it, with filtering by length, and a separate checker that tells you whether two words or phrases are anagrams of each other.",
+  "how": [
+   "Enter a word or phrase to find anagrams from its letters.",
+   "Filter the results by word length.",
+   "Use the second box to check whether two specific words or phrases are anagrams."
+  ],
+  "method_title": "How anagram checking works",
+  "method": [
+   "Two strings are anagrams if they contain exactly the same letters with the same counts. The reliable test is to strip spaces and punctuation, lowercase everything, sort the letters, and compare the results. Listen and silent both sort to eilnst.",
+   "Counting letter frequency is the faster equivalent and is what most implementations use, because it avoids sorting and handles long phrases better."
+  ],
+  "example": {
+   "setup": "Checking a classic pair:",
+   "given": [
+    [
+     "First",
+     "listen"
+    ],
+    [
+     "Second",
+     "silent"
+    ],
+    [
+     "Both sorted",
+     "eilnst"
+    ]
+   ],
+   "result": "Identical letter multisets, so they are anagrams."
+  },
+  "uses": [
+   "Solving crossword and puzzle clues.",
+   "Finding words in word games from a rack of letters.",
+   "Checking a supposed anagram someone has claimed.",
+   "Generating name or title ideas from a fixed set of letters."
+  ],
+  "mistakes": [
+   "Forgetting that anagram checking ignores spaces and punctuation but not letter counts. Two words with the same letters in different quantities are not anagrams.",
+   "Expecting every letter combination to be a real word. The solver is limited to a dictionary, which is what makes the results useful."
+  ]
+ },
+ "leet-speak": {
+  "intro": "Leet Speak Translator converts text into 1337 at three intensity levels, and converts it back the other way. A character map shows exactly what each substitution is at the highest level.",
+  "how": [
+   "Type or paste English text.",
+   "Set the leet level from 1 to 3. Level 1 is light, level 3 substitutes the most characters.",
+   "Read the output, or paste leet in to translate back to English.",
+   "Try one of the preset phrases if you want to see it working."
+  ],
+  "method_title": "Where leet came from",
+  "method": [
+   "Leet substitutes visually similar characters for letters: 3 for E, 4 or @ for A, 1 for L or I, 0 for O, 7 for T, 5 for S. It grew out of 1980s bulletin board culture, partly as an in-group marker and partly to get around naive text filters.",
+   "The levels here control how aggressive the substitution is. Light leet stays readable at a glance. Heavy leet replaces almost every letter it can, which is why translating back is a genuinely useful feature."
+  ],
+  "example": {
+   "setup": "A phrase at heavy substitution:",
+   "given": [
+    [
+     "Input",
+     "Elite hacker"
+    ],
+    [
+     "Substitutions",
+     "E to 3, L to 1, I to 1, A to 4, C to <"
+    ]
+   ],
+   "result": "Recognisably the same phrase, once your eye adjusts to reading digits as letters."
+  },
+  "uses": [
+   "Making a username when the one you want is taken.",
+   "Retro or gaming-themed graphics and titles.",
+   "Decoding leet you have run into and cannot read.",
+   "Showing kids why substitution ciphers are easy to break."
+  ],
+  "mistakes": [
+   "Using leet in a password and thinking it adds security. Password crackers have applied leet substitutions as standard for decades, so P4ssw0rd is barely stronger than password.",
+   "Assuming the translation back is exact. Several letters map to the same character, so some ambiguity is unavoidable."
+  ]
+ },
+ "unicode-normalizer": {
+  "intro": "Unicode Normalizer converts text to any of the four standard Unicode normalization forms: NFC, NFD, NFKC and NFKD. It is the tool you need when two strings look identical but refuse to compare as equal.",
+  "how": [
+   "Paste the text you want to normalize.",
+   "Choose a form: NFC, NFD, NFKC or NFKD.",
+   "Copy the result, or clear and start again."
+  ],
+  "method_title": "What the four forms do",
+  "method": [
+   "Unicode can represent the same character in more than one way. The letter e-acute can be a single code point (U+00E9) or a plain e followed by a combining accent (U+0065 U+0301). They look identical and are not equal as strings. NFC composes them into the single code point, NFD decomposes them into the pair.",
+   "The K forms apply compatibility mapping as well, which folds visually distinct variants into plain equivalents. NFKC turns a full-width character into its ASCII equivalent and the ligature fi into f plus i. That is powerful for search and matching, and lossy, so it is the wrong choice if you need to preserve the original exactly."
+  ],
+  "example": {
+   "setup": "Two ways of writing the same accented letter:",
+   "given": [
+    [
+     "Composed (NFC)",
+     "one code point, U+00E9"
+    ],
+    [
+     "Decomposed (NFD)",
+     "two code points, e + combining acute"
+    ]
+   ],
+   "result": "Identical on screen, unequal as strings, until you normalize both to the same form."
+  },
+  "uses": [
+   "Fixing a string comparison that fails even though both values look the same.",
+   "Cleaning text pasted from macOS, which often uses decomposed forms, before storing it.",
+   "Normalizing user input before saving usernames or search keys.",
+   "Debugging why a database lookup misses on an accented name."
+  ],
+  "mistakes": [
+   "Using NFKC when you need to preserve the original text. Compatibility mapping discards distinctions you may need later.",
+   "Normalizing only one side of a comparison. Both strings must be in the same form for the comparison to be meaningful.",
+   "Assuming ASCII text is unaffected. It is not changed, which is precisely why normalizing everything on input is safe and cheap."
+  ]
+ },
+ "color-temperature": {
+  "intro": "Color Temperature Converter turns a Kelvin value into an RGB hex colour and shows the swatch, across the full range from 1000 K to 12000 K. It includes reference points for the light sources you actually encounter.",
+  "how": [
+   "Drag the slider or type a Kelvin value between 1000 and 12000.",
+   "Read the hex colour and see the swatch update.",
+   "Compare against the reference points for common light sources."
+  ],
+  "method_title": "Why higher Kelvin looks cooler",
+  "method": [
+   "Colour temperature describes the colour of light emitted by an idealised black body heated to that temperature. Low temperatures glow red and orange. As the temperature rises the light shifts through white and into blue.",
+   "This runs directly against everyday language, where red is a warm colour and blue is a cool one. A 2700 K bulb is called warm white and a 6500 K bulb is called cool daylight, even though 6500 K is physically much hotter. The names follow how the light feels, not the physics."
+  ],
+  "example": {
+   "setup": "Common sources across the range:",
+   "given": [
+    [
+     "Candle flame",
+     "about 1900 K"
+    ],
+    [
+     "Tungsten bulb",
+     "about 2700 K"
+    ],
+    [
+     "Midday daylight",
+     "about 5500 to 6500 K"
+    ],
+    [
+     "Overcast sky",
+     "7000 K and above"
+    ]
+   ],
+   "result": "The default 6500 K sits at daylight, which is why it is the standard white point for monitors."
+  },
+  "uses": [
+   "Matching a light source when setting white balance for photo or video.",
+   "Choosing bulbs that match each other across a room.",
+   "Picking a screen colour temperature for editing or for evening reading.",
+   "Reproducing a specific lighting mood in a design."
+  ],
+  "mistakes": [
+   "Reading higher Kelvin as warmer. It is the opposite, and the naming convention makes this a persistent trap.",
+   "Mixing colour temperatures in one room. Two bulbs 2000 K apart will look obviously wrong together even though each looks fine alone.",
+   "Setting camera white balance to daylight indoors, which gives everything an orange cast from tungsten lighting."
+  ]
+ },
+ "qr-code-generator": {
+  "intro": "QR Code Generator makes a downloadable QR code from a URL, plain text, WiFi credentials, an email address, a phone number, an SMS or a contact card. Size, colours, margin and error correction are all adjustable, and the result downloads as a PNG.",
+  "how": [
+   "Pick a preset (URL, WiFi, Email, Phone, SMS, Contact) or type your content directly.",
+   "Set the size between 64 and 1024 pixels.",
+   "Choose an error correction level and adjust the colours and margin.",
+   "Download the PNG."
+  ],
+  "method_title": "What error correction actually buys you",
+  "method": [
+   "QR codes carry redundant data so they still scan when part of the code is damaged, dirty or covered. The four levels recover roughly 7, 15, 25 and 30 percent of the code: Low, Medium, Quartile and High.",
+   "Higher correction is not free. The redundancy takes space, so the same content at High produces a denser code than at Low. Use Medium for anything on a screen, and Quartile or High for print, for stickers that will get scuffed, or when you plan to place a logo over the centre."
+  ],
+  "example": {
+   "setup": "Choosing a level for a printed sign:",
+   "given": [
+    [
+     "Content",
+     "a URL"
+    ],
+    [
+     "Error correction",
+     "Quartile (25%)"
+    ],
+    [
+     "Size",
+     "512 px"
+    ]
+   ],
+   "result": "A code that still scans with a quarter of it obscured, at the cost of a denser pattern than Low would give."
+  },
+  "uses": [
+   "Putting a link on a printed poster, menu or business card.",
+   "Sharing WiFi credentials with guests without reading out the password.",
+   "Adding a contact card to printed material.",
+   "Linking a physical product to instructions or a registration page."
+  ],
+  "mistakes": [
+   "Printing too small. Below about two centimetres most phone cameras struggle, especially with a dense code.",
+   "Removing the quiet zone. The blank margin around a QR code is part of the specification and scanners need it.",
+   "Inverting the colours. Most scanners expect a dark code on a light background, and a light-on-dark code fails on many readers.",
+   "Choosing low contrast. Pale colours look nicer and scan far worse."
+  ]
  }
 }
