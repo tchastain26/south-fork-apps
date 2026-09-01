@@ -455,6 +455,16 @@ def strip_tags(text: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(clean)).strip()
 
 
+# Pages whose <title> is written for search and is too long to reuse as the on-page
+# H1. Search Console (2026.09.01) showed these are the only pages ranking well enough
+# for a title change to earn anything; everything else averages position 40+.
+HEADING_OVERRIDES = {
+    "lil-beat-maker": "Lil Beat Maker",
+    "symbol-pad": "Symbol Pad",
+    "rhythm-challenge": "Rhythm Challenge",
+}
+
+
 def extract_page_title(text: str, fallback: str) -> str:
     match = re.search(r"<title>(.*?)\s*\|\s*South Fork Apps</title>", text, re.S | re.I)
     if not match:
@@ -796,7 +806,7 @@ def main() -> None:
         text = path.read_text(encoding="utf-8")
         page_app = {
             **app,
-            "title": extract_page_title(text, app["title"]),
+            "title": HEADING_OVERRIDES.get(slug, extract_page_title(text, app["title"])),
             "description": extract_meta_description(text, app["description"]),
         }
 
