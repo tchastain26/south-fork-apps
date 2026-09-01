@@ -559,6 +559,27 @@ def inject_social_block(text: str, app: dict[str, str]) -> str:
     return text.replace("</head>", social + "\n</head>", 1)
 
 
+ADSENSE_PUBLISHER_ID = "ca-pub-3076043873825717"
+
+
+def inject_ads_block(text: str) -> str:
+    """Keep the AdSense loader in <head> so generated pages are monetized.
+
+    Standalone sweep of every page lives in ads_update.py; this keeps the
+    regular pipeline from regressing a page back to no ads.
+    """
+    ads = f"""
+<!-- SFA_ADS_START -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_PUBLISHER_ID}" crossorigin="anonymous"></script>
+<!-- SFA_ADS_END -->
+""".strip()
+    text = remove_marked_block(text, "SFA_ADS")
+    social_end = "<!-- SFA_SOCIAL_END -->"
+    if social_end in text:
+        return text.replace(social_end, social_end + "\n" + ads, 1)
+    return text.replace("</head>", ads + "\n</head>", 1)
+
+
 def inject_jsonld(text: str, app: dict[str, str]) -> str:
     schema_info = CATEGORY_SCHEMA[app["category"]]
     payload = {
@@ -760,6 +781,7 @@ def main() -> None:
             text = normalize_hero_intro(text, hero["intro"])
 
         text = inject_social_block(text, page_app)
+        text = inject_ads_block(text)
         text = inject_jsonld(text, page_app)
         text = inject_discovery_css(text)
         text = inject_feature_section(text, page_app)
