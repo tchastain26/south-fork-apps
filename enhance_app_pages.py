@@ -580,6 +580,38 @@ def inject_ads_block(text: str) -> str:
     return text.replace("</head>", ads + "\n</head>", 1)
 
 
+def jsonld_script(payload: dict, marker: str) -> str:
+    """Serialize JSON-LD so a title or description cannot close the script tag."""
+    body = json.dumps(payload, indent=2).replace("</", "<\\/")
+    return (
+        f"<!-- {marker}_START -->\n"
+        '<script type="application/ld+json">\n'
+        + body
+        + "\n</script>\n"
+        f"<!-- {marker}_END -->"
+    )
+
+
+def inject_breadcrumb(text: str, app: dict[str, str]) -> str:
+    """Breadcrumb markup so search results show a readable trail.
+
+    Without it Google prints the raw URL, and these paths carry an encoded
+    "South Fork Apps Collection" segment that reads badly in a result.
+    """
+    payload = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "South Fork Apps", "item": BASE_URL + "/"},
+            {"@type": "ListItem", "position": 2, "name": app["category"], "item": category_url(app["category"])},
+            {"@type": "ListItem", "position": 3, "name": app["title"], "item": app_url(app["slug"])},
+        ],
+    }
+    text = remove_marked_block(text, "SFA_BREADCRUMB")
+    block = jsonld_script(payload, "SFA_BREADCRUMB")
+    return text.replace("</head>", block + "\n</head>", 1)
+
+
 def inject_jsonld(text: str, app: dict[str, str]) -> str:
     schema_info = CATEGORY_SCHEMA[app["category"]]
     payload = {
@@ -603,13 +635,7 @@ def inject_jsonld(text: str, app: dict[str, str]) -> str:
     if hero:
         payload["featureList"] = hero["uses"]
 
-    block = (
-        "<!-- SFA_JSONLD_START -->\n"
-        '<script type="application/ld+json">\n'
-        + json.dumps(payload, indent=2)
-        + "\n</script>\n"
-        "<!-- SFA_JSONLD_END -->"
-    )
+    block = jsonld_script(payload, "SFA_JSONLD")
     text = remove_marked_block(text, "SFA_JSONLD")
     return text.replace("</head>", block + "\n</head>", 1)
 
@@ -783,6 +809,7 @@ def main() -> None:
         text = inject_social_block(text, page_app)
         text = inject_ads_block(text)
         text = inject_jsonld(text, page_app)
+        text = inject_breadcrumb(text, page_app)
         text = inject_discovery_css(text)
         text = inject_feature_section(text, page_app)
         text = inject_related_section(text, page_app, related_apps(apps, slug))
