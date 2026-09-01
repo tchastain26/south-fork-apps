@@ -6151,6 +6151,19 @@
   }
 }
 /* SFA_DISCOVERY_END */
+
+
+
+
+
+/* SFA_MOBILE_FIX2_START */
+@media (max-width: 640px){
+  /* the interval cards, not the keyboard, were widening the page */
+  #intervalGrid{grid-template-columns:repeat(auto-fit,minmax(0,1fr))!important;max-width:100%;}
+  .iv-card{min-width:0;}
+  .piano-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
+/* SFA_MOBILE_FIX2_END */
 </style>
 <!-- SFA_JSONLD_START -->
 <script type="application/ld+json">
