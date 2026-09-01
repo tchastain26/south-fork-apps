@@ -568,7 +568,6 @@ def page_shell(*, title: str, description: str, canonical: str, body_class: str,
       <div class="nav-links">
         <a href="{BASE_URL}/">Home</a>
         <a href="{BASE_URL}/categories/">Categories</a>
-        <a href="{BASE_URL}/topics/">Topics</a>
         <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">Field Notes</a>
       </div>
     </div>
@@ -605,7 +604,7 @@ def page_shell(*, title: str, description: str, canonical: str, body_class: str,
 def render_category_page(category: str, apps: list[dict[str, str]]) -> str:
     info = CATEGORY_INFO[category]
     featured = apps[:6]
-    related = "\n".join(pill_link(topic_url(slug), TOPIC_INFO[slug]["title"]) for slug in info["related_topics"])
+    related = ""  # topic hubs retired 2026.09.01; they duplicated these category pages
     cards = "\n".join(card_markup(app) for app in apps)
     featured_cards = "\n".join(card_markup(app) for app in featured)
     main_html = f"""    <section class="section">
@@ -784,35 +783,10 @@ def main() -> None:
         ),
     )
 
-    for slug in TOPIC_INFO:
-        path = ROOT / "topics" / slug / "index.html"
-        write_page(path, render_topic_page(slug, app_lookup))
-
-    topic_cards = [
-        (
-            topic_url(slug),
-            "Topic Hub",
-            info["title"],
-            info["description"],
-        )
-        for slug, info in TOPIC_INFO.items()
-    ]
-    write_page(
-        ROOT / "topics" / "index.html",
-        render_overview_page(
-            slug="topics",
-            title="Topics",
-            description="Browse South Fork Apps by workflow topics such as text tools, developer tools, calculators, CSS and color helpers, generators, and time tools.",
-            eyebrow="Browse",
-            intro="Topic hubs group apps by the job you are trying to finish, not just by the internal category they happen to live in.",
-            bullets=[
-                "Good when your task spans more than one category.",
-                "Helps you compare nearby tools that solve the same kind of problem.",
-                "Adds stronger static paths into the library for both users and search engines.",
-            ],
-            cards=topic_cards,
-        ),
-    )
+    # Topic hubs were retired on 2026.09.01. Each one listed the same tools as
+    # an existing category hub (three matched 100%) with templated surrounding
+    # text, which is a doorway page under Google's thin-content policy. The
+    # category hubs cover the same ground and are the redirect target.
 
     write_page(
         ROOT / "about" / "index.html",
@@ -830,6 +804,10 @@ def main() -> None:
             sections=[
                 ("What the site is for", "Most pages on South Fork Apps exist to solve one concrete problem fast. The goal is not to keep you browsing forever. The goal is to help you finish the task and move on."),
                 ("How tools get added", "New apps usually start as repeat annoyances, missing utilities, or workflow chores that deserve a faster browser-first answer. The collection spans text, code, design, planning, and everyday use cases because real work is messy and does not stay in one lane."),
+                ("Who builds it", "South Fork Apps is written and maintained by Tucker Chastain, a Creative Media Specialist working in organizational development, based in Bluff City, Tennessee. The library is an independent personal project rather than a company product, and every tool on it was built for a job that came up in real work.</p><p>That background shapes what gets built. Most of these tools exist because a task kept recurring and the available options wanted an account, an install, or a subscription for something that should take twenty seconds in a browser tab."),
+                ("How the tools are built", "Every tool is a single self-contained HTML page. There is no framework, no build step for the app itself, and no bundle to download. Open the page and the tool is already there.</p><p>Almost all of them run entirely client-side in JavaScript, which is why they keep working with the network disconnected and why nothing you type is transmitted anywhere. The handful that genuinely need an external service say so on the page, and any tool touching the camera, location or clipboard states that plainly rather than asking for a permission without explanation.</p><p>The collection is checked by an automated suite that validates every app page for a working interface, consistent branding, correct navigation, and companion documentation. A page does not ship until it passes."),
+                ("What each page includes", "A tool on its own is not much use if you cannot tell what it does or whether it is doing it correctly. Every page carries written documentation alongside the tool: what it is for, how to use it, the method or formula behind it where one exists, a worked example using the tool&#x27;s own values, and the mistakes people actually make with that particular job.</p><p>Where a subject has real limits, the page says so. The health calculators state that they are general references and not medical advice. The finance tools state their assumptions. The security tools state what they do not protect against. Documenting the limits is part of documenting the tool."),
+                ("Advertising", "The site carries advertising, which is what funds the hosting and the time to keep the library maintained and free to use. The <a href=\"https://southforkapps.com/privacy/\">privacy page</a> sets out what that means for cookies and how to opt out of personalised advertising."),
                 ("Where to follow updates", 'Field Notes at <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">blog.southforkapps.com</a> is the best place to track new releases, updates, and related thinking around the library.'),
             ],
         ),
@@ -851,6 +829,8 @@ def main() -> None:
             sections=[
                 ("Tool inputs", "Many South Fork Apps tools process what you type directly on the page. Some specialized tools may call a third-party service to complete a task. When that happens, the tool should make that dependency clear in its interface."),
                 ("Site infrastructure", "Like most public websites, South Fork Apps may rely on standard hosting, CDN, security, and ad infrastructure that can log normal request data such as IP address, browser details, referral data, and performance diagnostics."),
+                ("Advertising and cookies", "South Fork Apps shows ads served by Google AdSense. Third-party vendors, including Google, use cookies to serve ads based on a user&#x27;s prior visits to this site or other sites.</p><p>Google&#x27;s use of advertising cookies enables it and its partners to serve ads to users based on their visit to South Fork Apps and other sites on the internet.</p><p>You can opt out of personalized advertising at any time in <a href=\"https://myadcenter.google.com/\">Google Ad Settings</a>. You can also opt out of some third-party vendors&#x27; use of cookies for personalized advertising at <a href=\"https://www.aboutads.info/choices/\">aboutads.info</a>.</p><p>South Fork Apps does not sell personal information and does not run ads on tools intended for children."),
+                ("Browser storage", "Some tools save your work so it survives a refresh: a habit tracker, a kanban board, a set of flashcards. That data is written to your own browser&#x27;s local storage on your device. It is never uploaded, it is not readable by anyone else, and clearing your site data removes it permanently."),
                 ("Practical rule of thumb", "If you are working with sensitive personal, financial, medical, legal, or company-confidential information, do not paste it into any public web tool unless you understand exactly how that specific tool works and what services it depends on."),
             ],
         ),
@@ -872,6 +852,9 @@ def main() -> None:
             sections=[
                 ("GitHub", 'The public repository lives at <a href="https://github.com/tchastain26/south-fork-apps" target="_blank" rel="noopener">github.com/tchastain26/south-fork-apps</a>. That is the best place for concrete bug reports and implementation-level feedback.'),
                 ("Field Notes", 'Project updates and writing around the library live at <a href="https://blog.southforkapps.com" target="_blank" rel="noopener">blog.southforkapps.com</a>.'),
+                ("Reporting a problem with a tool", "Bug reports are genuinely welcome, and a useful one is short. Say which tool, what you did, what you expected, and what happened instead. If the tool produced a wrong result, include the input you used, because almost every calculation bug is only reproducible with the specific values that triggered it.</p><p>Mentioning your browser and whether you were on a phone or a desktop helps as well. A fair share of reports turn out to be layout or input problems that only appear on one of the two."),
+                ("Suggesting a new tool", "The tools that get built are the ones solving a specific, repeatable job. A request like a better calculator is hard to act on; a request to work out how much a meeting costs while it is running, or to convert a chord sheet into a different key, describes something buildable.</p><p>The library deliberately favours small single-purpose tools over large ones, so a suggestion that splits into three separate jobs will usually turn into three separate pages rather than one page with tabs."),
+                ("What to expect", "This is an independent project maintained alongside other work, not a staffed support desk. Reports are read and acted on as time allows, and the public channels are preferred because a request with visible context is easier to answer well and useful to anyone hitting the same problem.</p><p>Nothing here collects your personal information, so please do not include account details, passwords, or anything sensitive in a report. If a tool needs a value to reproduce a problem, a made-up example that triggers the same behaviour is always better than a real one."),
                 ("Broader web presence", 'For the person behind the project, visit <a href="https://tuckerchastain.com" target="_blank" rel="noopener">tuckerchastain.com</a>.'),
             ],
         ),

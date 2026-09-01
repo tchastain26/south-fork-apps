@@ -828,7 +828,7 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
         links = f"""
       <div class="sfa-links">
         <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>
-        <a href="{topic_url(topic_slug)}">{html.escape(TOPIC_TITLES[topic_slug])}</a>
+        <a href="{BASE_URL}/about/">About South Fork Apps</a>
         <a href="{BASE_URL}/privacy/">Privacy</a>
       </div>
 """.rstrip()

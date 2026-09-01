@@ -34,6 +34,16 @@ ADS_BLOCK = f"""
 SKIP_DIRS = {"2025"}
 SKIP_FILES = {"404.html"}
 
+# AdSense's inventory value policy prohibits ads on screens with low-value
+# content. A page thinner than this carries no loader, and an existing block is
+# stripped, so a navigational index or a stub can never quietly start serving.
+MIN_WORDS_FOR_ADS = 250
+
+
+def visible_words(text: str) -> int:
+    body = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", text)
+    return len(re.sub(r"(?s)<[^>]+>", " ", body).split())
+
 
 def remove_marked_block(text: str, marker: str) -> str:
     pattern = re.compile(
@@ -74,7 +84,7 @@ def monetizable_pages() -> list[Path]:
 
 
 def main() -> None:
-    added = already_ok = skipped_present = skipped_noindex = failed = 0
+    added = already_ok = skipped_present = skipped_noindex = skipped_thin = failed = 0
 
     for path in monetizable_pages():
         rel = path.relative_to(ROOT)
@@ -82,6 +92,14 @@ def main() -> None:
 
         if re.search(r'<meta[^>]+name=["\']robots["\'][^>]*noindex', text, re.I):
             skipped_noindex += 1
+            continue
+
+        if visible_words(text) < MIN_WORDS_FOR_ADS:
+            stripped = remove_marked_block(text, MARKER)
+            if stripped != text:
+                path.write_text(stripped, encoding="utf-8")
+                print(f"REMOVED {rel}: {visible_words(text)} words, under the {MIN_WORDS_FOR_ADS} word floor")
+            skipped_thin += 1
             continue
 
         if PUBLISHER_ID in text and f"{MARKER}_START" not in text:
@@ -100,12 +118,13 @@ def main() -> None:
         else:
             already_ok += 1
 
-    total = added + already_ok + skipped_present + skipped_noindex + failed
+    total = added + already_ok + skipped_present + skipped_noindex + skipped_thin + failed
     print(f"scanned {total} pages")
     print(f"  loader added:        {added}")
     print(f"  already correct:     {already_ok}")
     print(f"  pre-existing tag:    {skipped_present}")
     print(f"  skipped (noindex):   {skipped_noindex}")
+    print(f"  skipped (too thin):  {skipped_thin}")
     print(f"  failed:              {failed}")
 
 

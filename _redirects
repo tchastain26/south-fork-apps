@@ -3,4 +3,25 @@
 # broke when pasted. 301 so the existing indexed URLs pass their equity across.
 /South%20Fork%20Apps%20Collection/*  /tools/:splat  301
 
+# Topic hubs retired 2026.09.01. Each listed the same tools as an existing
+# category hub (three were a 100% match) with templated text, which is the
+# definition of a doorway page under Google's thin-content policy. Readers go
+# to the category that actually holds those tools.
+/topics/calculators/*  /categories/everyday-tools/  301
+/topics/calculators  /categories/everyday-tools/  301
+/topics/css-color-tools/*  /categories/design-media/  301
+/topics/css-color-tools  /categories/design-media/  301
+/topics/developer-tools/*  /categories/code-web/  301
+/topics/developer-tools  /categories/code-web/  301
+/topics/generators/*  /categories/fun-games/  301
+/topics/generators  /categories/fun-games/  301
+/topics/music-tools/*  /categories/music-tools/  301
+/topics/music-tools  /categories/music-tools/  301
+/topics/text-tools/*  /categories/text-docs/  301
+/topics/text-tools  /categories/text-docs/  301
+/topics/time-tools/*  /categories/productivity-planning/  301
+/topics/time-tools  /categories/productivity-planning/  301
+/topics/*  /categories/  301
+/topics  /categories/  301
+
 /*  /404.html  404
