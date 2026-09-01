@@ -756,6 +756,16 @@ def insert_before_related_or_footer(text: str, block: str) -> str:
     return insert_before_footerish(text, block)
 
 
+# Tools that also ship as an embeddable widget (see build_embeds.py). Their
+# pages advertise it, because the person most likely to want a calculator on
+# their own site is someone already using that calculator.
+EMBEDDABLE_SLUGS = {
+    "mortgage-calculator", "loan-calculator", "loan-comparison", "compound-interest",
+    "debt-snowball", "savings-goal-planner", "roi-calculator", "break-even-calculator",
+    "inflation-calculator", "rule-of-72", "percentage-calculator", "tip-calculator",
+    "unit-converter", "aspect-ratio-calculator", "pace-calculator",
+}
+
 CONTENT_PATH = ROOT / "app_content.json"
 APP_CONTENT = json.loads(CONTENT_PATH.read_text(encoding="utf-8")) if CONTENT_PATH.exists() else {}
 
@@ -835,9 +845,13 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
     preview_figure = preview_figure_for(app)
 
     if content:
+        embed_link = (
+            f'\n        <a href="{BASE_URL}/embed/">Put this on your own site</a>'
+            if app["slug"] in EMBEDDABLE_SLUGS else ""
+        )
         links = f"""
       <div class="sfa-links">
-        <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>
+        <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>{embed_link}
         <a href="{BASE_URL}/about/">About South Fork Apps</a>
         <a href="{BASE_URL}/privacy/">Privacy</a>
       </div>""".rstrip()

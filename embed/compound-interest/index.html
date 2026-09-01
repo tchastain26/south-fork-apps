@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compound Interest Calculator (embed) | South Fork Apps</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://southforkapps.com/tools/compound-interest/">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+      --bg: #111412; --surface: #1d201e; --surface2: #282b29;
+      --primary: #7ddb84; --primary-dim: #27863a;
+      --text: #e1e3df; --text-mid: #becaba; --text-dim: #899486;
+      --border: #3f493e; --danger: #f28b82; --warn: #f7c876;
+      --radius: 12px; --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    header a { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; opacity: .7; }
+    header a:hover { opacity: 1; }
+    h1 { font-size: 18px; font-weight: 700; }
+    .layout { flex: 1; display: grid; grid-template-columns: 320px 1fr; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    .sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .inputs { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    .input-row { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .prefix { padding: 0 10px; font-size: 14px; color: var(--text-dim); background: var(--surface2); border-right: 1px solid var(--border); height: 42px; display: flex; align-items: center; font-weight: 700; min-width: 36px; justify-content: center; }
+    input[type=number], select { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; font-weight: 700; padding: 10px 12px; }
+    select { cursor: pointer; }
+    .results { padding: 20px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--border); }
+    .result-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .result-label { font-size: 12px; color: var(--text-mid); }
+    .result-value { font-size: 20px; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
+    .result-value.interest { color: var(--warn); }
+    .main-content { display: flex; flex-direction: column; min-height: 0; }
+    .chart-area { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-height: 300px; }
+    .chart-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+    canvas { width: 100%; flex: 1; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-mid); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .table-area { border-top: 1px solid var(--border); overflow-y: auto; max-height: 280px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--surface); padding: 8px 12px; text-align: right; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); position: sticky; top: 0; }
+    th:first-child { text-align: left; }
+    td { padding: 7px 12px; text-align: right; border-bottom: 1px solid rgba(63,73,62,.4); font-variant-numeric: tabular-nums; }
+    td:first-child { text-align: left; color: var(--text-dim); font-size: 12px; }
+    tr:hover td { background: var(--surface); }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+<style>
+  body{margin:0;padding:0;background:#111412;}
+  main{padding:1rem;}
+  .sfa-embed-credit{
+    display:flex;justify-content:flex-end;padding:.5rem 1rem 1rem;
+    font:500 .72rem/1.4 'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  .sfa-embed-credit a{color:#7ddb84;text-decoration:none;opacity:.85;}
+  .sfa-embed-credit a:hover{opacity:1;text-decoration:underline;}
+</style>
+</head>
+<body>
+<main><div class="layout">
+  <div class="sidebar">
+    <div class="inputs">
+      <div class="field">
+        <label>Principal (starting amount)</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="principal" value="10000" min="0" oninput="calc()"></div>
+      </div>
+      <div class="field">
+        <label>Annual Interest Rate</label>
+        <div class="input-row"><input type="number" id="rate" value="7" min="0" step="0.1" oninput="calc()"><span class="prefix" style="border-left:1px solid var(--border);border-right:none;">%</span></div>
+      </div>
+      <div class="field">
+        <label>Time Period</label>
+        <div class="input-row"><input type="number" id="years" value="20" min="1" max="100" oninput="calc()"><span class="prefix" style="border-left:1px solid var(--border);border-right:none;">yrs</span></div>
+      </div>
+      <div class="field">
+        <label>Compound Frequency</label>
+        <div class="input-row"><select id="freq" onchange="calc()">
+          <option value="1">Annually</option>
+          <option value="4">Quarterly</option>
+          <option value="12" selected>Monthly</option>
+          <option value="365">Daily</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label>Monthly Contribution</label>
+        <div class="input-row"><span class="prefix">$</span><input type="number" id="contrib" value="200" min="0" oninput="calc()"></div>
+      </div>
+    </div>
+    <div class="results" id="resultsEl"></div>
+  </div>
+  <div class="main-content">
+    <div class="chart-area">
+      <div class="chart-title">Growth Over Time</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#7ddb84"></div>Total Value</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4361ee"></div>Principal + Contributions</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f7c876"></div>Interest Earned</div>
+      </div>
+      <canvas id="chart"></canvas>
+    </div>
+    <div class="table-area">
+      <table>
+        <thead><tr><th>Year</th><th>Balance</th><th>Contributions</th><th>Interest</th></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v1.0</p></main>
+<div class="sfa-embed-credit">
+  <a href="https://southforkapps.com/tools/compound-interest/?utm_source=embed" target="_blank" rel="noopener">Compound Interest Calculator by South Fork Apps</a>
+</div>
+
+<script>
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function calc() {
+  const P = parseFloat(document.getElementById('principal').value) || 0;
+  const r = parseFloat(document.getElementById('rate').value) / 100 || 0;
+  const years = parseInt(document.getElementById('years').value) || 1;
+  const n = parseInt(document.getElementById('freq').value);
+  const monthly = parseFloat(document.getElementById('contrib').value) || 0;
+
+  const data = [];
+  let balance = P;
+  let totalContrib = P;
+
+  for (let y = 1; y <= years; y++) {
+    for (let p = 0; p < n; p++) {
+      balance = balance * (1 + r/n) + monthly * (12/n);
+    }
+    totalContrib += monthly * 12;
+    data.push({ year: y, balance, contrib: totalContrib, interest: balance - totalContrib });
+  }
+
+  const last = data[data.length - 1];
+  document.getElementById('resultsEl').innerHTML = `
+    <div class="result-item"><span class="result-label">Final Balance</span><span class="result-value">${fmt(last.balance)}</span></div>
+    <div class="result-item"><span class="result-label">Total Contributed</span><span class="result-value">${fmt(last.contrib)}</span></div>
+    <div class="result-item"><span class="result-label">Interest Earned</span><span class="result-value interest">${fmt(last.interest)}</span></div>
+    <div class="result-item"><span class="result-label">Growth Multiple</span><span class="result-value">${(last.balance / last.contrib).toFixed(2)}×</span></div>
+  `;
+
+  document.getElementById('tableBody').innerHTML = data.map(d => `
+    <tr>
+      <td>Year ${d.year}</td>
+      <td style="color:var(--primary);font-weight:700">${fmt(d.balance)}</td>
+      <td>${fmt(d.contrib)}</td>
+      <td style="color:var(--warn)">${fmt(d.interest)}</td>
+    </tr>
+  `).join('');
+
+  drawChart(data);
+}
+
+function drawChart(data) {
+  const canvas = document.getElementById('chart');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = Math.max(200, rect.height - 80);
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pad = { top: 20, right: 20, bottom: 40, left: 70 };
+
+  const maxVal = Math.max(...data.map(d => d.balance));
+  const scaleY = v => pad.top + (h - pad.top - pad.bottom) * (1 - v / maxVal);
+  const scaleX = i => pad.left + (w - pad.left - pad.right) * (i / (data.length - 1));
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(63,73,62,.4)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = scaleY(maxVal * i / 4);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
+    ctx.fillStyle = '#899486'; ctx.font = '10px Plus Jakarta Sans'; ctx.textAlign = 'right';
+    ctx.fillText(fmt(maxVal * i / 4), pad.left - 6, y + 4);
+  }
+
+  // X labels
+  ctx.fillStyle = '#899486'; ctx.textAlign = 'center'; ctx.font = '10px Plus Jakarta Sans';
+  const step = Math.max(1, Math.floor(data.length / 8));
+  data.forEach((d, i) => {
+    if (i % step === 0 || i === data.length - 1) {
+      ctx.fillText(`Y${d.year}`, scaleX(i), h - pad.bottom + 16);
+    }
+  });
+
+  function drawLine(key, color, fill) {
+    ctx.beginPath();
+    data.forEach((d, i) => {
+      const x = scaleX(i), y = scaleY(d[key]);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    if (fill) {
+      ctx.lineTo(scaleX(data.length-1), scaleY(0));
+      ctx.lineTo(scaleX(0), scaleY(0));
+      ctx.closePath();
+      ctx.fillStyle = color.replace(')', ', 0.12)').replace('rgb', 'rgba');
+      ctx.fill();
+    }
+    ctx.beginPath();
+    data.forEach((d, i) => {
+      const x = scaleX(i), y = scaleY(d[key]);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+  }
+
+  drawLine('interest', '#f7c876', true);
+  drawLine('contrib',  '#4361ee', false);
+  drawLine('balance',  '#7ddb84', false);
+}
+
+calc();
+window.addEventListener('resize', calc);
+</script>
+<script>var SFA_SLUG = 'compound-interest';</script>
+
+<script>
+// Tell the host page how tall we are, so the snippet's listener can size the
+// frame. Hosts that strip the listener still get the fixed fallback height.
+(function () {
+  var last = 0;
+  function post() {
+    var h = Math.ceil(document.documentElement.scrollHeight);
+    if (h && h !== last) {
+      last = h;
+      parent.postMessage({ sfaEmbed: true, slug: SFA_SLUG, height: h }, "*");
+    }
+  }
+  window.addEventListener("load", post);
+  if (window.ResizeObserver) new ResizeObserver(post).observe(document.documentElement);
+  setInterval(post, 1000);
+})();
+</script>
+
+</body>
+</html>

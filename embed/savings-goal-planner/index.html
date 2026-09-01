@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savings Goal Planner (embed) | South Fork Apps</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://southforkapps.com/tools/savings-goal-planner/">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root { --bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac; }
+    * { box-sizing:border-box; }
+    body { margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif; }
+    .nav { display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border); }
+    .nav-back { color:var(--accent);text-decoration:none;font-size:.875rem;font-weight:500; }
+    .nav-back:hover { text-decoration:underline; }
+    .nav-title { color:var(--text);font-size:.875rem;font-weight:600; }
+    main { width:min(760px,calc(100% - 2rem));margin:0 auto;padding:2rem 0;display:grid;gap:1rem;grid-template-columns:1fr 1fr; }
+    @media(max-width:580px){ main{grid-template-columns:1fr} }
+    .panel { background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem; }
+    h1 { margin:0 0 .5rem;font-size:clamp(2rem,7vw,3.5rem);line-height:1; }
+    p { margin:0;color:var(--muted);line-height:1.6; }
+    .field { display:grid;gap:.4rem;margin-bottom:.75rem; }
+    label { font-size:.84rem;font-weight:700;color:var(--muted); }
+    input { width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;padding:.8rem 1rem;outline:none; }
+    input:focus { border-color:var(--accent); }
+    .prefix-wrap { position:relative; }
+    .prefix-wrap span { position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;pointer-events:none; }
+    .prefix-wrap input { padding-left:1.75rem; }
+    .tabs { display:flex;gap:.5rem;margin:1rem 0; }
+    .tab { flex:1;padding:.65rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--muted);font:inherit;font-weight:700;cursor:pointer;font-size:.82rem; }
+    .tab.active { border-color:var(--accent);color:var(--accent);background:rgba(125,219,132,.08); }
+    .stat-block { background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.75rem; }
+    .stat-label { font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem; }
+    .stat-value { font-size:1.8rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums; }
+    .stat-sub { font-size:.82rem;color:var(--muted);margin-top:.25rem; }
+    .breakdown { display:grid;gap:.4rem;margin-top:.75rem; }
+    .breakdown-row { display:flex;justify-content:space-between;font-size:.875rem; }
+    .breakdown-row .val { font-weight:700; }
+    .breakdown-row .val.pos { color:var(--accent); }
+    .empty { color:var(--muted);font-size:.9rem;text-align:center;padding:1rem 0; }
+    button { min-height:2.6rem;width:100%;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#102113;font:inherit;font-weight:800;cursor:pointer;margin-top:.25rem; }
+    button:hover { background:#5ec966; }
+    footer { margin-top:.75rem;text-align:center;color:var(--muted);font-size:.8rem; }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+<style>
+  body{margin:0;padding:0;background:#111412;}
+  main{padding:1rem;}
+  .sfa-embed-credit{
+    display:flex;justify-content:flex-end;padding:.5rem 1rem 1rem;
+    font:500 .72rem/1.4 'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  .sfa-embed-credit a{color:#7ddb84;text-decoration:none;opacity:.85;}
+  .sfa-embed-credit a:hover{opacity:1;text-decoration:underline;}
+</style>
+</head>
+<body>
+<main>
+  <section class="panel">
+    <h1>Savings Goal Planner</h1>
+    <p>Find out how long it takes or how much to save each month.</p>
+
+    <div class="tabs" style="margin-top:1rem">
+      <button class="tab active" id="tab-time" type="button" onclick="setMode('time')">How long?</button>
+      <button class="tab" id="tab-amount" type="button" onclick="setMode('amount')">How much/mo?</button>
+    </div>
+
+    <div class="field">
+      <label>Savings goal ($)</label>
+      <div class="prefix-wrap"><span>$</span><input type="number" id="goal" value="10000" min="0" step="100" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <label>Current savings ($)</label>
+      <div class="prefix-wrap"><span>$</span><input type="number" id="current" value="1500" min="0" step="100" oninput="calc()"></div>
+    </div>
+    <div id="monthly-field" class="field">
+      <label>Monthly contribution ($)</label>
+      <div class="prefix-wrap"><span>$</span><input type="number" id="monthly" value="400" min="0" step="50" oninput="calc()"></div>
+    </div>
+    <div id="months-field" class="field" style="display:none">
+      <label>Target months to reach goal</label>
+      <input type="number" id="months" value="24" min="1" step="1" oninput="calc()">
+    </div>
+    <div class="field">
+      <label>Annual interest rate (% APY)</label>
+      <input type="number" id="rate" value="4.5" min="0" step="0.1" oninput="calc()">
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <footer>v1.0</footer>
+  </section>
+
+  <section class="panel">
+    <div id="output"><p class="empty">Fill in the fields to see your plan.</p></div>
+  </section>
+</main>
+<div class="sfa-embed-credit">
+  <a href="https://southforkapps.com/tools/savings-goal-planner/?utm_source=embed" target="_blank" rel="noopener">Savings Goal Planner by South Fork Apps</a>
+</div>
+
+<script>
+  let mode = 'time';
+  const fmt = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+  const fmt2 = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2});
+
+  function setMode(m){
+    mode=m;
+    document.getElementById('tab-time').classList.toggle('active',m==='time');
+    document.getElementById('tab-amount').classList.toggle('active',m==='amount');
+    document.getElementById('monthly-field').style.display=m==='time'?'grid':'none';
+    document.getElementById('months-field').style.display=m==='amount'?'grid':'none';
+    calc();
+  }
+
+  function calc(){
+    const goal=parseFloat(document.getElementById('goal').value)||0;
+    const current=parseFloat(document.getElementById('current').value)||0;
+    const rate=Math.max(0,parseFloat(document.getElementById('rate').value)||0)/100/12;
+    const out=document.getElementById('output');
+
+    if(goal<=0){out.innerHTML='<p class="empty">Enter a savings goal.</p>';return;}
+    if(current>=goal){out.innerHTML=`<div class="stat-block"><div class="stat-label">Status</div><div class="stat-value" style="font-size:1.3rem">Already reached!</div><div class="stat-sub">You already have ${fmt2.format(current)}, which meets your goal of ${fmt2.format(goal)}.</div></div>`;return;}
+
+    const needed=goal-current;
+
+    if(mode==='time'){
+      const monthly=parseFloat(document.getElementById('monthly').value)||0;
+      if(monthly<=0){out.innerHTML='<p class="empty">Enter a monthly contribution.</p>';return;}
+
+      let balance=current, months=0;
+      while(balance<goal && months<1200){
+        balance=balance*(1+rate)+monthly;
+        months++;
+      }
+      if(months>=1200){out.innerHTML='<p class="empty">At that rate, this goal takes over 100 years. Try a higher monthly amount.</p>';return;}
+
+      const years=Math.floor(months/12), remMonths=months%12;
+      const totalContrib=monthly*months;
+      const interest=goal-current-totalContrib;
+
+      out.innerHTML=`
+        <div class="stat-block">
+          <div class="stat-label">Time to goal</div>
+          <div class="stat-value">${years>0?years+'y ':''} ${remMonths>0?remMonths+'mo':''}</div>
+          <div class="stat-sub">${months} total months</div>
+        </div>
+        <div class="breakdown">
+          <div class="breakdown-row"><span>Starting balance</span><span class="val">${fmt2.format(current)}</span></div>
+          <div class="breakdown-row"><span>Total contributed</span><span class="val">${fmt2.format(totalContrib)}</span></div>
+          <div class="breakdown-row"><span>Interest earned</span><span class="val pos">${fmt2.format(Math.max(0,interest))}</span></div>
+          <div class="breakdown-row"><span style="font-weight:700">Final balance</span><span class="val pos">${fmt2.format(goal)}</span></div>
+        </div>`;
+    } else {
+      const months=Math.max(1,parseInt(document.getElementById('months').value)||24);
+      let monthly;
+      if(rate===0){
+        monthly=needed/months;
+      } else {
+        monthly=needed*rate/((Math.pow(1+rate,months)-1));
+      }
+      const totalContrib=monthly*months;
+      const interest=goal-current-totalContrib;
+
+      out.innerHTML=`
+        <div class="stat-block">
+          <div class="stat-label">Save per month</div>
+          <div class="stat-value">${fmt2.format(monthly)}</div>
+          <div class="stat-sub">for ${months} months (${Math.floor(months/12)}y ${months%12}mo)</div>
+        </div>
+        <div class="breakdown">
+          <div class="breakdown-row"><span>Starting balance</span><span class="val">${fmt2.format(current)}</span></div>
+          <div class="breakdown-row"><span>Total contributed</span><span class="val">${fmt2.format(totalContrib)}</span></div>
+          <div class="breakdown-row"><span>Interest earned</span><span class="val pos">${fmt2.format(Math.max(0,interest))}</span></div>
+          <div class="breakdown-row"><span style="font-weight:700">Final balance</span><span class="val pos">${fmt2.format(goal)}</span></div>
+        </div>`;
+    }
+  }
+
+  calc();
+</script>
+<script>var SFA_SLUG = 'savings-goal-planner';</script>
+
+<script>
+// Tell the host page how tall we are, so the snippet's listener can size the
+// frame. Hosts that strip the listener still get the fixed fallback height.
+(function () {
+  var last = 0;
+  function post() {
+    var h = Math.ceil(document.documentElement.scrollHeight);
+    if (h && h !== last) {
+      last = h;
+      parent.postMessage({ sfaEmbed: true, slug: SFA_SLUG, height: h }, "*");
+    }
+  }
+  window.addEventListener("load", post);
+  if (window.ResizeObserver) new ResizeObserver(post).observe(document.documentElement);
+  setInterval(post, 1000);
+})();
+</script>
+
+</body>
+</html>
