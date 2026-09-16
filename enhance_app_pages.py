@@ -626,6 +626,9 @@ def inject_social_block(text: str, app: dict[str, str]) -> str:
     return text.replace("</head>", social + "\n</head>", 1)
 
 
+# Ads are off since 2026.09.16 (see ads_update.py). While False the pipeline
+# strips the loader so a rebuild cannot put ads back.
+ADS_ENABLED = False
 ADSENSE_PUBLISHER_ID = "ca-pub-3076043873825717"
 
 
@@ -641,6 +644,8 @@ def inject_ads_block(text: str) -> str:
 <!-- SFA_ADS_END -->
 """.strip()
     text = remove_marked_block(text, "SFA_ADS")
+    if not ADS_ENABLED:
+        return text
     social_end = "<!-- SFA_SOCIAL_END -->"
     if social_end in text:
         return text.replace(social_end, social_end + "\n" + ads, 1)

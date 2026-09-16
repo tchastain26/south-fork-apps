@@ -12,6 +12,11 @@ Deliberately skipped:
   * any noindex page    - same reason.
 
 Run from the repo root:  python3 ads_update.py
+
+ADS ARE OFF (2026.09.16). AdSense rejected the site twice for "Low value
+content" and Tucker retired South Fork from ad revenue. With ADS_ENABLED
+False this script strips every loader, marked or not, instead of adding one.
+Flip it back only after a new AdSense approval.
 """
 
 from __future__ import annotations
@@ -22,7 +27,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 COLLECTION_DIR = ROOT / "tools"
 
+ADS_ENABLED = False
+
 PUBLISHER_ID = "ca-pub-3076043873825717"
+UNMARKED_TAG = re.compile(
+    rf'[ \t]*<script[^>]*adsbygoogle\.js\?client={re.escape(PUBLISHER_ID)}[^>]*></script>[ \t]*\n?'
+)
 MARKER = "SFA_ADS"
 
 ADS_BLOCK = f"""
@@ -83,7 +93,22 @@ def monetizable_pages() -> list[Path]:
     return pages
 
 
+def strip_all() -> None:
+    removed = 0
+    for path in monetizable_pages():
+        text = path.read_text(encoding="utf-8")
+        stripped = UNMARKED_TAG.sub("", remove_marked_block(text, MARKER))
+        if stripped != text:
+            path.write_text(stripped, encoding="utf-8")
+            removed += 1
+    print(f"ads disabled: loader removed from {removed} pages")
+
+
 def main() -> None:
+    if not ADS_ENABLED:
+        strip_all()
+        return
+
     added = already_ok = skipped_present = skipped_noindex = skipped_thin = failed = 0
 
     for path in monetizable_pages():
