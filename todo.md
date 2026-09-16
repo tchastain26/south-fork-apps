@@ -1,0 +1,32 @@
+# South Fork Apps — Build Queue
+
+- [x] currency-converter — Currency Converter — Convert between 30+ world currencies using a built-in static exchange rate table.
+- [x] heart-rate-zones — Heart Rate Zones — Calculate your 5 aerobic training zones from age-predicted or custom max heart rate.
+- [x] net-worth-tracker — Net Worth Tracker — Add assets and liabilities in-session to calculate and visualize your current net worth.
+- [ ] invoice-generator — Invoice Generator — Build a printable HTML invoice from client info, line items, and payment details. (2026.06.14 audit: folder exists but is empty; not live.)
+- [x] break-even-calculator — Break-Even Calculator — Enter fixed costs, variable cost per unit, and selling price to find break-even volume.
+- [x] rule-of-72 — Rule of 72 — Enter an interest rate to instantly see how many years it takes to double your money.
+- [x] resistor-color-code — Resistor Color Code — Decode or build 4-band and 5-band resistor color codes with real-time ohm display.
+- [x] triangle-solver — Triangle Solver — Solve any triangle given sides and angles using the law of sines and cosines.
+- [x] statistics-calculator — Statistics Calculator — Compute mean, median, mode, range, variance, and standard deviation for any dataset.
+- [x] periodic-table — Periodic Table — Clickable periodic table with element details including symbol, atomic number, mass, and group.
+- [x] quadratic-solver — Quadratic Solver — Solve ax² + bx + c = 0 and show both real and complex roots with step-by-step work.
+- [x] unit-circle — Unit Circle Reference — Interactive unit circle showing exact sin, cos, and tan values at all standard angles.
+- [x] decision-matrix — Decision Matrix — Score options against weighted criteria to objectively rank competing choices.
+- [x] meeting-agenda-builder — Meeting Agenda Builder — Build a timed meeting agenda and copy it as formatted plain text or markdown.
+- [x] hangman — Hangman — Classic hangman word guessing game with a built-in word list, playable in the browser.
+- [x] tic-tac-toe — Tic Tac Toe — Play tic tac toe against the computer or a second player directly in your browser.
+- [x] rock-paper-scissors — Rock Paper Scissors — Play rock, paper, scissors against the computer with a running score tracker.
+- [ ] passive-voice-detector — Passive Voice Detector — Highlight passive voice constructions in any pasted text to improve your writing.
+- [ ] packing-list-maker — Packing List Maker — Build a categorized trip packing list, check off items, and reset it for the next trip.
+- [ ] travel-budget-planner — Travel Budget Planner — Enter trip expense categories and amounts to track your travel budget in real time.
+- [ ] emoji-search — Emoji Search — Search and copy any emoji by name or keyword using a built-in emoji reference.
+- [ ] git-commit-builder — Git Commit Message Builder — Generate conventional commit messages by selecting type, scope, and description.
+- [ ] semver-bumper — Semver Bump Calculator — Enter a semantic version and instantly see the next major, minor, and patch bump options.
+- [ ] macros-calculator — Macro Calculator — Calculate daily protein, fat, and carb targets based on your weight, goal, and activity level.
+- [ ] sleep-debt-calculator — Sleep Debt Calculator — Enter your nightly sleep totals to see your weekly sleep debt and estimated recovery time.
+- [ ] plant-watering-tracker — Plant Watering Tracker — Log your plants, set watering intervals, and see which plants are due for water today.
+- [ ] cocktail-ratio-calculator — Cocktail Ratio Calculator — Scale any cocktail recipe to any number of servings using locked ingredient ratios.
+- [ ] svg-path-visualizer — SVG Path Visualizer — Paste an SVG path d attribute and see it rendered live with bounding box and point info.
+- [ ] rhyme-finder — Rhyme Finder — Enter a word and get common single and double rhymes for songwriting and poetry.
+- [ ] sun-position-calculator — Sun Position Calculator — Calculate sun elevation, azimuth, sunrise, and sunset for any location and date.

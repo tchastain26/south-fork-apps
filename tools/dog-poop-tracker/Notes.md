@@ -8,7 +8,7 @@ A simple yard poop tracker web app (PWA). Lets you mark sections of a yard grid 
 
 - **Project Name:** dogpooptracker
 - **Owner:** Tucker Chastain
-- **Live URL:** https://southforkapps.com/South%20Fork%20Apps%20Collection/dog-poop-tracker/
+- **Live URL:** https://southforkapps.com/tools/dog-poop-tracker/
 - **Tech Stack:** Single-file HTML/CSS/JS (no framework)
 
 ## Hosting
@@ -16,7 +16,7 @@ A simple yard poop tracker web app (PWA). Lets you mark sections of a yard grid 
 - **Platform:** South Fork Apps (Cloudflare Pages)
 - **Migrated from:** Netlify (dogpooptracker.netlify.app)
 - **Created:** 2026-03-21
-- **Last Updated:** 2026-05-13
+- **Last Updated:** 2026.07.13
 
 ## Repository
 
@@ -31,3 +31,4 @@ A simple yard poop tracker web app (PWA). Lets you mark sections of a yard grid 
 
 - Vibe coded with AI assistance
 - No version control -- index.html is the source of truth
+- 2026.07.13 v2.0 accuracy rebuild: filtered GPS fixes, hold-still calibration, quadrilateral yard transform, confidence circles, marker correction, v2→v3 data migration. New files: sw.js, manifest.webmanifest (deploy them alongside index.html). Deployed 2026.07.13 (commit dfd65fe in ~/Sites/south-fork-apps).

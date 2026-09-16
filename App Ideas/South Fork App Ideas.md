@@ -23,3 +23,4 @@ Good SFA candidates — simple, single-purpose, no server needed:
 - **SQL Pretty Printer** — paste messy SQL, get it formatted
 - **Reading Level Analyzer** — paste text, get Flesch-Kincaid grade and readability score
 
+[Zperiod: Interactive Periodic Table (118 Elements, 3D Atom Models)](https://zperiod.app/)
