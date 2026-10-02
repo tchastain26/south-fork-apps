@@ -7,13 +7,22 @@ const http=require('node:http');
 const path=require('node:path');
 const root=path.resolve('tools/dog-poop-tracker');
 const out=path.resolve('artifacts/dog-poop-tracker');fs.mkdirSync(out,{recursive:true});
-let swGeneration=0,failAsset=false;
+let swGeneration=0,failAsset=false,legacyWorker=false;
+// Reproduce the first v2.1 worker so its waiting-update recovery stays covered.
+const legacySW=`const CACHE='poop-tracker-v3-2026.10.02-review2';
+const scope=new URL('./',self.location.href),shellURL=new URL('./index.html',scope).href;
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll([scope.href,shellURL]))));
+self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch',e=>{if(e.request.mode==='navigate')e.respondWith(caches.open(CACHE).then(c=>c.match(shellURL)))});`;
 const server=http.createServer((req,res)=>{
  const pathname=new URL(req.url,'http://localhost').pathname;
+ // Match Cloudflare Pages' canonical redirect, absent from a plain file server.
+ if(pathname.endsWith('/index.html')){res.writeHead(308,{Location:pathname.slice(0,-10)});return res.end();}
  const name=pathname.endsWith('/')?'index.html':path.basename(pathname);
+ if(legacyWorker && name==='sw.js'){res.writeHead(200,{'Content-Type':'application/javascript','Cache-Control':'no-store'});return res.end(legacySW);}
  if(failAsset && name==='favicon.svg'){res.writeHead(503);return res.end('simulated outage');}
  const types={html:'text/html',js:'application/javascript',webmanifest:'application/manifest+json',svg:'image/svg+xml',png:'image/png'};
- try{let body=fs.readFileSync(path.join(root,name));if(name==='sw.js')body=Buffer.from(body.toString().replace("const CACHE = 'poop-tracker-v3-2026.10.02-review2'",`const CACHE = 'poop-tracker-v3-2026.10.02-review2-test-${swGeneration}'`));
+ try{let body=fs.readFileSync(path.join(root,name));if(name==='sw.js')body=Buffer.from(body.toString().replace("const CACHE = 'poop-tracker-v3-2026.10.02-release1'",`const CACHE = 'poop-tracker-v3-2026.10.02-release1-test-${swGeneration}'`));
  res.writeHead(200,{'Content-Type':types[name.split('.').at(-1)]||'application/octet-stream','Cache-Control':'no-store'});res.end(body);
  }catch{res.writeHead(404);res.end();}
 });
@@ -123,6 +132,19 @@ async function importData(p,data){if(!await p.locator('#data-panel').isVisible()
    assert.deepEqual(p.errors,[]);await ctx.close();
   }
  });
+ await run('Cloudflare redirect: repair the prior cached shell before explicit update activation',async()=>{
+  legacyWorker=true;
+  const {ctx,p}=await context(null,{serviceWorkers:'allow'});await p.evaluate(()=>navigator.serviceWorker.ready);await p.waitForFunction(()=>!!navigator.serviceWorker.controller);
+  await p.locator('#simple-map-btn').click();await p.locator('#manual-btn').click();await p.locator('#tap-add').click();await p.locator('#ma-done').click();
+  const redirected=()=>p.evaluate(async()=>{const c=await caches.open('poop-tracker-v3-2026.10.02-review2');return (await c.match(new URL('./index.html',location.href).href)).redirected});
+  assert.equal(await redirected(),true);
+  legacyWorker=false;await p.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update()});await p.locator('#update-btn').waitFor({state:'visible'});
+  assert.equal(await redirected(),false); // The old active worker can reload while the new worker waits.
+  await p.reload();assert.equal((await state(p)).markers.length,1);
+  await p.locator('#update-btn').click();await p.waitForFunction(()=>document.getElementById('update-notice').hidden);
+  await ctx.setOffline(true);await p.reload();assert.equal((await state(p)).markers.length,1);
+  assert.deepEqual(p.errors,[]);await ctx.close();
+ });
  await run('offline reload, scoped cache cleanup, update activation and failed install recovery',async()=>{
   const {ctx,p}=await context(null,{serviceWorkers:'allow'});await p.evaluate(()=>navigator.serviceWorker.ready);await p.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await p.locator('#simple-map-btn').click();await p.locator('#manual-btn').click();await p.locator('#tap-add').click();await p.locator('#ma-done').click();
@@ -131,7 +153,7 @@ async function importData(p,data){if(!await p.locator('#data-panel').isVisible()
   await ctx.setOffline(false);swGeneration++;
   await p.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update()});await p.locator('#update-btn').waitFor({state:'visible'});
   await p.locator('#update-btn').click();await p.waitForFunction(()=>document.getElementById('update-notice').hidden);assert.equal((await state(p)).markers.length,2);
-  assert.ok((await p.evaluate(()=>caches.keys())).includes('another-south-fork-app'));assert.ok(!(await p.evaluate(()=>caches.keys())).includes('poop-tracker-v3-2026.10.02-review2-test-0'));
+  assert.ok((await p.evaluate(()=>caches.keys())).includes('another-south-fork-app'));assert.ok(!(await p.evaluate(()=>caches.keys())).includes('poop-tracker-v3-2026.10.02-release1-test-0'));
   failAsset=true;swGeneration++;
   await p.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update();await new Promise(resolve=>{if(!r.installing)return resolve();const w=r.installing;w.addEventListener('statechange',()=>{if(w.state==='redundant')resolve()})})});
   await ctx.setOffline(true);await p.reload();assert.equal((await state(p)).markers.length,2);assert.equal(await p.locator('#update-notice').isVisible(),false);failAsset=false;

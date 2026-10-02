@@ -1,13 +1,22 @@
 /* Scoped, atomic offline shell. A new version waits for an explicit reload. */
 const PREFIX = 'poop-tracker-';
-const CACHE = 'poop-tracker-v3-2026.10.02-review2';
+const CACHE = 'poop-tracker-v3-2026.10.02-release1';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './favicon.svg', './apple-touch-icon.png'];
 const scope = new URL('./', self.location.href);
 const shellURL = new URL('./index.html', scope).href;
 
 self.addEventListener('install', event => {
   // Reject partial installs. Keep the last working worker if any asset fails.
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS.map(asset => new Request(new URL(asset, scope), {cache:'reload'})))));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS.map(asset => new Request(new URL(asset, scope), {cache:'reload'})))).then(async () => {
+    // Repair the brief first v2.1 release while its worker is still active.
+    // Keep that version's own HTML; no forced activation or storage changes.
+    const previous = 'poop-tracker-v3-2026.10.02-review2';
+    if (await caches.has(previous)) {
+      const cache = await caches.open(previous);
+      const canonical = await cache.match(scope.href);
+      if (canonical && !canonical.redirected) await cache.put(shellURL, canonical);
+    }
+  }));
 });
 self.addEventListener('message', event => {
   if (event.data?.type === 'ACTIVATE_UPDATE') self.skipWaiting();
@@ -25,7 +34,9 @@ self.addEventListener('fetch', event => {
     // Match only this app's entry page, including query strings. An active worker
     // serves its matching shell until the waiting update is accepted.
     if (url.pathname !== scope.pathname && url.pathname !== new URL(shellURL).pathname) return;
-    event.respondWith(caches.open(CACHE).then(async cache => (await cache.match(shellURL)) || fetch(req)));
+    // Pages redirects index.html to the directory URL. Reusing that redirected
+    // response for a navigation causes ERR_FAILED, even while online.
+    event.respondWith(caches.open(CACHE).then(async cache => (await cache.match(scope.href)) || fetch(req)));
     return;
   }
   if (!ASSETS.some(asset => new URL(asset, scope).pathname === url.pathname)) return;
