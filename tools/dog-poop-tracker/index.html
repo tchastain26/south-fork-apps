@@ -24,520 +24,160 @@
 <meta name="twitter:image" content="https://southforkapps.com/tools/dog-poop-tracker/share.jpg">
 <!-- SFA_SOCIAL_END -->
 <link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="theme-color" content="#111412">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root[data-theme="light"] {
-      --bg: #ffffff;
-      --surface: #f4f4f4;
-      --text: #111111;
-      --text-muted: #444444;
-      --accent: #1a6b1a;
-      --accent-dark: #ffffff;
-      --border: #cccccc;
-      --danger: #b00010;
-      --warn: #7a4500;
-      --cyan: #005a80;
-      --marker-dirty: #8b3a00;
-      --grass: #eaf5df;
-      --grass-grid: #cfe3bd;
-      --grass-border: #2a7a2a;
-      --you: #005a80;
+    :root { color-scheme: dark; --bg:#111412; --surface:#1b211d; --text:#f1f5ee; --text-muted:#becabc; --accent:#7ddb84; --accent-dark:#10371b; --border:#48564a; --danger:#ffb4ab; --warn:#ffcf8f; --cyan:#aaccda; --marker-dirty:#ffc08b; --grass:#192e20; --grass-grid:#304737; --grass-border:#91ba8b; --you:#9ad8fa; }
+    :root[data-theme="light"] { color-scheme:light; --bg:#f6f7ef; --surface:#ffffff; --text:#172a1c; --text-muted:#4b6050; --accent:#246b35; --accent-dark:#ffffff; --border:#a9b9a7; --danger:#a52222; --warn:#794900; --cyan:#075878; --marker-dirty:#873d06; --grass:#e8f0dc; --grass-grid:#c9d8be; --grass-border:#466b3d; --you:#00618d; }
+    [hidden] { display:none !important; }
+    body { background:var(--bg); color:var(--text); font-family:'Plus Jakarta Sans',-apple-system,system-ui,sans-serif; line-height:1.5; min-height:100dvh; }
+    button, input { font:inherit; }
+    button, summary { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+    button { min-height:48px; padding:10px 15px; border:1px solid var(--border); border-radius:12px; color:var(--text); background:var(--surface); font-weight:700; cursor:pointer; }
+    button:hover { border-color:var(--accent); }
+    button:disabled { opacity:.65; cursor:not-allowed; }
+    :focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+    nav { display:flex; align-items:center; justify-content:space-between; max-width:1080px; margin:auto; padding:12px 24px; border-bottom:1px solid var(--border); }
+    nav a { color:var(--accent); font-size:12px; font-weight:800; text-decoration:none; letter-spacing:.08em; text-transform:uppercase; min-height:44px; display:flex; align-items:center; }
+    #themeToggle { background:transparent; font-size:18px; border:0; padding:6px 10px; }
+    #themeToggle span { font-size:12px; }
+    #app { max-width:1040px; margin:auto; padding:28px 24px 20px; }
+    .eyebrow { color:var(--accent); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    #title { font-size:clamp(26px,4vw,38px); line-height:1.2; letter-spacing:-.045em; font-weight:800; margin:7px 0; }
+    #title span { color:var(--accent); }
+    .intro { color:var(--text-muted); font-size:14px; margin-bottom:20px; }
+    #header { display:grid; grid-template-columns:1fr 290px; column-gap:24px; }
+    #header > .eyebrow, #header > h1, #header > .intro { grid-column:1; }
+    #stats { grid-column:2; grid-row:1/4; display:flex; align-items:center; justify-content:flex-end; gap:26px; }
+    #stat-remaining { order:-1; }
+    .stat-card { text-align:center; }
+    .stat-val { font-size:26px; font-weight:800; line-height:1.25; }
+    .stat-lbl { font-size:12px; color:var(--text-muted); }
+    #stat-remaining .stat-val { color:var(--accent); }
+    #stat-remaining.has-dirty .stat-val { color:var(--marker-dirty); }
+    #gps-pill { grid-column:1/-1; display:flex; align-items:center; gap:10px; padding:12px 14px; border:1px solid var(--border); border-radius:14px; background:var(--surface); margin-bottom:16px; }
+    #gps-main { flex:1; min-width:0; }
+    #gps-value { font-size:14px; font-weight:800; }
+    #gps-sub { font-size:12px; color:var(--text-muted); }
+    #gps-dot { width:9px; height:9px; flex-shrink:0; border-radius:50%; background:var(--text-muted); }
+    .g-good #gps-dot, .g-excellent #gps-dot { background:var(--accent); }
+    .g-error #gps-dot, .g-poor #gps-dot { background:var(--warn); }
+    #gps-start { font-size:12px; min-width:80px; }
+    #yard-badge { display:none; font-size:11px; color:var(--warn); font-weight:800; }
+    #yard-badge.show { display:block; }
+    .panel { display:none; }
+    .panel.visible { display:grid; gap:16px; }
+    #panel-track.visible { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); align-items:start; }
+    #map-container { grid-column:1; grid-row:1/8; overflow:hidden; border:1px solid var(--border); border-radius:20px; background:var(--surface); }
+    .map-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--border); }
+    h2 { font-size:16px; font-weight:800; }
+    #map-kind { font-size:11px; color:var(--text-muted); text-align:right; }
+    #map-placeholder { display:none; min-height:420px; padding:32px; text-align:center; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:var(--grass); }
+    #map-placeholder.show { display:flex; }
+    #map-placeholder h2 { font-size:23px; letter-spacing:-.03em; }
+    #map-placeholder p { font-size:14px; color:var(--text-muted); max-width:310px; }
+    .yard-sketch { width:100px; height:85px; border:2px dashed var(--grass-border); border-radius:12px; display:grid; place-items:center; font-size:36px; color:var(--accent); background:linear-gradient(90deg,transparent 49%,var(--grass-grid) 50%,transparent 51%),linear-gradient(transparent 49%,var(--grass-grid) 50%,transparent 51%); }
+    #simple-map-btn, #mark-btn, #tap-add, #ma-clean, #cap-btn.ready { background:var(--accent); color:var(--accent-dark); border-color:var(--accent); }
+    #map-placeholder .secondary { background:transparent; font-size:13px; }
+    #yard-svg { width:100%; height:auto; max-height:520px; display:none; touch-action:pan-y; }
+    #yard-svg.show { display:block; }
+    #yard-svg.editing { touch-action:none; }
+    #map-note { padding:12px 16px; font-size:12px; color:var(--text-muted); border-top:1px solid var(--border); }
+    #action-dock { grid-column:2; display:grid; gap:8px; }
+    #mark-btn { display:flex; gap:12px; align-items:center; justify-content:center; width:100%; min-height:76px; }
+    #mark-btn > span:first-child { font-size:29px; font-weight:400; }
+    #mark-text { text-align:left; display:flex; flex-direction:column; }
+    #mark-label { font-size:18px; font-weight:800; }
+    #mark-sub { font-size:11px; font-weight:600; }
+    #manual-btn { font-size:13px; }
+    #feedback { grid-column:2; display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+    #feedback button { padding:8px; }
+    #tap-confirm, #marker-actions { display:none; grid-column:2; padding:14px; border:1px solid var(--cyan); border-radius:16px; background:var(--surface); }
+    #tap-confirm.show { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    #tap-confirm span { grid-column:1/-1; font-size:13px; }
+    #marker-actions.show { display:block; }
+    #ma-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+    #ma-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+    #ma-clean { grid-column:1/4; grid-row:1; font-size:14px; }
+    #ma-done { grid-column:4; grid-row:1; padding:8px; font-size:13px; }
+    #ma-delete { grid-column:1/-1; font-size:12px; color:var(--danger); background:transparent; }
+    #ma-hint { font-size:12px; color:var(--text-muted); margin-top:10px; }
+    #mode-row { grid-column:2; display:flex; gap:8px; }
+    .mode-btn { flex:1; font-size:12px; background:transparent; padding:10px; }
+    #data-panel { display:none; grid-column:2; border:1px solid var(--border); border-radius:16px; padding:16px; background:var(--surface); gap:12px; }
+    #data-panel.show { display:grid; }
+    .data-row { display:flex; gap:8px; }
+    .data-row button { flex:1; font-size:12px; }
+    .data-note { font-size:12px; color:var(--text-muted); }
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13px; font-weight:700; min-height:44px; }
+    input[type="checkbox"] { width:24px; height:24px; accent-color:var(--accent); }
+    #marker-section { display:none; grid-column:2; }
+    #marker-section.visible { display:block; }
+    #marker-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:4px 0 12px; }
+    .cleaned-filter { display:flex; align-items:center; gap:6px; min-height:44px; font-size:11px; color:var(--text-muted); }
+    #marker-list { display:grid; gap:8px; }
+    .marker-row { display:flex; align-items:center; gap:8px; padding:8px; border:1px solid var(--border); border-radius:14px; background:var(--surface); }
+    .marker-row.selected { outline:2px solid var(--cyan); }
+    .marker-toggle { width:48px; flex-shrink:0; color:var(--accent); font-size:22px; }
+    .marker-info { flex:1; min-width:0; border:0; background:transparent; text-align:left; padding:4px; display:flex; flex-direction:column-reverse; }
+    .marker-meta { font-size:11px; color:var(--text-muted); font-weight:400; }
+    .marker-status { font-size:13px; color:var(--marker-dirty); }
+    .cleaned .marker-status { color:var(--accent); }
+    .marker-remove { width:44px; padding:4px; background:transparent; border:0; font-size:20px; color:var(--text-muted); }
+    #clear-btn { margin-top:16px; font-size:12px; color:var(--danger); background:transparent; }
+    #panel-calibrate { max-width:620px; margin:auto; }
+    #cal-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:24px; }
+    .setup-intro { font-size:14px; color:var(--text-muted); margin-bottom:20px; }
+    #cal-step-title { font-size:22px; font-weight:800; }
+    #cal-hint { font-size:14px; margin:8px 0 18px; }
+    #cal-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+    #cal-c3 { grid-column:1; grid-row:2; } #cal-c2 { grid-column:2; grid-row:2; }
+    .cal-corner { min-height:76px; font-size:13px; padding:8px; }
+    .cal-corner .cq { display:block; font-size:11px; font-weight:400; margin-top:4px; }
+    .cal-corner.done { border-color:var(--accent); }
+    .cal-corner.active { box-shadow:inset 0 0 0 2px var(--accent); }
+    .cal-corner.weak { color:var(--warn); }
+    #cap-btn { width:100%; margin-bottom:12px; }
+    #cal-footer { display:flex; gap:10px; } #cal-footer button { flex:1; font-size:12px; }
+    #cap-progress-wrap, #cap-result, #cal-quality-warn, #cal-success { display:none; margin:14px 0; }
+    #cap-progress-wrap.show, #cap-result.show, #cal-quality-warn.show, #cal-success.show { display:block; }
+    #cap-result, #cal-quality-warn { color:var(--warn); font-size:13px; }
+    #cap-result .data-row { margin-top:12px; }
+    #cap-bar-track { background:var(--border); border-radius:4px; height:8px; overflow:hidden; }
+    #cap-bar { background:var(--accent); height:100%; width:0; }
+    #cap-readout, #cal-success { font-size:13px; padding:8px; }
+    #update-notice { grid-column:1/-1; padding:12px; margin-bottom:12px; border:1px solid var(--accent); border-radius:12px; font-size:13px; }
+    #storage-warning { grid-column:1/-1; border:2px solid var(--danger); padding:14px; margin-bottom:14px; color:var(--danger); font-size:14px; }
+    .about-tool { max-width:1040px; margin:20px auto 140px; padding:0 24px; }
+    .about-tool summary { cursor:pointer; color:var(--text-muted); font-size:13px; min-height:48px; }
+    @media(max-width:700px) {
+      nav { padding:5px 16px; } #app { padding:18px 16px 16px; }
+      #header { display:block; } .intro { font-size:13px; margin-bottom:14px; }
+      #stats { justify-content:flex-start; gap:24px; margin-bottom:16px; }
+      .stat-card { display:flex; align-items:baseline; gap:6px; } .stat-val { font-size:22px; }
+      #gps-pill { padding:10px 12px; } #gps-sub { font-size:11px; }
+      #panel-track.visible { display:flex; flex-direction:column; gap:12px; }
+      #panel-track > * { width:100%; } #map-container { order:0; }
+      #map-placeholder { min-height:310px; padding:24px; gap:14px; }
+      #yard-svg { max-height:min(350px,45svh); }
+      .map-heading { padding:12px 14px; }
+      #map-note { font-size:11px; padding:10px 12px; }
+      #mode-row { order:3; } #data-panel { order:4; } #marker-section { order:5; }
+      #feedback { order:2; font-size:12px; }
+      #action-dock, #tap-confirm.show, #marker-actions.show { position:fixed; bottom:0; left:0; right:0; z-index:20; border:0; border-top:1px solid var(--border); border-radius:18px 18px 0 0; background:var(--surface); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); box-shadow:0 -8px 30px #0002; }
+      #action-dock { grid-template-columns:minmax(0,1fr) 90px; gap:8px; }
+      #mark-btn { min-height:62px; padding:8px; gap:7px; } #mark-label { font-size:16px; } #mark-sub { font-size:10px; }
+      #action-dock:has(#manual-btn[hidden]) { grid-template-columns:1fr; }
+      #manual-btn { font-size:12px; padding:8px; }
+      #marker-actions.show { padding-top:8px; } #ma-title { margin-bottom:6px; }
+      #ma-row { gap:6px; } #ma-delete { display:none; } #ma-hint { margin-top:6px; font-size:11px; }
+      #app { padding-bottom:110px; } #app:has(#marker-actions.show) { padding-bottom:205px; }
+      .about-tool { margin-bottom:130px; } #cal-card { padding:18px; }
     }
-    :root {
-      --bg: #111412;
-      --surface: #191c1a;
-      --text: #e1e3df;
-      --text-muted: #becaba;
-      --accent: #7ddb84;
-      --accent-dark: #003910;
-      --border: rgba(63, 73, 62, 0.45);
-      --danger: #ffb4ab;
-      --warn: #ffcf8f;
-      --cyan: #aaccda;
-      --marker-dirty: #d98a4f;
-      --grass: #1d201e;
-      --grass-grid: #323533;
-      --grass-border: #7ddb84;
-      --you: #aaccda;
-    }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Plus Jakarta Sans', -apple-system, system-ui, sans-serif;
-      min-height: 100dvh;
-      -webkit-user-select: none;
-      user-select: none;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button { font-family: inherit; }
-
-    #app {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.25rem 1rem calc(env(safe-area-inset-bottom, 20px) + 20px);
-      max-width: 460px;
-      margin: 0 auto;
-    }
-
-    /* ── Header ── */
-    #header { width: 100%; margin-bottom: 0.9rem; }
-    #title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 0.9rem;
-    }
-
-    /* ── GPS status pill ── */
-    #gps-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-    #gps-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: var(--text-muted);
-    }
-    #gps-pill.g-excellent #gps-dot, #gps-pill.g-good #gps-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    #gps-pill.g-usable #gps-dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
-    #gps-pill.g-poor #gps-dot, #gps-pill.g-error #gps-dot { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-    #gps-pill.g-acquiring #gps-dot { background: var(--text-muted); animation: blink 1.2s infinite; }
-    @keyframes blink { 50% { opacity: 0.25; } }
-    #gps-main { flex: 1; min-width: 0; }
-    #gps-value { font-size: 1rem; font-weight: 800; line-height: 1.2; }
-    #gps-pill.g-excellent #gps-value, #gps-pill.g-good #gps-value { color: var(--accent); }
-    #gps-pill.g-usable #gps-value { color: var(--warn); }
-    #gps-pill.g-poor #gps-value, #gps-pill.g-error #gps-value { color: var(--danger); }
-    #gps-sub { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
-    #yard-badge {
-      display: none;
-      font-size: 0.62rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--danger);
-      border: 1px solid var(--danger);
-      border-radius: 999px;
-      padding: 4px 9px;
-      flex-shrink: 0;
-    }
-    #yard-badge.show { display: block; }
-
-    /* ── Stats ── */
-    #stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
-    .stat-card {
-      border-radius: 12px;
-      text-align: center;
-      padding: 0.65rem 0.3rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .stat-val { font-size: 1.25rem; font-weight: 800; line-height: 1; margin-bottom: 0.15rem; }
-    .stat-lbl { font-size: 0.58rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    #stat-cleaned .stat-val { color: var(--cyan); }
-    #stat-remaining.has-dirty { border-color: var(--marker-dirty); }
-    #stat-remaining.has-dirty .stat-val { color: var(--marker-dirty); }
-    #stat-remaining .stat-val { color: var(--accent); }
-
-    /* ── Panels ── */
-    .panel { width: 100%; display: none; flex-direction: column; gap: 0.85rem; margin-top: 0.85rem; }
-    .panel.visible { display: flex; }
-
-    /* ── Mark button ── */
-    #mark-btn {
-      width: 100%;
-      min-height: 78px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      font-size: 2.2rem;
-      font-weight: 900;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      transition: transform 0.1s, background 0.15s;
-    }
-    #mark-btn.ready {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--accent-dark);
-      cursor: pointer;
-    }
-    #mark-btn.ready:active { transform: scale(0.97); }
-    #mark-text { display: flex; flex-direction: column; text-align: left; }
-    #mark-label { font-size: 1.05rem; font-weight: 900; line-height: 1.15; }
-    #mark-sub { font-size: 0.7rem; font-weight: 700; opacity: 0.85; }
-
-    /* ── Map ── */
-    #map-container {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      background: var(--surface);
-    }
-    #map-placeholder {
-      min-height: 190px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    #map-placeholder.show { display: flex; }
-    #map-placeholder .big-icon { font-size: 2.4rem; }
-    #map-placeholder p { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
-    #map-placeholder button {
-      padding: 0.8rem 1.5rem;
-      background: var(--accent);
-      color: var(--accent-dark);
-      font-size: 0.85rem;
-      font-weight: 800;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    #yard-svg { width: 100%; display: none; touch-action: none; }
-    #yard-svg.show { display: block; }
-    #map-note {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      line-height: 1.45;
-      padding: 8px 12px 10px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* ── Tap-to-place confirm ── */
-    #tap-confirm {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.6rem;
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--warn);
-      border-radius: 12px;
-      background: var(--surface);
-    }
-    #tap-confirm.show { display: flex; }
-    #tap-confirm span { font-size: 0.85rem; font-weight: 700; }
-    #tap-confirm button {
-      padding: 10px 16px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-    #tap-confirm #tap-add { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
-
-    /* ── Selected marker action bar ── */
-    #marker-actions {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      gap: 0.5rem;
-      padding: 10px 12px;
-      border: 1px solid var(--cyan);
-      border-radius: 12px;
-      background: var(--surface);
-    }
-    #marker-actions.show { display: flex; }
-    #ma-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cyan); }
-    #ma-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
-    #ma-row button {
-      flex: 1;
-      min-width: 52px;
-      min-height: 46px;
-      font-size: 1rem;
-      font-weight: 800;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-    }
-    #ma-row button:active { background: var(--border); }
-    #ma-done { background: var(--accent) !important; color: var(--accent-dark) !important; border-color: var(--accent) !important; }
-    #ma-delete { color: var(--danger) !important; border-color: var(--danger) !important; }
-    #ma-hint { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
-
-    /* ── Bottom buttons ── */
-    #mode-row { display: flex; gap: 0.6rem; width: 100%; }
-    .mode-btn {
-      flex: 1;
-      padding: 13px 0;
-      font-size: 0.78rem;
-      font-weight: 700;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .mode-btn.active { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
-
-    /* ── Data panel ── */
-    #data-panel {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      gap: 0.7rem;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface);
-    }
-    #data-panel.show { display: flex; }
-    #data-panel .data-row { display: flex; gap: 0.5rem; }
-    #data-panel .data-row button {
-      flex: 1;
-      padding: 12px 0;
-      font-size: 0.78rem;
-      font-weight: 800;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    .data-note { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); line-height: 1.4; }
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-    .toggle-row label { font-size: 0.85rem; font-weight: 700; }
-    .toggle-row input { width: 22px; height: 22px; accent-color: var(--accent); }
-
-    /* ── Marker list ── */
-    #marker-section { width: 100%; display: none; }
-    #marker-section.visible { display: block; }
-    #marker-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-    #marker-header span {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    #clear-btn {
-      padding: 6px 12px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: transparent;
-      color: var(--danger);
-      border: 1px solid var(--danger);
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    #marker-list { display: flex; flex-direction: column; gap: 0.6rem; }
-    .marker-row {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      border: 1px solid var(--marker-dirty);
-      background: rgba(139, 58, 0, 0.1);
-    }
-    .marker-row.cleaned { border-color: var(--accent); background: rgba(125, 219, 132, 0.05); }
-    .marker-row.selected { outline: 2px solid var(--cyan); }
-    .marker-toggle { font-size: 1.7rem; background: none; border: none; cursor: pointer; padding: 0; line-height: 1; flex-shrink: 0; }
-    .marker-info { flex: 1; line-height: 1.4; min-width: 0; }
-    .marker-meta { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
-    .marker-status { font-size: 0.85rem; font-weight: 700; color: var(--marker-dirty); }
-    .marker-row.cleaned .marker-status { color: var(--accent); }
-    .marker-remove {
-      background: none; border: none; color: var(--danger);
-      font-size: 1.25rem; cursor: pointer; padding: 6px; line-height: 1; opacity: 0.6;
-    }
-
-    /* ── Calibrate panel ── */
-    #cal-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.4rem;
-    }
-    #cal-step-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.45rem; }
-    #cal-hint { font-size: 0.88rem; font-weight: 500; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.2rem; }
-    #cal-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      width: 230px;
-      margin: 0 auto 1.2rem;
-    }
-    .cal-corner {
-      padding: 0.7rem 0.4rem;
-      text-align: center;
-      border-radius: 10px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.15);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      cursor: pointer;
-      line-height: 1.35;
-    }
-    .cal-corner .cq { display: block; font-size: 0.62rem; font-weight: 800; text-transform: none; }
-    .cal-corner.done { background: rgba(125, 219, 132, 0.1); color: var(--accent); border-color: var(--accent); }
-    .cal-corner.done.weak { color: var(--warn); border-color: var(--warn); background: rgba(255, 207, 143, 0.08); }
-    .cal-corner.active { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); }
-
-    #cap-btn {
-      width: 100%;
-      padding: 1.15rem 0;
-      font-size: 1rem;
-      font-weight: 800;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: not-allowed;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    #cap-btn.ready { background: var(--accent); color: var(--accent-dark); border-color: var(--accent); cursor: pointer; }
-    #cap-btn.capturing { background: var(--surface); color: var(--text); border-color: var(--cyan); cursor: default; }
-
-    #cap-progress-wrap { display: none; margin-top: 0.8rem; }
-    #cap-progress-wrap.show { display: block; }
-    #cap-bar-track { height: 10px; border-radius: 6px; background: rgba(127,127,127,0.2); overflow: hidden; }
-    #cap-bar { height: 100%; width: 0%; background: var(--cyan); border-radius: 6px; transition: width 0.3s linear; }
-    #cap-readout { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-top: 0.45rem; text-align: center; }
-
-    #cap-result {
-      display: none;
-      margin-top: 0.8rem;
-      padding: 0.8rem;
-      border: 1px solid var(--warn);
-      border-radius: 10px;
-    }
-    #cap-result.show { display: block; }
-    #cap-result p { font-size: 0.82rem; font-weight: 700; color: var(--warn); margin-bottom: 0.6rem; }
-    #cap-result .data-row { display: flex; gap: 0.5rem; }
-    #cap-result button {
-      flex: 1;
-      padding: 10px 0;
-      font-size: 0.75rem;
-      font-weight: 800;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    #cal-quality-warn { display: none; margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: var(--warn); line-height: 1.45; }
-    #cal-quality-warn.show { display: block; }
-
-    #cal-footer { display: flex; gap: 0.6rem; margin-top: 0.4rem; }
-    #cal-footer button {
-      flex: 1;
-      padding: 12px 0;
-      font-size: 0.76rem;
-      font-weight: 700;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    #cal-success {
-      background: rgba(125, 219, 132, 0.1);
-      border: 1px solid var(--accent);
-      border-radius: 12px;
-      padding: 1rem;
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--accent);
-      display: none;
-    }
-    #cal-success.show { display: block; }
-
-    .svg-marker { cursor: pointer; }
-
-    @media (max-width: 420px) {
-      #app { padding-inline: 0.75rem; }
-      #title { font-size: 1.3rem; }
-      #mark-btn { min-height: 70px; font-size: 2rem; }
-      .stat-val { font-size: 1.1rem; }
-    }
-  
-
-    nav {
-      background: #0c0f0d;
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    nav a {
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    nav a:hover { opacity: 0.75; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }
 
 /* SFA_DISCOVERY_START */
 .sfa-feature,
@@ -761,12 +401,21 @@
     grid-template-columns:1fr;
   }
 }
+/* Theme-aware help and related tools. */
+.sfa-feature-shell { grid-template-columns:1fr; }
+.sfa-feature-shell, .sfa-related-shell, .sfa-related-card { background:var(--surface); border-color:var(--border); }
+.sfa-feature h2, .sfa-subhead, .sfa-related-title, .sfa-related-card strong { color:var(--text); }
+.sfa-feature p, .sfa-steps, .sfa-bullets, .sfa-related-card span, .sfa-related-meta { color:var(--text-muted); }
+.sfa-kicker, .sfa-links a { color:var(--accent); }
+.sfa-links a { min-height:44px; border-color:var(--border); }
+.sfa-related-card:hover { background:var(--bg); }
 /* SFA_DISCOVERY_END */
 </style>
   <script>
     (function() {
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const savedTheme = localStorage.getItem('theme');
+      let savedTheme;
+      try { savedTheme = localStorage.getItem('theme'); } catch {}
       const theme = savedTheme || (prefersDark ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
     })();
@@ -832,13 +481,17 @@
 <!-- SFA_BREADCRUMB_END -->
 </head>
 <body>
-<nav><a href="https://southforkapps.com">&larr; South Fork Apps</a></nav>
+<nav><a href="https://southforkapps.com">&larr; South Fork Apps</a><button id="themeToggle" aria-label="Switch light or dark theme">◐ <span>Theme</span></button></nav>
 
-<div id="app">
+<main id="app">
 
   <!-- Header -->
   <div id="header">
-    <h1 id="title">Dog Poop Tracker</h1>
+    <div class="eyebrow">A cleaner yard, one spot at a time</div>
+    <h1 id="title">Dog Poop Tracker<span aria-hidden="true">.</span></h1>
+    <p class="intro">Mark it now. Find it later. Pick it up.</p>
+    <div id="storage-warning" role="alert" hidden></div>
+    <div id="update-notice" hidden role="status">An app update is ready. <button id="update-btn">Save &amp; reload</button></div>
 
     <div id="gps-pill" class="g-acquiring">
       <div id="gps-dot"></div>
@@ -847,6 +500,7 @@
         <div id="gps-sub">Waiting for satellite fix</div>
       </div>
       <div id="yard-badge">Outside yard</div>
+      <button id="gps-start">Use GPS</button>
     </div>
 
     <div id="stats">
@@ -860,7 +514,7 @@
       </div>
       <div class="stat-card" id="stat-remaining">
         <div class="stat-val" id="val-remaining">0</div>
-        <div class="stat-lbl">Remaining</div>
+        <div class="stat-lbl">To clean</div>
       </div>
     </div>
   </div>
@@ -868,47 +522,48 @@
   <!-- TRACK PANEL -->
   <div class="panel visible" id="panel-track">
 
-    <button id="mark-btn" disabled>
-      <span>💩</span>
-      <span id="mark-text">
-        <span id="mark-label">MARK POOP</span>
-        <span id="mark-sub">Waiting for GPS…</span>
-      </span>
-    </button>
+    <div id="action-dock">
+      <button id="mark-btn"><span aria-hidden="true">＋</span><span id="mark-text"><span id="mark-label">Set up my yard</span><span id="mark-sub">Start with a simple map. GPS is optional.</span></span></button>
+      <button id="manual-btn">Place on map</button>
+    </div>
+    <div id="feedback" hidden><span id="feedback-text" role="status"></span><button id="undo-btn" hidden>Undo</button></div>
 
     <div id="map-container">
+      <div class="map-heading"><h2>Your yard</h2><span id="map-kind">Simple yard · not to scale</span></div>
       <div id="map-placeholder" class="show">
-        <div class="big-icon">📐</div>
-        <p>Calibrate yard corners to enable the map</p>
-        <button id="placeholder-cal-btn">Start Calibration</button>
+        <div class="yard-sketch" aria-hidden="true">＋</div>
+        <h2>Give every spot a place.</h2>
+        <p>Start with a simple map of your yard. Place spots by hand, using your house and fence as guides.</p>
+        <button id="simple-map-btn">Use a simple yard map</button>
+        <button id="placeholder-cal-btn" class="secondary">Or set up GPS corners</button>
       </div>
-      <svg id="yard-svg" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div id="map-note">Browser GPS is usually off by 10 to 30 feet. Circles show the uncertainty of each fix. Tap a marker to select it, then drag or nudge it to the true spot. Tap empty grass to place a marker by hand.</div>
+      <svg id="yard-svg" tabindex="0" role="application" aria-label="Yard map. Tap to place a spot. Arrow keys move the draft or selected spot. Enter saves a draft." viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="map-note">Phone GPS gives a search area. Confirm each spot by sight.</div>
     </div>
 
     <div id="tap-confirm">
-      <span>Add a marker here?</span>
+      <span>Tap the map to choose a spot.</span>
       <button id="tap-cancel">Cancel</button>
-      <button id="tap-add">Add marker</button>
+      <button id="tap-add">Save spot</button>
     </div>
 
     <div id="marker-actions">
       <div id="ma-title">Adjust marker</div>
       <div id="ma-row">
-        <button id="ma-clean">🧹</button>
-        <button id="ma-left">◀</button>
-        <button id="ma-up">▲</button>
-        <button id="ma-down">▼</button>
-        <button id="ma-right">▶</button>
-        <button id="ma-delete">✕</button>
+        <button id="ma-clean">✓ Mark cleaned</button>
+        <button id="ma-left" aria-label="Move left">◀</button>
+        <button id="ma-up" aria-label="Move toward back">▲</button>
+        <button id="ma-down" aria-label="Move toward front">▼</button>
+        <button id="ma-right" aria-label="Move right">▶</button>
+        <button id="ma-delete" aria-label="Remove selected spot">Remove</button>
         <button id="ma-done">Done</button>
       </div>
       <div id="ma-hint">Drag the marker on the map, or nudge 1 ft per tap.</div>
     </div>
 
     <div id="mode-row">
-      <button class="mode-btn" id="btn-calibrate">📐 Calibrate</button>
-      <button class="mode-btn" id="btn-data">💾 Data</button>
+      <button class="mode-btn" id="btn-calibrate">Yard setup</button>
+      <button class="mode-btn" id="btn-data" aria-expanded="false" aria-controls="data-panel">Settings &amp; backups</button>
     </div>
 
     <div id="data-panel">
@@ -918,32 +573,37 @@
       </div>
       <div class="data-note">Grid snapping records which part of the yard instead of pretending to know the exact inch. Good when GPS is rough.</div>
       <div class="data-row">
-        <button id="export-btn">Export JSON</button>
-        <button id="import-btn">Import JSON</button>
+        <button id="export-btn">Export backup</button>
+        <button id="import-btn">Import backup</button>
       </div>
+      <button id="recovery-btn">Export recovery backup</button>
+      <p class="data-note">Backups contain precise locations. Keep them private. Clearing browser data can erase your yard.</p>
       <input type="file" id="import-file" accept="application/json,.json" hidden>
-      <div class="data-note" id="data-status">All data stays on this device. Nothing is uploaded anywhere.</div>
+      <p id="offline-status" class="data-note">Preparing offline use…</p>
+      <div class="data-note" id="data-status" role="status">All data stays on this device. Nothing is uploaded anywhere.</div>
     </div>
 
     <div id="marker-section">
       <div id="marker-header">
-        <span>Recent Markers</span>
-        <button id="clear-btn">Clear All</button>
+        <h2>Saved spots</h2>
+        <label class="cleaned-filter"><input type="checkbox" id="hide-cleaned" checked> Hide cleaned</label>
       </div>
       <div id="marker-list"></div>
+      <button id="clear-btn">Clear all markers</button>
     </div>
   </div>
 
   <!-- CALIBRATE PANEL -->
   <div class="panel" id="panel-calibrate">
     <div id="cal-card">
+      <p class="setup-intro">Choose a fixed view: stand at the front and face the back of your yard. Walk the corners clockwise: back left, back right, front right, front left. Hold still for 5–10 seconds at each corner. The map does not rotate with your phone.</p>
       <div id="cal-step-title">Calibrate your yard</div>
       <div id="cal-hint">Stand at the corner shown below, hold your phone still, and capture. The app averages several GPS readings per corner instead of trusting a single one. Tap any saved corner to redo just that one.</div>
       <div id="cal-grid">
-        <div class="cal-corner" id="cal-c0" data-idx="0">Back Left<span class="cq">not set</span></div>
-        <div class="cal-corner" id="cal-c1" data-idx="1">Back Right<span class="cq">not set</span></div>
-        <div class="cal-corner" id="cal-c2" data-idx="2">Front Right<span class="cq">not set</span></div>
-        <div class="cal-corner" id="cal-c3" data-idx="3">Front Left<span class="cq">not set</span></div>
+        <button class="cal-corner" id="cal-c0" data-idx="0">Back Left<span class="cq">not set</span></button>
+        <button class="cal-corner" id="cal-c1" data-idx="1">Back Right<span class="cq">not set</span></button>
+        <button class="cal-corner" id="cal-c2" data-idx="2">Front Right<span class="cq">not set</span></button>
+        <button class="cal-corner" id="cal-c3" data-idx="3">Front Left<span class="cq">not set</span></button>
       </div>
       <button id="cap-btn">Waiting for GPS…</button>
       <div id="cap-progress-wrap">
@@ -963,12 +623,10 @@
         <button id="cal-done-btn">Back to tracking</button>
       </div>
     </div>
-    <div id="cal-success">Yard calibrated. Corners are locked to the map corners.</div>
+    <div id="cal-success">Corners saved. GPS and corner errors still affect the map. Use sight to correct each spot.</div>
   </div>
 
-</div>
-
-<button id="themeToggle" aria-label="Toggle Theme" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🌓</button>
+</main>
 
 <script id="pt-core">
 /* ── PTCore: pure math + data functions. No DOM. Testable in Node. ── */
@@ -1001,16 +659,18 @@ const PTCore = (() => {
   // ── Filtered fix from a sample buffer ──
   // Samples: {t (ms), lat, lng, acc (meters)}. Stale, invalid, and very weak samples
   // are gated out; outliers get rejected by MAD distance; the rest form a weighted
-  // centroid (weight = 1/acc², decayed with age). The reported accuracy never claims
-  // better than half the mean device-reported accuracy: averaging helps, but GPS
-  // errors are correlated over seconds, so 1/sqrt(n) alone would overpromise.
+  // centroid (weight = 1/acc², decayed with age). Keep the mean reported
+  // accuracy as a floor: correlated samples do not establish better confidence.
+  // The short tracking window reduces lag after walking to a new spot.
   function computeFix(samples, now, opts = {}) {
-    const maxAgeMs = opts.maxAgeMs ?? 20000;
+    const maxAgeMs = opts.maxAgeMs ?? 6000;
     const maxAccuracyM = opts.maxAccuracyM ?? 35;
+    const seenTimes = new Set();
     const fresh = (samples || []).filter(s =>
-      s && Number.isFinite(s.lat) && Number.isFinite(s.lng) &&
+      s && validLatLng(s) &&
       Number.isFinite(s.acc) && s.acc > 0 && s.acc <= maxAccuracyM &&
-      Number.isFinite(s.t) && (now - s.t) >= -5000 && (now - s.t) <= maxAgeMs
+      Number.isFinite(s.t) && (now - s.t) >= -1000 && (now - s.t) <= maxAgeMs &&
+      !seenTimes.has(s.t) && seenTimes.add(s.t)
     );
     if (!fresh.length) {
       return { ok: false, sampleCount: 0, grade: 'acquiring',
@@ -1024,7 +684,7 @@ const PTCore = (() => {
       for (const p of arr) { const w = weight(p); sw += w; x += p.x * w; y += p.y * w; }
       return { x: x / sw, y: y / sw };
     };
-    let c = centroid(pts);
+    let c = { x: median(pts.map(p => p.x)), y: median(pts.map(p => p.y)) };
     const d = pts.map(p => Math.hypot(p.x - c.x, p.y - c.y));
     const dMed = median(d), dMad = median(d.map(v => Math.abs(v - dMed)));
     const cutoff = Math.max(dMed + 3 * 1.4826 * dMad, 4);   // 4 m floor: don't over-prune tight clusters
@@ -1040,14 +700,13 @@ const PTCore = (() => {
     }
     const spread = Math.sqrt(varSum / sw);
     const meanAcc = accSum / sw;
-    const nEff = Math.min(used.length, 4);
-    const accuracy = Math.max(spread * 1.2, meanAcc / Math.sqrt(nEff), meanAcc * 0.5, 1.5);
+    const accuracy = Math.max(spread * 1.2, meanAcc, 1.5);
     const pos = fromLocal(c.x, c.y, origin);
     return {
       ok: true, lat: pos.lat, lng: pos.lng,
       accuracy, spread, sampleCount: used.length,
       rejected: pts.length - used.length,
-      ageMs: now - newest,
+      ageMs: Math.max(0, now - newest),
       grade: gradeFix(accuracy, used.length),
     };
   }
@@ -1065,7 +724,7 @@ const PTCore = (() => {
   // Corner order: 0 Back Left (map top-left), 1 Back Right, 2 Front Right, 3 Front Left.
   function makeYard(corners) {
     if (!Array.isArray(corners) || corners.length !== 4 ||
-        corners.some(c => !c || !Number.isFinite(c.lat) || !Number.isFinite(c.lng))) {
+        corners.some(c => !validLatLng(c))) {
       return { valid: false, reason: 'incomplete' };
     }
     const origin = {
@@ -1084,7 +743,7 @@ const PTCore = (() => {
     let sign = 0;
     for (let i = 0; i < 4; i++) {
       const cr = cross3(pts[i], pts[(i + 1) % 4], pts[(i + 2) % 4]);
-      if (Math.abs(cr) < 0.5) continue;
+      if (Math.abs(cr) < 0.5) return { valid: false, reason: 'degenerate', origin, pts };
       if (!sign) sign = Math.sign(cr);
       else if (Math.sign(cr) !== sign) return { valid: false, reason: 'not-convex', origin, pts };
     }
@@ -1160,16 +819,15 @@ const PTCore = (() => {
 
   // ── State schema v3 + migration ──
   function emptyState() {
-    return { version: 3, corners: [null, null, null, null], markers: [], settings: { snapGrid: false } };
+    return { version: 3, corners: [null, null, null, null], markers: [], settings: { snapGrid: false, manualYard: false } };
   }
 
   function migrateV2(v2) {
     const out = emptyState();
-    if (v2 && Array.isArray(v2.corners) && v2.corners.length === 4 &&
-        v2.corners.every(c => c && Number.isFinite(c.lat) && Number.isFinite(c.lng))) {
-      out.corners = v2.corners.map(c => ({
-        lat: c.lat, lng: c.lng, acc: null, samples: 0, capturedAt: null, legacy: true,
-      }));
+    if (v2 && Array.isArray(v2.corners)) {
+      v2.corners.slice(0,4).forEach((c,i) => {
+        if (validLatLng(c)) out.corners[i] = {lat:c.lat,lng:c.lng,acc:null,samples:0,capturedAt:null,legacy:true};
+      });
     }
     if (v2 && Array.isArray(v2.markers)) {
       const now = Date.now();
@@ -1223,8 +881,65 @@ const PTCore = (() => {
     }
     if (raw.settings && typeof raw.settings === 'object') {
       s.settings.snapGrid = !!raw.settings.snapGrid;
+      s.settings.manualYard = raw.settings.manualYard === true;
     }
     return s;
+  }
+
+  function validLatLng(p) {
+    return !!p && Number.isFinite(p.lat) && Math.abs(p.lat) < 90 &&
+      Number.isFinite(p.lng) && Math.abs(p.lng) <= 180;
+  }
+
+  // Strict validation before normalization. Never turn an unrelated or damaged
+  // backup into an empty state that silently replaces the user's saved yard.
+  function parseBackup(parsed) {
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw Error('Expected a backup object.');
+    if ('state' in parsed && (parsed.app !== 'dog-poop-tracker' || parsed.schema !== 3)) throw Error('Unsupported backup format.');
+    const raw = 'state' in parsed ? parsed.state : parsed;
+    if (!raw || (raw.version !== 3 && raw.version !== 2 && raw.version !== undefined)) throw Error('Unsupported backup version.');
+    const v3 = raw.version === 3;
+    if (!Array.isArray(raw.corners) || (v3 ? raw.corners.length !== 4 : raw.corners.length > 4) || !Array.isArray(raw.markers) || raw.markers.length > 10000) throw Error('Invalid yard or marker list.');
+    const positive = n => n == null || (Number.isFinite(n) && n > 0 && n <= 100000);
+    const date = n => n == null || (Number.isFinite(n) && n >= 0 && n <= 8640000000000000);
+    for (const c of raw.corners) {
+      if (c !== null && (!validLatLng(c) || !positive(c.acc) || !date(c.capturedAt) ||
+          (c.samples != null && (!Number.isInteger(c.samples) || c.samples < 0)))) throw Error('Invalid corner.');
+    }
+    const ids = new Set();
+    for (const m of raw.markers) {
+      if (!m || typeof m !== 'object' || (typeof m.id !== 'string' && typeof m.id !== 'number') ||
+          !String(m.id).length || String(m.id).length > 150 || ids.has(String(m.id))) throw Error('Invalid or duplicate marker ID.');
+      ids.add(String(m.id));
+      const geo = validLatLng(m);
+      const uv = Number.isFinite(m.u) && Number.isFinite(m.v) && Math.abs(m.u) <= 10000 && Math.abs(m.v) <= 10000;
+      if ((!geo && !uv) || ((m.lat != null || m.lng != null) && !geo) ||
+          ((m.u != null || m.v != null) && !uv) || !positive(m.acc) ||
+          (m.cleaned != null && typeof m.cleaned !== 'boolean') || !date(m.createdAt) || !date(m.updatedAt)) throw Error('Invalid marker data.');
+      if (v3 && (!['gps', 'manual', 'legacy'].includes(m.source) ||
+          ((m.source === 'manual' || m.adjusted) && (!uv || m.u < 0 || m.u > 1 || m.v < 0 || m.v > 1)) ||
+          (m.adjusted != null && typeof m.adjusted !== 'boolean'))) throw Error('Invalid marker position or source.');
+      if (!v3 && !geo) throw Error('Invalid legacy marker.');
+    }
+    if (v3 && (!raw.settings || typeof raw.settings.snapGrid !== 'boolean' ||
+        (raw.settings.manualYard != null && typeof raw.settings.manualYard !== 'boolean'))) throw Error('Invalid settings.');
+    return v3 ? normalizeState(raw) : migrateV2(raw);
+  }
+
+  // Screen ellipse for a metre-radius circle through the local inverse Jacobian.
+  // Includes corner uncertainty conservatively; never shrinks large search areas.
+  function uncertaintyEllipse(yard, u, v, radius) {
+    if (!yard.valid) return null;
+    const ax = yard.e.x + yard.g.x * v, ay = yard.e.y + yard.g.y * v;
+    const bx = yard.f.x + yard.g.x * u, by = yard.f.y + yard.g.y * u;
+    const det = ax * by - ay * bx;
+    if (Math.abs(det) < 1e-9) return null;
+    const a = INNER_W * by / det, b = -INNER_W * bx / det;
+    const c = -INNER_H * ay / det, d = INNER_H * ax / det;
+    const xx = a*a+b*b, yy = c*c+d*d, xy = a*c+b*d;
+    const spread = Math.hypot(xx-yy, 2*xy);
+    return { rx: radius*Math.sqrt((xx+yy+spread)/2), ry: radius*Math.sqrt(Math.max(0,(xx+yy-spread)/2)),
+      angle: Math.atan2(2*xy, xx-yy)*90/Math.PI };
   }
 
   const mToFt = m => m * FT_PER_M;
@@ -1234,7 +949,7 @@ const PTCore = (() => {
     clamp, median, toLocal, fromLocal,
     computeFix, gradeFix, isUsableGrade,
     makeYard, uvFromLatLng, latLngFromUV, uvToSvg, svgToUv, pxPerMeter, snapUV,
-    emptyState, migrateV2, normalizeState, mToFt,
+    emptyState, migrateV2, normalizeState, parseBackup, validLatLng, uncertaintyEllipse, mToFt,
   };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
@@ -1257,12 +972,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   const CAP_WINDOW_MS = 10000;     // max settling window per corner
   const CAP_MIN_MS = 5000;         // never finish before this
   const CAP_TARGET_SAMPLES = 8;
-  const LEGACY_DRAW_RADIUS_M = 6;  // visual uncertainty for markers with unknown accuracy
 
   const $ = id => document.getElementById(id);
   const svgNS = 'http://www.w3.org/2000/svg';
 
   // ── State ──
+  let storageWarning = '', storageBlocked = false, storageReadFailed = false, savedRaw = null, undoState = null;
   let state = loadState();
   let yard = PTCore.makeYard(state.corners);
   let selectedId = null;
@@ -1271,15 +986,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   let cal = { corner: 0, capturing: false, startT: 0, timer: null, pendingFix: null };
 
   // ── GPS engine ──
-  const engine = { samples: [], watchId: null, fix: null, error: null };
+  const engine = { samples: [], watchId: null, fix: null, error: null, started: false };
+  let gpsTimer = null;
 
   function startGPS() {
     if (!navigator.geolocation) { engine.error = 'Geolocation not supported'; renderStatus(); return; }
+    if (engine.watchId !== null) return;
+    engine.started = true; engine.error = null;
     engine.watchId = navigator.geolocation.watchPosition(onPosition, onPosError,
       { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
-    setInterval(refreshFix, 1000);   // keeps fix age honest even when no new samples arrive
+    clearInterval(gpsTimer);
+    gpsTimer = setInterval(refreshFix, 1000);   // keeps fix age honest even when no new samples arrive
   }
   function onPosition(p) {
+    const previous = engine.samples.at(-1);
+    if (previous && p.timestamp - previous.t > 6000) engine.samples = [];
     engine.error = null;
     engine.samples.push({
       t: Number.isFinite(p.timestamp) ? p.timestamp : Date.now(),
@@ -1291,6 +1012,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   }
   function onPosError(e) {
     engine.error = e.code === 1 ? 'denied' : 'unavailable';
+    engine.samples = [];
+    if (cal.capturing) cancelCapture();
     refreshFix();
   }
   function refreshFix() {
@@ -1303,28 +1026,78 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   }
   function canMarkByGPS() {
     const f = engine.fix;
-    return !!(f && f.ok && PTCore.isUsableGrade(f.grade) && f.ageMs <= MARK_MAX_FIX_AGE_MS);
+    const uv = f && f.ok && yard.valid ? PTCore.uvFromLatLng(yard, f.lat, f.lng) : null;
+    const latest = engine.samples.at(-1);
+    return !!(!engine.error && latest && latest.acc <= 35 && yard.valid && uv?.inside && f && f.ok && PTCore.isUsableGrade(f.grade) && f.ageMs <= MARK_MAX_FIX_AGE_MS);
   }
 
   // ── Persistence ──
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return PTCore.normalizeState(JSON.parse(raw));
-    } catch {}
-    // Migrate v2 if present. The v2 key is left untouched as a backup.
-    try {
+      savedRaw = raw;
+      if (raw !== null) return PTCore.parseBackup(JSON.parse(raw));
       const old = localStorage.getItem(LEGACY_KEY);
       if (old) {
-        const migrated = PTCore.migrateV2(JSON.parse(old));
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated)); } catch {}
+        const migrated = PTCore.parseBackup(JSON.parse(old));
+        const encoded = JSON.stringify(migrated);
+        try { localStorage.setItem(STORAGE_KEY, encoded); savedRaw = encoded; }
+        catch { storageWarning = 'Migration loaded in memory but could not be saved. Export a backup now. The original v2 data is untouched.'; }
         return migrated;
       }
-    } catch {}
+    } catch {
+      storageBlocked = true; storageReadFailed = true;
+      storageWarning = 'Saved data could not be read. It has not been replaced. Export a backup before importing a valid file.';
+    }
     return PTCore.emptyState();
   }
+  function renderStorage() {
+    $('storage-warning').hidden = !storageWarning;
+    $('storage-warning').textContent = storageWarning;
+  }
   function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    try {
+      if (storageBlocked) throw Error('blocked');
+      if (localStorage.getItem(STORAGE_KEY) !== savedRaw) {
+        storageBlocked = true;
+        storageWarning = 'This yard changed in another tab. Export this view if needed, then reload before editing.';
+        throw Error('conflict');
+      }
+      const next = JSON.stringify(state);
+      localStorage.setItem(STORAGE_KEY, next);
+      savedRaw = next;
+      storageWarning = '';
+      renderStorage();
+      return true;
+    } catch {
+      if (!storageWarning) storageWarning = 'Changes are NOT saved on this device. Export a backup now. Storage may be full or blocked.';
+      renderStorage();
+      return false;
+    }
+  }
+  function feedback(message, before) {
+    undoState = before || null;
+    $('feedback-text').textContent = storageWarning ? 'Change kept in this view only. See the storage warning.' : message;
+    $('undo-btn').hidden = !undoState;
+    $('feedback').hidden = false;
+  }
+  function remember() { return JSON.stringify(state); }
+  function mapReady() { return yard.valid || state.settings.manualYard; }
+  function useSimpleMap() {
+    undoState = null;
+    state.settings.manualYard = true;
+    saveState(); setPanel('track'); renderAll();
+    feedback('Simple yard ready. Front of the yard is at the bottom.');
+  }
+  function revealMap() {
+    if (innerWidth <= 700) $('map-container').scrollIntoView({block:'start'});
+  }
+  function beginPlacement() {
+    if (!mapReady()) { useSimpleMap(); }
+    selectedId = null; pendingTap = {u: 0.5, v: 0.5};
+    renderAll();
+    $('yard-svg').focus({preventScroll:true});
+    revealMap();
   }
 
   // ── Marker position resolution ──
@@ -1359,7 +1132,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
 
   // ── Marking ──
   function markByGPS() {
-    if (!canMarkByGPS()) return;
+    refreshFix();
+    if (!canMarkByGPS()) { beginPlacement(); return; }
+    const before = remember();
     vibrate();
     const f = engine.fix;
     const now = Date.now();
@@ -1380,12 +1155,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       } else if (uv) { m.u = uv.u; m.v = uv.v; }
     }
     state.markers.push(m);
+    pendingTap = null;
     selectedId = m.id;   // immediately adjustable
     saveState();
     renderAll();
+    feedback('Spot saved. Check its position on the map.', before);
+    revealMap();
   }
 
   function markManual(u, v) {
+    const before = remember();
     vibrate();
     let pos = { u: PTCore.clamp(u, 0, 1), v: PTCore.clamp(v, 0, 1) };
     if (state.settings.snapGrid) pos = PTCore.snapUV(pos.u, pos.v);
@@ -1402,9 +1181,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     selectedId = m.id;
     saveState();
     renderAll();
+    feedback('Spot saved by hand.', before);
+    revealMap();
   }
 
   function moveMarker(m, u, v) {
+    undoState = null; $('feedback').hidden = true;
     m.u = PTCore.clamp(u, 0, 1);
     m.v = PTCore.clamp(v, 0, 1);
     m.adjusted = true;
@@ -1419,22 +1201,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     const m = state.markers.find(x => x.id === id);
     if (!m) return;
     vibrate();
+    const before = remember();
     m.cleaned = !m.cleaned;
     m.updatedAt = Date.now();
     saveState();
     renderAll();
+    feedback(m.cleaned ? 'Marked cleaned. Nice work.' : 'Spot needs cleanup again.', before);
   }
   function removeMarker(id) {
+    const before = remember();
     vibrate();
     state.markers = state.markers.filter(m => m.id !== id);
     if (selectedId === id) selectedId = null;
     saveState();
     renderAll();
+    feedback('Marker removed.', before);
   }
 
   // ── Calibration ──
   function openCalibrate() {
     setPanel('calibrate');
+    startGPS();
     const next = state.corners.findIndex(c => !c);
     cal.corner = next === -1 ? 0 : next;
     cancelCapture();
@@ -1442,8 +1229,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   }
   function startCapture() {
     if (cal.capturing) return;
+    refreshFix();
     const f = engine.fix;
-    if (!f || !f.ok) return;
+    if (engine.error || !f || !f.ok || f.ageMs > MARK_MAX_FIX_AGE_MS) return;
     cal.capturing = true;
     cal.startT = Date.now();
     cal.pendingFix = null;
@@ -1479,7 +1267,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     cal.timer = null;
     cal.capturing = false;
     $('cap-progress-wrap').classList.remove('show');
-    if (!fix.ok || fix.grade === 'acquiring') {
+    if (engine.error || !fix.ok || fix.grade === 'acquiring' || fix.ageMs > 3000) {
       cal.pendingFix = null;
       $('cap-result-text').textContent = 'Not enough clean GPS samples. Hold still in the open and retry.';
       $('cap-save-anyway').style.display = 'none';
@@ -1500,6 +1288,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     renderCal();
   }
   function saveCorner(fix) {
+    undoState = null; $('feedback').hidden = true;
     vibrate();
     state.corners[cal.corner] = {
       lat: fix.lat, lng: fix.lng,
@@ -1509,6 +1298,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       legacy: false,
     };
     yard = PTCore.makeYard(state.corners);
+    if (yard.valid) state.settings.manualYard = false;
     syncDerivedPositions();
     saveState();
     $('cap-result').classList.remove('show');
@@ -1519,19 +1309,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       renderCal();
     } else {
       renderCal();
-      if (yard.valid) setTimeout(() => setPanel('track'), 900);
+      if (yard.valid) feedback('GPS yard ready. Corner errors still affect every position.');
     }
     renderAll();
   }
   function resetYard() {
     if (!confirm('Reset all four yard corners?')) return;
+    const before = remember();
     state.corners = [null, null, null, null];
+    state.settings.manualYard = true;
     yard = PTCore.makeYard(state.corners);
     cal.corner = 0;
     cancelCapture();
     saveState();
     renderAll();
     renderCal();
+    feedback('GPS corners reset. Saved markers are kept.', before);
   }
 
   // ── Export / Import ──
@@ -1545,7 +1338,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       exportedAt: new Date().toISOString(),
       state,
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const blob = new Blob([storageReadFailed && savedRaw !== null ? savedRaw : JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `poop-tracker-backup-${fmtDate(new Date())}.json`;
@@ -1556,26 +1349,36 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     $('data-status').textContent = 'Exported. All data stays on this device.';
   }
   function importJSON(file) {
+    if (file.size > 5 * 1024 * 1024) { $('data-status').textContent = 'Import refused: backup exceeds 5 MB.'; return; }
+    const importStart = remember();
     const reader = new FileReader();
+    reader.onerror = () => { $('data-status').textContent = 'Could not read that file. Your saved data is unchanged.'; };
     reader.onload = () => {
       try {
-        const parsed = JSON.parse(reader.result);
-        const raw = (parsed && parsed.state && typeof parsed.state === 'object') ? parsed.state : parsed;
-        const incoming = (raw && raw.version === 3) ? PTCore.normalizeState(raw) : PTCore.migrateV2(raw);
-        const ok = confirm(
-          `Import ${incoming.markers.length} markers and ` +
-          `${incoming.corners.filter(Boolean).length}/4 corners? This replaces current data.`);
-        if (!ok) return;
-        state = incoming;
+        const incoming = PTCore.parseBackup(JSON.parse(reader.result));
+        if (remember() !== importStart) throw Error('The yard changed while reading the backup. Try importing again.');
+        if (!confirm(`Import ${incoming.markers.length} markers and ${incoming.corners.filter(Boolean).length}/4 corners? This replaces this device’s yard. A recovery backup will be kept.`)) return;
+        // Both writes must succeed before replacing the in-memory state.
+        const current = localStorage.getItem(STORAGE_KEY);
+        if (current !== savedRaw) throw Error('Yard changed in another tab. Reload first.');
+        if (current !== null) {
+          const recoveryKey = STORAGE_KEY + '_before_import';
+          const previousRecovery = localStorage.getItem(recoveryKey);
+          if (previousRecovery !== null) localStorage.setItem(recoveryKey + '_' + Date.now(), previousRecovery);
+          localStorage.setItem(recoveryKey, current);
+        }
+        const next = JSON.stringify(incoming);
+        localStorage.setItem(STORAGE_KEY, next);
+        state = incoming; savedRaw = next; storageBlocked = false; storageReadFailed = false; storageWarning = '';
+        cancelCapture(); selectedId = null; pendingTap = null; undoState = null;
+        $('feedback').hidden = true;
         yard = PTCore.makeYard(state.corners);
-        selectedId = null;
         syncDerivedPositions();
-        saveState();
-        renderAll();
-        renderCal();
-        $('data-status').textContent = 'Import complete.';
-      } catch {
-        $('data-status').textContent = 'Import failed: not a valid backup file.';
+        $('snap-toggle').checked = state.settings.snapGrid;
+        renderAll(); renderCal();
+        $('data-status').textContent = 'Import complete. Previous data is available with “Export recovery backup”.';
+      } catch (error) {
+        $('data-status').textContent = 'Import failed. Saved data is unchanged. ' + error.message;
       }
     };
     reader.readAsText(file);
@@ -1585,19 +1388,20 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   function renderStatus() {
     const pill = $('gps-pill'), val = $('gps-value'), sub = $('gps-sub');
     const f = engine.fix;
-    let cls = 'g-acquiring', main = 'Acquiring GPS…', subText = 'Waiting for satellite fix';
+    let cls = 'g-acquiring', main = engine.started ? 'Waiting for fresh GPS' : 'Location is optional', subText = engine.started ? 'Hold still, or place a spot on the map.' : 'A simple yard map works without GPS.';
     if (engine.error === 'denied') {
       cls = 'g-error'; main = 'Location blocked';
       subText = 'Allow location access, or tap the map to place markers by hand';
     } else if (engine.error && (!f || !f.ok)) {
       cls = 'g-error'; main = 'GPS unavailable'; subText = 'Still trying…';
+    } else if (engine.samples.at(-1)?.acc > 35) {
+      cls = 'g-poor'; main = 'GPS too weak'; subText = 'Place the spot by hand, or wait for a clearer view of the sky.';
     } else if (f && f.ok) {
       const ft = Math.round(PTCore.mToFt(f.accuracy));
       const g = f.grade;
       const stale = f.ageMs > MARK_MAX_FIX_AGE_MS;
       cls = 'g-' + (stale ? 'acquiring' : g);
-      const names = { excellent: 'Excellent', good: 'Good', usable: 'Usable', poor: 'Poor', acquiring: 'Acquiring' };
-      main = `±${ft} ft · ${stale ? 'Stale' : names[g]}`;
+      main = `±${ft} ft · ${stale ? 'Old fix' : (g === 'poor' ? 'Weak GPS' : (g === 'acquiring' ? 'Hold still' : 'GPS estimate'))}`;
       subText = `${f.sampleCount} samples` +
         (f.rejected ? ` · ${f.rejected} outliers dropped` : '') +
         (stale ? ' · fix is old, keep the app open' : '');
@@ -1613,24 +1417,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       outside = !!(uv && !uv.inside);
     }
     $('yard-badge').classList.toggle('show', outside);
+    $('gps-start').hidden = engine.started && !engine.error;
+    $('gps-start').textContent = engine.error ? 'Retry GPS' : 'Use GPS';
   }
 
   function renderMarkBtn() {
-    const btn = $('mark-btn'), label = $('mark-label'), sub = $('mark-sub');
-    if (canMarkByGPS()) {
-      btn.classList.add('ready');
-      btn.disabled = false;
-      label.textContent = 'MARK POOP';
-      sub.textContent = `GPS ±${Math.round(PTCore.mToFt(engine.fix.accuracy))} ft`;
-    } else {
-      btn.classList.remove('ready');
-      btn.disabled = true;
-      label.textContent = 'MARK POOP';
-      if (engine.error === 'denied') sub.textContent = 'No GPS. Tap the map to place by hand.';
-      else if (engine.fix && engine.fix.ok && engine.fix.grade === 'poor')
-        sub.textContent = 'GPS too weak. Tap the map to place by hand.';
-      else sub.textContent = 'Waiting for a usable GPS fix…';
-    }
+    const btn = $('mark-btn');
+    btn.disabled = false; btn.classList.add('ready');
+    $('mark-label').textContent = mapReady() ? 'Mark a spot' : 'Set up my yard';
+    $('mark-sub').textContent = !mapReady() ? 'Start with a simple map. GPS is optional.' :
+      canMarkByGPS() ? `Use GPS estimate · ±${Math.round(PTCore.mToFt(engine.fix.accuracy))} ft` : 'Choose the spot on your yard map';
+    $('manual-btn').hidden = !mapReady();
+    $('action-dock').hidden = !!selectedId || !!pendingTap;
   }
 
   // ── Rendering: map ──
@@ -1642,7 +1440,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   function drawMap() {
     const svg = $('yard-svg');
     const placeholder = $('map-placeholder');
-    if (!yard.valid) {
+    if (!mapReady()) {
       svg.classList.remove('show');
       placeholder.classList.add('show');
       return;
@@ -1653,6 +1451,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
 
     const W = PTCore.SVG_W, H = PTCore.SVG_H, PAD = PTCore.PAD;
     svg.textContent = '';
+    svg.classList.toggle('editing', !!selectedId || !!pendingTap);
     const css = getComputedStyle(document.documentElement);
     const col = name => css.getPropertyValue(name).trim();
 
@@ -1671,6 +1470,15 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       'stroke-dasharray': '8 4', opacity: 0.5,
     }));
 
+    const front = mkEl('text', { x:W/2, y:H-5, 'text-anchor':'middle', fill:col('--grass-border'), 'font-size':10, 'font-weight':700 });
+    front.textContent = 'FRONT OF YARD'; svg.appendChild(front);
+    const cornerError = Math.max(0, ...state.corners.map(c => c?.acc || 0));
+    function searchArea(group, u, v, radius, color, cx=0, cy=0, unknown=false) {
+      const ellipse = PTCore.uncertaintyEllipse(yard, u, v, radius + cornerError);
+      if (!ellipse) return;
+      group.appendChild(mkEl('ellipse', { cx, cy, rx:ellipse.rx, ry:ellipse.ry, transform:`rotate(${ellipse.angle} ${cx} ${cy})`, fill:color, 'fill-opacity':0.12, stroke:color, 'stroke-width':1.5, 'stroke-dasharray':unknown ? '4 4' : 'none', 'pointer-events':'none' }));
+    }
+
     // Corner labels with quality
     const cornerPts = [[0, 0], [1, 0], [1, 1], [0, 1]];
     cornerPts.forEach(([u, v], i) => {
@@ -1682,8 +1490,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       const t = mkEl('text', {
         x: p.x + (left ? 9 : -9), y: p.y + (v === 0 ? 13 : -8),
         fill: weak ? col('--warn') : col('--grass-border'),
-        'font-size': 8.5, 'font-weight': 'bold',
-        'text-anchor': left ? 'start' : 'end', opacity: 0.75,
+        'font-size': 10, 'font-weight': 'bold',
+        'text-anchor': left ? 'start' : 'end',
       });
       let q = '';
       if (c && c.acc != null) q = ` ±${Math.round(PTCore.mToFt(c.acc))}ft`;
@@ -1705,7 +1513,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     }
 
     // Markers with confidence circles
-    for (const m of state.markers) {
+    for (const [index,m] of state.markers.entries()) {
+      if ($('hide-cleaned').checked && m.cleaned && m.id !== selectedId) continue;
       const uv = markerUV(m);
       if (!uv) continue;
       const du = PTCore.clamp(uv.u, 0.01, 0.99), dv = PTCore.clamp(uv.v, 0.01, 0.99);
@@ -1715,51 +1524,39 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       g.setAttribute('data-id', m.id);
       g.setAttribute('transform', `translate(${p.x} ${p.y})`);
 
-      const accM = m.acc != null ? m.acc : (m.source === 'legacy' ? LEGACY_DRAW_RADIUS_M : null);
+      const accM = m.acc;
       if (accM != null && m.source !== 'manual' && !m.adjusted) {
-        const rPx = Math.min(PTCore.pxPerMeter(yard, du, dv) * accM, 110);
-        g.appendChild(mkEl('circle', {
-          r: Math.max(rPx, 10), fill: m.cleaned ? 'rgba(125,219,132,0.10)' : 'rgba(217,138,79,0.14)',
-          stroke: m.cleaned ? col('--accent') : col('--marker-dirty'),
-          'stroke-width': 1, opacity: 0.8,
-          'stroke-dasharray': m.acc == null ? '3 3' : 'none',
-        }));
+        searchArea(g, du, dv, accM, m.cleaned ? col('--accent') : col('--marker-dirty'), 0, 0, m.acc == null);
       }
       g.appendChild(mkEl('circle', {
-        r: 13, fill: m.cleaned ? 'rgba(125,219,132,0.2)' : 'rgba(139,58,0,0.35)',
+        r: 16, fill: col('--surface'),
         stroke: m.cleaned ? col('--accent') : col('--marker-dirty'),
         'stroke-width': m.id === selectedId ? 3 : 1.5,
       }));
       if (m.id === selectedId) {
         g.appendChild(mkEl('circle', { r: 19, fill: 'none', stroke: col('--cyan'), 'stroke-width': 2, 'stroke-dasharray': '4 3' }));
       }
-      const t = mkEl('text', { y: 6, 'text-anchor': 'middle', 'font-size': 15 });
-      t.textContent = m.cleaned ? '🗑️' : '💩';
+      const t = mkEl('text', { y: 5, 'text-anchor': 'middle', 'font-size': 13, 'font-weight':800, fill:m.cleaned ? col('--accent') : col('--marker-dirty') });
+      t.textContent = m.cleaned ? '✓' : String(index+1);
       g.appendChild(t);
       svg.appendChild(g);
     }
 
     // Current position with live confidence radius
     const f = engine.fix;
-    if (f && f.ok) {
+    if (!engine.error && f && f.ok && f.ageMs <= MARK_MAX_FIX_AGE_MS) {
       const uv = PTCore.uvFromLatLng(yard, f.lat, f.lng);
       if (uv) {
         const cu = PTCore.clamp(uv.u, 0, 1), cv = PTCore.clamp(uv.v, 0, 1);
         const p = PTCore.uvToSvg(cu, cv);
         const g = document.createElementNS(svgNS, 'g');
-        const rPx = Math.min(PTCore.pxPerMeter(yard, cu, cv) * f.accuracy, 130);
-        g.appendChild(mkEl('circle', {
-          cx: p.x, cy: p.y, r: Math.max(rPx, 8),
-          fill: 'rgba(170,204,218,0.12)', stroke: col('--you'), 'stroke-width': 1.5,
-          opacity: uv.inside ? 0.9 : 0.45,
-          'stroke-dasharray': uv.inside ? 'none' : '5 4',
-        }));
+        searchArea(g, cu, cv, f.accuracy, col('--you'), p.x, p.y);
         g.appendChild(mkEl('circle', {
           cx: p.x, cy: p.y, r: 5, fill: uv.inside ? col('--you') : 'none',
           stroke: col('--you'), 'stroke-width': 2,
         }));
         const t = mkEl('text', {
-          x: p.x, y: p.y - Math.max(rPx, 8) - 4, 'text-anchor': 'middle',
+          x: p.x, y: p.y - 13, 'text-anchor': 'middle',
           fill: col('--you'), 'font-size': 9, 'font-weight': 'bold',
         });
         t.textContent = uv.inside ? 'YOU' : 'YOU (outside yard)';
@@ -1772,15 +1569,14 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   // ── Map interaction: tap to select/place, drag selected marker ──
   function svgPoint(evt) {
     const svg = $('yard-svg');
-    const r = svg.getBoundingClientRect();
-    return {
-      x: (evt.clientX - r.left) / r.width * PTCore.SVG_W,
-      y: (evt.clientY - r.top) / r.height * PTCore.SVG_H,
-    };
+    const point = svg.createSVGPoint(); point.x = evt.clientX; point.y = evt.clientY;
+    return point.matrixTransform(svg.getScreenCTM().inverse());
   }
+
   function nearestMarker(pt, maxDist) {
     let best = null;
     for (const m of state.markers) {
+      if ($('hide-cleaned').checked && m.cleaned && m.id !== selectedId) continue;
       const uv = markerUV(m);
       if (!uv) continue;
       const p = PTCore.uvToSvg(PTCore.clamp(uv.u, 0.01, 0.99), PTCore.clamp(uv.v, 0.01, 0.99));
@@ -1791,10 +1587,19 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   }
   function bindMap() {
     const svg = $('yard-svg');
+    svg.addEventListener('keydown', evt => {
+      const directions = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]};
+      if (evt.key === 'Escape') { selectedId = null; pendingTap = null; renderAll(); return; }
+      if (evt.key === 'Enter' && pendingTap) { evt.preventDefault(); const p = pendingTap; pendingTap = null; markManual(p.u,p.v); return; }
+      if (!directions[evt.key]) return;
+      evt.preventDefault(); const [dx,dy] = directions[evt.key];
+      if (selectedId) nudge(dx,dy);
+      else { pendingTap ||= {u:.5,v:.5}; pendingTap.u = PTCore.clamp(pendingTap.u+dx*.02,0,1); pendingTap.v = PTCore.clamp(pendingTap.v+dy*.02,0,1); renderAll(); }
+    });
     svg.addEventListener('pointerdown', evt => {
-      if (!yard.valid) return;
+      if (!mapReady()) return;
       const pt = svgPoint(evt);
-      const hit = nearestMarker(pt, 20);
+      const hit = nearestMarker(pt, 24 / $('yard-svg').getScreenCTM().a);
       if (hit && hit.id === selectedId) {
         drag = { id: hit.id, moved: false, startX: pt.x, startY: pt.y };
         svg.setPointerCapture(evt.pointerId);
@@ -1836,12 +1641,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       // Treat as a tap
       const pt = svgPoint(evt);
       if (Math.hypot(pt.x - d.startX, pt.y - d.startY) > 12) { drawMap(); return; }
-      const hit = nearestMarker(pt, 20);
+      const hit = nearestMarker(pt, 24 / $('yard-svg').getScreenCTM().a);
       if (hit) {
-        if (selectedId === hit.id) { toggleMarker(hit.id); return; }
+        if (selectedId === hit.id) { renderAll(); return; }
         selectedId = hit.id;
         pendingTap = null;
-        renderAll();
+        renderAll(); revealMap();
       } else {
         let uv = PTCore.svgToUv(pt.x, pt.y);
         uv = { u: PTCore.clamp(uv.u, 0, 1), v: PTCore.clamp(uv.v, 0, 1) };
@@ -1860,7 +1665,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     const m = state.markers.find(x => x.id === selectedId);
     if (!m) { box.classList.remove('show'); return; }
     box.classList.add('show');
-    $('ma-clean').textContent = m.cleaned ? '💩' : '🧹';
+    $('ma-clean').textContent = m.cleaned ? 'Needs cleanup' : '✓ Mark cleaned';
+    $('ma-title').textContent = `Spot ${state.markers.indexOf(m)+1} · ${m.cleaned ? 'Cleaned' : 'Needs cleanup'}`;
+    $('ma-hint').textContent = yard.valid ? 'Drag the spot, or move about 1 ft with each arrow.' : 'Drag the spot, or use the arrows. This map has no measured scale.';
     $('ma-clean').title = m.cleaned ? 'Mark as not cleaned' : 'Mark as cleaned';
   }
   function nudge(dx, dy) {
@@ -1869,8 +1676,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     const uv = markerUV(m);
     if (!uv) return;
     const stepM = 0.3048; // 1 ft
-    const px = PTCore.pxPerMeter(yard, PTCore.clamp(uv.u, 0, 1), PTCore.clamp(uv.v, 0, 1)) * stepM;
-    moveMarker(m, uv.u + (dx * px) / PTCore.INNER_W, uv.v + (dy * px) / PTCore.INNER_H);
+    const du = yard.valid ? stepM / Math.hypot(yard.e.x + yard.g.x * uv.v, yard.e.y + yard.g.y * uv.v) : 0.02;
+    const dv = yard.valid ? stepM / Math.hypot(yard.f.x + yard.g.x * uv.u, yard.f.y + yard.g.y * uv.u) : 0.02;
+    moveMarker(m, uv.u + dx * du, uv.v + dy * dv);
     saveState();
     renderAll();
   }
@@ -1886,16 +1694,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     list.textContent = '';
     if (!state.markers.length) { section.classList.remove('visible'); return; }
     section.classList.add('visible');
-    [...state.markers].reverse().forEach(m => {
+    state.markers.map((m,index) => ({m,index})).reverse().filter(({m}) => !$('hide-cleaned').checked || !m.cleaned).forEach(({m,index}) => {
       const row = document.createElement('div');
       row.className = 'marker-row' + (m.cleaned ? ' cleaned' : '') + (m.id === selectedId ? ' selected' : '');
 
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'marker-toggle';
-      toggleBtn.textContent = m.cleaned ? '🗑️' : '💩';
+      toggleBtn.textContent = m.cleaned ? '↶' : '✓';
+      toggleBtn.setAttribute('aria-label', `${m.cleaned ? 'Mark not cleaned' : 'Mark cleaned'}: spot ${index+1}`);
       toggleBtn.addEventListener('click', () => toggleMarker(m.id));
 
-      const info = document.createElement('div');
+      const info = document.createElement('button');
       info.className = 'marker-info';
       const meta = document.createElement('div');
       meta.className = 'marker-meta';
@@ -1903,22 +1712,26 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       if (m.source === 'manual') src = 'Placed by hand';
       else if (m.source === 'legacy') src = 'Older version';
       if (m.adjusted && m.source !== 'manual') src += ', corrected';
-      const accTxt = m.acc != null ? ` · ±${Math.round(PTCore.mToFt(m.acc))} ft` : (m.source === 'legacy' ? ' · accuracy unknown' : '');
+      const accTxt = m.acc != null && !m.adjusted ? ` · ±${Math.round(PTCore.mToFt(m.acc))} ft` : (m.source === 'legacy' ? ' · accuracy unknown' : '');
       meta.textContent = `${fmtTime(m.createdAt)} · ${src}${accTxt}`;
+      info.setAttribute('aria-label', `Select spot ${index+1}. ${src}`);
       const status = document.createElement('div');
       status.className = 'marker-status';
-      status.textContent = m.cleaned ? '✓ Cleaned' : '⚠ Needs cleanup';
+      const uv = markerUV(m);
+      status.textContent = `Spot ${index+1} · ${m.cleaned ? 'Cleaned' : 'Needs cleanup'}${uv && !uv.inside ? ' · Outside yard' : ''}`;
       info.appendChild(meta);
       info.appendChild(status);
       info.addEventListener('click', () => {
         selectedId = (selectedId === m.id) ? null : m.id;
         pendingTap = null;
         renderAll();
+        if (selectedId) revealMap();
       });
 
       const removeBtn = document.createElement('button');
       removeBtn.className = 'marker-remove';
-      removeBtn.textContent = '✕';
+      removeBtn.textContent = '×';
+      removeBtn.setAttribute('aria-label', `Remove spot ${index+1}`);
       removeBtn.addEventListener('click', () => removeMarker(m.id));
 
       row.appendChild(toggleBtn);
@@ -1944,7 +1757,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     const setCount = state.corners.filter(Boolean).length;
     $('cal-step-title').textContent = cal.capturing
       ? `Sampling ${CORNER_LABELS[cal.corner]}…`
-      : (setCount === 4 ? 'Yard calibrated' : `Corner ${setCount + 1} of 4`);
+      : (setCount === 4 ? (yard.valid ? 'GPS yard ready' : 'Check your corners') : `Corner ${setCount + 1} of 4`);
     $('cal-hint').textContent = cal.capturing
       ? 'Hold still. Averaging GPS readings…'
       : (setCount === 4
@@ -1970,7 +1783,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     const msgs = [];
     if (setCount === 4) {
       const y = PTCore.makeYard(state.corners);
-      if (!y.valid && y.reason === 'not-convex') {
+      if (!y.valid && y.reason === 'degenerate') {
+        msgs.push('These corners form a line or a very thin yard. Recapture the corners.');
+      } else if (!y.valid && y.reason === 'not-convex') {
         msgs.push('These corners cross over each other. Check that you captured them in order: Back Left, Back Right, Front Right, Front Left.');
       } else if (!y.valid && y.reason === 'corners-too-close') {
         msgs.push('Two corners are nearly on top of each other. Recapture one of them.');
@@ -1996,7 +1811,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       return;
     }
     const f = engine.fix;
-    if (f && f.ok) {
+    if (!engine.error && f && f.ok && f.ageMs <= MARK_MAX_FIX_AGE_MS) {
       btn.className = 'ready';
       btn.disabled = false;
       btn.textContent = `📍 Capture ${CORNER_LABELS[cal.corner]}`;
@@ -2015,6 +1830,9 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   }
 
   function renderAll() {
+    renderStorage();
+    $('map-kind').textContent = yard.valid ? 'GPS yard · approximate scale' : 'Simple yard · not to scale';
+    $('map-note').textContent = yard.valid ? (state.corners.some(c => c && c.acc == null) || state.markers.some(m => m.source === 'legacy' && m.acc == null) ? 'Older locations have unknown accuracy. Shading shows known GPS error only. Confirm each spot by sight.' : 'Shaded areas show estimated GPS + corner uncertainty. They can extend past the map. Confirm each spot by sight.') : 'Face the back of your yard. The front stays at the bottom. Tap the map to place a spot by hand.';
     renderStatus();
     renderMarkBtn();
     renderStats();
@@ -2028,10 +1846,33 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
 
   // ── Wiring ──
   function bind() {
-    $('mark-btn').addEventListener('click', markByGPS);
+    $('mark-btn').addEventListener('click', () => mapReady() ? markByGPS() : useSimpleMap());
+    $('manual-btn').addEventListener('click', beginPlacement);
+    $('simple-map-btn').addEventListener('click', useSimpleMap);
+    $('gps-start').addEventListener('click', () => {
+      if (engine.watchId !== null) navigator.geolocation.clearWatch(engine.watchId);
+      engine.watchId = null; startGPS(); renderAll();
+    });
+    $('undo-btn').addEventListener('click', () => {
+      if (!undoState) return;
+      state = JSON.parse(undoState); undoState = null; selectedId = null; pendingTap = null;
+      yard = PTCore.makeYard(state.corners); saveState(); renderAll(); feedback('Change undone.');
+    });
+    $('hide-cleaned').addEventListener('change', () => { renderMarkerList(); drawMap(); });
+    $('recovery-btn').addEventListener('click', () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY + '_before_import');
+        if (!raw) { $('data-status').textContent = 'No recovery backup yet.'; return; }
+        const url = URL.createObjectURL(new Blob([raw], {type:'application/json'}));
+        const a = document.createElement('a'); a.href = url; a.download = 'poop-tracker-recovery.json'; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      } catch { $('data-status').textContent = 'Recovery storage is unavailable.'; }
+    });
     $('placeholder-cal-btn').addEventListener('click', openCalibrate);
     $('btn-calibrate').addEventListener('click', openCalibrate);
-    $('btn-data').addEventListener('click', () => $('data-panel').classList.toggle('show'));
+    $('btn-data').addEventListener('click', () => {
+      const open = $('data-panel').classList.toggle('show'); $('btn-data').setAttribute('aria-expanded', String(open));
+    });
     $('cap-btn').addEventListener('click', startCapture);
     $('cap-retry').addEventListener('click', () => { $('cap-result').classList.remove('show'); startCapture(); });
     $('cap-save-anyway').addEventListener('click', () => { if (cal.pendingFix) saveCorner(cal.pendingFix); });
@@ -2058,14 +1899,17 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
     $('ma-delete').addEventListener('click', () => { if (selectedId) removeMarker(selectedId); });
     $('ma-done').addEventListener('click', () => { selectedId = null; renderAll(); });
     $('clear-btn').addEventListener('click', () => {
-      if (!confirm('Clear ALL markers?')) return;
+      if (!confirm('Clear ALL markers? You can undo this until the next action.')) return;
+      const before = remember();
       state.markers = [];
       selectedId = null;
       saveState();
       renderAll();
+      feedback('All markers cleared.', before);
     });
     $('snap-toggle').checked = state.settings.snapGrid;
     $('snap-toggle').addEventListener('change', e => {
+      undoState = null; $('feedback').hidden = true;
       state.settings.snapGrid = e.target.checked;
       saveState();
     });
@@ -2090,7 +1934,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   function registerSW() {
     const local = ['localhost', '127.0.0.1'].includes(location.hostname);
     if ('serviceWorker' in navigator && (location.protocol === 'https:' || local)) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+      navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).then(reg => {
+        const showUpdate = () => {
+          if (!reg.waiting) return;
+          $('update-notice').hidden = false;
+          $('update-btn').onclick = () => {
+            if (!saveState()) return;
+            reg.waiting.postMessage({type:'ACTIVATE_UPDATE'});
+          };
+        };
+        showUpdate();
+        reg.addEventListener('updatefound', () => {
+          const worker = reg.installing;
+          worker?.addEventListener('statechange', () => { if (worker.state === 'installed' && navigator.serviceWorker.controller) showUpdate(); });
+        });
+        let reloading = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (reloading || $('update-notice').hidden) return;
+          reloading = true; location.reload();
+        });
+      }).catch(() => { $('offline-status').textContent = 'Offline setup failed. Reconnect and reload to try again.'; });
+      navigator.serviceWorker.ready.then(() => { $('offline-status').textContent = 'Ready for offline use on this device.'; });
     }
   }
 
@@ -2099,8 +1963,21 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   bind();
   renderAll();
   renderCal();
-  startGPS();
+  // GPS starts only after an explicit request, or for an already calibrated yard.
+  if (yard.valid) startGPS();
   registerSW();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (engine.watchId !== null) navigator.geolocation.clearWatch(engine.watchId);
+      engine.watchId = null; engine.samples = []; engine.fix = null;
+      clearInterval(gpsTimer); cancelCapture();
+    } else if (engine.started) { startGPS(); refreshFix(); }
+  });
+  window.addEventListener('storage', e => {
+    if (e.key === STORAGE_KEY || e.key === null) {
+      storageBlocked = true; storageWarning = 'This yard changed in another tab. Reload before editing.'; renderStorage();
+    }
+  });
 
   // Test/debug hook: lets automated tests and future agents inject GPS samples
   // without real hardware. Not used by normal app flow.
@@ -2117,7 +1994,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
 })();
 </script>
 
-<p style="text-align:center;color:#aab5ac;font-size:0.78rem;padding:0.75rem 0 1rem">v2.0</p>
+<p style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:0.75rem 0 1rem">v2.1 · On-device yard tracker</p>
+<details class="about-tool"><summary>How it works &amp; more South Fork tools</summary>
 <!-- SFA_FEATURE_START -->
 <section class="sfa-feature" aria-labelledby="sfa-feature-title">
   <div class="sfa-feature-shell">
@@ -2127,24 +2005,24 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
       <p>Dog Poop Tracker maps where your dog has gone in the yard using GPS, so cleanup is a route rather than a search. Markers can be added, corrected and cleared, and everything is stored on your device.</p>
       <h3 class="sfa-subhead">How to use it</h3>
       <ol class="sfa-steps">
-        <li>Calibrate your yard by walking to each corner and capturing it.</li>
+        <li>Start with a simple yard map, or use Yard setup to capture four GPS corners.</li>
         <li>Press Mark when your dog goes, and the position is recorded.</li>
-        <li>Clear markers as you pick up.</li>
+        <li>Select a spot and tap Mark cleaned as you pick up. Undo reverses an accidental cleanup.</li>
         <li>Drag or nudge a marker if the fix was poor.</li>
       </ol>
       <h3 class="sfa-subhead">Why phone GPS needs the extra work</h3>
-      <p>Consumer GPS is typically accurate to about three to five metres in the open, and considerably worse near buildings and trees, which is exactly where most yards are. A single raw fix is often not good enough to find a specific spot.</p>
-      <p>The tool compensates by buffering multiple samples and combining them, rejecting outliers, and never claiming better accuracy than the device honestly reports. Markers show a confidence radius rather than a false pinpoint, and weak fixes have to be confirmed deliberately.</p>
+      <p>Phone GPS can be wrong by many feet, especially near buildings and trees. Even a steady reading cannot reliably identify a small object. Use the map as a reminder and confirm the spot by sight.</p>
+      <p>The tool filters recent readings and rejects outliers. The estimate keeps the device-reported accuracy as a floor. Shaded areas also include known corner error. These are search areas, not a promise that a small object is inside them. Hand placement is often more useful in a small yard.</p>
       <h3 class="sfa-subhead">When it helps</h3>
       <ul class="sfa-bullets">
         <li>Finding everything in a large or overgrown yard.</li>
         <li>Cleaning up after dark, when searching visually does not work.</li>
-        <li>Sharing the job with someone who was not there when it happened.</li>
+        <li>Exporting a backup to transfer the yard to another device (there is no automatic sync).</li>
         <li>Keeping track across a few days between cleanups.</li>
       </ul>
       <h3 class="sfa-subhead">Common mistakes</h3>
       <ul class="sfa-bullets">
-        <li>Marking before the accuracy indicator settles, which records a poor fix.</li>
+        <li>Treating a GPS estimate as an exact spot. Use Place on map whenever the position looks wrong.</li>
         <li>Calibrating corners in a hurry. The yard transform depends on those four points and errors propagate to every marker.</li>
         <li>Expecting pinpoint precision under heavy tree cover, where consumer GPS simply cannot deliver it.</li>
       </ul>
@@ -2159,10 +2037,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
         <a href="https://southforkapps.com/privacy/">Privacy</a>
       </div>
     </div>
-    <figure class="sfa-preview">
-      <img src="screenshot.jpg" alt="Dog Poop Tracker interface preview" loading="lazy" decoding="async" width="1600" height="900">
-      <figcaption>Screenshot of the live Dog Poop Tracker interface.</figcaption>
-    </figure>
+
   </div>
 </section>
 <!-- SFA_FEATURE_END -->
@@ -2190,5 +2065,6 @@ if (typeof module !== 'undefined' && module.exports) module.exports = PTCore;
   </div>
 </section>
 <!-- SFA_RELATED_END -->
+</details>
 </body>
 </html>

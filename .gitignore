@@ -21,3 +21,6 @@ South-Fork-Apps Stitch.zip
 /stitch/
 node_modules/
 package-lock.json
+
+# Local Dog Poop Tracker review evidence
+/artifacts/dog-poop-tracker/

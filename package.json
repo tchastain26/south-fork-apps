@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:dog-poop-tracker": "node --test tests/dog-poop-tracker-core.cjs && node tests/dog-poop-tracker-browser.cjs"
   },
   "repository": {
     "type": "git",

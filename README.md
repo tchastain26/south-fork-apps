@@ -17,7 +17,7 @@ Auto-deployed to Cloudflare Pages from `main`.
 
 ## Apps Listed (7)
 
-- **Dog Poop Tracker** — Grid-based yard tracker PWA.
+- **Dog Poop Tracker** — Yard tracker PWA with GPS estimates and manual placement. Source and tests: [tool notes](tools/dog-poop-tracker/Notes.md).
 - **Hex Code Color Generator** — Fast color picking and format conversion.
 - **Temperature Converter** — Instant F/C/K conversion.
 - **Gemini TTS Studio** — Expressive AI speech with Gemini 1.5 Flash.
