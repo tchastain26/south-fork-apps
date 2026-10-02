@@ -56,3 +56,9 @@
 
 /*.txt
   Cache-Control: public, max-age=86400, s-maxage=86400
+
+# A service worker must revalidate so fixes reach installed tracker clients.
+# Detach the global JavaScript immutable policy before setting this exception.
+/tools/dog-poop-tracker/sw.js
+  ! Cache-Control
+  Cache-Control: no-cache, no-store, must-revalidate
