@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Project Handoff Builder | South Fork Apps</title>
+<meta name="description" content="Turn project notes into a clear Markdown handoff for your next AI session. Free browser-local builder with a readiness checklist, copy and download.">
+<link rel="canonical" href="https://southforkapps.com/tools/ai-project-handoff/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Pick up where you left off. AI Project Handoff Builder">
+<meta property="og:description" content="Leave the next session a clear starting point. Build and download a Markdown handoff, free. No account or AI API required.">
+<meta property="og:url" content="https://southforkapps.com/tools/ai-project-handoff/">
+<meta property="og:type" content="website">
+<style>
+:root{color-scheme:dark;--bg:#111412;--panel:#191e1a;--line:#343d35;--ink:#eef1e9;--muted:#b2bbae;--green:#b6ee94;--accent:#e5b77c;font:16px/1.55 "Avenir Next","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-underline-offset:4px}button,input,textarea{font:inherit}button,a,input,textarea{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--green);outline-offset:4px}.wrap{width:min(1320px,calc(100% - 64px));margin:auto}.nav{min-height:83px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:16px}.brand{text-decoration:none;font-weight:750;display:flex;align-items:center;gap:12px}.brand svg{width:32px;height:32px;color:var(--green)}.nav-right{display:flex;gap:25px;align-items:center;font-size:.82rem;color:var(--muted)}.nav-right a{text-decoration:none}.pill{border:1px solid #3f573b;color:var(--green);padding:5px 11px;border-radius:30px;font-size:.71rem;font-weight:700;letter-spacing:.08em}.intro{display:flex;justify-content:space-between;gap:30px;align-items:flex-end;padding:42px 0 30px}.kicker,.micro{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.69rem;letter-spacing:.14em;text-transform:uppercase}.kicker{color:var(--green);margin:0 0 13px}.kicker:before{content:"";display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:10px}h1{font-size:clamp(2.2rem,4vw,3.5rem);letter-spacing:-.055em;line-height:1.08;font-weight:650;margin:0 0 15px}h1 span{color:var(--green)}.intro p:not(.kicker){color:var(--muted);max-width:620px;margin:0;font-size:1rem}.example{background:transparent;color:var(--ink);border:1px solid #53614f;border-radius:6px;padding:11px 17px;white-space:nowrap;font-size:.84rem}.example:hover{background:#283326}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:start}.editor{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line);gap:14px}.panel-head h2{font-size:.9rem;font-weight:650;margin:0}.panel-head .micro{color:var(--muted);font-size:.62rem;letter-spacing:.08em}.form-body{padding:0 24px 22px}.section{border:0;margin:0;padding:21px 0 2px}.section+.section{border-top:1px solid var(--line);margin-top:17px}.section legend{float:left;display:flex;align-items:center;gap:10px;font-weight:650;font-size:.92rem;margin-bottom:16px;width:100%}.step{width:23px;height:23px;display:inline-grid;place-items:center;border:1px solid #47533f;color:var(--green);border-radius:50%;font:11px ui-monospace,monospace}.field{clear:both;margin:0 0 15px}label{display:block;font-size:.81rem;font-weight:600;margin-bottom:7px}.optional{color:var(--muted);font-weight:400}input[type=text],textarea{width:100%;background:#111612;color:var(--ink);border:1px solid #414b40;border-radius:5px;padding:10px 12px;transition:border-color .15s;min-width:0}input::placeholder,textarea::placeholder{color:#7f8c7f;opacity:1}input:focus,textarea:focus{border-color:var(--green)}textarea{resize:vertical;min-height:92px;font-size:.88rem;line-height:1.55}#goal{min-height:76px}#next{min-height:76px}.hint{color:var(--muted);font-size:.73rem;margin:6px 0 0}.form-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid var(--line);padding-top:18px}.local{font-size:.71rem;color:var(--muted);display:flex;gap:8px;align-items:center}.local svg{width:14px;height:14px;flex:none}.text-button{border:0;background:none;padding:6px 0;color:var(--muted);font-size:.75rem;text-decoration:underline;text-underline-offset:3px}.output-side{min-width:0;position:sticky;top:20px}.readiness{border:1px solid var(--line);border-radius:10px 10px 0 0;padding:19px 22px 16px;background:#1c251b}.ready-top{display:flex;justify-content:space-between;gap:15px;align-items:center}.ready-top h2{margin:0;font-size:.83rem}.count{color:var(--green);font:13px ui-monospace,monospace}.meter{height:3px;background:#394533;margin:13px 0 11px;border-radius:3px;overflow:hidden}.meter span{display:block;height:100%;width:0;background:var(--green);transition:width .2s}.checks{display:flex;flex-wrap:wrap;gap:7px 14px;list-style:none;padding:0;margin:0}.checks li{font-size:.7rem;color:#c2cbbb}.checks li:before{content:"○";margin-right:5px;color:#9ca994}.checks li[data-ready=true]{color:var(--green)}.checks li[data-ready=true]:before{content:"✓"}.readiness p{font-size:.7rem;color:var(--muted);margin:11px 0 0}.document{border:1px solid #d5d6c7;border-top:0;background:#f1f0e6;color:#283126;border-radius:0 0 10px 10px;overflow:hidden}.doc-bar{padding:15px 22px;border-bottom:1px solid #d7d9c8;display:flex;justify-content:space-between;align-items:center;gap:10px}.doc-name{font:11px ui-monospace,monospace;display:flex;align-items:center;gap:8px}.doc-name svg{width:15px;height:15px}.live{font-size:.64rem;text-transform:uppercase;letter-spacing:.09em;color:#556b48}.live:before{content:"";width:5px;height:5px;background:#4f773c;border-radius:50%;display:inline-block;margin-right:6px}#preview{font:12px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;padding:22px;margin:0;min-height:390px;max-height:580px;overflow-y:auto;tab-size:2;user-select:text}#preview:focus-visible{outline-color:#3c5a30;outline-offset:-4px}.export{padding:16px 22px;background:#e8e9dc;border-top:1px solid #d0d4bf}.toggle{display:flex;gap:8px;align-items:center;color:#45553e;font-size:.73rem;font-weight:400;margin:0 0 13px}.toggle input{accent-color:#405d2f;width:15px;height:15px}.actions{display:flex;gap:9px}.primary{flex:1;border:1px solid #263b22;background:#263b22;color:#f5faef;border-radius:5px;padding:11px 16px;font-size:.8rem;font-weight:650}.primary:hover:not(:disabled){background:#37522c}.secondary{border:1px solid #b0b8a0;background:transparent;color:#2d3e26;border-radius:5px;padding:11px 15px;font-size:.8rem;font-weight:650}.secondary:hover:not(:disabled){background:#dce0cd}.export-note{display:flex;justify-content:space-between;font-size:.66rem;color:#5b6551;margin-top:10px;gap:12px}#feedback{font-size:.74rem;color:#364c2e;min-height:1.2em;margin:8px 0 0}.kit{padding:22px 0 4px;display:grid;grid-template-columns:auto 1fr;gap:13px}.kit-mark{width:34px;height:39px;background:#293522;color:var(--green);border:1px solid #4b5c3b;display:grid;place-items:center;border-radius:3px;font:19px Georgia,serif}.kit h2{font-size:.85rem;margin:0 0 5px}.kit p{font-size:.76rem;color:var(--muted);margin:0 0 8px;max-width:480px}.kit a{font-size:.76rem;color:var(--green);font-weight:650}.explain{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;border-top:1px solid var(--line);padding:30px 0;margin-top:42px}.explain h2{font-size:.85rem;margin:0 0 8px}.explain p{font-size:.79rem;color:var(--muted);margin:0}.explain a{color:var(--green)}footer{border-top:1px solid var(--line);padding:22px 0 28px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;font-size:.71rem;color:var(--muted)}footer div{display:flex;gap:20px}.skip{position:absolute;left:16px;top:-70px;background:var(--green);color:#111;padding:10px;z-index:10}.skip:focus{top:10px}.sample-note{font-size:.72rem;color:var(--accent);margin:0 0 14px;min-height:1em}.noscript{padding:20px;background:#42321e} @media(min-width:1500px){.wrap{width:min(1360px,calc(100% - 100px))}}@media(max-width:850px){.wrap{width:calc(100% - 36px)}.intro{padding-top:30px}.workspace{grid-template-columns:1fr}.output-side{position:static}.explain{gap:22px}.nav{min-height:70px}.nav-right{gap:15px}#preview{min-height:300px;max-height:500px}}@media(max-width:520px){.wrap{width:calc(100% - 28px)}.nav-right>a{display:none}.brand{font-size:.88rem}.intro{display:block;padding:28px 0 22px}h1{font-size:2.25rem}.intro p:not(.kicker){font-size:.89rem}.example{margin-top:18px}.panel-head,.form-body{padding-left:17px;padding-right:17px}.panel-head .micro{font-size:.58rem}.readiness,.doc-bar,.export{padding-left:17px;padding-right:17px}#preview{padding:17px;font-size:11px}.explain{grid-template-columns:1fr;gap:21px;margin-top:30px}.actions{flex-direction:column}.export-note{flex-wrap:wrap}.form-bottom{gap:10px}.local{font-size:.66rem}}
+</style>
+</head>
+<body>
+<a class="skip" href="#builder">Skip to builder</a>
+<div class="wrap">
+<header class="nav"><a class="brand" href="/"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 24 12 7l5 10 4-7 8 14M6 27h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>South Fork Apps</a><nav class="nav-right" aria-label="Main"><a href="/guides/ai-project-handoff/">The handoff guide ↗</a><span class="pill">FREE TOOL</span></nav></header>
+<main>
+<section class="intro"><div><p class="kicker">AI Project Handoff Builder</p><h1>Pick up where<br>you <span>left off.</span></h1><p>Give your next AI session a clear starting point.<br>Fill in the facts. Leave with a ready-to-share Markdown file.</p></div><button class="example" id="example" type="button">Try a fictional example ↗</button></section>
+<noscript><p class="noscript">This builder needs JavaScript in your browser. You can still use the <a href="/guides/ai-project-handoff/">free handoff guide</a>.</p></noscript>
+<div class="workspace" id="builder">
+<section class="editor" aria-labelledby="editor-title"><div class="panel-head"><h2 id="editor-title">Your project notes</h2><span class="micro">01 / INPUT</span></div>
+<form id="handoff-form" class="form-body" autocomplete="off">
+<p class="sample-note" id="sample-note" role="status"></p>
+<fieldset class="section"><legend><span class="step">1</span>Set the scene</legend>
+<div class="field"><label for="project">Project name</label><input type="text" id="project" maxlength="160" placeholder="e.g. Weekend newsletter" spellcheck="true"></div>
+<div class="field"><label for="goal">What are you trying to finish?</label><textarea id="goal" maxlength="3000" placeholder="Describe the outcome, not just the activity."></textarea></div></fieldset>
+<fieldset class="section"><legend><span class="step">2</span>Leave the facts</legend>
+<div class="field"><label for="done">Completed work and evidence</label><textarea id="done" maxlength="10000" placeholder="What changed? How did you check it? Add one result per line."></textarea><p class="hint">Only call work complete when you have checked the actual result.</p></div>
+<div class="field"><label for="open">Still open or blocked</label><textarea id="open" maxlength="10000" placeholder="What is unfinished, untested or waiting on someone?"></textarea><p class="hint">If nothing is open, say so. Leave unknown results marked unverified.</p></div></fieldset>
+<fieldset class="section"><legend><span class="step">3</span>Make the next move obvious</legend>
+<div class="field"><label for="next">The next concrete action</label><textarea id="next" maxlength="3000" placeholder="Start with a verb. What should the next session do first?"></textarea></div>
+<div class="field"><label for="context">Files, decisions and constraints <span class="optional">(optional)</span></label><textarea id="context" maxlength="10000" placeholder="Key file paths, decisions to preserve, access needed, or things to avoid."></textarea></div></fieldset>
+<div class="form-bottom"><span class="local"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2" stroke="currentColor"/><path d="M7 8V5a3 3 0 0 1 6 0v3" stroke="currentColor"/></svg>Stays in this tab. No upload.</span><div><button type="button" class="text-button" id="undo" hidden style="margin-right:14px">Restore notes</button><button type="button" class="text-button" id="clear">Clear notes</button></div></div>
+</form></section>
+<aside class="output-side" aria-label="Handoff preview and export">
+<section class="readiness" aria-labelledby="readiness-title"><div class="ready-top"><h2 id="readiness-title">Handoff essentials</h2><span class="count" id="count">0 / 5 filled</span></div><div class="meter" role="progressbar" aria-label="Essential fields filled" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="meter"><span id="meter-fill"></span></div><ul class="checks"><li data-check="project">Project</li><li data-check="goal">Goal</li><li data-check="done">Results</li><li data-check="open">Open work</li><li data-check="next">Next action</li></ul><p id="readiness-note">Fill in the five essentials. This checks for missing text, not proof of completion.</p></section>
+<section class="document" aria-labelledby="doc-title"><div class="doc-bar"><span class="doc-name" id="doc-title"><svg viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M3 1h6l4 4v12H3zM9 1v5h4M5 10h6M5 13h4" stroke="currentColor"/></svg>HANDOFF.md</span><span class="live">Live preview</span></div><pre id="preview" tabindex="0" aria-label="Generated Markdown handoff"></pre><div class="export"><label class="toggle"><input type="checkbox" id="instructions" checked>Include instructions for the next assistant</label><div class="actions"><button type="button" class="primary" id="copy" disabled>Copy handoff</button><button type="button" class="secondary" id="download" disabled>Download .md ↓</button></div><div class="export-note"><span>Plain Markdown · works with any text editor</span><span id="word-count">0 words</span></div><p id="feedback" role="status" aria-live="polite"></p></div></section>
+<section class="kit"><div class="kit-mark" aria-hidden="true">↳</div><div><h2>Same task, different status in every file?</h2><p>The Project Closeout Kit adds a reusable Markdown workflow and an offline checker for tagged task lists.</p><a href="/kits/project-closeout/">See what’s in the $19 kit →</a></div></section>
+</aside></div>
+<section class="explain" aria-label="About this builder"><div><h2>Write once. Resume anywhere.</h2><p>Download the handoff and attach it to your next AI session, or paste the text into your project notes. No special app or account needed.</p></div><div><h2>Your facts stay yours.</h2><p>Your input is processed in this tab. This page has no analytics, third-party scripts or automatic saving. Download before closing. Check for private details before sharing.</p></div><div><h2>Structure, not guesswork.</h2><p>This is a formatter, not an AI model. It does not read your files or verify claims. Need a process for checking the work? <a href="/guides/ai-project-handoff/">Read the five-step guide.</a></p></div></section>
+</main><footer><span>South Fork Apps · Small tools. Useful work.</span><div><a href="/">All tools</a><a href="/privacy/">Privacy</a><span>v1.0</span></div></footer>
+</div>
+<script>
+'use strict';
+const fields = ['project','goal','done','open','next','context'];
+const essentials = fields.slice(0,5);
+function clean(value){return String(value || '').replace(/\r\n?/g,'\n').trim();}
+function makeHandoff(data, includeInstructions=true){
+ const d=Object.fromEntries(fields.map(key=>[key,clean(data[key])]));
+ const section=(heading,text,missing)=>'## '+heading+'\n'+(text||missing);
+ const parts=[ '# Project handoff: '+(d.project ? d.project.replace(/\n/g,' ') : '[Project name needed]'),
+  section('Goal',d.goal,'Not provided. Confirm the intended outcome.'),
+  section('Completed work and evidence',d.done,'Not provided. No completed work has been recorded.'),
+  section('Still open or blocked',d.open,'Not provided. Confirm what remains unfinished or unverified.'),
+  section('Next action',d.next,'Not provided. Choose the first concrete action before resuming.') ];
+ if(d.context)parts.push(section('Files, decisions and constraints',d.context,''));
+ parts.push('## Verification note\nThese notes were supplied by the author. The builder has not verified tasks, files, links or external systems.');
+ if(includeInstructions)parts.push('## Instructions for the next assistant\nUse this handoff as context. Check the current source files and actual results before acting. Preserve the decisions and constraints above. Keep unfinished or unverified work open. Start with the next action; ask for clarification if essential information is missing.');
+ return parts.join('\n\n')+'\n';
+}
+function fileName(project){const slug=clean(project).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70).replace(/-+$/,'');return (slug?slug+'-':'')+'handoff.md';}
+// UI binding. User text is rendered only through textContent, never HTML.
+const $=id=>document.getElementById(id);
+let sampleActive=false,backup=null;
+function data(){return Object.fromEntries(fields.map(key=>[key,$(key).value]));}
+function feedback(text){$('feedback').textContent=text;}
+function update(){
+ const d=data(),n=essentials.filter(key=>clean(d[key])).length;
+ $('preview').textContent=makeHandoff(d,$('instructions').checked);
+ $('count').textContent=n+' / 5 filled';$('meter').setAttribute('aria-valuenow',String(n));$('meter-fill').style.width=(n*20)+'%';
+ document.querySelectorAll('[data-check]').forEach(el=>el.dataset.ready=String(Boolean(clean(d[el.dataset.check]))));
+ $('readiness-note').textContent=n===5?'All five fields have text. Check the facts before sharing.':'Fill in the five essentials. This checks for missing text, not proof of completion.';
+ const hasNotes=fields.some(key=>clean(d[key]));$('copy').disabled=!hasNotes;$('download').disabled=!hasNotes;
+ $('word-count').textContent=$('preview').textContent.trim().split(/\s+/).length+' words';
+ $('undo').hidden=!backup;
+ $('sample-note').textContent=sampleActive?'Fictional example loaded. Replace these notes with your own.':'';
+ feedback('');
+}
+$('handoff-form').addEventListener('submit',e=>e.preventDefault());
+$('handoff-form').addEventListener('input',()=>{sampleActive=false;backup=null;update();});
+$('instructions').addEventListener('change',update);
+$('example').addEventListener('click',()=>{
+ backup=fields.some(key=>clean($(key).value))?{notes:data(),sample:sampleActive}:null;
+ const example={project:'Weekend newsletter',goal:'Publish the first weekend edition with three checked local events.',done:'Drafted three event summaries in newsletter.md. Read each summary against the organizer page.\nBuilt the signup page. Opened the live page and checked the form appears.',open:'Signup confirmation email has not been tested.\nThe third event still needs its final start time confirmed.',next:'Submit a test signup on the live page and check that the confirmation email arrives.',context:'Files: newsletter.md, signup/index.html\nKeep the existing subject line. Do not call signup delivery verified until the email arrives.\nNo paid services or mailing-list imports.'};
+ fields.forEach(key=>$(key).value=example[key]);sampleActive=true;update();
+});
+$('clear').addEventListener('click',()=>{
+ if(!fields.some(key=>clean($(key).value)))return;
+ backup={notes:data(),sample:sampleActive};
+ fields.forEach(key=>$(key).value='');sampleActive=false;update();$('project').focus();feedback('Notes cleared. Use Restore notes to undo.');
+});
+$('undo').addEventListener('click',()=>{if(!backup)return;const saved=backup;fields.forEach(key=>$(key).value=saved.notes[key]);sampleActive=saved.sample;backup=null;update();feedback('Previous notes restored.');});
+$('copy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText($('preview').textContent);feedback('Handoff copied. Ready for your next session.');}
+ catch{const range=document.createRange();range.selectNodeContents($('preview'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);$('preview').focus();feedback('Clipboard access is unavailable. The handoff is selected; copy it with your keyboard or use Download.');}
+});
+$('download').addEventListener('click',()=>{
+ const blob=new Blob([$('preview').textContent],{type:'text/markdown;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=fileName($('project').value);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);feedback('Download requested. Check your browser’s downloads.');
+});
+update();
+</script>
+</body></html>

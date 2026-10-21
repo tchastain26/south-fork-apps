@@ -13,6 +13,7 @@ BASE_URL = "https://southforkapps.com"
 TODAY = date.today().isoformat()
 
 APP_META = {
+    "ai-project-handoff": ("AI Project Handoff Builder", "Turn project notes into a clear Markdown handoff for your next AI session. Free browser-local builder with a readiness checklist, copy and download."),
     "detailing-quote-widget": ("Detailing Quote Widget",    "Give detailing customers an instant estimate with a custom-branded quote widget. Live demo and one-time setup with no subscription."),
     "currency-converter":     ("Currency Converter",         "Convert between 30+ world currencies instantly using a built-in rate table. Free online currency converter."),
     "heart-rate-zones":       ("Heart Rate Zones",           "Calculate your 5 aerobic training zones by age or custom max heart rate. Supports Karvonen method. Free online tool."),
@@ -323,7 +324,7 @@ def build_sitemap():
         rel_parts = index_path.relative_to(base_path).parts
         if any(part.startswith(".") for part in rel_parts):
             continue
-        if rel_parts[0] == "2025":
+        if rel_parts[0] in {"2025", "node_modules", "artifacts"} or (rel_parts[0] == "embed" and len(rel_parts) > 2):
             continue
 
         rel = index_path.relative_to(base_path)
