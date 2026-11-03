@@ -1,13 +1,63 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Branded Calculators for Your Website | South Fork Apps</title><meta name="description" content="Try branded detailing quote and break-even calculators. Get a calculator with your own business name and colors for your website."><link rel="canonical" href="https://southforkapps.com/services/"><style>body{background:#111b15;color:#edf5ef;font:18px/1.6 system-ui;margin:0}main{max-width:760px;margin:auto;padding:48px 24px}a{color:#9beaab}h1{line-height:1.15}</style></head><body><main><a href="/">South Fork Apps</a>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Branded Calculators for Your Website | South Fork Apps</title><meta name="description" content="Try branded detailing quote and break-even calculators. Get a calculator with your own business name and colors for your website."><link rel="canonical" href="https://southforkapps.com/services/"><style>body{background:#111b15;color:#edf5ef;font:18px/1.6 system-ui;margin:0}main{max-width:760px;margin:auto;padding:48px 24px}a{color:#9beaab}h1{line-height:1.15}
+.quote-template{margin:1rem 0 1.5rem;padding:1rem;border:1px solid #496052;border-radius:.5rem}
+.quote-template summary{cursor:pointer}
+.quote-template textarea{display:block;box-sizing:border-box;width:100%;min-height:10rem;padding:.65rem;font:inherit;background:#edf5ef;color:#111b15}
+.quote-template button{margin-top:.6rem;padding:.35rem .7rem;font:inherit}
+.quote-template [role="status"]{margin-left:.5rem}</style></head><body><main><a href="/">South Fork Apps</a>
 <h1>Branded calculators for your website</h1>
 <h2>Give detailing customers an instant estimate</h2>
 <p>Get a branded quote calculator with your packages, prices, colors, and booking link. Customers can check an estimate before they contact you.</p>
 <p><strong>$49 once</strong> for the first three businesses. Includes a hosted page, a downloadable HTML file, and one revision.</p>
 <p><a href="/tools/detailing-quote-widget/">Try the working demo</a> or <a href="mailto:southforkapps@gmail.com?subject=Branded%20detailing%20calculator&amp;body=Business%20website%3A%20%0APublic%20price%20list%20or%20service%20packages%3A%20%0ABooking%20link%3A%20%0A">request a branded widget</a>.</p>
 <p>Send your website and current prices. We confirm that your pricing fits the calculator before requesting payment. Delivery is within three business days after payment is verified and your pricing is approved.</p>
+<details class="quote-template">
+  <summary>Use webmail or copy the request</summary>
+  <p>Copy this template into a new email. Fill in your details and send it to the address on the first line.</p>
+  <label for="detailing-template">Email template</label>
+  <textarea id="detailing-template" readonly>To: southforkapps@gmail.com
+Subject: Branded detailing calculator
+
+Business website:
+Public price list or service packages:
+Booking link:</textarea>
+  <button type="button" data-copy-template hidden>Copy request</button>
+  <span role="status"></span>
+</details>
 <section id="branded-break-even" aria-labelledby="branded-break-even-title">
 <h2 id="branded-break-even-title">A branded break-even calculator for your website</h2>
 <p>Give your clients a way to see how many sales they need to cover costs or hit a profit target. The calculator carries your business name and colors. You receive one HTML file you can host on your own site.</p>
 <p><a href="/services/branded-break-even-demo.html">Try the calculator with a fictional brand</a> or <a href="mailto:southforkapps@gmail.com?subject=Branded%20break-even%20calculator%20quote&amp;body=Business%20website%3A%20%0ABusiness%20name%3A%20%0APreferred%20accent%20color%3A%20">Request a quote by email</a>. We confirm the scope and price before payment.</p>
+<details class="quote-template">
+  <summary>Use webmail or copy the request</summary>
+  <p>Copy this template into a new email. Fill in your details and send it to the address on the first line.</p>
+  <label for="break-even-template">Email template</label>
+  <textarea id="break-even-template" readonly>To: southforkapps@gmail.com
+Subject: Branded break-even calculator quote
+
+Business website:
+Business name:
+Preferred accent color:</textarea>
+  <button type="button" data-copy-template hidden>Copy request</button>
+  <span role="status"></span>
+</details>
 </section>
-<p>The free tools remain available: <a href="/tools/ai-project-handoff/">AI Project Handoff Builder</a>, <a href="/guides/ai-project-handoff/">project handoff guide</a> and <a href="/kits/project-closeout/demo/">guided closeout example</a>.</p><p>For an existing order or support question, email <a href="mailto:southforkapps@gmail.com">southforkapps@gmail.com</a>.</p></main></body></html>
+<p>The free tools remain available: <a href="/tools/ai-project-handoff/">AI Project Handoff Builder</a>, <a href="/guides/ai-project-handoff/">project handoff guide</a> and <a href="/kits/project-closeout/demo/">guided closeout example</a>.</p><p>For an existing order or support question, email <a href="mailto:southforkapps@gmail.com">southforkapps@gmail.com</a>.</p></main>
+<script>
+for (const button of document.querySelectorAll('[data-copy-template]')) {
+  const panel = button.closest('.quote-template');
+  const template = panel.querySelector('textarea');
+  const status = panel.querySelector('[role="status"]');
+  button.hidden = false;
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(template.value);
+      status.textContent = 'Copied.';
+    } catch {
+      template.focus();
+      template.select();
+      status.textContent = 'Selected. Use your browser’s Copy command.';
+    }
+  });
+}
+</script>
+</body></html>
