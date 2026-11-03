@@ -5075,7 +5075,7 @@
   ]
  },
  "roman-numerals": {
-  "intro": "Roman Numeral Converter goes both ways between numbers and Roman numerals, handling values from 1 up to 3,999,999.",
+  "intro": "Convert numbers to Roman numerals and back, from 1 to 3,999,999. The date converter handles the month, day, and year separately, in the order you choose.",
   "how": [
    "Enter a number to convert to Roman numerals.",
    "Or enter Roman numerals to get the number.",

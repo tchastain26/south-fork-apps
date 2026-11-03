@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roman Numeral Converter | South Fork Apps</title>
-  <meta name="description" content="Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown.">
+  <title>Roman Numeral Converter for Numbers and Dates | South Fork Apps</title>
+  <meta name="description" content="Convert numbers both ways or turn a wedding, birthday, or anniversary date into Roman numerals. Choose the date order and copy the result.">
   
 <!-- SFA_SOCIAL_START -->
 <link rel="canonical" href="https://southforkapps.com/tools/roman-numerals/">
 <meta property="og:site_name" content="South Fork Apps">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Roman Numeral Converter">
-<meta property="og:description" content="Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown.">
+<meta property="og:title" content="Roman Numeral Converter for Numbers and Dates">
+<meta property="og:description" content="Convert numbers both ways or turn a wedding, birthday, or anniversary date into Roman numerals. Choose the date order and copy the result.">
 <meta property="og:url" content="https://southforkapps.com/tools/roman-numerals/">
 <meta property="og:image" content="https://southforkapps.com/tools/roman-numerals/share.jpg">
 <meta property="og:image:alt" content="Roman Numeral Converter preview image">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Roman Numeral Converter">
-<meta name="twitter:description" content="Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown.">
+<meta name="twitter:title" content="Roman Numeral Converter for Numbers and Dates">
+<meta name="twitter:description" content="Convert numbers both ways or turn a wedding, birthday, or anniversary date into Roman numerals. Choose the date order and copy the result.">
 <meta name="twitter:image" content="https://southforkapps.com/tools/roman-numerals/share.jpg">
 <!-- SFA_SOCIAL_END -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
     .ref-num { font-size: 13px; color: var(--text-mid); }
 
     .date-preview { color-scheme: dark; }
-    .date-preview summary { cursor: pointer; color: var(--primary); font-weight: 700; }
+    .date-preview h2 { margin: 0 0 8px; }
     .date-preview .date-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
     .date-preview input, .date-preview select { width: 100%; min-width: 0; padding: 10px; font: inherit; letter-spacing: normal; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; }
     .date-preview p { font-size: 14px; line-height: 1.5; }
@@ -334,7 +334,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Roman Numeral Converter",
-  "description": "Convert numbers to Roman numerals and Roman numerals to numbers. Free online Roman numeral converter with breakdown.",
+  "description": "Convert numbers both ways or turn a wedding, birthday, or anniversary date into Roman numerals. Choose the date order and copy the result.",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Any",
   "url": "https://southforkapps.com/tools/roman-numerals/",
@@ -428,8 +428,9 @@
   </div>
 
 
-  <details class="card date-preview">
-    <summary>Convert a date to Roman numerals</summary>
+  <section class="card date-preview" id="date-converter" aria-labelledby="date-converter-title">
+    <h2 id="date-converter-title">Roman Numeral Date Converter</h2>
+    <p>Choose a wedding date, birthday, or anniversary. For example, July 4, 2026 is VII · IV · MMXXVI in month / day / year order. Choose the order before you copy the result.</p>
     <div class="date-fields" style="margin-top:16px">
       <div>
         <label for="romanDate">Choose a date</label>
@@ -453,7 +454,7 @@
       <p style="margin:6px 0 10px">Get an 8 × 10 inch printable PDF with your date and names. Choose a date to request your print by email. We’ll confirm the details before payment.</p>
       <a id="romanPrintRequest" class="btn print-request" hidden>Request a personalized print · $5</a>
     </div>
-  </details>
+  </section>
 
   <div>
     <div class="section-label" style="margin-bottom:10px;">Common References — click to load</div>
@@ -608,7 +609,7 @@ convertToRoman();
     <div class="sfa-feature-copy">
       <div class="sfa-kicker">About this tool</div>
       <h2 id="sfa-feature-title">Roman Numeral Converter</h2>
-      <p>Roman Numeral Converter goes both ways between numbers and Roman numerals, handling values from 1 up to 3,999,999.</p>
+      <p>Convert numbers to Roman numerals and back, from 1 to 3,999,999. The date converter handles the month, day, and year separately, in the order you choose.</p>
       <h3 class="sfa-subhead">How to use it</h3>
       <ol class="sfa-steps">
         <li>Enter a number to convert to Roman numerals.</li>
