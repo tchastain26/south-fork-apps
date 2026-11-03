@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Haiku Checker | South Fork Apps</title>
-  <meta name="description" content="Count syllables per line and check for the 5-7-5 haiku pattern. Free online syllable counter and haiku validator.">
+<title>Haiku Checker: 5-7-5 Syllable Counter | South Fork Apps</title>
+  <meta name="description" content="Paste an English haiku or type it line by line. See estimated syllable counts and check each line against the 5-7-5 pattern.">
 <!-- SFA_SOCIAL_START -->
 <link rel="canonical" href="https://southforkapps.com/tools/haiku-checker/">
 <meta property="og:site_name" content="South Fork Apps">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Haiku Checker">
-<meta property="og:description" content="Count syllables per line and check for the 5-7-5 haiku pattern. Free online syllable counter and haiku validator.">
+<meta property="og:title" content="Haiku Checker: 5-7-5 Syllable Counter">
+<meta property="og:description" content="Paste an English haiku or type it line by line. See estimated syllable counts and check each line against the 5-7-5 pattern.">
 <meta property="og:url" content="https://southforkapps.com/tools/haiku-checker/">
 <meta property="og:image" content="https://southforkapps.com/tools/haiku-checker/share.jpg">
 <meta property="og:image:alt" content="Haiku Checker preview image">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Haiku Checker">
-<meta name="twitter:description" content="Count syllables per line and check for the 5-7-5 haiku pattern. Free online syllable counter and haiku validator.">
+<meta name="twitter:title" content="Haiku Checker: 5-7-5 Syllable Counter">
+<meta name="twitter:description" content="Paste an English haiku or type it line by line. See estimated syllable counts and check each line against the 5-7-5 pattern.">
 <meta name="twitter:image" content="https://southforkapps.com/tools/haiku-checker/share.jpg">
 <!-- SFA_SOCIAL_END -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,10 +30,14 @@
   main{flex:1;padding:1.5rem;max-width:640px;margin:0 auto;width:100%}
   h1{font-size:1.4rem;margin-bottom:.25rem}
   .subtitle{color:var(--muted);font-size:.875rem;margin-bottom:1.25rem}
+  .poem-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0 1rem}
+  .poem-actions button{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.5rem .75rem;cursor:pointer}
+  #poem{box-sizing:border-box;width:100%;display:block;resize:vertical;margin:.35rem 0}
+  #paste-status{margin:.4rem 0}
   .line-inputs{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem}
   .line-row{display:flex;align-items:center;gap:.75rem}
   .line-label{font-size:.8rem;color:var(--muted);min-width:40px;text-align:right}
-  .line-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.55rem .75rem;border-radius:.5rem;font-size:.95rem;font-family:inherit;transition:.2s}
+  .line-input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.55rem .75rem;border-radius:.5rem;font-size:.95rem;font-family:inherit;transition:.2s}
   .line-input:focus{outline:none;border-color:var(--accent)}
   .line-input.over{border-color:#f87171}
   .line-input.under{border-color:#f97316}
@@ -321,7 +325,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Haiku Checker",
-  "description": "Count syllables per line and check for the 5-7-5 haiku pattern. Free online syllable counter and haiku validator.",
+  "description": "Paste an English haiku or type it line by line. See estimated syllable counts and check each line against the 5-7-5 pattern.",
   "applicationCategory": "ProductivityApplication",
   "operatingSystem": "Any",
   "url": "https://southforkapps.com/tools/haiku-checker/",
@@ -378,30 +382,37 @@
 <body>
 <nav class="nav"><a href="https://southforkapps.com">← South Fork Apps</a><span class="nav-title">Haiku Checker</span></nav>
 <main>
-  <h1>Haiku Checker</h1>
-  <p class="subtitle">Count syllables per line and check for the 5-7-5 pattern.</p>
+  <h1>Haiku Checker: 5-7-5 Syllable Counter</h1>
+  <p class="subtitle">Check the estimated syllable count for each line of an English haiku.</p>
+  <label for="poem">Paste a three-line poem</label>
+  <textarea id="poem" class="line-input" rows="3"></textarea>
+  <div class="poem-actions">
+    <button id="check-poem" type="button">Check Poem</button>
+    <button id="load-example" type="button">Load 5-7-5 Example</button>
+  </div>
+  <p id="paste-status" role="status" hidden></p>
   <div class="line-inputs">
     <div class="line-row">
-      <span class="line-label">Line 1</span>
+      <label class="line-label" for="l1">Line 1</label>
       <input class="line-input" id="l1" placeholder="An old silent pond…" oninput="check()">
       <span class="count-badge empty" id="c1">—</span>
       <span class="target muted">/ 5</span>
     </div>
     <div class="line-row">
-      <span class="line-label">Line 2</span>
+      <label class="line-label" for="l2">Line 2</label>
       <input class="line-input" id="l2" placeholder="A frog jumps into the pond…" oninput="check()">
       <span class="count-badge empty" id="c2">—</span>
       <span class="target muted">/ 7</span>
     </div>
     <div class="line-row">
-      <span class="line-label">Line 3</span>
+      <label class="line-label" for="l3">Line 3</label>
       <input class="line-input" id="l3" placeholder="Splash! Silence again." oninput="check()">
       <span class="count-badge empty" id="c3">—</span>
       <span class="target muted">/ 5</span>
     </div>
   </div>
   <div class="result-box">
-    <div class="result-main">
+    <div class="result-main" aria-live="polite">
       <span class="big-badge empty" id="verdict">Waiting…</span>
       <span class="total" id="totalText"></span>
     </div>
@@ -413,25 +424,25 @@
     <div class="sfa-feature-copy">
       <div class="sfa-kicker">About this tool</div>
       <h2 id="sfa-feature-title">Haiku Checker</h2>
-      <p>Haiku Checker counts syllables line by line and tells you whether your poem matches the 5-7-5 pattern. Type each line into its own field and the counts update as you write.</p>
-      <h3 class="sfa-subhead">How to use it</h3>
+      <p>Paste a three-line English poem or type each line separately. This haiku format checker estimates the syllables in each line and compares them with 5, 7 and 5.</p>
+      <h3 class="sfa-subhead">How to check a haiku</h3>
       <ol class="sfa-steps">
-        <li>Type the first line and watch the syllable count.</li>
-        <li>Fill in the second and third lines.</li>
-        <li>Adjust wording until the counts read 5, 7 and 5.</li>
+        <li>Paste three lines and select Check Poem, or type in the individual fields for live counts.</li>
+        <li>Compare each count with its target: 5, 7 and 5.</li>
+        <li>Select Load 5-7-5 Example to try a poem that fits the pattern.</li>
       </ol>
-      <h3 class="sfa-subhead">How syllables are counted, and why it is imperfect</h3>
-      <p>Syllable counting works by finding vowel groups in a word, then correcting for the common English exceptions: a silent final e, the -le ending that adds a syllable, and vowel pairs that form one sound rather than two.</p>
-      <p>English defeats any purely mechanical rule. Fire and flower are one or two syllables depending on your accent, and words like every are routinely compressed in speech. Treat the count as a strong guide and trust your ear where they disagree.</p>
+      <h3 class="sfa-subhead">How the syllable counter works</h3>
+      <p>The tool estimates English syllables from vowel groups and a list of common exceptions. It checks a syllable pattern, so it cannot tell you whether a poem works as haiku.</p>
+      <p>Read the poem aloud if a count looks wrong. Words like fire and hour can vary by pronunciation.</p>
       <h3 class="sfa-subhead">Worked example</h3>
       <div class="sfa-worked">
-        <p>The classic structure:</p>
+        <p>A 5-7-5 example:</p>
         <ul class="sfa-given">
-          <li><span>Line 1</span><strong>5 syllables</strong></li>
-          <li><span>Line 2</span><strong>7 syllables</strong></li>
-          <li><span>Line 3</span><strong>5 syllables</strong></li>
+          <li><span>Cold rain taps the roof</span><strong>5 syllables</strong></li>
+          <li><span>Small birds hide beneath the porch</span><strong>7 syllables</strong></li>
+          <li><span>Dusk slips through the trees</span><strong>5 syllables</strong></li>
         </ul>
-        <p class="sfa-result"><strong>Result:</strong> Seventeen syllables total, the English convention adapted from the Japanese form.</p>
+        <p class="sfa-result"><strong>Result:</strong> The example has 17 syllables across three lines and matches the English 5-7-5 pattern.</p>
       </div>
       <h3 class="sfa-subhead">When it helps</h3>
       <ul class="sfa-bullets">
@@ -544,29 +555,47 @@ function lineCount(text){
 const targets=[5,7,5];
 function check(){
   const lines=[document.getElementById('l1').value,document.getElementById('l2').value,document.getElementById('l3').value];
-  let total=0;
   lines.forEach((line,i)=>{
     const badge=document.getElementById('c'+(i+1));
     const input=document.getElementById('l'+(i+1));
     if(!line.trim()){badge.textContent='—';badge.className='count-badge empty';input.className='line-input';return;}
     const n=lineCount(line);
-    total+=n;
     badge.textContent=n;
     const t=targets[i];
     if(n===t){badge.className='count-badge ok';input.className='line-input ok';}
     else if(n>t){badge.className='count-badge over';input.className='line-input over';}
     else{badge.className='count-badge under';input.className='line-input under';}
   });
-  const counts=lines.map((l,i)=>l.trim()?lineCount(l):null);
+  const counts=lines.map(l=>l.trim()?lineCount(l):null);
   const v=document.getElementById('verdict');
   const tt=document.getElementById('totalText');
   if(counts.every(c=>c===null)){v.textContent='Waiting…';v.className='big-badge empty';tt.textContent='';return;}
   const isHaiku=counts.every((c,i)=>c===targets[i]);
   const nonNull=counts.filter(c=>c!==null);
   tt.textContent='Total syllables: '+(nonNull.reduce((a,b)=>a+b,0));
-  if(isHaiku){v.textContent='This is a haiku!';v.className='big-badge haiku';}
-  else{v.textContent='Not a haiku';v.className='big-badge not-haiku';}
+  if(isHaiku){v.textContent='Matches 5-7-5';v.className='big-badge haiku';}
+  else{v.textContent='Does not match 5-7-5';v.className='big-badge not-haiku';}
 }
+const poem=document.getElementById('poem');
+const pasteStatus=document.getElementById('paste-status');
+const example=['Cold rain taps the roof','Small birds hide beneath the porch','Dusk slips through the trees'];
+function checkPoem(){
+  const lines=poem.value.trim().split(/\r\n?|\n/);
+  if(lines.length!==3 || lines.some(line=>!line.trim())){
+    pasteStatus.hidden=false;
+    pasteStatus.textContent='Enter exactly three lines with no blank line between them.';
+    return;
+  }
+  pasteStatus.hidden=true;
+  lines.forEach((line,i)=>{document.getElementById('l'+(i+1)).value=line.trim();});
+  check();
+}
+document.getElementById('check-poem').addEventListener('click',checkPoem);
+document.getElementById('load-example').addEventListener('click',()=>{
+  poem.value=example.join('\n');
+  checkPoem();
+});
+poem.addEventListener('input',()=>{pasteStatus.hidden=true;});
 </script>
 </body>
 </html>

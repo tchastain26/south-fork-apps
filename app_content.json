@@ -1669,34 +1669,34 @@
   ]
  },
  "haiku-checker": {
-  "intro": "Haiku Checker counts syllables line by line and tells you whether your poem matches the 5-7-5 pattern. Type each line into its own field and the counts update as you write.",
+  "intro": "Paste a three-line English poem or type each line separately. This haiku format checker estimates the syllables in each line and compares them with 5, 7 and 5.",
   "how": [
-   "Type the first line and watch the syllable count.",
-   "Fill in the second and third lines.",
-   "Adjust wording until the counts read 5, 7 and 5."
+   "Paste three lines and select Check Poem, or type in the individual fields for live counts.",
+   "Compare each count with its target: 5, 7 and 5.",
+   "Select Load 5-7-5 Example to try a poem that fits the pattern."
   ],
   "method_title": "How syllables are counted, and why it is imperfect",
   "method": [
-   "Syllable counting works by finding vowel groups in a word, then correcting for the common English exceptions: a silent final e, the -le ending that adds a syllable, and vowel pairs that form one sound rather than two.",
+   "The tool estimates English syllables from vowel groups and a list of common exceptions. It checks a syllable pattern, so it cannot tell you whether a poem works as haiku.",
    "English defeats any purely mechanical rule. Fire and flower are one or two syllables depending on your accent, and words like every are routinely compressed in speech. Treat the count as a strong guide and trust your ear where they disagree."
   ],
   "example": {
-   "setup": "The classic structure:",
+   "setup": "A 5-7-5 example:",
    "given": [
     [
-     "Line 1",
+     "Cold rain taps the roof",
      "5 syllables"
     ],
     [
-     "Line 2",
+     "Small birds hide beneath the porch",
      "7 syllables"
     ],
     [
-     "Line 3",
+     "Dusk slips through the trees",
      "5 syllables"
     ]
    ],
-   "result": "Seventeen syllables total, the English convention adapted from the Japanese form."
+   "result": "The example has 17 syllables across three lines and matches the English 5-7-5 pattern."
   },
   "uses": [
    "Writing haiku without counting on your fingers.",

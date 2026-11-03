@@ -1,17 +1,17 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CSV Column Extractor | South Fork Apps</title>
-  <meta name="description" content="Extract specific columns from CSV data instantly. Paste your CSV and pull out just the columns you need.">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Extract a Column from CSV Online | South Fork Apps</title>
+  <meta name="description" content="Paste simple comma-separated text and copy one column as a list. Free, no upload. Use with CSV that has no quoted fields.">
 <!-- SFA_SOCIAL_START -->
 <link rel="canonical" href="https://southforkapps.com/tools/csv-column-extractor/">
 <meta property="og:site_name" content="South Fork Apps">
 <meta property="og:type" content="website">
-<meta property="og:title" content="CSV Column Extractor">
-<meta property="og:description" content="Extract specific columns from CSV data instantly. Paste your CSV and pull out just the columns you need.">
+<meta property="og:title" content="Extract a Column from CSV Online">
+<meta property="og:description" content="Paste simple comma-separated text and copy one column as a list. Free, no upload. Use with CSV that has no quoted fields.">
 <meta property="og:url" content="https://southforkapps.com/tools/csv-column-extractor/">
 <meta property="og:image" content="https://southforkapps.com/tools/csv-column-extractor/share.jpg">
 <meta property="og:image:alt" content="CSV Column Extractor preview image">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CSV Column Extractor">
-<meta name="twitter:description" content="Extract specific columns from CSV data instantly. Paste your CSV and pull out just the columns you need.">
+<meta name="twitter:title" content="Extract a Column from CSV Online">
+<meta name="twitter:description" content="Paste simple comma-separated text and copy one column as a list. Free, no upload. Use with CSV that has no quoted fields.">
 <meta name="twitter:image" content="https://southforkapps.com/tools/csv-column-extractor/share.jpg">
 <!-- SFA_SOCIAL_END -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--bg:#111412;--surface:#1a1f1b;--surface-2:#202722;--border:#2a2f2b;--accent:#7ddb84;--text:#e8e8e8;--muted:#aab5ac}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}.nav{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:#1a1f1b;border-bottom:1px solid #2a2f2b;font-family:'Plus Jakarta Sans',sans-serif}.nav-back{color:#7ddb84;text-decoration:none;font-size:.875rem;font-weight:500}.nav-back:hover{text-decoration:underline}.nav-title{color:#e8e8e8;font-size:.875rem;font-weight:600}main{width:min(1100px,calc(100% - 2rem));margin:0 auto;padding:2rem 0}.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem}h1{margin:0 0 .5rem;font-size:clamp(2rem,7vw,4rem);line-height:1}p{margin:0;color:var(--muted);line-height:1.6}.controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,280px);gap:.75rem;margin-top:1rem;align-items:start}.controls textarea{margin-top:0}textarea,input{width:100%;border:1px solid var(--border);border-radius:8px;background:#111412;color:var(--text);font:inherit;padding:1rem}textarea{min-height:16rem;resize:vertical;margin-top:1rem}.actions{display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap}button{min-height:2.8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font:inherit;font-weight:800;padding:0 1rem;cursor:pointer}.primary{border-color:var(--accent);background:var(--accent);color:#102113}.meta{margin-top:.75rem;color:var(--muted);font-size:.9rem;font-weight:700}footer{margin-top:1rem;text-align:center;color:var(--muted);font-size:.8rem}@media(max-width:860px){.controls{grid-template-columns:1fr}.nav{padding-inline:1rem}}
@@ -286,7 +286,7 @@
   "@context": "https://schema.org",
   "@type": "DeveloperApplication",
   "name": "CSV Column Extractor",
-  "description": "Extract specific columns from CSV data instantly. Paste your CSV and pull out just the columns you need.",
+  "description": "Paste simple comma-separated text and copy one column as a list. Free, no upload. Use with CSV that has no quoted fields.",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any",
   "url": "https://southforkapps.com/tools/csv-column-extractor/",
@@ -339,7 +339,7 @@
 }
 </script>
 <!-- SFA_BREADCRUMB_END -->
-</head><body><nav class="nav"><a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a><span class="nav-title">CSV Column Extractor</span></nav><main><section class="panel"><h1>CSV Column Extractor</h1><p>Extract a single column from simple comma-separated text.</p><div class="controls"><textarea id="input" placeholder="Name,Role,Team&#10;Tucker,Creative Media,Ballad"></textarea><input id="column" type="number" min="0" value="0" aria-label="Column index"></div><textarea id="output" readonly placeholder="Extracted values"></textarea><div class="actions"><button id="copy" class="primary" type="button">Copy Result</button><button id="clear" type="button">Clear</button></div><div id="meta" class="meta">Ready.</div><footer>v1.0</footer></section>
+</head><body><nav class="nav"><a href="https://southforkapps.com" class="nav-back">← South Fork Apps</a><span class="nav-title">CSV Column Extractor</span></nav><main><section class="panel"><h1>CSV Column Extractor</h1><p>Paste simple comma-separated text and extract one column. The first column is 0. This tool does not support quoted fields.</p><div class="controls"><textarea id="input" placeholder="Name,Role,Team&#10;Tucker,Creative Media,Ballad"></textarea><input id="column" type="number" min="0" value="0" aria-label="Column index"></div><textarea id="output" readonly placeholder="Extracted values"></textarea><div class="actions"><button id="copy" class="primary" type="button">Copy Result</button><button id="clear" type="button">Clear</button></div><div id="meta" class="meta">Ready.</div><footer>v1.0</footer></section>
 
 
 
