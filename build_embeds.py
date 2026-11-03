@@ -274,7 +274,7 @@ def build_gallery(built: list[tuple[str, str]]) -> str:
     <li>Keep the attribution line. It is the only thing asked in return, and it is what pays for the tools staying free.</li>
     <li>Nothing about your visitors is collected, stored or sent anywhere. The calculation happens in their browser.</li>
     <li>Want it in your own colours, with your own name, pricing or rates, and no attribution?
-        <a href="{BASE_URL}/tools/detailing-quote-widget/">See how a branded build works</a>.</li>
+        <a href="{BASE_URL}/services/#branded-break-even">See a branded break-even calculator and request a quote</a>.</li>
   </ul>
 </div>
 <script>
