@@ -57,6 +57,14 @@
     .ref-item:hover { border-color: var(--primary); }
     .ref-roman { font-size: 15px; font-weight: 800; color: var(--primary); }
     .ref-num { font-size: 13px; color: var(--text-mid); }
+
+    .date-preview { color-scheme: dark; }
+    .date-preview summary { cursor: pointer; color: var(--primary); font-weight: 700; }
+    .date-preview .date-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .date-preview input, .date-preview select { width: 100%; min-width: 0; padding: 10px; font: inherit; letter-spacing: normal; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; }
+    .date-preview p { font-size: 14px; line-height: 1.5; }
+    .date-preview .date-result { padding: 18px 12px; background: #f7f2e8; color: #26211a; text-align: center; font: 700 clamp(18px, 5vw, 30px)/1.4 Georgia, serif; overflow-wrap: anywhere; border-radius: 8px; }
+    .date-preview .print-request:not([hidden]) { display: inline-block; text-decoration: none; }
     .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
   
 
@@ -419,6 +427,34 @@
     <button class="btn" onclick="copyResult('numberResult')">Copy Number</button>
   </div>
 
+
+  <details class="card date-preview">
+    <summary>Convert a date to Roman numerals</summary>
+    <div class="date-fields" style="margin-top:16px">
+      <div>
+        <label for="romanDate">Choose a date</label>
+        <input type="date" id="romanDate" min="0001-01-01" max="3999-12-31">
+      </div>
+      <div>
+        <label for="romanDateOrder">Date order</label>
+        <select id="romanDateOrder">
+          <option value="mdy">Month / day / year</option>
+          <option value="dmy">Day / month / year</option>
+          <option value="ymd">Year / month / day</option>
+        </select>
+      </div>
+    </div>
+    <div id="romanDatePreview" style="margin-top:16px" hidden>
+      <div class="date-result" id="romanDateResult" aria-live="polite"></div>
+      <button type="button" class="btn" style="margin-top:10px" onclick="copyResult('romanDateResult')">Copy date</button>
+    </div>
+    <div style="margin-top:16px">
+      <p><strong>Personalized Roman numeral print · $5</strong></p>
+      <p style="margin:6px 0 10px">Get an 8 × 10 inch printable PDF with your date and names. Choose a date to request your print by email. We’ll confirm the details before payment.</p>
+      <a id="romanPrintRequest" class="btn print-request" hidden>Request a personalized print · $5</a>
+    </div>
+  </details>
+
   <div>
     <div class="section-label" style="margin-bottom:10px;">Common References — click to load</div>
     <div class="reference-grid" id="refGrid"></div>
@@ -499,6 +535,49 @@ function setMode(m) {
 }
 
 function copyResult(id) { navigator.clipboard.writeText(document.getElementById(id).textContent); }
+
+
+const dateInput = document.getElementById('romanDate');
+const dateOrder = document.getElementById('romanDateOrder');
+const datePreview = document.getElementById('romanDatePreview');
+const dateResult = document.getElementById('romanDateResult');
+const printRequest = document.getElementById('romanPrintRequest');
+
+function updateDatePreview() {
+  const hasDate = Boolean(dateInput.value) && dateInput.validity.valid;
+  datePreview.hidden = !hasDate;
+  printRequest.hidden = !hasDate;
+
+  if (!hasDate) {
+    dateResult.textContent = '';
+    printRequest.removeAttribute('href');
+    return;
+  }
+
+  const [year, month, day] = dateInput.value.split('-').map(Number);
+  const parts = { y: year, m: month, d: day };
+  const orderedParts = Array.from(dateOrder.value, part => parts[part]);
+  const numerals = orderedParts.map(part => toRoman(part).result).join(' · ');
+  dateResult.textContent = numerals;
+
+  const orderLabel = dateOrder.selectedOptions[0].textContent;
+  const subject = encodeURIComponent('Personalized Roman numeral print ($5)');
+  const body = encodeURIComponent([
+    'I’d like a personalized Roman numeral print for $5.',
+    '',
+    'Date (year-month-day): ' + dateInput.value,
+    'Date order: ' + orderLabel,
+    'Roman numerals: ' + numerals,
+    'Names to print (optional): ',
+    '',
+    'Please confirm the details and send payment instructions.'
+  ].join('\n'));
+  printRequest.href = 'mailto:southforkapps@gmail.com?subject=' + subject + '&body=' + body;
+}
+
+dateInput.addEventListener('input', updateDatePreview);
+dateOrder.addEventListener('change', updateDatePreview);
+updateDatePreview();
 
 // Reference grid
 const grid = document.getElementById('refGrid');
