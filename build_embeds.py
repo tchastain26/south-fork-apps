@@ -285,6 +285,9 @@ const preview = document.getElementById('preview');
 const hEl = document.getElementById('h');
 const autoEl = document.getElementById('auto');
 let slug = {first_slug!r}, title = {first_title!r};
+const requestedSlug = new URLSearchParams(location.search).get('tool');
+const requestedTool = [...picker.querySelectorAll('.pick')].find(button => button.dataset.slug === requestedSlug);
+if (requestedTool) [slug, title] = [requestedTool.dataset.slug, requestedTool.dataset.title];
 
 function snippet() {{
   const h = parseInt(hEl.value, 10) || {DEFAULT_HEIGHT};

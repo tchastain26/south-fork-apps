@@ -851,9 +851,11 @@ def inject_feature_section(text: str, app: dict[str, str]) -> str:
 
     if content:
         embed_link = (
-            f'\n        <a href="{BASE_URL}/embed/">Put this on your own site</a>'
+            f'\n        <a href="{BASE_URL}/embed/?tool={app["slug"]}">Get the free embed</a>'
             if app["slug"] in EMBEDDABLE_SLUGS else ""
         )
+        if app["slug"] == "break-even-calculator":
+            embed_link += f'\n        <a href="{BASE_URL}/services/#branded-break-even">Get a calculator with your branding</a>'
         links = f"""
       <div class="sfa-links">
         <a href="{category_url(app['category'])}">More {html.escape(app['category'])}</a>{embed_link}
